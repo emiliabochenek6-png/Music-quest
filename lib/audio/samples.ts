@@ -1,0 +1,160 @@
+/**
+ * Pre-rendered sine-tone WAV samples, one per note actually used by
+ * Wioska Nut's audio-driven exercise types (pitch-height-choice,
+ * melody-direction-choice) — see assets/audio/*.wav (each a short sine
+ * wave with the same attack/release envelope shape the web app's Web
+ * Audio `scheduleTone` used).
+ *
+ * The web app synthesizes tones live via the Web Audio API
+ * (OscillatorNode + GainNode) — Expo Go only bundles the standard Expo
+ * SDK's native modules, so a raw-oscillator-synthesis library (which
+ * would need its own native code) can't run there. expo-audio (bundled,
+ * Expo Go-compatible) only plays back audio FILES, so this trades live
+ * synthesis for a small fixed set of pre-rendered samples — every note
+ * this lesson's content actually plays, not a general-purpose synthesizer.
+ * Adding a new note to future content means rendering one more WAV file
+ * here (see the generation script noted in the repo's own notes) and
+ * adding one more entry below — `metro`'s bundler requires every
+ * `require()` target to be a static, literal path, so this map can't be
+ * built from a loop over a note-name list.
+ *
+ * C4-C6 is a full 25-note CHROMATIC run (not just the 7 diatonic notes
+ * Wioska Nut needed) — Pasmo Interwałów's interval exercises pick random
+ * note pairs anywhere across that whole range, including sharp-spelled
+ * notes. The 18 notes beyond the original 7 diatonic + C6 were rendered
+ * by pitch-shifting the nearest already-recorded note (ffmpeg
+ * asetrate+atempo, same trick this session already used for the melody
+ * set's D4/E4/G4/B4 gaps) rather than fresh piano-harmonic synthesis —
+ * see scratchpad/gen_missing_chromatic.py from that session for the exact
+ * source-note-per-target mapping. B3 is the one note OUTSIDE that C4-C6
+ * range: Pasmo Interwałów's own intro-slide examples illustrate "sekunda
+ * mała" as B3→C4 (a fixed, hand-authored pair, not one of
+ * pickRandomIntervalNotePair's random-range picks — those always stay
+ * within C4-C6), rendered the same pitch-shift way, one semitone down
+ * from C4. A#2 through A#3 (all of octave 3, plus one note into octave 2)
+ * were added for Zatoka Trójdźwięków's triad-role-choice: its reference-
+ * triad octave-normalization (lib/music/triads.ts's own
+ * normalizeToComfortableOctave + generate.ts's lowerTriadBelow) can land a
+ * triad's root as low as A#2 — see scratchpad/gen_low_octave3.py for the
+ * exact source-note-per-target mapping (same pitch-shift technique,
+ * sourced only from real, non-shifted recordings to avoid compounding
+ * artifacts).
+ */
+export const NOTE_SAMPLES: Record<string, number> = {
+  C3: require("@/assets/audio/c3.wav"),
+  "A#2": require("@/assets/audio/as2.wav"),
+  "C#3": require("@/assets/audio/cs3.wav"),
+  D3: require("@/assets/audio/d3.wav"),
+  "D#3": require("@/assets/audio/ds3.wav"),
+  E3: require("@/assets/audio/e3.wav"),
+  F3: require("@/assets/audio/f3.wav"),
+  "F#3": require("@/assets/audio/fs3.wav"),
+  G3: require("@/assets/audio/g3.wav"),
+  "G#3": require("@/assets/audio/gs3.wav"),
+  A3: require("@/assets/audio/a3.wav"),
+  "A#3": require("@/assets/audio/as3.wav"),
+  B3: require("@/assets/audio/b3.wav"),
+  C4: require("@/assets/audio/c4.wav"),
+  "C#4": require("@/assets/audio/cs4.wav"),
+  D4: require("@/assets/audio/d4.wav"),
+  "D#4": require("@/assets/audio/ds4.wav"),
+  E4: require("@/assets/audio/e4.wav"),
+  F4: require("@/assets/audio/f4.wav"),
+  "F#4": require("@/assets/audio/fs4.wav"),
+  G4: require("@/assets/audio/g4.wav"),
+  "G#4": require("@/assets/audio/gs4.wav"),
+  A4: require("@/assets/audio/a4.wav"),
+  "A#4": require("@/assets/audio/as4.wav"),
+  B4: require("@/assets/audio/b4.wav"),
+  C5: require("@/assets/audio/c5.wav"),
+  "C#5": require("@/assets/audio/cs5.wav"),
+  D5: require("@/assets/audio/d5.wav"),
+  "D#5": require("@/assets/audio/ds5.wav"),
+  E5: require("@/assets/audio/e5.wav"),
+  F5: require("@/assets/audio/f5.wav"),
+  "F#5": require("@/assets/audio/fs5.wav"),
+  G5: require("@/assets/audio/g5.wav"),
+  "G#5": require("@/assets/audio/gs5.wav"),
+  A5: require("@/assets/audio/a5.wav"),
+  "A#5": require("@/assets/audio/as5.wav"),
+  B5: require("@/assets/audio/b5.wav"),
+  C6: require("@/assets/audio/c6.wav"),
+};
+
+/** A SHORTER-rendered twin of NOTE_SAMPLES (0.42s vs 0.9s, same piano-
+ * harmonic synthesis — see the generation script's own doc), used only by
+ * playMelody. A sequence of notes needs each one to fade out on its own
+ * before the next starts (see MELODY_STEP_SECONDS below); reusing the
+ * long single-note samples there without truncating them mid-waveform
+ * would either overlap audibly or click on a hard cut. This set is
+ * rendered to fade to silence WITHIN its own file, so playMelody can
+ * always play a sample to completion. Same full C4-C6 chromatic coverage
+ * as NOTE_SAMPLES, for the same Pasmo Interwałów reason — see its doc. */
+export const MELODY_NOTE_SAMPLES: Record<string, number> = {
+  C3: require("@/assets/audio/melody/c3.wav"),
+  "A#2": require("@/assets/audio/melody/as2.wav"),
+  "C#3": require("@/assets/audio/melody/cs3.wav"),
+  D3: require("@/assets/audio/melody/d3.wav"),
+  "D#3": require("@/assets/audio/melody/ds3.wav"),
+  E3: require("@/assets/audio/melody/e3.wav"),
+  F3: require("@/assets/audio/melody/f3.wav"),
+  "F#3": require("@/assets/audio/melody/fs3.wav"),
+  G3: require("@/assets/audio/melody/g3.wav"),
+  "G#3": require("@/assets/audio/melody/gs3.wav"),
+  A3: require("@/assets/audio/melody/a3.wav"),
+  "A#3": require("@/assets/audio/melody/as3.wav"),
+  B3: require("@/assets/audio/melody/b3.wav"),
+  C4: require("@/assets/audio/melody/c4.wav"),
+  "C#4": require("@/assets/audio/melody/cs4.wav"),
+  D4: require("@/assets/audio/melody/d4.wav"),
+  "D#4": require("@/assets/audio/melody/ds4.wav"),
+  E4: require("@/assets/audio/melody/e4.wav"),
+  F4: require("@/assets/audio/melody/f4.wav"),
+  "F#4": require("@/assets/audio/melody/fs4.wav"),
+  G4: require("@/assets/audio/melody/g4.wav"),
+  "G#4": require("@/assets/audio/melody/gs4.wav"),
+  A4: require("@/assets/audio/melody/a4.wav"),
+  "A#4": require("@/assets/audio/melody/as4.wav"),
+  B4: require("@/assets/audio/melody/b4.wav"),
+  C5: require("@/assets/audio/melody/c5.wav"),
+  "C#5": require("@/assets/audio/melody/cs5.wav"),
+  D5: require("@/assets/audio/melody/d5.wav"),
+  "D#5": require("@/assets/audio/melody/ds5.wav"),
+  E5: require("@/assets/audio/melody/e5.wav"),
+  F5: require("@/assets/audio/melody/f5.wav"),
+  "F#5": require("@/assets/audio/melody/fs5.wav"),
+  G5: require("@/assets/audio/melody/g5.wav"),
+  "G#5": require("@/assets/audio/melody/gs5.wav"),
+  A5: require("@/assets/audio/melody/a5.wav"),
+  "A#5": require("@/assets/audio/melody/as5.wav"),
+  B5: require("@/assets/audio/melody/b5.wav"),
+  C6: require("@/assets/audio/melody/c6.wav"),
+};
+
+/** Short percussive one-shots for Miasto Rytmu's rhythm exercises — a
+ * synthesized metronome tick (two pitches: an accented downbeat and a
+ * softer weak beat, matching the web app's own two-frequency metronome)
+ * and a bandpass-filtered noise "clap" for rhythm-onset playback (see
+ * lib/audio/rhythmPlayer.ts). Pre-rendered for the same Expo-Go-has-no-
+ * live-synthesis reason as NOTE_SAMPLES above — see that doc. */
+export const CLICK_ACCENT_SAMPLE: number = require("@/assets/audio/click-accent.wav");
+export const CLICK_WEAK_SAMPLE: number = require("@/assets/audio/click-weak.wav");
+export const CLAP_SAMPLE: number = require("@/assets/audio/clap.wav");
+
+/** Real recorded reference tracks (not synthesized one-shots like the
+ * samples above) — a "posłuchaj przykładu" button on a lesson's own intro
+ * slide plays one via the ordinary playSample (lib/audio/player.ts), same
+ * as any other sample here; it just happens to be several seconds long
+ * instead of a fraction of one. One per meter Przystań Taktów teaches
+ * (2/4, 2/2, 3/4, 4/4, 6/8, 9/8, 12/8) — used both on lesson 1's intro
+ * slide (LessonTheorySlide's own referenceAudio field, a 2/4 vs 3/4 vs
+ * 4/4 comparison row) and, via ExerciseSpec's meter-choice
+ * referenceAudioSource, as the audio for every meter-choice exercise
+ * across the world whose correctMeter has a matching recording. */
+export const DRUMMER_2_4_SAMPLE: number = require("@/assets/audio/reference/drummer-modern-rnb-2-4.wav");
+export const DRUMMER_2_2_SAMPLE: number = require("@/assets/audio/reference/drummer-modern-rnb-2-2.wav");
+export const DRUMMER_3_4_SAMPLE: number = require("@/assets/audio/reference/drummer-modern-rnb-3-4.wav");
+export const DRUMMER_4_4_SAMPLE: number = require("@/assets/audio/reference/drummer-modern-rnb-4-4.wav");
+export const DRUMMER_6_8_SAMPLE: number = require("@/assets/audio/reference/drummer-modern-rnb-6-8.wav");
+export const DRUMMER_9_8_SAMPLE: number = require("@/assets/audio/reference/drummer-modern-rnb-9-8.wav");
+export const DRUMMER_12_8_SAMPLE: number = require("@/assets/audio/reference/drummer-modern-rnb-12-8.wav");

@@ -1,0 +1,47 @@
+{
+  "expo": {
+    "name": "Music Quest",
+    "slug": "master-quest-mobile",
+    "scheme": "masterquest",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FFF8EE"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.masterquest.mobile",
+      "buildNumber": "1"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FFF8EE"
+      },
+      "package": "com.masterquest.mobile",
+      "versionCode": 1
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "Music Quest potrzebuje dostępu do mikrofonu, żeby móc słuchać, jak śpiewasz nuty w Zaczarowanym Solfeżu."
+        }
+      ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      }
+    }
+  }
+}

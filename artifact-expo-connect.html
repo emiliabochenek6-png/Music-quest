@@ -1,0 +1,75 @@
+<title>Połącz z Expo Go</title>
+<meta charset="utf-8" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FBF8F1; --ink: #22261F; --muted: #5B6156; --border: #E3DCC8;
+    --accent: #1F6F65; --surface: #FFFFFF;
+    --font-display: "Fraunces", Georgia, serif;
+    --font-body: "Source Sans 3", -apple-system, sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg:#191B16; --ink:#EDEAE0; --muted:#ABB0A2; --border:#33362A; --accent:#6FCBB8; --surface:#21241D; }
+  }
+  :root[data-theme="dark"] { --bg:#191B16; --ink:#EDEAE0; --muted:#ABB0A2; --border:#33362A; --accent:#6FCBB8; --surface:#21241D; }
+
+  * { box-sizing: border-box; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--font-body); margin: 0; }
+  .wrap { max-width: 560px; margin: 0 auto; padding: 56px 24px 80px; text-align: center; }
+  h1 { font-family: var(--font-display); font-weight: 700; font-size: 30px; margin: 0 0 8px; }
+  p.lede { color: var(--muted); margin: 0 0 32px; font-size: 15px; }
+  .qr-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 24px;
+    display: inline-block;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    margin-bottom: 24px;
+  }
+  #qr { width: 220px; height: 220px; }
+  .url-box {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin: 0 0 32px;
+    word-break: break-all;
+  }
+  ol { text-align: left; max-width: 420px; margin: 0 auto; padding-left: 22px; }
+  li { margin-bottom: 10px; line-height: 1.5; font-size: 14.5px; }
+  .note { font-size: 13px; color: var(--muted); margin-top: 28px; }
+</style>
+
+<div class="wrap">
+  <h1>Połącz telefon z Expo Go</h1>
+  <p class="lede">Serwer deweloperski Master Quest Mobile działa lokalnie na tym komputerze.</p>
+
+  <div class="qr-card"><div id="qr"></div></div>
+  <div class="url-box">exp://192.168.50.242:8081</div>
+
+  <ol>
+    <li>Zainstaluj <strong>Expo Go</strong> na telefonie (App Store / Google Play) — jeśli jeszcze nie masz.</li>
+    <li>Telefon musi być w <strong>tej samej sieci Wi-Fi</strong> co ten komputer.</li>
+    <li>Otwórz Expo Go i zeskanuj kod QR powyżej (na iOS: aparatem systemowym, na Androidzie: przyciskiem "Scan QR code" w Expo Go).</li>
+    <li>Jeśli skanowanie nie zadziała, w Expo Go wybierz "Enter URL manually" i wklej adres powyżej.</li>
+  </ol>
+
+  <p class="note">Serwer musi zostać uruchomiony — jeśli QR nie działa po chwili, poproś o ponowne uruchomienie <code>npx expo start</code>.</p>
+</div>
+
+<script>
+  new QRCode(document.getElementById("qr"), {
+    text: "exp://192.168.50.242:8081",
+    width: 220,
+    height: 220,
+    colorDark: "#22261F",
+    colorLight: "#ffffff",
+  });
+</script>

@@ -1,0 +1,626 @@
+<title>Master Quest Mobile</title>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FBF8F1;
+    --bg-raised: #FFFFFF;
+    --bg-sunken: #F1ECDF;
+    --ink: #22261F;
+    --ink-muted: #5B6156;
+    --ink-faint: #8A8F82;
+    --border: #E3DCC8;
+    --accent: #1F6F65;
+    --accent-strong: #14514A;
+    --accent-tint: #E4F0EC;
+    --premium: #B5651D;
+    --premium-tint: #F7EADB;
+    --code-bg: #22261F;
+    --code-ink: #E9E7DA;
+    --code-accent: #7FD9C4;
+    --shadow: 0 1px 2px rgba(34,38,31,0.06), 0 8px 24px rgba(34,38,31,0.06);
+    --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+    --font-body: "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #191B16;
+      --bg-raised: #21241D;
+      --bg-sunken: #14150F;
+      --ink: #EDEAE0;
+      --ink-muted: #ABB0A2;
+      --ink-faint: #767C6C;
+      --border: #33362A;
+      --accent: #6FCBB8;
+      --accent-strong: #9BE0D1;
+      --accent-tint: #1D3530;
+      --premium: #E3A15C;
+      --premium-tint: #3A2C1B;
+      --code-bg: #0F1710;
+      --code-ink: #DCE6DA;
+      --code-accent: #7FD9C4;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #191B16;
+    --bg-raised: #21241D;
+    --bg-sunken: #14150F;
+    --ink: #EDEAE0;
+    --ink-muted: #ABB0A2;
+    --ink-faint: #767C6C;
+    --border: #33362A;
+    --accent: #6FCBB8;
+    --accent-strong: #9BE0D1;
+    --accent-tint: #1D3530;
+    --premium: #E3A15C;
+    --premium-tint: #3A2C1B;
+    --code-bg: #0F1710;
+    --code-ink: #DCE6DA;
+    --code-accent: #7FD9C4;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+
+  .shell {
+    display: grid;
+    grid-template-columns: 240px minmax(0, 760px);
+    justify-content: center;
+    gap: 56px;
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 56px 24px 120px;
+  }
+  @media (max-width: 880px) {
+    .shell { grid-template-columns: 1fr; padding: 32px 20px 80px; }
+    nav.toc { display: none; }
+  }
+
+  nav.toc {
+    position: sticky;
+    top: 48px;
+    align-self: start;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 13.5px;
+  }
+  nav.toc a {
+    color: var(--ink-muted);
+    text-decoration: none;
+    padding: 6px 10px;
+    border-radius: 8px;
+    border-left: 2px solid transparent;
+  }
+  nav.toc a:hover { color: var(--ink); background: var(--bg-sunken); }
+  nav.toc .toc-kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 11px;
+    color: var(--ink-faint);
+    padding: 0 10px;
+    margin-bottom: 6px;
+  }
+
+  header.cover {
+    margin-bottom: 48px;
+  }
+  .kicker {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--accent-strong);
+    background: var(--accent-tint);
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    margin-bottom: 18px;
+  }
+  h1.title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(34px, 5vw, 48px);
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+    margin: 0 0 14px;
+    text-wrap: balance;
+  }
+  p.lede {
+    font-size: 18px;
+    color: var(--ink-muted);
+    max-width: 62ch;
+    margin: 0 0 24px;
+  }
+  .assumption {
+    font-size: 14.5px;
+    color: var(--ink-muted);
+    background: var(--bg-sunken);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    max-width: 62ch;
+  }
+  .assumption strong { color: var(--ink); }
+
+  section { margin-bottom: 56px; scroll-margin-top: 32px; }
+  section > .section-num {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--ink-faint);
+    margin-bottom: 6px;
+  }
+  h2 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 27px;
+    letter-spacing: -0.005em;
+    margin: 0 0 18px;
+    text-wrap: balance;
+  }
+  h3 {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 16.5px;
+    margin: 28px 0 10px;
+  }
+  p { margin: 0 0 14px; max-width: 68ch; }
+  ul, ol { margin: 0 0 14px; padding-left: 22px; max-width: 66ch; }
+  li { margin-bottom: 6px; }
+  a.inline { color: var(--accent-strong); }
+  code.inline {
+    font-family: var(--font-mono);
+    font-size: 0.88em;
+    background: var(--bg-sunken);
+    border: 1px solid var(--border);
+    padding: 1px 5px;
+    border-radius: 5px;
+  }
+
+  .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 20px; }
+  table { border-collapse: collapse; width: 100%; font-size: 14.5px; min-width: 480px; }
+  th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  thead th { background: var(--bg-sunken); font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-muted); font-weight: 500; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: var(--bg-sunken); }
+
+  pre.code-block {
+    background: var(--code-bg);
+    color: var(--code-ink);
+    border-radius: 12px;
+    padding: 18px 20px;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 0 0 20px;
+    box-shadow: var(--shadow);
+  }
+  pre.code-block .k { color: var(--code-accent); }
+  pre.code-block .c { color: #8B9187; font-style: italic; }
+  .code-label {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--ink-faint);
+    margin: -8px 0 8px;
+  }
+
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: var(--accent-tint);
+    border-radius: 0 10px 10px 0;
+    padding: 14px 18px;
+    margin: 0 0 20px;
+    font-size: 14.5px;
+  }
+  .callout.warn { border-left-color: var(--premium); background: var(--premium-tint); }
+  .callout p:last-child { margin-bottom: 0; }
+
+  .state-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .state-card {
+    border: 1px solid var(--border);
+    background: var(--bg-raised);
+    border-radius: 12px;
+    padding: 14px;
+    box-shadow: var(--shadow);
+  }
+  .state-card .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; margin-right: 7px; }
+  .state-card .label { font-weight: 600; font-size: 14px; }
+  .state-card p { font-size: 13px; color: var(--ink-muted); margin: 6px 0 0; }
+
+  .map-figure {
+    border: 1px solid var(--border);
+    background: var(--bg-raised);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 8px;
+    box-shadow: var(--shadow);
+    overflow-x: auto;
+  }
+  .map-figure svg { display: block; min-width: 620px; }
+  figcaption {
+    font-size: 13px;
+    color: var(--ink-faint);
+    margin: 10px 0 24px;
+  }
+  .legend { display: flex; gap: 18px; flex-wrap: wrap; font-size: 12.5px; color: var(--ink-muted); margin-top: 14px; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend .swatch { width: 10px; height: 10px; border-radius: 3px; }
+
+  .mode-compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  @media (max-width: 620px) { .mode-compare { grid-template-columns: 1fr; } }
+  .mode-card {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+    background: var(--bg-raised);
+    box-shadow: var(--shadow);
+  }
+  .mode-card h4 {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 0 0 10px;
+    color: var(--ink-faint);
+  }
+  .mode-card.explorer h4 { color: var(--accent-strong); }
+  .mode-card.hobbyist h4 { color: var(--premium); }
+
+  .flow-steps { counter-reset: step; list-style: none; padding-left: 0; }
+  .flow-steps li {
+    counter-increment: step;
+    position: relative;
+    padding-left: 34px;
+    margin-bottom: 12px;
+  }
+  .flow-steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0; top: 0;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--accent-tint);
+    color: var(--accent-strong);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  footer.doc-footer {
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--ink-faint);
+  }
+</style>
+
+<div class="shell">
+  <nav class="toc" aria-label="Spis treści">
+    <div class="toc-kicker">Spis treści</div>
+    <a href="#sec-1">1. Grupa docelowa</a>
+    <a href="#sec-2">2. Dual-Mode UX</a>
+    <a href="#sec-3">3. Mapa krain</a>
+    <a href="#sec-4">4. Paywall</a>
+    <a href="#sec-5">5. Stack techniczny</a>
+    <a href="#sec-6">6. Otwarte pytania</a>
+  </nav>
+
+  <main>
+    <header class="cover">
+      <span class="kicker">Architektura i UI/UX</span>
+      <h1 class="title">Master Quest Mobile</h1>
+      <p class="lede">
+        Wieloplatformowa aplikacja mobilna do nauki teorii muzyki —
+        family-friendly, freemium, jedna baza kodu obsługująca dwa tryby
+        prezentacji: pełną gamifikację dla dzieci i czysty interfejs dla
+        dorosłych hobbystów.
+      </p>
+      <div class="assumption">
+        <strong>Założenie robocze:</strong> to osobny projekt mobilny
+        (Expo/React Native), niezależny od istniejącej aplikacji webowej
+        <code class="inline">master-quest</code> (Next.js) — dzieli z nią
+        koncepcję programową (te same 9 krain), ale ma własny stack i cykl
+        wydawniczy. Realny szkielet kodu towarzyszący temu dokumentowi
+        (typecheck + testy przechodzą czysto) leży w repo
+        <code class="inline">master-quest-mobile/</code>.
+      </div>
+    </header>
+
+    <section id="sec-1">
+      <div class="section-num">01</div>
+      <h2>Grupa docelowa i założenia produktowe</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Segment</th><th>Wiek</th><th>Tryb nadzoru</th><th>Motywacja</th></tr></thead>
+          <tbody>
+            <tr><td>Dziecko</td><td>~7–12 lat</td><td>Pod nadzorem rodzica (zakup, płatności)</td><td>Zabawa, kolekcjonowanie, pochwały</td></tr>
+            <tr><td>Nastolatek</td><td>~13–17 lat</td><td>Częściowo samodzielny</td><td>Postęp, streak, rywalizacja ze sobą</td></tr>
+            <tr><td>Dorosły hobbysta</td><td>18+</td><td>Samodzielny, sam kupuje</td><td>Efektywność, dokładność, brak infantylizmu</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        <strong>Model biznesowy:</strong> freemium — 3 pierwsze krainy zawsze
+        darmowe (hak akwizycyjny), 6 kolejnych za subskrypcją miesięczną lub
+        roczną (z rabatem). Płatność wyłącznie przez In-App Purchase
+        (Apple/Google) — wymóg sklepowy dla treści cyfrowych konsumowanych w
+        aplikacji.
+      </p>
+      <p>
+        <strong>Styl wizualny:</strong> flat design, wektorowe ilustracje w
+        duchu Pixar/Duolingo — ciepłe, zaokrąglone kształty, nasycone ale nie
+        krzykliwe kolory. Jeden spójny system wizualny obsługuje dwa tryby
+        prezentacji przez <em>warianty tego samego komponentu</em>, nie przez
+        dwie osobne aplikacje.
+      </p>
+    </section>
+
+    <section id="sec-2">
+      <div class="section-num">02</div>
+      <h2>Dual-Mode UX: przełączanie profilu</h2>
+      <p>
+        Wybór trybu pojawia się przy pierwszym uruchomieniu
+        (<code class="inline">ProfilePickerScreen</code>) i w każdej chwili w
+        Ustawieniach. Zmiana profilu <strong>nie resetuje postępu</strong> —
+        to wyłącznie warstwa prezentacji plus kilka przełączników zachowania.
+      </p>
+
+      <div class="code-label">context/ProfileContext.tsx</div>
+      <pre class="code-block"><span class="k">type</span> ProfileMode = <span class="k">"young-explorer"</span> | <span class="k">"hobbyist"</span>;
+
+<span class="k">interface</span> ProfileState {
+  mode: ProfileMode;
+  displayName: string | <span class="k">null</span>;
+  narratorEnabled: boolean;   <span class="c">// domyślnie true w young-explorer</span>
+  soundEffectsEnabled: boolean;
+}</pre>
+
+      <h3>Co się różni między trybami</h3>
+      <div class="mode-compare">
+        <div class="mode-card explorer">
+          <h4>Młody Odkrywca</h4>
+          <p>Duże ilustrowane stworki na mapie, animacje idle, confetti i
+          kryształki za poprawną odpowiedź, lektor czyta polecenia, duże
+          tapnięcia (min. 56×56pt), zaokrąglenia 24px.</p>
+        </div>
+        <div class="mode-card hobbyist">
+          <h4>Hobbysta / Uczeń</h4>
+          <p>Czyste kafle z ikoną i nazwą, subtelny checkmark zamiast
+          animacji, panel: streak dni, % poprawnych, tryb testowy bez
+          czekania na audio, zaokrąglenia 12px, więcej informacji na ekranie.</p>
+        </div>
+      </div>
+
+      <div class="callout">
+        <p>
+          <strong>Zasada projektowa:</strong> to nie są dwa drzewa
+          komponentów. <code class="inline">WorldNode.tsx</code> czyta
+          <code class="inline">theme.playfulMode</code> i renderuje wariant —
+          jedno źródło prawdy dla logiki odblokowania i nawigacji, zero
+          rozjazdu zachowania między trybami.
+        </p>
+      </div>
+    </section>
+
+    <section id="sec-3">
+      <div class="section-num">03</div>
+      <h2>Mapa krain i progresja</h2>
+      <p>
+        Krainy 1–9 są liniowo zależne — kraina N odblokowuje się dopiero po
+        ukończeniu N−1, niezależnie od statusu subskrypcji. Subskrypcja
+        odblokowuje <em>dostęp do wejścia</em>, nigdy nie pomija kolejności
+        nauki.
+      </p>
+
+      <figure class="map-figure">
+        <svg viewBox="0 0 900 190" role="img" aria-label="Ścieżka 9 krain, strefa darmowa i premium">
+          <text x="0" y="18" font-family="IBM Plex Mono, monospace" font-size="11" fill="var(--ink-faint)" letter-spacing="0.06em">STREFA DARMOWA</text>
+          <text x="330" y="18" font-family="IBM Plex Mono, monospace" font-size="11" fill="var(--premium)" letter-spacing="0.06em">STREFA PREMIUM (subskrypcja)</text>
+          <line x1="0" y1="30" x2="290" y2="30" stroke="var(--border)" stroke-width="1"/>
+          <line x1="310" y1="30" x2="900" y2="30" stroke="var(--border)" stroke-width="1" stroke-dasharray="4 4"/>
+
+          <g font-family="Source Sans 3, sans-serif" font-size="11.5" text-anchor="middle">
+            <!-- connecting path -->
+            <path d="M 45 100 Q 130 60 145 100 T 245 100 Q 330 60 345 100 T 445 100 Q 530 60 545 100 T 645 100 Q 730 60 745 100 T 845 100"
+                  fill="none" stroke="var(--border)" stroke-width="3" stroke-linecap="round"/>
+
+            <!-- Free worlds: 1,2,3 -->
+            <g>
+              <circle cx="45" cy="100" r="26" fill="var(--accent)"/>
+              <text x="45" y="105" fill="#fff" font-weight="700" font-size="13">1</text>
+              <text x="45" y="145" fill="var(--ink)">Wioska</text>
+              <text x="45" y="159" fill="var(--ink)">Nut</text>
+            </g>
+            <g>
+              <circle cx="145" cy="100" r="26" fill="var(--accent)"/>
+              <text x="145" y="105" fill="#fff" font-weight="700" font-size="13">2</text>
+              <text x="145" y="145" fill="var(--ink)">Miasto</text>
+              <text x="145" y="159" fill="var(--ink)">Rytmu</text>
+            </g>
+            <g>
+              <circle cx="245" cy="100" r="26" fill="var(--accent)"/>
+              <text x="245" y="105" fill="#fff" font-weight="700" font-size="13">3</text>
+              <text x="245" y="145" fill="var(--ink)">Przystań</text>
+              <text x="245" y="159" fill="var(--ink)">Taktów</text>
+            </g>
+
+            <!-- Premium worlds: 4-9 -->
+            <g>
+              <circle cx="345" cy="100" r="26" fill="var(--bg-sunken)" stroke="var(--premium)" stroke-width="2"/>
+              <text x="345" y="106" fill="var(--premium)" font-size="13">🔒</text>
+              <text x="345" y="145" fill="var(--ink)">Pasmo</text>
+              <text x="345" y="159" fill="var(--ink)">Interwałów</text>
+            </g>
+            <g>
+              <circle cx="445" cy="100" r="26" fill="var(--bg-sunken)" stroke="var(--premium)" stroke-width="2"/>
+              <text x="445" y="106" fill="var(--premium)" font-size="13">🔒</text>
+              <text x="445" y="145" fill="var(--ink)">Zatoka</text>
+              <text x="445" y="159" fill="var(--ink)">Trójdźwięków</text>
+            </g>
+            <g>
+              <circle cx="545" cy="100" r="26" fill="var(--bg-sunken)" stroke="var(--premium)" stroke-width="2"/>
+              <text x="545" y="106" fill="var(--premium)" font-size="13">🔒</text>
+              <text x="545" y="145" fill="var(--ink)">Labirynt</text>
+              <text x="545" y="159" fill="var(--ink)">Tonacji</text>
+            </g>
+            <g>
+              <circle cx="645" cy="100" r="26" fill="var(--bg-sunken)" stroke="var(--premium)" stroke-width="2"/>
+              <text x="645" y="106" fill="var(--premium)" font-size="13">🔒</text>
+              <text x="645" y="145" fill="var(--ink)">Fabryka</text>
+              <text x="645" y="159" fill="var(--ink)">Budowania</text>
+            </g>
+            <g>
+              <circle cx="745" cy="100" r="26" fill="var(--bg-sunken)" stroke="var(--premium)" stroke-width="2"/>
+              <text x="745" y="106" fill="var(--premium)" font-size="13">🔒</text>
+              <text x="745" y="145" fill="var(--ink)">Gaj</text>
+              <text x="745" y="159" fill="var(--ink)">Grupowania</text>
+            </g>
+            <g>
+              <circle cx="845" cy="100" r="26" fill="var(--bg-sunken)" stroke="var(--premium)" stroke-width="2"/>
+              <text x="845" y="106" fill="var(--premium)" font-size="13">🔒</text>
+              <text x="845" y="145" fill="var(--ink)">Szczyt</text>
+              <text x="845" y="159" fill="var(--ink)">Dyktand</text>
+            </g>
+          </g>
+        </svg>
+        <div class="legend">
+          <span><span class="swatch" style="background:var(--accent)"></span>odblokowana / darmowa</span>
+          <span><span class="swatch" style="background:var(--bg-sunken); border:1.5px solid var(--premium)"></span>zablokowana subskrypcją</span>
+        </div>
+      </figure>
+      <figcaption>Fig. 1 — Ścieżka 9 krain w kolejności progresji. Kraina 4 to punkt, w którym po raz pierwszy pojawia się paywall.</figcaption>
+
+      <h3>Cztery stany węzła na mapie</h3>
+      <div class="state-grid">
+        <div class="state-card"><span class="dot" style="background:#588157"></span><span class="label">completed</span><p>Ukończona, dostępna do powtórki.</p></div>
+        <div class="state-card"><span class="dot" style="background:var(--accent)"></span><span class="label">available</span><p>Następna do zrobienia, wizualnie wyróżniona.</p></div>
+        <div class="state-card"><span class="dot" style="background:var(--ink-faint)"></span><span class="label">locked-progression</span><p>Zablokowana — ukończ poprzednią krainę.</p></div>
+        <div class="state-card"><span class="dot" style="background:var(--premium)"></span><span class="label">locked-subscription</span><p>Poprzednia ukończona, brak subskrypcji.</p></div>
+      </div>
+
+      <div class="code-label">lib/progression/resolveNodeState.ts</div>
+      <pre class="code-block"><span class="k">function</span> resolveNodeState(world, progress, subscription): WorldNodeState {
+  <span class="k">if</span> (progress.completedWorldIds.has(world.id)) <span class="k">return</span> <span class="k">"completed"</span>;
+  <span class="k">const</span> previous = getPreviousWorld(world);
+  <span class="k">const</span> previousDone = !previous || progress.completedWorldIds.has(previous.id);
+  <span class="k">if</span> (!previousDone) <span class="k">return</span> <span class="k">"locked-progression"</span>;
+  <span class="k">if</span> (world.isPremium && !subscription.isActive) <span class="k">return</span> <span class="k">"locked-subscription"</span>;
+  <span class="k">return</span> <span class="k">"available"</span>;
+}</pre>
+    </section>
+
+    <section id="sec-4">
+      <div class="section-num">04</div>
+      <h2>Ekran płatności i paywall</h2>
+      <p>
+        Pojawia się wyłącznie przy próbie wejścia do krainy 4 lub dowolnej
+        kolejnej <code class="inline">locked-subscription</code> — nigdy jako
+        interstitial narzucony w trakcie nauki w darmowej strefie.
+      </p>
+
+      <h3>Bramka rodzicielska</h3>
+      <p>
+        Zanim paywall pokaże cokolwiek związanego z płatnością: prosta
+        bramka matematyczna (dwucyfrowe dodawanie) — standard branżowy
+        wymagany przez App Store/Play Store dla akcji zakupowych
+        kierowanych do dzieci. Trzy próby, potem 30s odstępu. Pojawia się
+        raz na sesję aplikacji.
+      </p>
+
+      <h3>Zawartość ekranu</h3>
+      <ol class="flow-steps">
+        <li><strong>Nagłówek korzyści</strong> — konkretne punkty ("Wszystkie 9 krain", "Dyktanda ze słuchu"), nie ogólniki marketingowe.</li>
+        <li><strong>Wybór planu</strong> — miesięczny vs roczny (domyślnie zaznaczony, badge "Oszczędzasz X%" liczony z realnych cen sklepowych).</li>
+        <li><strong>CTA</strong> — jeden przycisk z dynamiczną ceną wybranego planu.</li>
+        <li><strong>Drobny druk</strong> — auto-odnawianie, warunki, "Przywróć zakupy".</li>
+        <li><strong>"Nie teraz"</strong> — zawsze widoczne, nigdy zminiaturyzowane.</li>
+      </ol>
+
+      <div class="callout warn">
+        <p>
+          <strong>Źródło prawdy o subskrypcji:</strong> RevenueCat SDK,
+          nigdy własny backend jako jedyne źródło. Webhook Apple/Google →
+          backend tylko jako kopia do analityki, walidacja uprawnień zawsze
+          przez SDK sklepu przy starcie aplikacji.
+        </p>
+      </div>
+    </section>
+
+    <section id="sec-5">
+      <div class="section-num">05</div>
+      <h2>Stack techniczny i struktura projektu</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Warstwa</th><th>Wybór</th><th>Uzasadnienie</th></tr></thead>
+          <tbody>
+            <tr><td>Framework</td><td>Expo (managed) + React Native</td><td>Jeden codebase iOS/Android, EAS Build, OTA update</td></tr>
+            <tr><td>Routing</td><td>Expo Router</td><td>Ten sam mental model co Next.js App Router w wersji web</td></tr>
+            <tr><td>Stan globalny</td><td>Context + <code class="inline">useReducer</code> per domena</td><td>Skala nie uzasadnia Reduxa na starcie</td></tr>
+            <tr><td>Płatności</td><td>RevenueCat SDK</td><td>Ujednolica Apple/Google IAP, grace period, trial</td></tr>
+            <tr><td>Animacje</td><td>Reanimated + Lottie</td><td>60fps UI-thread + bogate animacje nagród</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="code-label">struktura folderów (skrót — pełna w README.md)</div>
+      <pre class="code-block">app/                     <span class="c"># Expo Router — struktura = nawigacja</span>
+  onboarding/welcome.tsx, profile-picker.tsx
+  (main)/map.tsx, lesson/[worldId].tsx, settings/
+  paywall.tsx
+components/
+  map/WorldNode.tsx, WorldMap.tsx
+  paywall/MathGateModal.tsx, SubscriptionPlanCard.tsx
+  profile/ProfilePickerCard.tsx
+context/
+  ProfileContext.tsx, SubscriptionContext.tsx, ProgressContext.tsx
+theme/tokens.ts, ThemeProvider.tsx
+lib/subscriptions/purchases.ts</pre>
+    </section>
+
+    <section id="sec-6">
+      <div class="section-num">06</div>
+      <h2>Otwarte pytania do zespołu</h2>
+      <ul>
+        <li>Czy silnik ćwiczeń jest portowany 1:1 z wersji webowej, czy budowany od nowa pod mobile?</li>
+        <li>Czy konto jest wymagane od darmowej strefy, czy dopiero przy subskrypcji?</li>
+        <li>Czy jeden zakup obejmuje rodzinę (App Store Family Sharing)?</li>
+        <li>Docelowy zakres językowy — i18n przygotowane pod rozszerzenie niezależnie od odpowiedzi.</li>
+      </ul>
+    </section>
+
+    <footer class="doc-footer">
+      Pełna specyfikacja: <code class="inline">ARCHITECTURE.md</code> ·
+      Szkielet kodu (typecheck + testy przechodzą czysto):
+      <code class="inline">master-quest-mobile/</code>
+    </footer>
+  </main>
+</div>
