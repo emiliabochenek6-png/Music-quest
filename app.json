@@ -10,7 +10,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#FFF8EE"
+      "backgroundColor": "#0b0620"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -23,7 +23,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFF8EE"
+        "backgroundColor": "#0b0620"
       },
       "package": "com.masterquest.mobile",
       "versionCode": 1
