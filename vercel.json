@@ -1,0 +1,10 @@
+{
+  "buildCommand": "npm run build:web",
+  "outputDirectory": "dist",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/world/:worldId", "destination": "/world/[worldId].html" },
+    { "source": "/lesson/:lessonId", "destination": "/lesson/[lessonId].html" }
+  ]
+}

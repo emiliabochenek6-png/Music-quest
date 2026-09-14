@@ -1,5 +1,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
+import { useAuth } from "@/context/AuthContext";
+import { useCloudSync } from "@/lib/sync/useCloudSync";
+import { mergeProgressState } from "@/lib/sync/mergeState";
 import { readJson, writeJson } from "@/lib/storage";
 import type { ProgressState } from "@/types/content";
 
@@ -15,16 +18,41 @@ interface ProgressContextValue {
 
 const ProgressContext = createContext<ProgressContextValue | null>(null);
 
-/** Local-first progress tracking — completed world AND lesson ids,
- * persisted on device as two separate sets (see ProgressState's own doc
- * for why). A real deployment syncs this to a backend keyed by account
- * (see ARCHITECTURE.md section 6, open question #2) once login exists;
- * this provider's public shape is designed to stay the same when that
- * sync layer is added underneath it, so screens reading progress never
- * need to change. */
+/** JSON can't represent a Set (JSON.stringify silently drops its
+ * contents) — useCloudSync's own serialize/deserialize hooks convert to
+ * and from plain arrays right at the Supabase boundary, so every OTHER
+ * piece of this provider keeps working with real Sets throughout,
+ * exactly as before cloud sync existed. */
+function serializeForCloud(state: ProgressState) {
+  return { completedWorldIds: Array.from(state.completedWorldIds), completedLessonIds: Array.from(state.completedLessonIds) };
+}
+function deserializeFromCloud(value: unknown): ProgressState {
+  const raw = value as { completedWorldIds?: string[]; completedLessonIds?: string[] } | null;
+  return {
+    completedWorldIds: new Set(raw?.completedWorldIds ?? []),
+    completedLessonIds: new Set(raw?.completedLessonIds ?? []),
+  };
+}
+
+/** Local-first progress tracking — completed world AND lesson ids. Held
+ * as ONE `ProgressState` object (rather than two separate `useState`
+ * calls, an earlier version of this provider's own shape) specifically
+ * so useCloudSync below has a single value to merge/replace atomically —
+ * see that hook's own doc. Still persisted on-device as two separate
+ * AsyncStorage keys (unchanged from before cloud sync existed, so an
+ * existing install's saved progress keeps reading back correctly).
+ *
+ * Cloud sync (see lib/sync/useCloudSync.ts's own doc) is entirely
+ * OPT-IN and additive: logged out (see AuthContext — most players, most
+ * of the time), this provider behaves EXACTLY as it always has, pure
+ * local AsyncStorage, no network calls at all. Signing in (from
+ * Settings — see ARCHITECTURE.md section 6, open question #2, now
+ * answered: optional, not required to use the app) layers a Supabase
+ * mirror on top without changing this provider's own public shape, so
+ * no screen reading `useProgress()` needed to change either. */
 export function ProgressProvider({ children }: { children: ReactNode }) {
-  const [completedWorldIds, setCompletedWorldIds] = useState<ReadonlySet<string>>(new Set());
-  const [completedLessonIds, setCompletedLessonIds] = useState<ReadonlySet<string>>(new Set());
+  const { user } = useAuth();
+  const [progress, setProgress] = useState<ProgressState>({ completedWorldIds: new Set(), completedLessonIds: new Set() });
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -32,8 +60,10 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     Promise.all([readJson<string[]>(WORLDS_STORAGE_KEY), readJson<string[]>(LESSONS_STORAGE_KEY)]).then(
       ([storedWorlds, storedLessons]) => {
         if (cancelled) return;
-        if (storedWorlds) setCompletedWorldIds(new Set(storedWorlds));
-        if (storedLessons) setCompletedLessonIds(new Set(storedLessons));
+        setProgress((prev) => ({
+          completedWorldIds: storedWorlds ? new Set(storedWorlds) : prev.completedWorldIds,
+          completedLessonIds: storedLessons ? new Set(storedLessons) : prev.completedLessonIds,
+        }));
         setIsLoading(false);
       }
     );
@@ -42,28 +72,41 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
+  useCloudSync({
+    userId: user?.id ?? null,
+    column: "progress",
+    localState: progress,
+    setLocalState: setProgress,
+    merge: mergeProgressState,
+    serialize: serializeForCloud,
+    deserialize: deserializeFromCloud,
+  });
+
+  function persist(next: ProgressState) {
+    void writeJson(WORLDS_STORAGE_KEY, Array.from(next.completedWorldIds));
+    void writeJson(LESSONS_STORAGE_KEY, Array.from(next.completedLessonIds));
+  }
+
   function markWorldCompleted(worldId: string) {
-    setCompletedWorldIds((prev) => {
-      const next = new Set(prev);
-      next.add(worldId);
-      void writeJson(WORLDS_STORAGE_KEY, Array.from(next));
+    setProgress((prev) => {
+      if (prev.completedWorldIds.has(worldId)) return prev;
+      const next: ProgressState = { ...prev, completedWorldIds: new Set(prev.completedWorldIds).add(worldId) };
+      persist(next);
       return next;
     });
   }
 
   function markLessonCompleted(lessonId: string) {
-    setCompletedLessonIds((prev) => {
-      const next = new Set(prev);
-      next.add(lessonId);
-      void writeJson(LESSONS_STORAGE_KEY, Array.from(next));
+    setProgress((prev) => {
+      if (prev.completedLessonIds.has(lessonId)) return prev;
+      const next: ProgressState = { ...prev, completedLessonIds: new Set(prev.completedLessonIds).add(lessonId) };
+      persist(next);
       return next;
     });
   }
 
   return (
-    <ProgressContext.Provider
-      value={{ progress: { completedWorldIds, completedLessonIds }, isLoading, markWorldCompleted, markLessonCompleted }}
-    >
+    <ProgressContext.Provider value={{ progress, isLoading, markWorldCompleted, markLessonCompleted }}>
       {children}
     </ProgressContext.Provider>
   );

@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
+import { Platform } from "react-native";
 import Purchases from "react-native-purchases";
 import {
   purchasePlan,
@@ -7,6 +8,18 @@ import {
   subscriptionStatusFromCustomerInfo,
 } from "@/lib/subscriptions/purchases";
 import type { SubscriptionPlan, SubscriptionStatus } from "@/types/content";
+
+/** react-native-purchases wraps StoreKit/Play Billing — there is no web
+ * implementation, and calling into it on web (module import aside) would
+ * throw the moment any of its native-bridge methods actually ran. The
+ * PWA build (see app/_layout.tsx's own web guard on configurePurchases)
+ * never configures the SDK on web in the first place, so this provider
+ * mirrors that: on web, subscription status just stays permanently
+ * inactive and purchase/restore reject with a clear message, rather than
+ * this whole screen crashing the first time anything here touches
+ * `Purchases`. Real web payments (Stripe or similar) would be a
+ * genuinely separate integration, not something this SDK can do. */
+const IS_WEB = Platform.OS === "web";
 
 const INACTIVE_STATUS: SubscriptionStatus = {
   isActive: false,
@@ -36,6 +49,10 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    if (IS_WEB) {
+      setIsLoading(false);
+      return;
+    }
     let cancelled = false;
 
     Purchases.getCustomerInfo()
@@ -60,11 +77,17 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
   }, []);
 
   async function purchase(plan: SubscriptionPlan) {
+    if (IS_WEB) {
+      throw new Error("Zakupy nie są dostępne w wersji przeglądarkowej — pobierz aplikację na telefon.");
+    }
     const info = await purchasePlan(plan);
     setStatus(subscriptionStatusFromCustomerInfo(info));
   }
 
   async function restore() {
+    if (IS_WEB) {
+      throw new Error("Przywracanie zakupów nie jest dostępne w wersji przeglądarkowej — pobierz aplikację na telefon.");
+    }
     const info = await restorePurchasesApi();
     setStatus(subscriptionStatusFromCustomerInfo(info));
   }

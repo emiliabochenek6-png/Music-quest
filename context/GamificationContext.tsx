@@ -1,11 +1,14 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
+import { useAuth } from "@/context/AuthContext";
 import { useSubscription } from "@/context/SubscriptionContext";
 import { applyActivity } from "@/lib/gamification/activity";
 import type { ActivityDelta } from "@/lib/gamification/activity";
 import { deriveHearts, loseHeart as deductHeart } from "@/lib/gamification/hearts";
 import type { HeartsInfo } from "@/lib/gamification/hearts";
 import { getRankForXp, getRankName } from "@/lib/gamification/rank";
+import { mergeGamificationState } from "@/lib/sync/mergeState";
+import { useCloudSync } from "@/lib/sync/useCloudSync";
 import { readJson, STORAGE_KEYS, writeJson } from "@/lib/storage";
 import { INITIAL_GAMIFICATION_STATE } from "@/types/gamification";
 import type { DailyChallengeState, GamificationState } from "@/types/gamification";
@@ -65,6 +68,7 @@ const GamificationContext = createContext<GamificationContextValue | null>(null)
  */
 export function GamificationProvider({ children }: { children: ReactNode }) {
   const { status: subscription } = useSubscription();
+  const { user } = useAuth();
   const [state, setState] = useState<GamificationState>(INITIAL_GAMIFICATION_STATE);
   const [isLoading, setIsLoading] = useState(true);
   const [pendingRankUp, setPendingRankUp] = useState<PendingRankUp | null>(null);
@@ -80,6 +84,19 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
       cancelled = true;
     };
   }, []);
+
+  // Opt-in cloud backup/restore — see lib/sync/useCloudSync.ts's own
+  // doc. A complete no-op while `user` is null (logged out, the default
+  // for most players) — every setter below keeps working exactly as
+  // before, pure local AsyncStorage, whether or not this hook is even
+  // doing anything.
+  useCloudSync({
+    userId: user?.id ?? null,
+    column: "gamification",
+    localState: state,
+    setLocalState: setState,
+    merge: mergeGamificationState,
+  });
 
   function getHeartsInfo(): HeartsInfo {
     return deriveHearts(state, Date.now(), subscription.isActive);

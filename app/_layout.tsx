@@ -2,8 +2,10 @@ import { useEffect } from "react";
 import { Stack } from "expo-router";
 import { setAudioModeAsync } from "expo-audio";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Platform } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { RankUpCelebration } from "@/components/RankUpCelebration";
+import { AuthProvider } from "@/context/AuthContext";
 import { GamificationProvider, useGamification } from "@/context/GamificationContext";
 import { ProfileProvider } from "@/context/ProfileContext";
 import { ProgressProvider } from "@/context/ProgressContext";
@@ -17,9 +19,11 @@ import { configurePurchases } from "@/lib/subscriptions/purchases";
  * and GamificationProvider must sit INSIDE SubscriptionProvider (it reads
  * SubscriptionContext for hearts' own premium-unlimited behavior — see
  * GamificationContext.tsx's own doc); everything else is independent of
- * ordering. Purchases SDK is configured once here, before
- * SubscriptionProvider mounts and calls `Purchases.getCustomerInfo()` for
- * the first time.
+ * ordering. AuthProvider must sit ABOVE both ProgressProvider and
+ * GamificationProvider (both read useAuth() for their own opt-in cloud
+ * sync — see lib/sync/useCloudSync.ts's own doc). Purchases SDK is
+ * configured once here, before SubscriptionProvider mounts and calls
+ * `Purchases.getCustomerInfo()` for the first time.
  */
 /** Everything that needs to read GamificationContext at the ROOT of the
  * app — just RankUpCelebration today — has to live BELOW
@@ -36,6 +40,7 @@ function AppShell() {
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="onboarding" />
         <Stack.Screen name="(main)" />
+        <Stack.Screen name="auth" options={{ presentation: "modal" }} />
         <Stack.Screen name="paywall" options={{ presentation: "modal" }} />
       </Stack>
       <RankUpCelebration
@@ -50,9 +55,16 @@ function AppShell() {
 
 export default function RootLayout() {
   useEffect(() => {
-    // Real deployment pulls this from EAS build config / app secrets, never
-    // hardcoded — a placeholder here since this scaffold has no CI wiring.
-    void configurePurchases(process.env.EXPO_PUBLIC_REVENUECAT_API_KEY ?? "");
+    // react-native-purchases wraps StoreKit/Play Billing — there's no web
+    // implementation to configure, and SubscriptionContext's own web
+    // guard already skips every OTHER call into the SDK (see its own
+    // doc), so this is the one remaining native-only call left to skip
+    // here rather than risk it throwing before the app even renders.
+    if (Platform.OS !== "web") {
+      // Real deployment pulls this from EAS build config / app secrets, never
+      // hardcoded — a placeholder here since this scaffold has no CI wiring.
+      void configurePurchases(process.env.EXPO_PUBLIC_REVENUECAT_API_KEY ?? "");
+    }
     // Without this, iOS mutes ALL app audio whenever the physical silent
     // switch is on — the 🔊 replay buttons and every exercise's note/
     // melody playback would silently do nothing, which reads as "broken"
@@ -83,13 +95,15 @@ export default function RootLayout() {
       <SafeAreaProvider>
         <ProfileProvider>
           <ThemeProvider>
-            <SubscriptionProvider>
-              <ProgressProvider>
-                <GamificationProvider>
-                  <AppShell />
-                </GamificationProvider>
-              </ProgressProvider>
-            </SubscriptionProvider>
+            <AuthProvider>
+              <SubscriptionProvider>
+                <ProgressProvider>
+                  <GamificationProvider>
+                    <AppShell />
+                  </GamificationProvider>
+                </ProgressProvider>
+              </SubscriptionProvider>
+            </AuthProvider>
           </ThemeProvider>
         </ProfileProvider>
       </SafeAreaProvider>

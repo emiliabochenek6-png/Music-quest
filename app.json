@@ -28,6 +28,16 @@
       "package": "com.masterquest.mobile",
       "versionCode": 1
     },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/favicon.png",
+      "name": "Music Quest",
+      "shortName": "Music Quest",
+      "themeColor": "#0b0620",
+      "backgroundColor": "#0b0620",
+      "display": "standalone"
+    },
     "plugins": [
       "expo-router",
       "expo-secure-store",

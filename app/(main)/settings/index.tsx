@@ -1,6 +1,7 @@
-import { View, Text, Switch, Pressable, StyleSheet } from "react-native";
+import { View, Text, Switch, Pressable, ScrollView, StyleSheet } from "react-native";
 import { router } from "expo-router";
 import { ScreenHeader } from "@/components/ui/ScreenHeader";
+import { useAuth } from "@/context/AuthContext";
 import { useProfile } from "@/context/ProfileContext";
 import { useTheme } from "@/theme/ThemeProvider";
 
@@ -10,11 +11,16 @@ import { useTheme } from "@/theme/ThemeProvider";
 export default function SettingsScreen() {
   const theme = useTheme();
   const { profile, setNarratorEnabled, setSoundEffectsEnabled } = useProfile();
+  const { user, signOut } = useAuth();
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.cream }}>
       <ScreenHeader title="Ustawienia" onBack={() => router.back()} />
-      <View style={styles.container}>
+      {/* A plain View here (before the "Konto" section existed) never
+          overflowed a real screen — now that it can (a longer list, a
+          small phone, larger accessibility text), this needs to actually
+          scroll rather than silently clip rows off the bottom. */}
+      <ScrollView contentContainerStyle={styles.container}>
       <Pressable onPress={() => router.push("/onboarding/profile-picker")} style={styles.row}>
         <Text style={{ color: theme.colors.ink, fontSize: theme.fontSize.body }}>Zmień profil</Text>
         <Text style={{ color: theme.colors.muted }}>{profile.mode === "young-explorer" ? "Młody Odkrywca" : "Hobbysta"}</Text>
@@ -34,14 +40,33 @@ export default function SettingsScreen() {
         <Text style={{ color: theme.colors.ink, fontSize: theme.fontSize.body }}>Subskrypcja</Text>
         <Text style={{ color: theme.colors.muted }}>›</Text>
       </Pressable>
-      </View>
+
+      {user ? (
+        <>
+          <View style={styles.row}>
+            <Text style={{ color: theme.colors.ink, fontSize: theme.fontSize.body }}>Zalogowano jako</Text>
+            <Text style={{ color: theme.colors.muted }} numberOfLines={1}>
+              {user.email}
+            </Text>
+          </View>
+          <Pressable onPress={() => void signOut()} style={styles.row}>
+            <Text style={{ color: theme.colors.warning, fontSize: theme.fontSize.body }}>Wyloguj się</Text>
+          </Pressable>
+        </>
+      ) : (
+        <Pressable onPress={() => router.push("/auth/login")} style={styles.row}>
+          <Text style={{ color: theme.colors.ink, fontSize: theme.fontSize.body }}>Konto</Text>
+          <Text style={{ color: theme.colors.muted }}>Zaloguj się ›</Text>
+        </Pressable>
+      )}
+      </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     padding: 24,
     gap: 4,
   },
