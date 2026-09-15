@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
     fontSize: theme.fontSize.body * 0.9,
   },
   primaryLink: {
-    color: theme.colors.primary,
+    color: theme.colors.accent,
     fontSize: theme.fontSize.body * 0.9,
     fontWeight: "700",
   },

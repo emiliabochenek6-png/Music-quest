@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { Animated, Easing, Modal, Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 
 interface SideMenuProps {
   visible: boolean;
@@ -78,9 +79,9 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     bottom: 0,
-    backgroundColor: "#160f30",
+    backgroundColor: theme.colors.surface,
     paddingHorizontal: 20,
-    borderRightWidth: 1,
-    borderColor: "rgba(255,255,255,0.08)",
+    borderRightWidth: theme.borderWidth,
+    borderColor: theme.colors.border,
   },
 });

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Pressable, Text, View, StyleSheet } from "react-native";
 import { CalendarActivityView } from "@/components/CalendarActivityView";
 import { GameRulesContent } from "@/components/GameRulesContent";
+import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 
 type SideMenuView = "list" | "calendar" | "rules";
 
@@ -80,16 +81,16 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 15,
     fontWeight: "800",
-    color: "#e9e4ff",
+    color: theme.colors.ink,
   },
   backArrow: {
     fontSize: 22,
-    color: "#e9e4ff",
+    color: theme.colors.ink,
     paddingRight: 2,
   },
   closeIcon: {
     fontSize: 16,
-    color: "rgba(233,228,255,0.6)",
+    color: theme.colors.muted,
     padding: 4,
   },
   menuRow: {
@@ -100,16 +101,16 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   menuRowPressed: {
-    backgroundColor: "rgba(255,255,255,0.06)",
+    backgroundColor: theme.colors.surfaceMuted,
   },
   menuRowLabel: {
     flex: 1,
     fontSize: 14,
     fontWeight: "700",
-    color: "#e9e4ff",
+    color: theme.colors.ink,
   },
   menuRowChevron: {
     fontSize: 18,
-    color: "rgba(233,228,255,0.4)",
+    color: theme.colors.muted,
   },
 });

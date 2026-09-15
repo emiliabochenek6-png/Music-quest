@@ -9,13 +9,17 @@ interface ButtonProps {
   disabled?: boolean;
 }
 
-/** The one button primitive every (light-themed) screen uses — sizing and
- * radius come entirely from theme tokens (min tap target, corner radius,
- * font size). */
+/** The one button primitive every screen uses — Duolingo's own two button
+ * shapes (see theme/tokens.ts's own doc on the overall look): primary is
+ * a flat, borderless green fill ("color alone carries the button" — no
+ * shadow, no border, just saturation), secondary is the "outlined ghost"
+ * twin — transparent fill, a thick border, colored text — never a
+ * filled-but-muted middle ground. Sizing/radius/border weight all come
+ * from theme tokens. */
 export function Button({ label, onPress, variant = "primary", disabled = false }: ButtonProps) {
   const theme = useTheme();
-  const backgroundColor = variant === "primary" ? theme.colors.primary : theme.colors.surfaceMuted;
-  const textColor = variant === "primary" ? "#FFFFFF" : theme.colors.ink;
+  const isPrimary = variant === "primary";
+  const textColor = isPrimary ? "#FFFFFF" : theme.colors.accent;
 
   return (
     <Pressable
@@ -26,8 +30,10 @@ export function Button({ label, onPress, variant = "primary", disabled = false }
       style={({ pressed }) => [
         styles.base,
         {
-          backgroundColor,
+          backgroundColor: isPrimary ? theme.colors.primary : "transparent",
           borderRadius: theme.radius.md,
+          borderWidth: isPrimary ? 0 : theme.borderWidth,
+          borderColor: theme.colors.border,
           minHeight: theme.minTapTarget,
           paddingHorizontal: theme.spacing(2),
           opacity: disabled ? 0.5 : pressed ? 0.85 : 1,
@@ -35,7 +41,7 @@ export function Button({ label, onPress, variant = "primary", disabled = false }
       ]}
     >
       <Text
-        style={{ color: textColor, fontSize: theme.fontSize.body, fontWeight: "600" }}
+        style={{ color: textColor, fontSize: theme.fontSize.body, fontWeight: "700" }}
         allowFontScaling
         maxFontSizeMultiplier={1.4}
       >

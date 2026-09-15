@@ -8,6 +8,7 @@ import { useGamification } from "@/context/GamificationContext";
 import { useProgress } from "@/context/ProgressContext";
 import { t } from "@/lib/i18n/translate";
 import type { TranslationKey } from "@/lib/i18n/translate";
+import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import type { LessonDefinition } from "@/types/exercises";
 
 const WORLD_ICON: Record<string, string> = {
@@ -26,13 +27,8 @@ const WORLD_ICON: Record<string, string> = {
 };
 
 /**
- * A world's own "poziomy" (levels) screen — dark, glowing adventure-map
- * treatment matching the reference art the design direction was pinned
- * to (and, per the app's own earlier research, roughly matching the real
- * web app's actual dark cosmic map theme — see MapBackdrop.tsx/
- * worldTheme.ts). Deliberately its own visual world, separate from the
- * cream/dual-mode system the rest of this app (map, onboarding, paywall)
- * still uses — see the port's own note if unifying that later.
+ * A world's own "poziomy" (levels) screen — same theme every other
+ * screen in the app now uses (see theme/tokens.ts's own doc).
  */
 export default function WorldLevelsScreen() {
   const { worldId } = useLocalSearchParams<{ worldId: string }>();
@@ -125,7 +121,7 @@ export default function WorldLevelsScreen() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: "#0b0620",
+    backgroundColor: theme.colors.cream,
     overflow: "hidden",
   },
   glowBlob: {
@@ -145,14 +141,16 @@ const styles = StyleSheet.create({
   backButton: {
     width: 40,
     height: 40,
-    borderRadius: 12,
-    backgroundColor: "rgba(255,255,255,0.08)",
+    borderRadius: theme.radius.md,
+    backgroundColor: theme.colors.surface,
+    borderWidth: theme.borderWidth,
+    borderColor: theme.colors.border,
     alignItems: "center",
     justifyContent: "center",
   },
   backIcon: {
     fontSize: 20,
-    color: "#fff",
+    color: theme.colors.ink,
   },
   card: {
     flexDirection: "row",
@@ -162,11 +160,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     padding: 16,
     borderRadius: 20,
-    borderWidth: 1,
-    backgroundColor: "rgba(255,255,255,0.04)",
-    shadowOpacity: 0.35,
-    shadowRadius: 24,
-    shadowOffset: { width: 0, height: 0 },
+    borderWidth: theme.borderWidth,
+    backgroundColor: theme.colors.surface,
   },
   cardIcon: {
     width: 52,
@@ -188,12 +183,12 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
   },
   cardCount: {
-    color: "rgba(255,255,255,0.55)",
+    color: theme.colors.muted,
     fontSize: 12,
     fontWeight: "700",
   },
   cardDescription: {
-    color: "rgba(255,255,255,0.7)",
+    color: theme.colors.muted,
     fontSize: 12.5,
     marginTop: 4,
     marginBottom: 10,
@@ -202,14 +197,14 @@ const styles = StyleSheet.create({
   progressTrack: {
     height: 5,
     borderRadius: 3,
-    backgroundColor: "rgba(255,255,255,0.1)",
+    backgroundColor: theme.colors.surfaceMuted,
     overflow: "hidden",
   },
   progressFill: {
     height: "100%",
   },
   progressPct: {
-    color: "rgba(255,255,255,0.5)",
+    color: theme.colors.muted,
     fontSize: 10,
     marginTop: 3,
   },
@@ -220,7 +215,7 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   fallbackText: {
-    color: "rgba(255,255,255,0.7)",
+    color: theme.colors.muted,
     textAlign: "center",
   },
 });

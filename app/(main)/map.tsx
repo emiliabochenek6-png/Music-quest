@@ -11,15 +11,14 @@ import { useProgress } from "@/context/ProgressContext";
 import { useSubscription } from "@/context/SubscriptionContext";
 import { todayISODate } from "@/lib/gamification/activity";
 import { resolveNodeState } from "@/lib/progression/resolveNodeState";
+import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import type { WorldDefinition } from "@/types/content";
 
 /**
- * World map screen — the app's home base once onboarding is done. Dark,
- * glowing adventure-map treatment (see components/map/WorldMap.tsx's own
- * doc) — the one screen in the app with no back button, since it IS the
- * "start screen" every other screen's own back button eventually lands
- * on. Routes a tap to one of three places depending on resolveNodeState's
- * own verdict:
+ * World map screen — the app's home base once login is done. The one
+ * screen in the app with no back button, since it IS the "start screen"
+ * every other screen's own back button eventually lands on. Routes a tap
+ * to one of three places depending on resolveNodeState's own verdict:
  *  - "available" / "completed" -> that world's own levels screen
  *  - "locked-subscription" -> the paywall modal
  *  - "locked-progression" -> nowhere (WorldNode itself surfaces the
@@ -92,7 +91,7 @@ export default function MapScreen() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: "#0b0620",
+    backgroundColor: theme.colors.cream,
     overflow: "hidden",
   },
   glowBlob: {
@@ -103,7 +102,7 @@ const styles = StyleSheet.create({
     width: 400,
     height: 320,
     borderRadius: 220,
-    backgroundColor: "#7c3aed",
+    backgroundColor: theme.colors.primary,
     opacity: 0.22,
   },
   title: {
@@ -111,7 +110,7 @@ const styles = StyleSheet.create({
     left: 64,
     fontSize: 15,
     fontWeight: "800",
-    color: "#e9e4ff",
+    color: theme.colors.ink,
     letterSpacing: 0.4,
     zIndex: 10,
   },
@@ -126,8 +125,10 @@ const styles = StyleSheet.create({
     zIndex: 10,
     width: 40,
     height: 40,
-    borderRadius: 12,
-    backgroundColor: "rgba(255,255,255,0.08)",
+    borderRadius: theme.radius.md,
+    backgroundColor: theme.colors.surface,
+    borderWidth: theme.borderWidth,
+    borderColor: theme.colors.border,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -137,8 +138,10 @@ const styles = StyleSheet.create({
     zIndex: 10,
     width: 40,
     height: 40,
-    borderRadius: 12,
-    backgroundColor: "rgba(255,255,255,0.08)",
+    borderRadius: theme.radius.md,
+    backgroundColor: theme.colors.surface,
+    borderWidth: theme.borderWidth,
+    borderColor: theme.colors.border,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -152,13 +155,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 999,
-    backgroundColor: "#1a1140",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.12)",
+    backgroundColor: theme.colors.surface,
+    borderWidth: theme.borderWidth,
+    borderColor: theme.colors.border,
   },
   dailyChallengeLabel: {
     fontSize: 13,
     fontWeight: "800",
-    color: "#e9e4ff",
+    color: theme.colors.ink,
   },
 });

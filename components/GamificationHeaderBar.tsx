@@ -2,6 +2,7 @@ import { Text, View, StyleSheet } from "react-native";
 import { useGamification } from "@/context/GamificationContext";
 import { useSubscription } from "@/context/SubscriptionContext";
 import { getRankForXp } from "@/lib/gamification/rank";
+import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 
 /** The map screen's own "at a glance" strip — hearts, streak, rank —
  * reading GamificationContext (+ SubscriptionContext, for premium's
@@ -78,7 +79,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 999,
-    backgroundColor: "rgba(255,255,255,0.08)",
+    backgroundColor: theme.colors.surface,
+    borderWidth: theme.borderWidth,
+    borderColor: theme.colors.border,
   },
   pillIcon: {
     fontSize: 13,
@@ -86,7 +89,7 @@ const styles = StyleSheet.create({
   pillLabel: {
     fontSize: 12,
     fontWeight: "800",
-    color: "#e9e4ff",
+    color: theme.colors.ink,
   },
   rankPill: {
     minWidth: 108,
@@ -94,7 +97,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 14,
-    backgroundColor: "rgba(255,255,255,0.08)",
+    backgroundColor: theme.colors.surface,
+    borderWidth: theme.borderWidth,
+    borderColor: theme.colors.border,
   },
   rankHeaderRow: {
     flexDirection: "row",
@@ -104,7 +109,7 @@ const styles = StyleSheet.create({
   rankTrack: {
     height: 4,
     borderRadius: 2,
-    backgroundColor: "rgba(255,255,255,0.14)",
+    backgroundColor: theme.colors.surfaceMuted,
     overflow: "hidden",
   },
   rankFill: {
@@ -115,6 +120,6 @@ const styles = StyleSheet.create({
   rankXpLabel: {
     fontSize: 10,
     fontWeight: "700",
-    color: "rgba(233,228,255,0.65)",
+    color: theme.colors.muted,
   },
 });

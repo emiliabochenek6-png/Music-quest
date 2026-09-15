@@ -21,7 +21,7 @@ const NODE_SPACING_Y = 176;
 const PATH_WIDTH = 320;
 const AMPLITUDE = 90;
 const TOP_PADDING = 40;
-const NEUTRAL_GLOW = "#7c6fe0";
+const NEUTRAL_GLOW = "#1CB0F6";
 
 function nodeX(index: number): number {
   return PATH_WIDTH / 2 + AMPLITUDE * Math.sin(index * 1.15);

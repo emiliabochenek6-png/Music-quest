@@ -225,14 +225,16 @@ const styles = StyleSheet.create({
   backButton: {
     width: 40,
     height: 40,
-    borderRadius: 12,
-    backgroundColor: "rgba(255,255,255,0.08)",
+    borderRadius: theme.radius.md,
+    backgroundColor: theme.colors.surface,
+    borderWidth: theme.borderWidth,
+    borderColor: theme.colors.border,
     alignItems: "center",
     justifyContent: "center",
   },
   backIcon: {
     fontSize: 20,
-    color: "#fff",
+    color: theme.colors.ink,
   },
   headerTitle: {
     fontSize: 14,

@@ -3,15 +3,15 @@ import { Animated, Easing, StyleSheet, Text, View, type LayoutChangeEvent } from
 import { DARK_EXERCISE_THEME } from "@/theme/darkExerciseTheme";
 
 // Matches app.json's own native splash background/adaptive-icon color
-// (#0b0620) exactly, via the same constant every dark-cosmic screen
-// already uses — this screen renders before ProfileContext resolves
-// (it might BE what's still loading), but DARK_EXERCISE_THEME is a
-// plain constant, not derived from any context, so it's safe to read
-// directly here regardless of loading state. Keeping this in sync with
-// the native splash matters more than for any other single screen: this
-// is the very first JS frame the app paints, right after that splash —
-// a mismatch here reads as a visible flash of the wrong theme before
-// today's actual (dark) welcome/map screen ever appears.
+// exactly, via the same constant every screen already uses — this
+// screen renders before ProfileContext/AuthContext resolve (it might BE
+// what's still loading), but DARK_EXERCISE_THEME is a plain constant
+// (now just an alias for THEME_TOKENS, see its own doc), not derived
+// from any context, so it's safe to read directly here regardless of
+// loading state. Keeping this in sync with the native splash matters
+// more than for any other single screen: this is the very first JS
+// frame the app paints, right after that splash — a mismatch here reads
+// as a visible flash of the wrong theme before the login screen appears.
 const BACKGROUND = DARK_EXERCISE_THEME.colors.cream;
 const INK = DARK_EXERCISE_THEME.colors.ink;
 const PRIMARY = DARK_EXERCISE_THEME.colors.primary;

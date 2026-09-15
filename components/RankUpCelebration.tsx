@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import { Animated, Easing, Modal, Pressable, Text, View, StyleSheet } from "react-native";
 import { DarkButton } from "@/components/exercises/DarkButton";
+import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 
 interface RankUpCelebrationProps {
   visible: boolean;
@@ -154,7 +155,7 @@ function SparklePiece({ sparkle }: { sparkle: Sparkle }) {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: "#0b0620",
+    backgroundColor: theme.colors.cream,
   },
   content: {
     flex: 1,
@@ -193,14 +194,14 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 22,
     fontWeight: "800",
-    color: "#e9e4ff",
+    color: theme.colors.ink,
     textAlign: "center",
     letterSpacing: 0.3,
   },
   rankLine: {
     marginTop: 8,
     fontSize: 15,
-    color: "rgba(233,228,255,0.7)",
+    color: theme.colors.muted,
     textAlign: "center",
   },
   rankName: {

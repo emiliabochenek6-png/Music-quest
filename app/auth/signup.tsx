@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   primaryLink: {
-    color: theme.colors.primary,
+    color: theme.colors.accent,
     fontSize: theme.fontSize.body * 0.9,
     fontWeight: "700",
   },

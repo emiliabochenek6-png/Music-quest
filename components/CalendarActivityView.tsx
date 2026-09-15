@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Pressable, ScrollView, Text, View, StyleSheet } from "react-native";
 import { useGamification } from "@/context/GamificationContext";
 import { todayISODate } from "@/lib/gamification/activity";
+import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 
 const WEEKDAY_LABELS = ["pon", "wt", "śr", "czw", "pt", "sob", "nd"];
 
@@ -124,7 +125,7 @@ const styles = StyleSheet.create({
   },
   navArrow: {
     fontSize: 22,
-    color: "#e9e4ff",
+    color: theme.colors.ink,
     paddingHorizontal: 8,
   },
   navArrowDisabled: {
@@ -133,7 +134,7 @@ const styles = StyleSheet.create({
   monthLabel: {
     fontSize: 15,
     fontWeight: "800",
-    color: "#e9e4ff",
+    color: theme.colors.ink,
     textTransform: "capitalize",
   },
   grid: {
@@ -145,7 +146,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 11,
     fontWeight: "700",
-    color: "rgba(233,228,255,0.5)",
+    color: theme.colors.muted,
     marginBottom: 6,
   },
   cell: {
@@ -162,16 +163,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   dayDotActive: {
-    backgroundColor: "#7c3aed",
+    backgroundColor: theme.colors.primary,
   },
   dayDotToday: {
     borderWidth: 1.5,
-    borderColor: "#e9e4ff",
+    borderColor: theme.colors.ink,
   },
   dayNumber: {
     fontSize: 12,
     fontWeight: "600",
-    color: "rgba(233,228,255,0.6)",
+    color: theme.colors.muted,
   },
   dayNumberActive: {
     color: "#fff",
@@ -192,11 +193,11 @@ const styles = StyleSheet.create({
   summaryLabel: {
     flex: 1,
     fontSize: 13,
-    color: "rgba(233,228,255,0.7)",
+    color: theme.colors.muted,
   },
   summaryValue: {
     fontSize: 13,
     fontWeight: "800",
-    color: "#e9e4ff",
+    color: theme.colors.ink,
   },
 });

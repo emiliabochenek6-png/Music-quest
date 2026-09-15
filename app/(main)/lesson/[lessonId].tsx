@@ -537,14 +537,16 @@ const styles = StyleSheet.create({
   backButton: {
     width: 40,
     height: 40,
-    borderRadius: 12,
-    backgroundColor: "rgba(255,255,255,0.08)",
+    borderRadius: theme.radius.md,
+    backgroundColor: theme.colors.surface,
+    borderWidth: theme.borderWidth,
+    borderColor: theme.colors.border,
     alignItems: "center",
     justifyContent: "center",
   },
   backIcon: {
     fontSize: 20,
-    color: "#fff",
+    color: theme.colors.ink,
   },
   headerTitle: {
     fontSize: 14,
@@ -559,7 +561,7 @@ const styles = StyleSheet.create({
   progressTrack: {
     height: 6,
     borderRadius: 3,
-    backgroundColor: "rgba(255,255,255,0.1)",
+    backgroundColor: theme.colors.surfaceMuted,
     overflow: "hidden",
   },
   progressFill: {
@@ -572,7 +574,7 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   liveStarLabel: {
-    color: "rgba(236,232,255,0.6)",
+    color: theme.colors.muted,
     fontSize: 12,
     marginRight: 4,
   },
@@ -583,7 +585,7 @@ const styles = StyleSheet.create({
     color: "#facc15",
   },
   liveStarEmpty: {
-    color: "rgba(255,255,255,0.25)",
+    color: "#D8D8D8",
   },
   exerciseArea: {
     flexGrow: 1,
@@ -598,11 +600,11 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   perfectBadge: {
-    borderWidth: 1,
+    borderWidth: theme.borderWidth,
     paddingHorizontal: 14,
     paddingVertical: 6,
     borderRadius: 999,
-    backgroundColor: "rgba(255,255,255,0.06)",
+    backgroundColor: theme.colors.surface,
   },
   summaryStarRow: {
     flexDirection: "row",
@@ -615,6 +617,6 @@ const styles = StyleSheet.create({
     color: "#facc15",
   },
   summaryStarEmpty: {
-    color: "rgba(255,255,255,0.25)",
+    color: "#D8D8D8",
   },
 });

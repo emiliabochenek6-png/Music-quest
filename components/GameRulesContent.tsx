@@ -1,4 +1,5 @@
 import { ScrollView, Text, View, StyleSheet } from "react-native";
+import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import { HEART_REGEN_MS, MAX_HEARTS, MIN_STARS_TO_ADVANCE_WORLD } from "@/types/gamification";
 
 interface Rule {
@@ -77,12 +78,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 14,
     fontWeight: "800",
-    color: "#e9e4ff",
+    color: theme.colors.ink,
     marginBottom: 3,
   },
   body: {
     fontSize: 13,
     lineHeight: 19,
-    color: "rgba(233,228,255,0.75)",
+    color: theme.colors.muted,
   },
 });

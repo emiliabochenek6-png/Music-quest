@@ -16,15 +16,16 @@ interface DarkButtonProps {
   size?: number;
 }
 
-/** components/ui/Button's own dark-cosmic twin — that shared primitive
- * still serves the light dual-mode screens (paywall, onboarding,
- * settings), which this pass leaves alone; exercise screens live inside
- * the dark map/levels visual world instead (see
- * theme/darkExerciseTheme.ts's own doc), so they get their own fixed-dark
- * button rather than threading a theme override through the shared one. */
+/** components/ui/Button's own twin for exercise/map/lesson screens — same
+ * component split for historical reasons (see theme/darkExerciseTheme.ts's
+ * own doc: DARK_EXERCISE_THEME is now just an alias for the same theme
+ * Button.tsx reads), so it renders identically: primary is a flat green
+ * fill with no border or glow, secondary is the outlined "ghost" twin. No
+ * shadow/glow on either — Duolingo's own surfaces are flat sticker fills,
+ * never gradients or glass effects. */
 export function DarkButton({ label, onPress, variant = "primary", disabled = false, fontSize, size }: DarkButtonProps) {
-  const backgroundColor = variant === "primary" ? theme.colors.primary : theme.colors.surfaceMuted;
-  const textColor = variant === "primary" ? "#FFFFFF" : theme.colors.ink;
+  const isPrimary = variant === "primary";
+  const textColor = isPrimary ? "#FFFFFF" : theme.colors.accent;
 
   return (
     <Pressable
@@ -35,17 +36,18 @@ export function DarkButton({ label, onPress, variant = "primary", disabled = fal
       style={({ pressed }) => [
         styles.base,
         {
-          backgroundColor,
+          backgroundColor: isPrimary ? theme.colors.primary : "transparent",
           borderRadius: size ? size / 2 : theme.radius.md,
+          borderWidth: isPrimary ? 0 : theme.borderWidth,
+          borderColor: theme.colors.border,
           minHeight: size ?? theme.minTapTarget,
           minWidth: size,
           paddingHorizontal: size ? 0 : theme.spacing(2),
           opacity: disabled ? 0.5 : pressed ? 0.85 : 1,
-          shadowColor: variant === "primary" ? theme.colors.primary : "transparent",
         },
       ]}
     >
-      <Text style={{ color: textColor, fontSize: fontSize ?? theme.fontSize.body, fontWeight: "600" }} allowFontScaling maxFontSizeMultiplier={1.4}>
+      <Text style={{ color: textColor, fontSize: fontSize ?? theme.fontSize.body, fontWeight: "700" }} allowFontScaling maxFontSizeMultiplier={1.4}>
         {label}
       </Text>
     </Pressable>
@@ -56,8 +58,5 @@ const styles = StyleSheet.create({
   base: {
     alignItems: "center",
     justifyContent: "center",
-    shadowOpacity: 0.5,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: 0 },
   },
 });
