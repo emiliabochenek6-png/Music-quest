@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Pressable, View, Text, ScrollView, StyleSheet } from "react-native";
+import { Animated, Pressable, View, Text, ScrollView, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
 import { DarkButton } from "@/components/exercises/DarkButton";
@@ -388,13 +388,7 @@ function LessonSummary({
       <Text style={{ fontSize: theme.fontSize.heading, fontWeight: "800", color: theme.colors.ink }}>
         {t("lesson.lessonComplete", "pl")}
       </Text>
-      <View style={styles.summaryStarRow}>
-        {[1, 2, 3].map((position) => (
-          <Text key={position} style={[styles.summaryStar, position <= stars ? styles.summaryStarFilled : styles.summaryStarEmpty]}>
-            {position <= stars ? "★" : "☆"}
-          </Text>
-        ))}
-      </View>
+      <AnimatedSummaryStars stars={stars} />
       {isPerfect && (
         <View style={[styles.perfectBadge, { borderColor: theme.colors.success }]}>
           <Text style={{ color: theme.colors.success, fontWeight: "700", fontSize: 13 }}>✨ Perfekcyjnie!</Text>
@@ -406,6 +400,53 @@ function LessonSummary({
       <View style={{ marginTop: theme.spacing(2), width: "100%" }}>
         <DarkButton label={t("lesson.backToLevels", "pl")} onPress={onExit} />
       </View>
+    </View>
+  );
+}
+
+const STAR_POP_STAGGER_MS = 150;
+
+/** The summary screen's own star row — each EARNED star pops in with a
+ * brief overshoot-and-settle (spring past full size, then back down),
+ * one after another, so the moment reads as "here's what you got" rather
+ * than the whole row just appearing at once. Deliberately small and
+ * quick (no loop, no glow/sparkle) — this sits on a screen the player
+ * taps through often, unlike RankUpCelebration's own much rarer, bigger
+ * moment; a distracting animation here would get old fast. Un-earned
+ * (empty) stars just fade in place, no bounce — nothing to celebrate
+ * about them. Runs once per mount: LessonSummary mounts fresh each time
+ * a lesson finishes (isFinished flips from false to true), so there's no
+ * need to re-trigger on prop changes. */
+function AnimatedSummaryStars({ stars }: { stars: 1 | 2 | 3 }) {
+  const scales = useRef([0, 1, 2].map(() => new Animated.Value(0))).current;
+
+  useEffect(() => {
+    const animations = scales.map((scale, index) => {
+      const isEarned = index + 1 <= stars;
+      return Animated.sequence([
+        Animated.delay(index * STAR_POP_STAGGER_MS),
+        isEarned
+          ? Animated.spring(scale, { toValue: 1, friction: 4, tension: 140, useNativeDriver: true })
+          : Animated.timing(scale, { toValue: 1, duration: 200, useNativeDriver: true }),
+      ]);
+    });
+    Animated.parallel(animations).start();
+  }, [stars, scales]);
+
+  return (
+    <View style={styles.summaryStarRow}>
+      {[1, 2, 3].map((position, index) => (
+        <Animated.Text
+          key={position}
+          style={[
+            styles.summaryStar,
+            position <= stars ? styles.summaryStarFilled : styles.summaryStarEmpty,
+            { transform: [{ scale: scales[index] }], opacity: scales[index] },
+          ]}
+        >
+          {position <= stars ? "★" : "☆"}
+        </Animated.Text>
+      ))}
     </View>
   );
 }
