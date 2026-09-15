@@ -1,66 +1,23 @@
-import { createAudioPlayer, type AudioPlayer } from "expo-audio";
-import { playSample, stopAllActiveSamples, type SamplePlaybackHandle } from "@/lib/audio/player";
+import {
+  clearScheduledAudio,
+  createSamplePool,
+  getPool,
+  playSample,
+  scheduleAt,
+  stopAllActiveSamples,
+  stopAllPooledSamples,
+  type SamplePlaybackHandle,
+} from "@/lib/audio/player";
 import { CLAP_SAMPLE, CLICK_ACCENT_SAMPLE, CLICK_WEAK_SAMPLE, MELODY_NOTE_SAMPLES, NOTE_SAMPLES } from "@/lib/audio/samples";
 import { formatScientific, midiToNote, noteToMidi, type Note } from "@/lib/music/notes";
 
-/** A small pool of players for the same short one-shot sample, reused
- * instead of constructing (and, per lib/audio/player.ts's playSample,
- * tearing down) a brand-new native player on every trigger — fine for a
- * single note, but a rhythmic click/clap track fires many times in quick
- * succession, and that per-trigger construction cost turned out to be a
- * real source of UNEVEN-sounding playback: it's not the scheduling
- * that's inconsistent, it's each trigger's own startup latency varying
- * one call to the next.
- *
- * The rewind-to-start each reuse needs is done in a "just finished"
- * listener (attached once, at creation) rather than at trigger time —
- * seekTo() is itself an async native call, and calling it immediately
- * before play() would put THAT latency right on the critical "fire
- * exactly on the beat" path. Rewinding right after the PREVIOUS play
- * finishes (with plenty of time before that pool slot is due again)
- * moves that same async work off the critical path entirely: by the time
- * trigger() needs a player, it should already be sitting at position 0,
- * so the only native call left at trigger time is play() itself. */
-function createSamplePool(source: number, size: number) {
-  let players: AudioPlayer[] | null = null;
-  let nextIndex = 0;
-
-  function ensurePlayers(): AudioPlayer[] {
-    if (!players) {
-      players = Array.from({ length: size }, () => {
-        const player = createAudioPlayer(source);
-        player.addListener("playbackStatusUpdate", (status) => {
-          if (status.didJustFinish) {
-            player.seekTo(0);
-          }
-        });
-        return player;
-      });
-    }
-    return players;
-  }
-
-  return {
-    trigger(velocity: number): void {
-      const pool = ensurePlayers();
-      const player = pool[nextIndex];
-      nextIndex = (nextIndex + 1) % size;
-      player.volume = velocity;
-      player.play();
-    },
-    // Also re-rewinds each player (not just pausing it) — otherwise a
-    // sound silenced mid-playback (leaving an exercise at the exact
-    // wrong instant) would sit paused part-way through, and its NEXT
-    // trigger would resume from there instead of playing from the start.
-    stop(): void {
-      players?.forEach((player) => {
-        player.pause();
-        player.seekTo(0);
-      });
-    },
-  };
-}
-
+// createSamplePool/scheduleAt/getPool and the lookahead scheduler they run
+// on live in lib/audio/player.ts now (shared with its own playMelody/
+// playChordSequence, which needed the exact same pooling — see that
+// module's own doc for the full "why" on both). This module keeps its own
+// NAMED pools below (accent/weak click, clap) since each needs its own
+// tuned size, distinct from the generic lazy per-source pool getPool()
+// provides.
 const accentClickPool = createSamplePool(CLICK_ACCENT_SAMPLE, 3);
 const weakClickPool = createSamplePool(CLICK_WEAK_SAMPLE, 3);
 // Sized a bit larger than the click pools — some authored rhythm patterns
@@ -77,107 +34,13 @@ const weakClickPool = createSamplePool(CLICK_WEAK_SAMPLE, 3);
 // instances) and safe against anything denser than today's content too.
 const clapPool = createSamplePool(CLAP_SAMPLE, 10);
 
-// playDanceFragment's own notes (bass/chord/pickup/lilt) used to go
-// through the unpooled scheduleSample below — reasoned at the time as "a
-// one-off accompaniment, not something scored, so a little unevenness is
-// fine". That stopped being true once playDanceFragment grew subdivision
-// "lilt" ticks (see its own doc): a compound-meter pulse now packs 2-3
-// notes tightly together, close enough in time that the SAME per-trigger
-// player-construction jitter that made the metronome/claps sound uneven
-// (see createSamplePool's own doc) shows up here too. Rather than name a
-// pool per melody sample by hand, this caches one lazily per distinct
-// sample source the first time it's scheduled — any note this module
-// plays gets pooled the same way, automatically.
-const pooledSamples = new Map<number, ReturnType<typeof createSamplePool>>();
-const DEFAULT_POOL_SIZE = 3;
-
-function getPool(source: number): ReturnType<typeof createSamplePool> {
-  let pool = pooledSamples.get(source);
-  if (!pool) {
-    pool = createSamplePool(source, DEFAULT_POOL_SIZE);
-    pooledSamples.set(source, pool);
-  }
-  return pool;
-}
-
-/**
- * A metronome/clap/dance-fragment track used to be scheduled as N
- * independent setTimeout(delayMs) calls, one per event — pooling (above)
- * fixed each event's own trigger-time jitter, but a full beat track
- * bursts dozens of one-shot timers into existence at once, all pending
- * simultaneously for up to several seconds out. That turned out to be its
- * own separate source of "sometimes uneven" playback: React Native's
- * timer bridge doesn't guarantee equal wake-up latency across many
- * simultaneously-pending one-shot timers, so under any JS-thread load
- * (a re-render, GC, ...) SOME of those timeouts fire a few ms late while
- * their neighbors don't, an unpredictable per-event lag with no
- * correction — the callback just fires "now" once woken, however late
- * "now" actually is.
- *
- * This is the standard fix for JS-clock-scheduled rhythm playback (the
- * same shape as the Web Audio "lookahead scheduler" pattern, adapted
- * without an audio-clock): every event is recorded as an ABSOLUTE
- * deadline (Date.now() + delay) in one shared queue, and a single fast-
- * polling timer (not a timer per event) checks the real wall clock and
- * fires whatever is due. A late tick doesn't lose accuracy the way a
- * late one-shot timeout does — it just means "due" is discovered a few
- * ms after the true deadline, bounded by SCHEDULER_TICK_MS, rather than
- * however late THAT PARTICULAR one-shot timer happened to wake up.
- *
- * Tightened from 8 to 3 — at the original value, Szczyt Dyktand's fastest
- * authored content (sixteenth notes ~139ms apart at its quickest tempo)
- * had up to 8ms of "due but not yet discovered" slack on EVERY onset,
- * ~6% of the gap between claps — small on any one onset, but real enough
- * to read as "momentami nierówno" (unevenness varying tick to tick,
- * rather than a single fixed offset) once several onsets in a row each
- * happened to land at a different point within their own tick window.
- * 3ms keeps the same "poll the real clock, never lose accuracy the way a
- * late one-shot timer does" guarantee this whole scheduler exists for,
- * just discovered sooner. This doesn't erase every source of jitter on
- * this stack (the underlying native player.play() call itself still has
- * its own, not-fully-controllable latency — there's no true sample-
- * accurate audio clock available without live oscillator synthesis, which
- * Expo Go can't run — see NOTE_SAMPLES's own doc), but it removes the
- * biggest JS-side contributor. */
-const SCHEDULER_TICK_MS = 3;
-
-interface ScheduledAudioEvent {
-  dueAtMs: number;
-  fire: () => void;
-}
-
-// Kept sorted ascending by dueAtMs at all times (scheduleAt inserts at its
-// correct position, below) — lets a tick just pop due events off the
-// FRONT instead of scanning/filtering the whole array every time it
-// fires. That scan used to be the tick's own dominant cost, paid on every
-// single tick regardless of whether anything was actually due — cheap
-// enough at the original 8ms period, but with SCHEDULER_TICK_MS now
-// tightened to 3ms (see its own doc) a long track (a full metronome
-// count-in + trailing buffer alongside a dense clap pattern can easily
-// queue 50-100+ events) was re-scanning that whole list roughly 2.7x more
-// often, real enough overhead on a busy JS thread to become its own
-// source of the very lateness this scheduler exists to avoid.
-let scheduledEvents: ScheduledAudioEvent[] = [];
-let schedulerHandle: ReturnType<typeof setInterval> | null = null;
-
-function runSchedulerTick(): void {
-  const now = Date.now();
-  let dueCount = 0;
-  while (dueCount < scheduledEvents.length && scheduledEvents[dueCount].dueAtMs <= now) {
-    dueCount++;
-  }
-  if (dueCount > 0) {
-    // Already in due-time order (the array's own sort invariant) — no
-    // separate sort needed here, unlike the old filter-based version.
-    const due = scheduledEvents.slice(0, dueCount);
-    scheduledEvents = scheduledEvents.slice(dueCount);
-    due.forEach((event) => event.fire());
-  }
-  if (scheduledEvents.length === 0 && schedulerHandle !== null) {
-    clearInterval(schedulerHandle);
-    schedulerHandle = null;
-  }
-}
+// playDanceFragment's own notes (bass/chord/pickup/lilt) use the generic
+// getPool() (imported from lib/audio/player.ts) rather than a named pool
+// — a compound-meter pulse packs 2-3 notes tightly together, close enough
+// in time that the same per-trigger player-construction jitter that made
+// the metronome/claps sound uneven (see createSamplePool's own doc) shows
+// up here too, and getPool() caches one pool per distinct sample source
+// automatically rather than needing one named by hand.
 
 // Default anchor for a track scheduled on its own — but see playMetronome/
 // playRhythm's own `startAtMs` param for why a CALLER driving two tracks
@@ -189,26 +52,6 @@ function runSchedulerTick(): void {
 // offset between "beat 0" of one track and "beat 0" of the other — using
 // one anchor for both makes that offset exactly zero by construction
 // instead of "negligible in practice."
-function scheduleAt(delayMs: number, fire: () => void, anchorMs: number = Date.now()): void {
-  const dueAtMs = anchorMs + delayMs;
-  // Insert at the correct sorted position (ascending dueAtMs) rather than
-  // just pushing — keeps runSchedulerTick's own "pop due events off the
-  // front" invariant true. A full rhythm track's events are scheduled in
-  // one burst, close together in call order, so this insert is cheap in
-  // practice (usually near the tail already) even though it's a linear
-  // scan in the worst case — a one-time cost per event at schedule time,
-  // paid once, versus the old approach's full-array cost paid on EVERY
-  // tick for as long as the track keeps playing.
-  let insertAt = scheduledEvents.length;
-  while (insertAt > 0 && scheduledEvents[insertAt - 1].dueAtMs > dueAtMs) {
-    insertAt--;
-  }
-  scheduledEvents.splice(insertAt, 0, { dueAtMs, fire });
-  if (schedulerHandle === null) {
-    schedulerHandle = setInterval(runSchedulerTick, SCHEDULER_TICK_MS);
-  }
-}
-
 function scheduleSample(source: number, velocity: number, delayMs: number, anchorMs?: number): void {
   scheduleAt(delayMs, () => getPool(source).trigger(velocity), anchorMs);
 }
@@ -218,21 +61,18 @@ function schedulePooled(pool: ReturnType<typeof createSamplePool>, velocity: num
 }
 
 /** Cancels every metronome click / clap / dance-fragment note scheduled by
- * this module that hasn't fired yet, AND silences whatever's currently
- * sounding (see lib/audio/player.ts's stopAllActiveSamples) — call this
- * whenever leaving an exercise or finishing a lesson so nothing keeps
- * playing past that point. */
+ * this module (or by lib/audio/player.ts's own playMelody/playChordSequence,
+ * which share the same scheduler/pools) that hasn't fired yet, AND
+ * silences whatever's currently sounding — call this whenever leaving an
+ * exercise or finishing a lesson so nothing keeps playing past that
+ * point. */
 export function stopAllScheduledAudio(): void {
-  scheduledEvents = [];
-  if (schedulerHandle !== null) {
-    clearInterval(schedulerHandle);
-    schedulerHandle = null;
-  }
+  clearScheduledAudio();
   stopAllActiveSamples();
+  stopAllPooledSamples();
   accentClickPool.stop();
   weakClickPool.stop();
   clapPool.stop();
-  pooledSamples.forEach((pool) => pool.stop());
 }
 
 /** How many measures a "standalone metronome" (the tappable

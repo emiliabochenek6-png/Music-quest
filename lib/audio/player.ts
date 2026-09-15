@@ -1,4 +1,4 @@
-import { createAudioPlayer } from "expo-audio";
+import { createAudioPlayer, type AudioPlayer } from "expo-audio";
 import { formatScientific, midiToNote, noteToMidi, type Note } from "@/lib/music/notes";
 import { MELODY_NOTE_SAMPLES, NOTE_SAMPLES } from "@/lib/audio/samples";
 
@@ -202,7 +202,165 @@ export function stopAllActiveSamples(): void {
   stops.forEach((stop) => stop());
 }
 
-function playSampleFrom(samples: Record<string, number>, note: Note, velocity: number): void {
+// --- Lookahead scheduler + sample pooling ---------------------------------
+//
+// playMelody/playChordSequence below (and lib/audio/rhythmPlayer.ts's own
+// metronome/clap/dance-fragment tracks, which import these) both need to
+// play several sounds spaced out over time. The naive way — one
+// setTimeout(delayMs) per sound, each constructing a brand-new native
+// player — turned out to be a real, log-confirmed source of "sometimes
+// choppy/uneven" playback, from two independent causes:
+//
+// 1. Constructing a native AudioPlayer from a bundled sample has its own
+//    non-trivial, non-constant latency. Paying that cost at the exact
+//    moment a note is due to sound (rather than ahead of time) puts
+//    variable extra delay directly on the "when does it actually start
+//    sounding" path — the more notes/chords in a row, the more chances for
+//    one of them to lag audibly behind where it should land.
+// 2. React Native's timer bridge doesn't guarantee equal wake-up latency
+//    across many independently-pending one-shot timers — under any
+//    JS-thread load (a re-render, GC, ...) some fire a few ms late while
+//    their neighbors don't, an unpredictable per-note lag with no
+//    correction.
+//
+// The fix for both: a small pool of already-constructed players per
+// sample (reused via seekTo(0) rather than torn down and rebuilt every
+// trigger) plus a single shared "lookahead" scheduler — one fast-polling
+// timer checking real wall-clock deadlines, rather than a timer per event
+// — so a late tick loses only that tick's own short polling interval of
+// accuracy, never however late one particular one-shot timer happened to
+// wake up.
+
+interface ScheduledAudioEvent {
+  dueAtMs: number;
+  fire: () => void;
+}
+
+const SCHEDULER_TICK_MS = 3;
+let scheduledEvents: ScheduledAudioEvent[] = [];
+let schedulerHandle: ReturnType<typeof setInterval> | null = null;
+
+function runSchedulerTick(): void {
+  const now = Date.now();
+  let dueCount = 0;
+  while (dueCount < scheduledEvents.length && scheduledEvents[dueCount].dueAtMs <= now) {
+    dueCount++;
+  }
+  if (dueCount > 0) {
+    const due = scheduledEvents.slice(0, dueCount);
+    scheduledEvents = scheduledEvents.slice(dueCount);
+    due.forEach((event) => event.fire());
+  }
+  if (scheduledEvents.length === 0 && schedulerHandle !== null) {
+    clearInterval(schedulerHandle);
+    schedulerHandle = null;
+  }
+}
+
+/** Schedules `fire` to run at `anchorMs + delayMs` via the shared
+ * lookahead scheduler — see the block doc above. Exported for
+ * lib/audio/rhythmPlayer.ts's own metronome/clap/dance-fragment
+ * scheduling, which needs the exact same "many events, one shared
+ * anchor" shape. */
+export function scheduleAt(delayMs: number, fire: () => void, anchorMs: number = Date.now()): void {
+  const dueAtMs = anchorMs + delayMs;
+  let insertAt = scheduledEvents.length;
+  while (insertAt > 0 && scheduledEvents[insertAt - 1].dueAtMs > dueAtMs) {
+    insertAt--;
+  }
+  scheduledEvents.splice(insertAt, 0, { dueAtMs, fire });
+  if (schedulerHandle === null) {
+    schedulerHandle = setInterval(runSchedulerTick, SCHEDULER_TICK_MS);
+  }
+}
+
+/** Cancels every event scheduled via scheduleAt that hasn't fired yet
+ * (without touching whatever's already sounding — see
+ * stopAllPooledSamples/stopAllActiveSamples for that). */
+export function clearScheduledAudio(): void {
+  scheduledEvents = [];
+  if (schedulerHandle !== null) {
+    clearInterval(schedulerHandle);
+    schedulerHandle = null;
+  }
+}
+
+export interface SamplePool {
+  trigger(velocity: number): void;
+  stop(): void;
+}
+
+/** A small pool of players for the same short sample, reused instead of
+ * constructing (and tearing down) a brand-new native player on every
+ * trigger — see the block doc above for why that construction cost is a
+ * real source of uneven-sounding playback once several sounds are
+ * scheduled close together. The rewind-to-start each reuse needs happens
+ * in a "just finished" listener (attached once, at creation) rather than
+ * at trigger time — seekTo() is itself an async native call, and calling
+ * it immediately before play() would put that latency right on the
+ * critical "fire exactly on time" path. */
+export function createSamplePool(source: number, size: number): SamplePool {
+  let players: AudioPlayer[] | null = null;
+  let nextIndex = 0;
+
+  function ensurePlayers(): AudioPlayer[] {
+    if (!players) {
+      players = Array.from({ length: size }, () => {
+        const player = createAudioPlayer(source);
+        player.addListener("playbackStatusUpdate", (status) => {
+          if (status.didJustFinish) {
+            player.seekTo(0);
+          }
+        });
+        return player;
+      });
+    }
+    return players;
+  }
+
+  return {
+    trigger(velocity: number): void {
+      const pool = ensurePlayers();
+      const player = pool[nextIndex];
+      nextIndex = (nextIndex + 1) % size;
+      player.volume = velocity;
+      player.play();
+    },
+    stop(): void {
+      players?.forEach((player) => {
+        player.pause();
+        player.seekTo(0);
+      });
+    },
+  };
+}
+
+const DEFAULT_POOL_SIZE = 3;
+const pooledSamples = new Map<number, SamplePool>();
+
+/** A lazily-created pool per distinct sample source — any caller that
+ * plays notes close together in time (playMelody/playChordSequence below,
+ * lib/audio/rhythmPlayer.ts's playDanceFragment) gets pooled playback
+ * automatically, without naming a pool by hand per sample. */
+export function getPool(source: number): SamplePool {
+  let pool = pooledSamples.get(source);
+  if (!pool) {
+    pool = createSamplePool(source, DEFAULT_POOL_SIZE);
+    pooledSamples.set(source, pool);
+  }
+  return pool;
+}
+
+/** Stops every lazily-created pool from getPool() — pairs with
+ * stopAllActiveSamples (the unpooled one-shot path) and
+ * clearScheduledAudio (cancels not-yet-fired events) so leaving an
+ * exercise mid-playback never leaves a pooled melody/chord ringing into
+ * whatever comes next. */
+export function stopAllPooledSamples(): void {
+  pooledSamples.forEach((pool) => pool.stop());
+}
+
+function resolveSample(samples: Record<string, number>, note: Note): number {
   // Sample maps are only ever keyed by each pitch's canonical spelling
   // (midiToNote's fixed sharp/natural table — see samples.ts's own doc),
   // but a note arriving here can be spelled either way (e.g.
@@ -221,7 +379,11 @@ function playSampleFrom(samples: Record<string, number>, note: Note, velocity: n
     // references a note nobody pre-rendered audio for yet.
     throw new Error(`No audio sample for note "${key}" — add one to lib/audio/samples.ts`);
   }
-  playSample(source, velocity);
+  return source;
+}
+
+function playSampleFrom(samples: Record<string, number>, note: Note, velocity: number): void {
+  playSample(resolveSample(samples, note), velocity);
 }
 
 export function playNote(note: Note, options: ToneOptions = {}): void {
@@ -245,15 +407,21 @@ const MELODY_NOTE_DURATION_SECONDS = 0.3;
 /** Sequential playback for "which way does the melody go" — each note
  * starts only after the previous one has genuinely finished sounding
  * (MELODY_NOTE_SAMPLES's own short piano-envelope render) plus a gap, so
- * notes never audibly overlap. Driven by setTimeout rather than a sample-
- * accurate scheduling clock (no such clock exists on this stack, unlike
- * the web app's own Web-Audio-scheduled version this mirrors the timing
- * shape of). */
+ * notes never audibly overlap. Scheduled via the shared lookahead
+ * scheduler (see scheduleAt's own doc) with each note's own sample
+ * pre-pooled, rather than the plain setTimeout + construct-fresh-player-
+ * per-note shape this used to have — that combination was the actual
+ * source of "sometimes choppy" reports: real, audible per-note timing
+ * jitter, not just an inherent limit of not having a sample-accurate
+ * audio clock on this stack. */
 export function playMelody(notes: readonly Note[], options: MelodyOptions = {}): void {
   const gapSeconds = options.gapSeconds ?? 0.05;
   const stepSeconds = MELODY_NOTE_DURATION_SECONDS + gapSeconds;
+  const velocity = options.velocity ?? 0.7;
+  const startAtMs = Date.now();
   notes.forEach((note, index) => {
-    setTimeout(() => playSampleFrom(MELODY_NOTE_SAMPLES, note, options.velocity ?? 0.7), index * stepSeconds * 1000);
+    const source = resolveSample(MELODY_NOTE_SAMPLES, note);
+    scheduleAt(index * stepSeconds * 1000, () => getPool(source).trigger(velocity), startAtMs);
   });
 }
 
@@ -268,15 +436,20 @@ export function playInterval(notes: readonly [Note, Note], options: MelodyOption
 }
 
 /** "Zatoka Trójdźwięków"'s TRUE simultaneous playback for a triad — unlike
- * playInterval/playMelody, every note here starts at once (no setTimeout
- * stagger), because a chord's whole identity is three pitches sounding
- * together. Uses NOTE_SAMPLES (the long ~1.6s ring, not MELODY_NOTE_
- * SAMPLES's short fade) so the chord actually sustains like one. Each
- * note plays a bit quieter than a single playNote() call by default,
- * since three simultaneous samples summed together read as louder than
- * any one of them alone. */
+ * playInterval/playMelody, every note here starts at once (no stagger),
+ * because a chord's whole identity is three pitches sounding together.
+ * Uses NOTE_SAMPLES (the long ~1.6s ring, not MELODY_NOTE_SAMPLES's short
+ * fade) so the chord actually sustains like one. Each note plays a bit
+ * quieter than a single playNote() call by default, since three
+ * simultaneous samples summed together read as louder than any one of
+ * them alone. Pooled (getPool) rather than a fresh player per note — a
+ * chord's three notes constructing three brand-new native players in the
+ * same instant is exactly the kind of tight temporal proximity that made
+ * pooling necessary elsewhere (see createSamplePool's own doc), and
+ * playChordSequence below calls this repeatedly in quick succession. */
 export function playChord(notes: readonly Note[], options: ToneOptions = {}): void {
-  notes.forEach((note) => playSampleFrom(NOTE_SAMPLES, note, options.velocity ?? 0.35));
+  const velocity = options.velocity ?? 0.35;
+  notes.forEach((note) => getPool(resolveSample(NOTE_SAMPLES, note)).trigger(velocity));
 }
 
 /** How long one playChord() call audibly rings, by construction of
@@ -293,12 +466,13 @@ interface ChordSequenceOptions extends ToneOptions {
  * reference followed by the target triad, so the player judges the
  * target's function relative to a just-heard tonic rather than in
  * isolation. Each chord's own notes still play simultaneously (playChord);
- * only the chords THEMSELVES are staggered, same setTimeout shape as
- * playMelody. */
+ * only the chords THEMSELVES are staggered, via the shared lookahead
+ * scheduler (see scheduleAt's own doc) rather than plain setTimeout. */
 export function playChordSequence(chords: readonly (readonly Note[])[], options: ChordSequenceOptions = {}): void {
   const gapSeconds = options.gapSeconds ?? 0.3;
   const stepSeconds = CHORD_DURATION_SECONDS + gapSeconds;
+  const startAtMs = Date.now();
   chords.forEach((chord, index) => {
-    setTimeout(() => playChord(chord, options), index * stepSeconds * 1000);
+    scheduleAt(index * stepSeconds * 1000, () => playChord(chord, options), startAtMs);
   });
 }

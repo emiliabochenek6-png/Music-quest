@@ -203,7 +203,13 @@ export default function LessonScreen() {
   if (isFinished) {
     return (
       <>
-        <LessonSummary mistakeCount={mistakeCount} totalExercises={exercises.length} accentHex={world.accentColor} onExit={goBackToLevels} />
+        <LessonSummary
+          mistakeCount={mistakeCount}
+          totalExercises={exercises.length}
+          stars={computeLessonStars(mistakeCount, exercises.length)}
+          accentHex={world.accentColor}
+          onExit={goBackToLevels}
+        />
         <WorldCompleteModal
           visible={showWorldComplete}
           worldName={t(world.nameKey as TranslationKey)}
@@ -339,11 +345,13 @@ function LessonHeader({ title, accentHex, onBack }: { title: string; accentHex: 
 function LessonSummary({
   mistakeCount,
   totalExercises,
+  stars,
   accentHex,
   onExit,
 }: {
   mistakeCount: number;
   totalExercises: number;
+  stars: 1 | 2 | 3;
   accentHex: string;
   onExit: () => void;
 }) {
@@ -356,6 +364,13 @@ function LessonSummary({
       <Text style={{ fontSize: theme.fontSize.heading, fontWeight: "800", color: theme.colors.ink }}>
         {t("lesson.lessonComplete", "pl")}
       </Text>
+      <View style={styles.summaryStarRow}>
+        {[1, 2, 3].map((position) => (
+          <Text key={position} style={[styles.summaryStar, position <= stars ? styles.summaryStarFilled : styles.summaryStarEmpty]}>
+            {position <= stars ? "★" : "☆"}
+          </Text>
+        ))}
+      </View>
       {isPerfect && (
         <View style={[styles.perfectBadge, { borderColor: theme.colors.success }]}>
           <Text style={{ color: theme.colors.success, fontWeight: "700", fontSize: 13 }}>✨ Perfekcyjnie!</Text>
@@ -438,5 +453,18 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 999,
     backgroundColor: "rgba(255,255,255,0.06)",
+  },
+  summaryStarRow: {
+    flexDirection: "row",
+  },
+  summaryStar: {
+    fontSize: 36,
+    marginHorizontal: 3,
+  },
+  summaryStarFilled: {
+    color: "#facc15",
+  },
+  summaryStarEmpty: {
+    color: "rgba(255,255,255,0.25)",
   },
 });
