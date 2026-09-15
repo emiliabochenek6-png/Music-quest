@@ -1,17 +1,21 @@
 import { useEffect, useRef, useState } from "react";
 import { Animated, Easing, StyleSheet, Text, View, type LayoutChangeEvent } from "react-native";
+import { DARK_EXERCISE_THEME } from "@/theme/darkExerciseTheme";
 
-// Matches theme/tokens.ts's own BRAND palette — this screen renders before
-// ProfileContext resolves which of the two profile-mode themes to use (it
-// might BE what's still loading), so it reaches for the shared brand
-// colors both modes are built from directly, rather than either mode's
-// own token set. `cream` in particular matches app.json's native splash
-// background exactly, so there's no color flash handing off from the
-// native splash screen to this first JS-rendered frame.
-const CREAM = "#FFF8EE";
-const INK = "#1D2B2E";
-const PRIMARY = "#2A9D8F";
-const TRACK_COLOR = "#E5E0D5";
+// Matches app.json's own native splash background/adaptive-icon color
+// (#0b0620) exactly, via the same constant every dark-cosmic screen
+// already uses — this screen renders before ProfileContext resolves
+// (it might BE what's still loading), but DARK_EXERCISE_THEME is a
+// plain constant, not derived from any context, so it's safe to read
+// directly here regardless of loading state. Keeping this in sync with
+// the native splash matters more than for any other single screen: this
+// is the very first JS frame the app paints, right after that splash —
+// a mismatch here reads as a visible flash of the wrong theme before
+// today's actual (dark) welcome/map screen ever appears.
+const BACKGROUND = DARK_EXERCISE_THEME.colors.cream;
+const INK = DARK_EXERCISE_THEME.colors.ink;
+const PRIMARY = DARK_EXERCISE_THEME.colors.primary;
+const TRACK_COLOR = DARK_EXERCISE_THEME.colors.border;
 
 const TRACK_HEIGHT = 8;
 const NOTE_SIZE = 30;
@@ -67,7 +71,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: CREAM,
+    backgroundColor: BACKGROUND,
     paddingHorizontal: 48,
   },
   title: {
@@ -102,7 +106,11 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   noteGlyph: {
-    color: CREAM,
+    // White, not BACKGROUND — this glyph sits ON the purple note bubble
+    // (PRIMARY), not on the page's own dark background, and needs
+    // contrast against THAT (same choice DarkButton makes for its own
+    // primary-variant label text).
+    color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "700",
   },
