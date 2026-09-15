@@ -8,11 +8,10 @@ import type { ThemeTokens } from "@/theme/tokens";
  * (`import { DARK_EXERCISE_THEME as theme } from ...`), with zero other
  * changes needed in the component body.
  *
- * Deliberately NOT profile-mode-aware (unlike theme/tokens.ts's own
- * young-explorer/hobbyist split) — the dark map/levels direction this app
- * moved to renders the same for every player, so exercise screens
- * (which live inside that same visual world) follow it unconditionally
- * rather than threading ProfileContext through yet another layer.
+ * A separate constant from theme/tokens.ts's own (light) THEME_TOKENS
+ * rather than a shared token set, since the two themes' colors are
+ * unrelated — exercise/map/lesson screens render the same for every
+ * player, so this needs no ProfileContext involvement at all.
  */
 export const DARK_EXERCISE_THEME: ThemeTokens = {
   colors: {

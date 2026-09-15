@@ -1,6 +1,7 @@
 import { Text, View, StyleSheet } from "react-native";
 import { router } from "expo-router";
 import { DarkButton } from "@/components/exercises/DarkButton";
+import { STORAGE_KEYS, writeJson } from "@/lib/storage";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 
 /**
@@ -10,6 +11,11 @@ import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
  * tap, not a differently-themed splash bolted onto a dark app.
  */
 export default function WelcomeScreen() {
+  async function handleStart() {
+    await writeJson(STORAGE_KEYS.hasCompletedOnboarding, true);
+    router.replace("/(main)/map");
+  }
+
   return (
     <View style={styles.root}>
       <View style={styles.glowBlob} />
@@ -17,7 +23,7 @@ export default function WelcomeScreen() {
         <Text style={styles.title}>Music Quest</Text>
         <Text style={styles.subtitle}>Naucz się czytać nuty, rytm i słuch muzyczny — krok po kroku.</Text>
         <View style={{ marginTop: theme.spacing(2), width: "100%" }}>
-          <DarkButton label="Zaczynajmy" onPress={() => router.push("/onboarding/profile-picker")} />
+          <DarkButton label="Zaczynajmy" onPress={handleStart} />
         </View>
       </View>
     </View>

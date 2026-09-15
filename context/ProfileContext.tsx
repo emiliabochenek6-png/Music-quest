@@ -1,10 +1,9 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { readJson, STORAGE_KEYS, writeJson } from "@/lib/storage";
-import type { ProfileMode, ProfileState } from "@/types/content";
+import type { ProfileState } from "@/types/content";
 
 const DEFAULT_PROFILE: ProfileState = {
-  mode: "young-explorer",
   displayName: null,
   narratorEnabled: true,
   soundEffectsEnabled: true,
@@ -13,17 +12,9 @@ const DEFAULT_PROFILE: ProfileState = {
 interface ProfileContextValue {
   profile: ProfileState;
   /** True while the persisted profile is still being read on launch — the
-   * root layout gates rendering on this so the app never flashes the
-   * default mode before switching to a stored "hobbyist" choice a beat
-   * later. */
+   * root layout gates rendering on this so the app never flashes default
+   * settings before switching to the stored ones a beat later. */
   isLoading: boolean;
-  /** Switching modes is a pure presentation change — see ARCHITECTURE.md
-   * section 2.1: it never touches progress or subscription state. Also
-   * resets narrator/sound to that mode's sensible default UNLESS the
-   * player already made an explicit choice this session (tracked by the
-   * caller, not here — this function always applies the mode's default,
-   * same as picking it fresh in onboarding). */
-  setMode: (mode: ProfileMode) => void;
   setDisplayName: (name: string | null) => void;
   setNarratorEnabled: (enabled: boolean) => void;
   setSoundEffectsEnabled: (enabled: boolean) => void;
@@ -57,13 +48,6 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
   const value: ProfileContextValue = {
     profile,
     isLoading,
-    setMode: (mode) =>
-      persist({
-        ...profile,
-        mode,
-        narratorEnabled: mode === "young-explorer",
-        soundEffectsEnabled: true,
-      }),
     setDisplayName: (displayName) => persist({ ...profile, displayName }),
     setNarratorEnabled: (narratorEnabled) => persist({ ...profile, narratorEnabled }),
     setSoundEffectsEnabled: (soundEffectsEnabled) => persist({ ...profile, soundEffectsEnabled }),

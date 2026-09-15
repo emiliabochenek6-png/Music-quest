@@ -42,11 +42,9 @@ function shade(hex: string, amount: number): string {
 /**
  * One world node on the dark, glowing adventure map — same bevel-button
  * + colored-glow language as components/map/LessonNode.tsx, one
- * granularity level up. Always shows the world's own name as a label (so
- * a tap is never a guess at what's behind it), which the earlier plain-
- * icon "hobbyist" variant didn't — the dark theme replaces that dual-mode
- * split entirely, see app/(main)/map.tsx's own note. A locked node is
- * still pressable: tapping `locked-subscription` opens the paywall,
+ * granularity level up. Always shows the world's own name as a label, so
+ * a tap is never a guess at what's behind it. A locked node is still
+ * pressable: tapping `locked-subscription` opens the paywall,
  * `locked-progression` just can't (see accessibilityState).
  */
 export function WorldNode({ world, state, onPress }: WorldNodeProps) {

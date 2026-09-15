@@ -5,9 +5,6 @@ import { useAuth } from "@/context/AuthContext";
 import { useProfile } from "@/context/ProfileContext";
 import { useTheme } from "@/theme/ThemeProvider";
 
-/** Where a profile switch AFTER onboarding happens (see
- * ARCHITECTURE.md section 2.1) — reuses the same profile-picker screen,
- * navigated to directly rather than duplicating its cards here. */
 export default function SettingsScreen() {
   const theme = useTheme();
   const { profile, setNarratorEnabled, setSoundEffectsEnabled } = useProfile();
@@ -21,11 +18,6 @@ export default function SettingsScreen() {
           small phone, larger accessibility text), this needs to actually
           scroll rather than silently clip rows off the bottom. */}
       <ScrollView contentContainerStyle={styles.container}>
-      <Pressable onPress={() => router.push("/onboarding/profile-picker")} style={styles.row}>
-        <Text style={{ color: theme.colors.ink, fontSize: theme.fontSize.body }}>Zmień profil</Text>
-        <Text style={{ color: theme.colors.muted }}>{profile.mode === "young-explorer" ? "Młody Odkrywca" : "Hobbysta"}</Text>
-      </Pressable>
-
       <View style={styles.row}>
         <Text style={{ color: theme.colors.ink, fontSize: theme.fontSize.body }}>Lektor</Text>
         <Switch value={profile.narratorEnabled} onValueChange={setNarratorEnabled} />

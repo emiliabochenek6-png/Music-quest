@@ -1,12 +1,4 @@
-/** The two presentation modes the whole app renders through — see
- * ARCHITECTURE.md section 2. Never a fork in the component tree: every
- * shared component reads this from ProfileContext and switches its own
- * variant, so navigation/unlock/progress logic stays identical between
- * modes and only the presentation layer differs. */
-export type ProfileMode = "young-explorer" | "hobbyist";
-
 export interface ProfileState {
-  mode: ProfileMode;
   displayName: string | null;
   narratorEnabled: boolean;
   soundEffectsEnabled: boolean;

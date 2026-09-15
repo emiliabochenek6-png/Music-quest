@@ -9,10 +9,9 @@ interface ButtonProps {
   disabled?: boolean;
 }
 
-/** The one button primitive every screen uses — dual-mode sizing/radius
- * comes entirely from theme tokens (min tap target, corner radius, font
- * size), so a screen never branches on ProfileMode itself just to render a
- * button correctly. */
+/** The one button primitive every (light-themed) screen uses — sizing and
+ * radius come entirely from theme tokens (min tap target, corner radius,
+ * font size). */
 export function Button({ label, onPress, variant = "primary", disabled = false }: ButtonProps) {
   const theme = useTheme();
   const backgroundColor = variant === "primary" ? theme.colors.primary : theme.colors.surfaceMuted;

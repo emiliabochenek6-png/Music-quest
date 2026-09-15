@@ -25,11 +25,6 @@
   "world.szczytDyktand.description": "Połącz wszystko w dyktandzie melodyczno-rytmicznym.",
   "world.zaczarowanySolfez.description": "Naucz się śpiewać nuty z pięciolinii solmizacją — do, re, mi, fa, sol, la, si.",
 
-  "profile.picker.title": "Kto dziś ćwiczy?",
-  "profile.picker.youngExplorer.title": "Jestem Młodym Odkrywcą",
-  "profile.picker.youngExplorer.subtitle": "Stworki, kryształki i dużo zabawy",
-  "profile.picker.hobbyist.title": "Jestem Hobbystą",
-  "profile.picker.hobbyist.subtitle": "Czysty interfejs, statystyki, szybkie tempo",
 
   "paywall.gate.title": "Szybkie pytanie dla rodzica",
   "paywall.gate.prompt": "Ile to {a} + {b}?",

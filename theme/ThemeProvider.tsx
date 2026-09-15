@@ -1,18 +1,15 @@
-import { createContext, useContext, useMemo } from "react";
+import { createContext, useContext } from "react";
 import type { ReactNode } from "react";
-import { useProfile } from "@/context/ProfileContext";
-import { getThemeTokens, type ThemeTokens } from "@/theme/tokens";
+import { THEME_TOKENS, type ThemeTokens } from "@/theme/tokens";
 
 const ThemeContext = createContext<ThemeTokens | null>(null);
 
-/** Derives the active theme from ProfileContext, so every screen/component
- * gets the right dual-mode tokens without each one separately reading
- * ProfileContext and re-deriving them — one lookup point, mounted once at
- * the root (see app/_layout.tsx). */
+/** One fixed theme for the whole (light-themed) part of the app — kept as
+ * a context/provider (rather than importing THEME_TOKENS directly) so
+ * every screen keeps using the same `useTheme()` call site regardless of
+ * how theming works under the hood. */
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const { profile } = useProfile();
-  const tokens = useMemo(() => getThemeTokens(profile.mode), [profile.mode]);
-  return <ThemeContext.Provider value={tokens}>{children}</ThemeContext.Provider>;
+  return <ThemeContext.Provider value={THEME_TOKENS}>{children}</ThemeContext.Provider>;
 }
 
 export function useTheme(): ThemeTokens {
