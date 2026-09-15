@@ -38,9 +38,8 @@ function AppShell() {
   return (
     <>
       <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="onboarding" />
         <Stack.Screen name="(main)" />
-        <Stack.Screen name="auth" options={{ presentation: "modal" }} />
+        <Stack.Screen name="auth" />
         <Stack.Screen name="paywall" options={{ presentation: "modal" }} />
       </Stack>
       <RankUpCelebration

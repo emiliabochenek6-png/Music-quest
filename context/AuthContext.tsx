@@ -7,7 +7,12 @@ interface AuthContextValue {
   session: Session | null;
   user: User | null;
   isLoading: boolean;
-  signUp: (email: string, password: string) => Promise<void>;
+  /** Resolves to whether signup ALSO established a live session right
+   * away — true when the Supabase project has email confirmation
+   * disabled, false when Supabase's own default (confirm-before-signed-
+   * in) still applies. app/auth/signup.tsx's own doc explains why the
+   * caller needs this rather than just assuming one or the other. */
+  signUp: (email: string, password: string) => Promise<{ signedInImmediately: boolean }>;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
@@ -17,10 +22,11 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 
 /**
  * Real user accounts (Supabase Auth) — see lib/sync/useCloudSync.ts's own
- * doc for what this actually enables: cross-device progress sync, opt-in
- * from Settings, not a gate on using the app at all (see app/index.tsx —
- * deliberately untouched by this feature). Same "getSession() once on
- * mount, then a live listener" shape SubscriptionContext.tsx already
+ * doc for what this actually enables: cross-device progress sync. Also
+ * the app's own gate now (see app/index.tsx): a signed-out `user` routes
+ * to app/auth/login.tsx before anything else is reachable. Same
+ * "getSession() once on mount, then a live listener" shape
+ * SubscriptionContext.tsx already
  * uses for RevenueCat's own addCustomerInfoUpdateListener — this is
  * that same pattern applied to Supabase's own onAuthStateChange, which
  * plays the identical role (keeps `session` current across sign-in/out/
@@ -55,8 +61,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   async function signUp(email: string, password: string) {
-    const { error } = await supabase.auth.signUp({ email, password });
+    const { data, error } = await supabase.auth.signUp({ email, password });
     if (error) throw error;
+    // A non-null session here means Supabase's project has email
+    // confirmation turned off, so signUp already logged the player in —
+    // the SAME response also carries a non-null `user` even when a
+    // session ISN'T returned (confirmation still pending), so `session`
+    // specifically (not `user`) is the right thing to check.
+    return { signedInImmediately: data.session !== null };
   }
 
   async function signIn(email: string, password: string) {

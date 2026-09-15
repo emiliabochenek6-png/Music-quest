@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Pressable, ScrollView, Text, TextInput, View, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { router, useLocalSearchParams } from "expo-router";
+import { router } from "expo-router";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { useAuth } from "@/context/AuthContext";
 import { translateAuthError } from "@/lib/supabase/authErrors";
@@ -13,19 +13,19 @@ const MIN_PASSWORD_LENGTH = 6;
 
 /**
  * Account creation — see app/auth/login.tsx's own doc for the broader
- * context and why this shares its exact dark-cosmic "kraina" look
- * (same DARK_EXERCISE_THEME/glowBlob/back-button treatment, not a
- * separately-themed settings detour). Supabase's own project default
- * requires confirming the address before a session is issued, so
- * `signUp` succeeding does NOT necessarily mean the player is logged in
- * yet — this screen shows a "check your email" state instead of
- * navigating away, and AuthContext's own onAuthStateChange listener
- * picks up the real session once the confirmation link is used
- * (whenever that happens — this screen doesn't wait around for it).
+ * context and why this shares its exact dark-cosmic "kraina" look. Reached
+ * by pushing from login (see login.tsx's own "Nie masz konta?" link), so
+ * unlike login itself this DOES have a real back target and keeps its
+ * back button. Whether `signUp` also logs the player in immediately
+ * depends entirely on this Supabase project's own "Confirm email"
+ * setting (see AuthContext's own doc on `signedInImmediately`) — when
+ * it's off, this can go straight to the map same as a real login; when
+ * it's on, this shows a "check your email" state instead, since no
+ * session exists yet for AuthContext's onAuthStateChange listener to
+ * pick up until that link is used.
  */
 export default function SignupScreen() {
   const insets = useSafeAreaInsets();
-  const { from } = useLocalSearchParams<{ from?: string }>();
   const { signUp } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -44,8 +44,12 @@ export default function SignupScreen() {
     }
     setStatus({ kind: "submitting" });
     try {
-      await signUp(email.trim(), password);
-      setStatus({ kind: "confirm-email" });
+      const { signedInImmediately } = await signUp(email.trim(), password);
+      if (signedInImmediately) {
+        router.replace("/(main)/map");
+      } else {
+        setStatus({ kind: "confirm-email" });
+      }
     } catch (error) {
       setStatus({ kind: "error", message: translateAuthError(error) });
     }
@@ -71,10 +75,7 @@ export default function SignupScreen() {
             apce.
           </Text>
           <View style={{ marginTop: theme.spacing(1), width: "100%" }}>
-            <DarkButton
-              label="Wróć do logowania"
-              onPress={() => router.replace({ pathname: "/auth/login", params: from ? { from } : {} })}
-            />
+            <DarkButton label="Wróć do logowania" onPress={() => router.replace("/auth/login")} />
           </View>
         </View>
       ) : (
@@ -129,11 +130,7 @@ export default function SignupScreen() {
             />
           </View>
 
-          <Pressable
-            onPress={() => router.replace({ pathname: "/auth/login", params: from ? { from } : {} })}
-            disabled={isSubmitting}
-            style={styles.linkButton}
-          >
+          <Pressable onPress={() => router.replace("/auth/login")} disabled={isSubmitting} style={styles.linkButton}>
             <Text style={styles.primaryLink}>Masz już konto? Zaloguj się</Text>
           </Pressable>
         </ScrollView>

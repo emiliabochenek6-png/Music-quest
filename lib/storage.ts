@@ -5,7 +5,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
  * what this app keeps in local storage at all. */
 export const STORAGE_KEYS = {
   profile: "master-quest.profile",
-  hasCompletedOnboarding: "master-quest.hasCompletedOnboarding",
   gamification: "master-quest.gamification",
 } as const;
 

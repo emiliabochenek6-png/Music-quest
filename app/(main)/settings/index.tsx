@@ -10,6 +10,14 @@ export default function SettingsScreen() {
   const { profile, setNarratorEnabled, setSoundEffectsEnabled } = useProfile();
   const { user, signOut } = useAuth();
 
+  // Login is mandatory now (see app/index.tsx) — there's no logged-out
+  // state left to reach this screen FROM, so signing out has to leave it
+  // too, straight back to the login screen that gates everything else.
+  async function handleSignOut() {
+    await signOut();
+    router.replace("/auth/login");
+  }
+
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.cream }}>
       <ScreenHeader title="Ustawienia" onBack={() => router.back()} />
@@ -33,24 +41,15 @@ export default function SettingsScreen() {
         <Text style={{ color: theme.colors.muted }}>›</Text>
       </Pressable>
 
-      {user ? (
-        <>
-          <View style={styles.row}>
-            <Text style={{ color: theme.colors.ink, fontSize: theme.fontSize.body }}>Zalogowano jako</Text>
-            <Text style={{ color: theme.colors.muted }} numberOfLines={1}>
-              {user.email}
-            </Text>
-          </View>
-          <Pressable onPress={() => void signOut()} style={styles.row}>
-            <Text style={{ color: theme.colors.warning, fontSize: theme.fontSize.body }}>Wyloguj się</Text>
-          </Pressable>
-        </>
-      ) : (
-        <Pressable onPress={() => router.push("/auth/login")} style={styles.row}>
-          <Text style={{ color: theme.colors.ink, fontSize: theme.fontSize.body }}>Konto</Text>
-          <Text style={{ color: theme.colors.muted }}>Zaloguj się ›</Text>
-        </Pressable>
-      )}
+      <View style={styles.row}>
+        <Text style={{ color: theme.colors.ink, fontSize: theme.fontSize.body }}>Zalogowano jako</Text>
+        <Text style={{ color: theme.colors.muted }} numberOfLines={1}>
+          {user?.email}
+        </Text>
+      </View>
+      <Pressable onPress={() => void handleSignOut()} style={styles.row}>
+        <Text style={{ color: theme.colors.warning, fontSize: theme.fontSize.body }}>Wyloguj się</Text>
+      </Pressable>
       </ScrollView>
     </View>
   );

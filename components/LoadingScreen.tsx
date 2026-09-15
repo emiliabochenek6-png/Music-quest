@@ -23,7 +23,7 @@ const TRACK_MAX_WIDTH = 220;
 const BOUNCE_DURATION_MS = 1100;
 
 /** The app's own branded "please wait" screen — shown at launch while
- * ProfileContext/onboarding state resolves (see app/index.tsx), replacing
+ * ProfileContext/AuthContext resolve (see app/index.tsx), replacing
  * a bare ActivityIndicator. A musical note "rides" back and forth along a
  * track, Duolingo-style — an INDETERMINATE bounce rather than a fill bar,
  * since nothing here tracks real progress toward a known total; implying

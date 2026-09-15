@@ -1,38 +1,31 @@
 import { useState } from "react";
 import { Pressable, ScrollView, Text, TextInput, View, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { router, useLocalSearchParams } from "expo-router";
+import { router } from "expo-router";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { useAuth } from "@/context/AuthContext";
 import { translateAuthError } from "@/lib/supabase/authErrors";
-import { STORAGE_KEYS, writeJson } from "@/lib/storage";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 
 type Status = { kind: "idle" } | { kind: "submitting" } | { kind: "error"; message: string } | { kind: "reset-sent" };
 
 /**
- * Email + password sign-in — same dark, glowing "kraina" world every
- * map/lesson/daily-challenge screen already lives in (see app/(main)/
- * map.tsx's own doc for the glowBlob/background treatment this mirrors
- * exactly — DARK_EXERCISE_THEME.colors.cream IS that same "#0b0620"
- * background, just accessed through the token this file's sibling
- * screens already use, so this reads as the SAME world, not a
- * differently-themed "account settings" detour). Reached two ways:
- * Settings' own "Konto" row (see app/(main)/settings/index.tsx), where
- * success just needs router.back() — or, now, the welcome screen's own
- * "Masz już konto?" link (see app/onboarding/welcome.tsx), for a player
- * who already has an account on another device and shouldn't have to
- * play through onboarding again to reach it; that entry point passes
- * `from=welcome` so handleSubmit knows to complete onboarding and land
- * on the map instead of going "back" to a welcome screen the player
- * never needs to see again. Either way, success is otherwise implicit:
- * AuthContext's own onAuthStateChange listener picks up the new session
- * the moment `signIn` resolves — this screen doesn't own any other
- * post-login state itself.
+ * The app's own start screen now — same dark, glowing "kraina" world
+ * every map/lesson/daily-challenge screen already lives in (see
+ * app/(main)/map.tsx's own doc for the glowBlob/background treatment
+ * this mirrors exactly). Login is mandatory (see app/index.tsx's own
+ * doc): this is the very first thing an unauthenticated player sees,
+ * carrying the "Music Quest" branding a separate welcome screen used to
+ * own, since that screen no longer exists — there's nothing to skip
+ * past, so this has no back button either (a signed-out player only
+ * ever reaches this screen with nothing behind it to go back to,
+ * whether on first launch or right after signing out from Settings).
+ * Success is otherwise implicit: AuthContext's own onAuthStateChange
+ * listener picks up the new session the moment `signIn` resolves — this
+ * screen just needs to replace itself with the map.
  */
 export default function LoginScreen() {
   const insets = useSafeAreaInsets();
-  const { from } = useLocalSearchParams<{ from?: string }>();
   const { signIn, resetPassword } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -43,12 +36,7 @@ export default function LoginScreen() {
     setStatus({ kind: "submitting" });
     try {
       await signIn(email.trim(), password);
-      if (from === "welcome") {
-        await writeJson(STORAGE_KEYS.hasCompletedOnboarding, true);
-        router.replace("/(main)/map");
-      } else {
-        router.back();
-      }
+      router.replace("/(main)/map");
     } catch (error) {
       setStatus({ kind: "error", message: translateAuthError(error) });
     }
@@ -73,15 +61,12 @@ export default function LoginScreen() {
   return (
     <View style={styles.root}>
       <View style={styles.glowBlob} />
-      <View style={[styles.headerRow, { paddingTop: insets.top + 12 }]}>
-        <Pressable onPress={() => router.back()} accessibilityRole="button" accessibilityLabel="Wstecz" hitSlop={12} style={styles.backButton}>
-          <Text style={styles.backIcon}>‹</Text>
-        </Pressable>
-      </View>
 
-      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+      <ScrollView contentContainerStyle={[styles.container, { paddingTop: insets.top + 32 }]} keyboardShouldPersistTaps="handled">
+        <Text style={styles.brand}>Music Quest</Text>
+        <Text style={styles.tagline}>Naucz się czytać nuty, rytm i słuch muzyczny — krok po kroku.</Text>
+
         <Text style={styles.title}>Zaloguj się</Text>
-        <Text style={styles.subtitle}>Zaloguj się, żeby ten sam postęp był widoczny na każdym urządzeniu.</Text>
 
         <TextInput
           value={email}
@@ -120,11 +105,7 @@ export default function LoginScreen() {
           <Text style={styles.mutedLink}>Zapomniałeś hasła?</Text>
         </Pressable>
 
-        <Pressable
-          onPress={() => router.push({ pathname: "/auth/signup", params: from ? { from } : {} })}
-          disabled={isSubmitting}
-          style={styles.linkButton}
-        >
+        <Pressable onPress={() => router.push("/auth/signup")} disabled={isSubmitting} style={styles.linkButton}>
           <Text style={styles.primaryLink}>Nie masz konta? Załóż je</Text>
         </Pressable>
       </ScrollView>
@@ -149,40 +130,35 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.primary,
     opacity: 0.22,
   },
-  headerRow: {
-    paddingHorizontal: 16,
-    paddingBottom: 8,
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: theme.radius.md,
-    backgroundColor: theme.colors.surfaceMuted,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  backIcon: {
-    fontSize: 20,
-    color: theme.colors.ink,
-  },
   container: {
     flexGrow: 1,
+    alignItems: "center",
     paddingHorizontal: 24,
     paddingBottom: 24,
     gap: 12,
   },
+  brand: {
+    fontSize: theme.fontSize.display,
+    fontWeight: "800",
+    color: theme.colors.ink,
+    textAlign: "center",
+  },
+  tagline: {
+    marginTop: 8,
+    marginBottom: 16,
+    fontSize: theme.fontSize.body,
+    color: theme.colors.muted,
+    textAlign: "center",
+  },
   title: {
+    alignSelf: "flex-start",
     fontSize: theme.fontSize.heading,
     fontWeight: "800",
     color: theme.colors.ink,
-    marginTop: 8,
-  },
-  subtitle: {
-    color: theme.colors.muted,
-    fontSize: theme.fontSize.body * 0.9,
-    marginBottom: 8,
+    marginBottom: 4,
   },
   input: {
+    width: "100%",
     borderWidth: 1,
     borderColor: theme.colors.border,
     backgroundColor: theme.colors.surface,
