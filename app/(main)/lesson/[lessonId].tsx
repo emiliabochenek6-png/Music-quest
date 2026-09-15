@@ -261,6 +261,7 @@ export default function LessonScreen() {
             ]}
           />
         </View>
+        <LiveStarIndicator mistakeCount={mistakeCount} totalExercises={exercises.length} />
       </View>
 
       <ScrollView contentContainerStyle={styles.exerciseArea} keyboardShouldPersistTaps="handled" scrollEnabled={scrollEnabled}>
@@ -338,6 +339,29 @@ function LessonHeader({ title, accentHex, onBack }: { title: string; accentHex: 
       <Text style={[styles.headerTitle, { color: accentHex }]} numberOfLines={1}>
         {title}
       </Text>
+    </View>
+  );
+}
+
+/** Live star projection shown DURING the lesson (not just at the end, per
+ * LessonSummary's own star row) — computeLessonStars is a pure function
+ * of mistakes-so-far vs. total exercises, so this can just call it fresh
+ * on every render as mistakeCount changes, no separate state needed. A
+ * mistake already made can't be undone, so this can only ever drop a
+ * tier or stay put as the lesson goes on, never climb back up — that's
+ * the whole point: the player sees exactly which mistake cost them a
+ * star, right when it happens, instead of finding out only at the very
+ * end. */
+function LiveStarIndicator({ mistakeCount, totalExercises }: { mistakeCount: number; totalExercises: number }) {
+  const stars = computeLessonStars(mistakeCount, totalExercises);
+  return (
+    <View style={styles.liveStarRow}>
+      <Text style={styles.liveStarLabel}>Twoja ocena:</Text>
+      {[1, 2, 3].map((position) => (
+        <Text key={position} style={[styles.liveStar, position <= stars ? styles.liveStarFilled : styles.liveStarEmpty]}>
+          {position <= stars ? "★" : "☆"}
+        </Text>
+      ))}
     </View>
   );
 }
@@ -434,6 +458,26 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: "100%",
+  },
+  liveStarRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 8,
+    gap: 2,
+  },
+  liveStarLabel: {
+    color: "rgba(236,232,255,0.6)",
+    fontSize: 12,
+    marginRight: 4,
+  },
+  liveStar: {
+    fontSize: 14,
+  },
+  liveStarFilled: {
+    color: "#facc15",
+  },
+  liveStarEmpty: {
+    color: "rgba(255,255,255,0.25)",
   },
   exerciseArea: {
     flexGrow: 1,
