@@ -7,8 +7,21 @@
  * own separate check the way it used to. */
 const THREE_STAR_MIN_CORRECT_FRACTION = 1;
 const TWO_STAR_MIN_CORRECT_FRACTION = 2 / 3;
+const ONE_STAR_MIN_CORRECT_FRACTION = 1 / 3;
 
-/** 1-3 star rating for a finished lesson attempt, from how many of its
+/** Raw threshold lookup, allowing 0 — shared by both functions below.
+ * computeLessonStars floors this to 1 (a finished lesson always earns
+ * something); computeLessonStarsProgress deliberately does NOT, since
+ * "0 stars so far" is exactly what the live in-lesson indicator needs to
+ * show before the player has actually crossed the first third. */
+function starsForCorrectFraction(correctFraction: number): 0 | 1 | 2 | 3 {
+  if (correctFraction >= THREE_STAR_MIN_CORRECT_FRACTION) return 3;
+  if (correctFraction >= TWO_STAR_MIN_CORRECT_FRACTION) return 2;
+  if (correctFraction >= ONE_STAR_MIN_CORRECT_FRACTION) return 1;
+  return 0;
+}
+
+/** 1-3 star rating for a FINISHED lesson attempt, from how many of its
  * exercises were answered correctly on the first (and only — this app's
  * own lesson flow never offers a retry on the same question, see
  * app/(main)/lesson/[lessonId].tsx's own handleCheck) attempt: at least a
@@ -16,11 +29,25 @@ const TWO_STAR_MIN_CORRECT_FRACTION = 2 / 3;
  * earns 3 — completing a lesson always earns AT LEAST 1 star even below
  * that first third, since finishing itself is already the achievement
  * `markLessonCompleted` already recognizes, and this app has no "0
- * stars" state. */
+ * stars" state for a completed lesson. */
 export function computeLessonStars(mistakeCount: number, exerciseCount: number): 1 | 2 | 3 {
   if (exerciseCount <= 0) return 1;
   const correctFraction = (exerciseCount - mistakeCount) / exerciseCount;
-  if (correctFraction >= THREE_STAR_MIN_CORRECT_FRACTION) return 3;
-  if (correctFraction >= TWO_STAR_MIN_CORRECT_FRACTION) return 2;
-  return 1;
+  return Math.max(1, starsForCorrectFraction(correctFraction)) as 1 | 2 | 3;
+}
+
+/** Same thirds-of-correct-answers thresholds as computeLessonStars, but
+ * for a lesson still IN PROGRESS — takes how many exercises have been
+ * answered correctly SO FAR (out of the lesson's fixed total), not a
+ * mistake count projected against the whole lesson. Since `correctSoFar`
+ * can only ever go up as the player answers more exercises (a skipped
+ * question isn't possible in this app's own lesson flow), this value is
+ * monotonically non-decreasing across a single attempt — stars light up
+ * one by one as each threshold is actually crossed, rather than starting
+ * at a best-case ceiling and only ever dropping. Can return 0 (unlike
+ * computeLessonStars): nothing has been "earned" yet is a real, correct
+ * state to show mid-lesson, not a completed lesson's rating. */
+export function computeLessonStarsProgress(correctSoFar: number, totalExercises: number): 0 | 1 | 2 | 3 {
+  if (totalExercises <= 0) return 0;
+  return starsForCorrectFraction(correctSoFar / totalExercises);
 }

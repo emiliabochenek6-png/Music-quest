@@ -18,7 +18,7 @@ import { useProgress } from "@/context/ProgressContext";
 import { useSessionTimer } from "@/hooks/useSessionTimer";
 import { stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
 import { todayISODate } from "@/lib/gamification/activity";
-import { computeLessonStars } from "@/lib/gamification/stars";
+import { computeLessonStars, computeLessonStarsProgress } from "@/lib/gamification/stars";
 import { generateExercise, getExerciseSignature } from "@/lib/questions/generate";
 import { isAnswerCorrect } from "@/lib/questions/validate";
 import { t } from "@/lib/i18n/translate";
@@ -261,7 +261,7 @@ export default function LessonScreen() {
             ]}
           />
         </View>
-        <LiveStarIndicator mistakeCount={mistakeCount} totalExercises={exercises.length} />
+        <LiveStarIndicator correctSoFar={index + (checked ? 1 : 0) - mistakeCount} totalExercises={exercises.length} />
       </View>
 
       <ScrollView contentContainerStyle={styles.exerciseArea} keyboardShouldPersistTaps="handled" scrollEnabled={scrollEnabled}>
@@ -343,24 +343,49 @@ function LessonHeader({ title, accentHex, onBack }: { title: string; accentHex: 
   );
 }
 
-/** Live star projection shown DURING the lesson (not just at the end, per
- * LessonSummary's own star row) — computeLessonStars is a pure function
- * of mistakes-so-far vs. total exercises, so this can just call it fresh
- * on every render as mistakeCount changes, no separate state needed. A
- * mistake already made can't be undone, so this can only ever drop a
- * tier or stay put as the lesson goes on, never climb back up — that's
- * the whole point: the player sees exactly which mistake cost them a
- * star, right when it happens, instead of finding out only at the very
- * end. */
-function LiveStarIndicator({ mistakeCount, totalExercises }: { mistakeCount: number; totalExercises: number }) {
-  const stars = computeLessonStars(mistakeCount, totalExercises);
+/** Live star indicator shown DURING the lesson (not just at the end, per
+ * LessonSummary's own star row) — unlike that final rating,
+ * computeLessonStarsProgress grades against exercises ANSWERED so far,
+ * not a best-case projection against the whole lesson, so this genuinely
+ * climbs star by star as the player progresses (never drops back down,
+ * since correctSoFar only ever goes up) rather than starting at a
+ * ceiling and only ever falling. Whichever star just newly lit up gets a
+ * quick pop (scale up then spring back) so the moment it happens is
+ * actually visible, not just a silent state change — same "brief,
+ * one-shot, not a looping celebration" restraint as LessonSummary's own
+ * AnimatedSummaryStars, since this sits on screen through the whole
+ * lesson. */
+function LiveStarIndicator({ correctSoFar, totalExercises }: { correctSoFar: number; totalExercises: number }) {
+  const stars = computeLessonStarsProgress(correctSoFar, totalExercises);
+  const scales = useRef([1, 2, 3].map(() => new Animated.Value(1))).current;
+  const previousStarsRef = useRef(stars);
+
+  useEffect(() => {
+    for (let position = previousStarsRef.current + 1; position <= stars; position++) {
+      const scale = scales[position - 1];
+      scale.setValue(1);
+      Animated.sequence([
+        Animated.timing(scale, { toValue: 1.5, duration: 120, useNativeDriver: true }),
+        Animated.spring(scale, { toValue: 1, friction: 3, tension: 160, useNativeDriver: true }),
+      ]).start();
+    }
+    previousStarsRef.current = stars;
+  }, [stars, scales]);
+
   return (
     <View style={styles.liveStarRow}>
       <Text style={styles.liveStarLabel}>Twoja ocena:</Text>
       {[1, 2, 3].map((position) => (
-        <Text key={position} style={[styles.liveStar, position <= stars ? styles.liveStarFilled : styles.liveStarEmpty]}>
+        <Animated.Text
+          key={position}
+          style={[
+            styles.liveStar,
+            position <= stars ? styles.liveStarFilled : styles.liveStarEmpty,
+            { transform: [{ scale: scales[position - 1] }] },
+          ]}
+        >
           {position <= stars ? "★" : "☆"}
-        </Text>
+        </Animated.Text>
       ))}
     </View>
   );
