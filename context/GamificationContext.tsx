@@ -4,7 +4,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useSubscription } from "@/context/SubscriptionContext";
 import { applyActivity } from "@/lib/gamification/activity";
 import type { ActivityDelta } from "@/lib/gamification/activity";
-import { deriveHearts, loseHeart as deductHeart } from "@/lib/gamification/hearts";
+import { deriveHearts, gainHearts as addHearts, loseHeart as deductHeart } from "@/lib/gamification/hearts";
 import type { HeartsInfo } from "@/lib/gamification/hearts";
 import { getRankForXp, getRankName } from "@/lib/gamification/rank";
 import { mergeGamificationState } from "@/lib/sync/mergeState";
@@ -41,6 +41,9 @@ interface GamificationContextValue {
    * status.isActive, checked here so no call site needs to guard this
    * itself. */
   loseHeart: () => void;
+  /** Rewards `amount` hearts, capped at MAX_HEARTS — same premium no-op
+   * as loseHeart (unlimited hearts already shown, nothing to add). */
+  gainHearts: (amount: number) => void;
   /** Best-of — only overwrites a lesson's stored rating if `stars` beats
    * whatever's already there, so a worse retry never downgrades it. */
   recordLessonStars: (lessonId: string, stars: 1 | 2 | 3) => void;
@@ -135,6 +138,16 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
     });
   }
 
+  function gainHearts(amount: number) {
+    if (subscription.isActive) return;
+    setState((prev) => {
+      const { hearts, lastHeartChangeAtISO } = addHearts(prev, Date.now(), amount);
+      const next: GamificationState = { ...prev, hearts, lastHeartChangeAtISO };
+      void writeJson(STORAGE_KEYS.gamification, next);
+      return next;
+    });
+  }
+
   function recordLessonStars(lessonId: string, stars: 1 | 2 | 3) {
     setState((prev) => {
       const existing = prev.lessonStars[lessonId];
@@ -171,6 +184,7 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
         clearPendingRankUp,
         awardXp,
         loseHeart,
+        gainHearts,
         recordLessonStars,
         recordActivity,
         setDailyChallenge,

@@ -73,3 +73,20 @@ export function loseHeart(state: HeartsSlice, nowMs: number): { hearts: number; 
   const regenerated = applyHeartRegen(state, nowMs);
   return { hearts: Math.max(0, regenerated.hearts - 1), lastHeartChangeAtISO: new Date(nowMs).toISOString() };
 }
+
+/** The write-side counterpart to loseHeart: a correct answer restores
+ * `amount` hearts (see GamificationContext's own gainHearts), capped at
+ * MAX_HEARTS the same as passive regen. Reconciles any pending regen
+ * first (same as loseHeart), then adds the bonus on top — but unlike
+ * loseHeart, this does NOT reset the regen clock: a reward for playing
+ * well shouldn't cost the player their existing progress toward the
+ * next natural regen tick, it should just stack a top-up on top of it.
+ * Only once the total reaches MAX_HEARTS does the clock stop mattering,
+ * same "snap it, it's harmless" tidy-up applyHeartRegen already does for
+ * the same case. */
+export function gainHearts(state: HeartsSlice, nowMs: number, amount: number): { hearts: number; lastHeartChangeAtISO: string | null } {
+  const regenerated = applyHeartRegen(state, nowMs);
+  const hearts = Math.min(MAX_HEARTS, regenerated.hearts + amount);
+  const lastHeartChangeAtISO = hearts >= MAX_HEARTS ? new Date(nowMs).toISOString() : regenerated.lastHeartChangeAtISO;
+  return { hearts, lastHeartChangeAtISO };
+}

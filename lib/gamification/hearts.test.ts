@@ -1,5 +1,5 @@
 import { describe, expect, it } from "@jest/globals";
-import { deriveHearts, loseHeart } from "@/lib/gamification/hearts";
+import { deriveHearts, gainHearts, loseHeart } from "@/lib/gamification/hearts";
 import { HEART_REGEN_MS, MAX_HEARTS } from "@/types/gamification";
 
 const NOW = Date.parse("2026-01-10T12:00:00.000Z");
@@ -64,5 +64,28 @@ describe("loseHeart", () => {
   it("floors at 0 — never goes negative", () => {
     const result = loseHeart({ hearts: 0, lastHeartChangeAtISO: new Date(NOW).toISOString() }, NOW);
     expect(result.hearts).toBe(0);
+  });
+});
+
+describe("gainHearts", () => {
+  it("adds the given amount without touching the regen clock", () => {
+    const lastHeartChangeAtISO = new Date(NOW - 60 * 60 * 1000).toISOString(); // 1h into the wait
+    const result = gainHearts({ hearts: 5, lastHeartChangeAtISO }, NOW, 2);
+    expect(result.hearts).toBe(7);
+    expect(result.lastHeartChangeAtISO).toBe(lastHeartChangeAtISO); // unchanged — no reset, unlike loseHeart
+  });
+
+  it("caps at MAX_HEARTS and only then snaps the clock to now", () => {
+    const lastHeartChangeAtISO = new Date(NOW - 60 * 60 * 1000).toISOString();
+    const result = gainHearts({ hearts: MAX_HEARTS - 1, lastHeartChangeAtISO }, NOW, 2);
+    expect(result.hearts).toBe(MAX_HEARTS);
+    expect(result.lastHeartChangeAtISO).toBe(new Date(NOW).toISOString());
+  });
+
+  it("catches up pending regeneration before adding the bonus", () => {
+    // 2 full ticks pending (hearts should regen 1 -> 3 first), THEN +2 -> 5.
+    const lastHeartChangeAtISO = new Date(NOW - HEART_REGEN_MS * 2).toISOString();
+    const result = gainHearts({ hearts: 1, lastHeartChangeAtISO }, NOW, 2);
+    expect(result.hearts).toBe(5);
   });
 });

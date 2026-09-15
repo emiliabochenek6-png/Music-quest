@@ -31,6 +31,11 @@ import type { AnswerInput } from "@/types/exercises";
  * with zero mistakes at all. */
 const XP_PER_CORRECT_ANSWER = 10;
 const XP_PERFECT_LESSON_BONUS = 20;
+/** A correct answer also rewards hearts, not just XP — lets a player who's
+ * doing well claw back toward MAX_HEARTS (see types/gamification.ts) well
+ * before the slow passive regen would, instead of hearts being a purely
+ * one-directional (lose-only) resource during a lesson. */
+const HEARTS_PER_CORRECT_ANSWER = 2;
 
 /**
  * Runs ONE lesson's exercises, in order — reached from a world's own
@@ -49,7 +54,7 @@ export default function LessonScreen() {
   const { lessonId, worldId } = useLocalSearchParams<{ lessonId: string; worldId: string }>();
   const insets = useSafeAreaInsets();
   const { markLessonCompleted, markWorldCompleted } = useProgress();
-  const { getHeartsInfo, loseHeart, awardXp, recordLessonStars, recordActivity } = useGamification();
+  const { getHeartsInfo, loseHeart, gainHearts, awardXp, recordLessonStars, recordActivity } = useGamification();
   const { getElapsedMinutes } = useSessionTimer(lessonId);
   const [showOutOfHearts, setShowOutOfHearts] = useState(false);
   // Snapshot taken at the moment hearts run out — OutOfHeartsModal ticks
@@ -144,6 +149,7 @@ export default function LessonScreen() {
       loseHeart();
     } else {
       awardXp(XP_PER_CORRECT_ANSWER);
+      gainHearts(HEARTS_PER_CORRECT_ANSWER);
     }
   }
 
