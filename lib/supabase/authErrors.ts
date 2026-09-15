@@ -23,7 +23,22 @@ export function translateAuthError(error: unknown): string {
   if (lower.includes("unable to validate email") || lower.includes("invalid email")) {
     return "To nie wygląda na poprawny adres e-mail.";
   }
-  if (lower.includes("network") || lower.includes("fetch")) {
+  // Browsers word a failed request very differently from each other —
+  // Chrome's fetch() rejects with "Failed to fetch" (catches on
+  // "fetch"), but Safari's own wording ("The network connection was
+  // lost", "Load failed") doesn't contain "fetch" at all, so relying on
+  // that one word alone silently misses it there and falls through to
+  // the generic message below — which reads as "something mysterious
+  // went wrong" when it's really just a plain connectivity failure.
+  if (
+    lower.includes("network") ||
+    lower.includes("fetch") ||
+    lower.includes("load failed") ||
+    lower.includes("connection was lost") ||
+    lower.includes("could not connect") ||
+    lower.includes("timed out") ||
+    lower.includes("timeout")
+  ) {
     return "Brak połączenia z internetem — spróbuj ponownie.";
   }
   return "Coś poszło nie tak. Spróbuj ponownie.";
