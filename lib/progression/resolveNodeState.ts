@@ -62,3 +62,35 @@ export function resolveNodeState(
   }
   return "available";
 }
+
+/**
+ * Whether `world` just transitioned from progression-locked to reachable
+ * — the exact question app/(main)/lesson/[lessonId].tsx's own
+ * handleContinue needs answered the moment a world's last lesson
+ * finishes, to decide whether to announce the NEXT world unlocking (see
+ * its own doc for the full "why" and the synthetic before/after
+ * ProgressState/lessonStars it builds). Comparing two resolveNodeState
+ * calls rather than just checking the "after" state alone matters for
+ * correctness on a REPLAY: a world whose next neighbor was already
+ * unlocked from an earlier attempt must not re-announce itself every
+ * time that same last lesson is replayed — "was progression-locked
+ * before, isn't now" is a real, one-time transition; "is unlocked" alone
+ * is true on every single replay after the first. Checks `!==
+ * "locked-progression"` for the "before" half (not `=== "available"`)
+ * so a world that's ALREADY unlocked-but-behind-a-paywall
+ * ("locked-subscription") correctly counts as "not a new transition"
+ * too — subscribing later doesn't retroactively make finishing this
+ * world the reason it became reachable.
+ */
+export function didWorldJustUnlock(
+  world: WorldDefinition,
+  progressBefore: ProgressState,
+  progressAfter: ProgressState,
+  subscription: SubscriptionStatus,
+  lessonStarsBefore: Readonly<Record<string, 1 | 2 | 3>>,
+  lessonStarsAfter: Readonly<Record<string, 1 | 2 | 3>>
+): boolean {
+  const before = resolveNodeState(world, progressBefore, subscription, lessonStarsBefore);
+  const after = resolveNodeState(world, progressAfter, subscription, lessonStarsAfter);
+  return before === "locked-progression" && after === "available";
+}

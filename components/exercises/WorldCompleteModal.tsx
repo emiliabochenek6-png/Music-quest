@@ -5,6 +5,14 @@ import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 interface WorldCompleteModalProps {
   visible: boolean;
   worldName: string;
+  /** Name of the world that just became reachable as a result of this
+   * one finishing — omitted (no second line shown) when nothing new
+   * unlocked this time, e.g. the star requirement (MIN_STARS_TO_ADVANCE_
+   * WORLD) isn't met yet, the next world needs a subscription, or this is
+   * a replay of an already-unlocked world's last lesson. See
+   * app/(main)/lesson/[lessonId].tsx's own handleContinue for how this is
+   * decided. */
+  nextWorldName?: string | null;
   accentHex: string;
   onClose: () => void;
 }
@@ -25,7 +33,7 @@ interface WorldCompleteModalProps {
  * shows through — the celebration owns the whole screen. Confetti only
  * mounts while `visible`, so its fall loops start and stop with the
  * modal rather than animating uselessly in the background. */
-export function WorldCompleteModal({ visible, worldName, accentHex, onClose }: WorldCompleteModalProps) {
+export function WorldCompleteModal({ visible, worldName, nextWorldName, accentHex, onClose }: WorldCompleteModalProps) {
   return (
     <Modal visible={visible} transparent={false} animationType="fade" onRequestClose={onClose}>
       <View style={styles.backdrop}>
@@ -41,6 +49,14 @@ export function WorldCompleteModal({ visible, worldName, accentHex, onClose }: W
           <Text style={{ fontSize: theme.fontSize.body, fontWeight: "600", color: accentHex, textAlign: "center", marginTop: theme.spacing(0.5) }}>
             Kraina „{worldName}” została ukończona
           </Text>
+          {nextWorldName && (
+            <View style={[styles.nextWorldBadge, { borderColor: `${accentHex}55` }]}>
+              <Text style={{ fontSize: 13, color: theme.colors.ink, textAlign: "center" }}>
+                🔓 Kolejna kraina została odblokowana:{"\n"}
+                <Text style={{ fontWeight: "700" }}>{nextWorldName}</Text>
+              </Text>
+            </View>
+          )}
         </View>
       </View>
     </Modal>
@@ -83,5 +99,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#fff",
     fontWeight: "700",
+  },
+  nextWorldBadge: {
+    marginTop: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 14,
+    borderWidth: 1,
+    backgroundColor: "rgba(255,255,255,0.06)",
   },
 });

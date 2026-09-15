@@ -12,12 +12,14 @@ import { PianoKeyboardRecap } from "@/components/exercises/PianoKeyboardRecap";
 import { WorldCompleteModal } from "@/components/exercises/WorldCompleteModal";
 import { OutOfHeartsModal } from "@/components/OutOfHeartsModal";
 import { getWorldContent } from "@/data/lessons";
-import { getWorldById } from "@/data/worlds";
+import { getNextWorld, getWorldById } from "@/data/worlds";
 import { useGamification } from "@/context/GamificationContext";
 import { useProgress } from "@/context/ProgressContext";
+import { useSubscription } from "@/context/SubscriptionContext";
 import { useSessionTimer } from "@/hooks/useSessionTimer";
 import { stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
 import { todayISODate } from "@/lib/gamification/activity";
+import { didWorldJustUnlock } from "@/lib/progression/resolveNodeState";
 import { computeLessonStars, computeLessonStarsProgress } from "@/lib/gamification/stars";
 import { generateExercise, getExerciseSignature } from "@/lib/questions/generate";
 import { isAnswerCorrect } from "@/lib/questions/validate";
@@ -53,8 +55,9 @@ const HEARTS_PER_CORRECT_ANSWER = 2;
 export default function LessonScreen() {
   const { lessonId, worldId } = useLocalSearchParams<{ lessonId: string; worldId: string }>();
   const insets = useSafeAreaInsets();
-  const { markLessonCompleted, markWorldCompleted } = useProgress();
-  const { getHeartsInfo, loseHeart, gainHearts, awardXp, recordLessonStars, recordActivity } = useGamification();
+  const { progress, markLessonCompleted, markWorldCompleted } = useProgress();
+  const { state: gamificationState, getHeartsInfo, loseHeart, gainHearts, awardXp, recordLessonStars, recordActivity } = useGamification();
+  const { status: subscriptionStatus } = useSubscription();
   const { getElapsedMinutes } = useSessionTimer(lessonId);
   const [showOutOfHearts, setShowOutOfHearts] = useState(false);
   // Snapshot taken at the moment hearts run out — OutOfHeartsModal ticks
@@ -84,6 +87,12 @@ export default function LessonScreen() {
   // handleContinue) — shows every time, including replays of an
   // already-completed world's last lesson.
   const [showWorldComplete, setShowWorldComplete] = useState(false);
+  // Name of the world that just became reachable as a RESULT of this
+  // world completing — null on a replay where the next world was
+  // already unlocked before this attempt (see handleContinue's own
+  // doc), same "recomputed fresh each time, not carried over" shape as
+  // showWorldComplete itself.
+  const [unlockedNextWorldName, setUnlockedNextWorldName] = useState<string | null>(null);
 
   // A metronome click track (Miasto Rytmu's rhythm exercises) can run for
   // many measures — without this, leaving the screen any other way than
@@ -195,12 +204,36 @@ export default function LessonScreen() {
     } else {
       markLessonCompleted(currentLesson.id);
       const isLastLessonInWorld = currentLesson.order === currentContent.lessons.length;
+      const earnedStars = computeLessonStars(mistakeCount, exercises.length);
       if (isLastLessonInWorld) {
         markWorldCompleted(currentWorld.id);
         setShowWorldComplete(true);
+        // Progress/gamification state here is still the PRE-completion
+        // snapshot (markWorldCompleted/recordLessonStars just queued their
+        // own setState, not applied yet) — projecting this lesson's own
+        // just-earned star and this world into synthetic "after" copies
+        // lets didWorldJustUnlock answer this synchronously, without
+        // waiting a render for real state to catch up.
+        const nextWorld = getNextWorld(currentWorld);
+        if (nextWorld) {
+          const bestStarsForThisLesson = Math.max(gamificationState.lessonStars[currentLesson.id] ?? 0, earnedStars) as 1 | 2 | 3;
+          const projectedProgress = { ...progress, completedWorldIds: new Set(progress.completedWorldIds).add(currentWorld.id) };
+          const projectedLessonStars = { ...gamificationState.lessonStars, [currentLesson.id]: bestStarsForThisLesson };
+          const justUnlocked = didWorldJustUnlock(
+            nextWorld,
+            progress,
+            projectedProgress,
+            subscriptionStatus,
+            gamificationState.lessonStars,
+            projectedLessonStars
+          );
+          if (justUnlocked) {
+            setUnlockedNextWorldName(t(nextWorld.nameKey as TranslationKey));
+          }
+        }
       }
       if (mistakeCount === 0) awardXp(XP_PERFECT_LESSON_BONUS);
-      recordLessonStars(currentLesson.id, computeLessonStars(mistakeCount, exercises.length));
+      recordLessonStars(currentLesson.id, earnedStars);
       recordActivity(todayISODate(), { minutesSpent: getElapsedMinutes(), lessonIdCompleted: currentLesson.id });
       setIsFinished(true);
     }
@@ -219,6 +252,7 @@ export default function LessonScreen() {
         <WorldCompleteModal
           visible={showWorldComplete}
           worldName={t(world.nameKey as TranslationKey)}
+          nextWorldName={unlockedNextWorldName}
           accentHex={world.accentColor}
           onClose={() => setShowWorldComplete(false)}
         />

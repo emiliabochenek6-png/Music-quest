@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from "@jest/globals";
 import { getWorldContent } from "@/data/lessons";
 import { WORLDS } from "@/data/worlds";
-import { resolveNodeState } from "@/lib/progression/resolveNodeState";
+import { didWorldJustUnlock, resolveNodeState } from "@/lib/progression/resolveNodeState";
 import type { ProgressState, SubscriptionStatus } from "@/types/content";
 
 // resolveNodeState short-circuits to "available" whenever __DEV__ is true
@@ -114,5 +114,45 @@ describe("resolveNodeState", () => {
       });
       expect(resolveNodeState(second, progress([first.id]), ACTIVE, almostAllTwoStars)).toBe("locked-progression");
     });
+  });
+});
+
+describe("didWorldJustUnlock", () => {
+  it("reports a genuine new unlock — world was locked-progression before, available after", () => {
+    const [first, second] = WORLDS;
+    const stars = fullStars();
+    expect(didWorldJustUnlock(second, progress([]), progress([first.id]), ACTIVE, stars, stars)).toBe(true);
+  });
+
+  it("reports nothing on a REPLAY — the world was already unlocked before this attempt too", () => {
+    // Both progress snapshots already have `first` completed (e.g. the
+    // player is replaying `first`'s last lesson well after originally
+    // unlocking `second`) — same "before" and "after" stars/progress, no
+    // transition to report.
+    const [first, second] = WORLDS;
+    const stars = fullStars();
+    expect(didWorldJustUnlock(second, progress([first.id]), progress([first.id]), ACTIVE, stars, stars)).toBe(false);
+  });
+
+  it("reports nothing when the world is completed but the star requirement still isn't met", () => {
+    const [first, second] = WORLDS;
+    const content = getWorldContent(first.id)!;
+    const oneStarOnly: Record<string, 1 | 2 | 3> = {};
+    for (const lesson of content.lessons) oneStarOnly[lesson.id] = 1;
+    expect(didWorldJustUnlock(second, progress([]), progress([first.id]), ACTIVE, oneStarOnly, oneStarOnly)).toBe(false);
+  });
+
+  it("reports nothing when the newly-reachable world still needs a subscription", () => {
+    const completedFreeWorlds = WORLDS.filter((w) => !w.isPremium).map((w) => w.id);
+    const worldsBeforeLastFree = completedFreeWorlds.slice(0, -1);
+    const lastFreeWorld = WORLDS.find((w) => w.id === completedFreeWorlds[completedFreeWorlds.length - 1])!;
+    const firstPremium = WORLDS.find((w) => w.isPremium)!;
+    const stars = fullStars();
+    // Progression-wise this is a real transition (locked-progression ->
+    // reachable), but reachable here means locked-subscription, not
+    // available — no announcement without an active subscription.
+    expect(
+      didWorldJustUnlock(firstPremium, progress(worldsBeforeLastFree), progress(completedFreeWorlds), INACTIVE, stars, stars)
+    ).toBe(false);
   });
 });

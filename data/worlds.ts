@@ -136,3 +136,7 @@ export function getWorldById(id: string): WorldDefinition | undefined {
 export function getPreviousWorld(world: WorldDefinition): WorldDefinition | undefined {
   return WORLDS.find((w) => w.order === world.order - 1);
 }
+
+export function getNextWorld(world: WorldDefinition): WorldDefinition | undefined {
+  return WORLDS.find((w) => w.order === world.order + 1);
+}
