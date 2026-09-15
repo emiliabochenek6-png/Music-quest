@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Pressable, ScrollView, Text, TextInput, View, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { useAuth } from "@/context/AuthContext";
 import { translateAuthError } from "@/lib/supabase/authErrors";
@@ -25,6 +25,7 @@ const MIN_PASSWORD_LENGTH = 6;
  */
 export default function SignupScreen() {
   const insets = useSafeAreaInsets();
+  const { from } = useLocalSearchParams<{ from?: string }>();
   const { signUp } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -70,7 +71,10 @@ export default function SignupScreen() {
             apce.
           </Text>
           <View style={{ marginTop: theme.spacing(1), width: "100%" }}>
-            <DarkButton label="Wróć do logowania" onPress={() => router.replace("/auth/login")} />
+            <DarkButton
+              label="Wróć do logowania"
+              onPress={() => router.replace({ pathname: "/auth/login", params: from ? { from } : {} })}
+            />
           </View>
         </View>
       ) : (
@@ -125,7 +129,11 @@ export default function SignupScreen() {
             />
           </View>
 
-          <Pressable onPress={() => router.replace("/auth/login")} disabled={isSubmitting} style={styles.linkButton}>
+          <Pressable
+            onPress={() => router.replace({ pathname: "/auth/login", params: from ? { from } : {} })}
+            disabled={isSubmitting}
+            style={styles.linkButton}
+          >
             <Text style={styles.primaryLink}>Masz już konto? Zaloguj się</Text>
           </Pressable>
         </ScrollView>

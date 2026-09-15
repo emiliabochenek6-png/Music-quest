@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet } from "react-native";
+import { Pressable, Text, View, StyleSheet } from "react-native";
 import { router } from "expo-router";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { STORAGE_KEYS, writeJson } from "@/lib/storage";
@@ -25,6 +25,12 @@ export default function WelcomeScreen() {
         <View style={{ marginTop: theme.spacing(2), width: "100%" }}>
           <DarkButton label="Zaczynajmy" onPress={handleStart} />
         </View>
+        <Pressable
+          onPress={() => router.push({ pathname: "/auth/login", params: { from: "welcome" } })}
+          style={styles.loginLink}
+        >
+          <Text style={styles.loginLinkText}>Masz już konto? Zaloguj się</Text>
+        </Pressable>
       </View>
     </View>
   );
@@ -63,5 +69,14 @@ const styles = StyleSheet.create({
     fontSize: theme.fontSize.body,
     color: theme.colors.muted,
     textAlign: "center",
+  },
+  loginLink: {
+    marginTop: 16,
+    paddingVertical: 8,
+  },
+  loginLinkText: {
+    color: theme.colors.primary,
+    fontSize: theme.fontSize.body * 0.9,
+    fontWeight: "700",
   },
 });

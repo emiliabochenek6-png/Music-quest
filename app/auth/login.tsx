@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Pressable, ScrollView, Text, TextInput, View, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { useAuth } from "@/context/AuthContext";
 import { translateAuthError } from "@/lib/supabase/authErrors";
+import { STORAGE_KEYS, writeJson } from "@/lib/storage";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 
 type Status = { kind: "idle" } | { kind: "submitting" } | { kind: "error"; message: string } | { kind: "reset-sent" };
@@ -16,16 +17,22 @@ type Status = { kind: "idle" } | { kind: "submitting" } | { kind: "error"; messa
  * exactly — DARK_EXERCISE_THEME.colors.cream IS that same "#0b0620"
  * background, just accessed through the token this file's sibling
  * screens already use, so this reads as the SAME world, not a
- * differently-themed "account settings" detour). Reached from Settings'
- * own "Konto" row (see app/(main)/settings/index.tsx), NEVER from
- * onboarding: this app is fully playable without an account, an account
- * only exists to carry progress between devices. Success is entirely
- * implicit: AuthContext's own onAuthStateChange listener picks up the
- * new session the moment `signIn` resolves, so this screen just needs
- * to navigate back — it doesn't own any post-login state itself.
+ * differently-themed "account settings" detour). Reached two ways:
+ * Settings' own "Konto" row (see app/(main)/settings/index.tsx), where
+ * success just needs router.back() — or, now, the welcome screen's own
+ * "Masz już konto?" link (see app/onboarding/welcome.tsx), for a player
+ * who already has an account on another device and shouldn't have to
+ * play through onboarding again to reach it; that entry point passes
+ * `from=welcome` so handleSubmit knows to complete onboarding and land
+ * on the map instead of going "back" to a welcome screen the player
+ * never needs to see again. Either way, success is otherwise implicit:
+ * AuthContext's own onAuthStateChange listener picks up the new session
+ * the moment `signIn` resolves — this screen doesn't own any other
+ * post-login state itself.
  */
 export default function LoginScreen() {
   const insets = useSafeAreaInsets();
+  const { from } = useLocalSearchParams<{ from?: string }>();
   const { signIn, resetPassword } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -36,7 +43,12 @@ export default function LoginScreen() {
     setStatus({ kind: "submitting" });
     try {
       await signIn(email.trim(), password);
-      router.back();
+      if (from === "welcome") {
+        await writeJson(STORAGE_KEYS.hasCompletedOnboarding, true);
+        router.replace("/(main)/map");
+      } else {
+        router.back();
+      }
     } catch (error) {
       setStatus({ kind: "error", message: translateAuthError(error) });
     }
@@ -108,7 +120,11 @@ export default function LoginScreen() {
           <Text style={styles.mutedLink}>Zapomniałeś hasła?</Text>
         </Pressable>
 
-        <Pressable onPress={() => router.push("/auth/signup")} disabled={isSubmitting} style={styles.linkButton}>
+        <Pressable
+          onPress={() => router.push({ pathname: "/auth/signup", params: from ? { from } : {} })}
+          disabled={isSubmitting}
+          style={styles.linkButton}
+        >
           <Text style={styles.primaryLink}>Nie masz konta? Załóż je</Text>
         </Pressable>
       </ScrollView>
