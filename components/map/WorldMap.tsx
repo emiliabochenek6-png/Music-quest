@@ -1,10 +1,12 @@
-import { Fragment } from "react";
+import { Fragment, useMemo } from "react";
 import { ScrollView, View, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Defs, LinearGradient, Path, Stop } from "react-native-svg";
+import { NoteGlyph, layoutScatteredNotes } from "@/components/map/NoteGlyph";
 import { WorldNode } from "@/components/map/WorldNode";
 import { WORLDS } from "@/data/worlds";
 import { resolveNodeState } from "@/lib/progression/resolveNodeState";
+import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import type { ProgressState, SubscriptionStatus, WorldDefinition } from "@/types/content";
 
 interface WorldMapProps {
@@ -40,6 +42,14 @@ function nodeY(index: number): number {
 export function WorldMap({ progress, subscription, lessonStars, onSelectWorld }: WorldMapProps) {
   const insets = useSafeAreaInsets();
   const totalHeight = TOP_PADDING + (WORLDS.length - 1) * NODE_SPACING_Y + 100;
+  // Scattered faintly behind the path/nodes — a count scaled to the
+  // canvas area so a longer scroll (more worlds) doesn't thin out to a
+  // sparse-looking field, seeded so the layout stays put across
+  // re-renders (see layoutScatteredNotes's own doc).
+  const scatteredNotes = useMemo(
+    () => layoutScatteredNotes(PATH_WIDTH, totalHeight, Math.round((PATH_WIDTH * totalHeight) / 9000), 1),
+    [totalHeight]
+  );
 
   return (
     <ScrollView
@@ -55,6 +65,9 @@ export function WorldMap({ progress, subscription, lessonStars, onSelectWorld }:
               <Stop offset="1" stopColor={NEUTRAL_GLOW} stopOpacity={0.35} />
             </LinearGradient>
           </Defs>
+          {scatteredNotes.map((note, index) => (
+            <NoteGlyph key={index} x={note.x} y={note.y} size={note.size} rotation={note.rotation} color={theme.colors.ink} opacity={note.opacity} />
+          ))}
           {WORLDS.map((world, index) => {
             if (index === 0) return null;
             const x1 = nodeX(index - 1);

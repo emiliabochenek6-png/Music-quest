@@ -25,7 +25,7 @@ const WORLD_ICON: Record<string, string> = {
   microphone: "🎤",
 };
 
-const LOCKED_COLOR = "#E5E5E5";
+const LOCKED_COLOR = "#241C3D";
 const PREMIUM_COLOR = "#FF9600";
 
 /**

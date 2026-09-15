@@ -10,7 +10,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#FFFFFF"
+      "backgroundColor": "#0B0620"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -23,7 +23,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
+        "backgroundColor": "#0B0620"
       },
       "package": "com.masterquest.mobile",
       "versionCode": 1
@@ -34,8 +34,8 @@
       "favicon": "./assets/favicon.png",
       "name": "Music Quest",
       "shortName": "Music Quest",
-      "themeColor": "#FFFFFF",
-      "backgroundColor": "#FFFFFF",
+      "themeColor": "#0B0620",
+      "backgroundColor": "#0B0620",
       "display": "standalone"
     },
     "plugins": [

@@ -1,8 +1,11 @@
+import { useMemo } from "react";
 import { ScrollView, View, Text, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Defs, LinearGradient, Path, Stop } from "react-native-svg";
 import { LessonNode } from "@/components/map/LessonNode";
+import { NoteGlyph, layoutScatteredNotes } from "@/components/map/NoteGlyph";
 import { resolveLessonNodeState } from "@/lib/progression/resolveLessonNodeState";
+import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import type { LessonDefinition } from "@/types/exercises";
 
 interface LessonPathProps {
@@ -45,6 +48,13 @@ function nodeY(index: number): number {
 export function LessonPath({ lessons, completedLessonIds, lessonStars, accentHex, onSelectLesson }: LessonPathProps) {
   const insets = useSafeAreaInsets();
   const totalHeight = TOP_PADDING + (lessons.length - 1) * NODE_SPACING_Y + 80;
+  // Same scattered note-field idea as WorldMap's own (see
+  // layoutScatteredNotes's own doc) — a different seed so each world's
+  // own path doesn't look like a copy-pasted pattern of the top-level map.
+  const scatteredNotes = useMemo(
+    () => layoutScatteredNotes(PATH_WIDTH, totalHeight, Math.round((PATH_WIDTH * totalHeight) / 9000), 7),
+    [totalHeight]
+  );
 
   const pathD = lessons
     .map((_, index) => {
@@ -72,6 +82,9 @@ export function LessonPath({ lessons, completedLessonIds, lessonStars, accentHex
               <Stop offset="1" stopColor={accentHex} stopOpacity={0.35} />
             </LinearGradient>
           </Defs>
+          {scatteredNotes.map((note, index) => (
+            <NoteGlyph key={index} x={note.x} y={note.y} size={note.size} rotation={note.rotation} color={theme.colors.ink} opacity={note.opacity} />
+          ))}
           {/* Soft glow underlay, then a crisp dashed line on top — same
            * two-pass trick the reference's own glowing trail uses. */}
           <Path d={pathD} stroke={accentHex} strokeWidth={10} strokeOpacity={0.18} fill="none" strokeLinecap="round" />

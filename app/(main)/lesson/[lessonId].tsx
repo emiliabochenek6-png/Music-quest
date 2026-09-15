@@ -585,7 +585,7 @@ const styles = StyleSheet.create({
     color: "#facc15",
   },
   liveStarEmpty: {
-    color: "#D8D8D8",
+    color: theme.colors.border,
   },
   exerciseArea: {
     flexGrow: 1,
@@ -617,6 +617,6 @@ const styles = StyleSheet.create({
     color: "#facc15",
   },
   summaryStarEmpty: {
-    color: "#D8D8D8",
+    color: theme.colors.border,
   },
 });

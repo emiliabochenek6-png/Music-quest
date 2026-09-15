@@ -19,7 +19,7 @@ interface LessonNodeProps {
   onPress: (lesson: LessonDefinition) => void;
 }
 
-const LOCKED_COLOR = "#E5E5E5";
+const LOCKED_COLOR = "#241C3D";
 
 /**
  * One level ("poziom") node on the map path — a flat sticker-style
@@ -130,6 +130,6 @@ const styles = StyleSheet.create({
     color: "#facc15",
   },
   starEmpty: {
-    color: "#D8D8D8",
+    color: theme.colors.border,
   },
 });
