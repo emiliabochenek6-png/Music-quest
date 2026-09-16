@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import { Animated, Easing, Modal, Pressable, Text, View, StyleSheet } from "react-native";
 import { DarkButton } from "@/components/exercises/DarkButton";
+import { SoltekMascot } from "@/components/SoltekMascot";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 
 interface RankUpCelebrationProps {
@@ -42,7 +43,12 @@ export function RankUpCelebration({ visible, rank, rankName, onClose }: RankUpCe
               Ranga {rank}: <Text style={styles.rankName}>{rankName}</Text>
             </Text>
           )}
-          <View style={{ marginTop: 28, width: "100%", maxWidth: 260 }}>
+          {rankName && (
+            <View style={{ marginTop: 20, width: "100%", maxWidth: 320 }}>
+              <SoltekMascot expression="radosny" message={`Brawo! Awansowałeś do rangi „${rankName}”. Tak trzymaj!`} />
+            </View>
+          )}
+          <View style={{ marginTop: 20, width: "100%", maxWidth: 260 }}>
             <DarkButton label="Super!" onPress={onClose} />
           </View>
         </View>

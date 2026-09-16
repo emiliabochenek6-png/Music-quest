@@ -11,6 +11,7 @@ import { LessonTheoryIntro } from "@/components/exercises/LessonTheoryIntro";
 import { PianoKeyboardRecap } from "@/components/exercises/PianoKeyboardRecap";
 import { WorldCompleteModal } from "@/components/exercises/WorldCompleteModal";
 import { OutOfHeartsModal } from "@/components/OutOfHeartsModal";
+import { SoltekMascot } from "@/components/SoltekMascot";
 import { getWorldContent } from "@/data/lessons";
 import { getNextWorld, getWorldById } from "@/data/worlds";
 import { useGamification } from "@/context/GamificationContext";
@@ -33,6 +34,9 @@ import type { AnswerInput } from "@/types/exercises";
  * with zero mistakes at all. */
 const XP_PER_CORRECT_ANSWER = 10;
 const XP_PERFECT_LESSON_BONUS = 20;
+/** Roughly 1 in 3 checks — see showSoltek's own doc for why this isn't
+ * every check. */
+const SOLTEK_APPEARANCE_CHANCE = 0.35;
 /** A correct answer also rewards hearts, not just XP — lets a player who's
  * doing well claw back toward MAX_HEARTS (see types/gamification.ts) well
  * before the slow passive regen would, instead of hearts being a purely
@@ -73,6 +77,13 @@ export default function LessonScreen() {
   const [answer, setAnswer] = useState<AnswerInput | null>(null);
   const [checked, setChecked] = useState(false);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
+  // Soltek shows up on a random minority of checks (see SOLTEK_APPEARANCE_CHANCE)
+  // rather than every single one — a lesson can have many exercises in a
+  // row, and a companion commenting on every single answer would read as
+  // clutter rather than the occasional encouraging cameo he's meant to be.
+  // Re-rolled fresh each time handleCheck runs, reset on handleContinue so
+  // the next question gets its own independent roll.
+  const [showSoltek, setShowSoltek] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
   const [mistakeCount, setMistakeCount] = useState(0);
   // Disabled for the duration of a clef-trace stroke — see
@@ -153,6 +164,7 @@ export default function LessonScreen() {
     const correct = isAnswerCorrect(exercise, answer);
     setChecked(true);
     setIsCorrect(correct);
+    setShowSoltek(Math.random() < SOLTEK_APPEARANCE_CHANCE);
     if (!correct) {
       setMistakeCount((n) => n + 1);
       loseHeart();
@@ -201,6 +213,7 @@ export default function LessonScreen() {
       setAnswer(null);
       setChecked(false);
       setIsCorrect(null);
+      setShowSoltek(false);
     } else {
       markLessonCompleted(currentLesson.id);
       const isLastLessonInWorld = currentLesson.order === currentContent.lessons.length;
@@ -341,17 +354,26 @@ export default function LessonScreen() {
 
       <View style={{ paddingHorizontal: 24, paddingBottom: insets.bottom + 16 }}>
         {checked && (
-          <Text
-            style={{
-              textAlign: "center",
-              fontWeight: "700",
-              fontSize: theme.fontSize.body,
-              color: isCorrect ? theme.colors.success : theme.colors.warning,
-              marginBottom: theme.spacing(1.5),
-            }}
-          >
-            {isCorrect ? t("lesson.correct", "pl") : t("lesson.incorrect", "pl")}
-          </Text>
+          <View style={{ marginBottom: theme.spacing(1.5) }}>
+            {showSoltek ? (
+              <SoltekMascot
+                size="sm"
+                expression={isCorrect ? "radosny" : "zachecajacy"}
+                message={isCorrect ? t("lesson.correct", "pl") : t("lesson.incorrect", "pl")}
+              />
+            ) : (
+              <Text
+                style={{
+                  textAlign: "center",
+                  fontWeight: "700",
+                  fontSize: theme.fontSize.body,
+                  color: isCorrect ? theme.colors.success : theme.colors.warning,
+                }}
+              >
+                {isCorrect ? t("lesson.correct", "pl") : t("lesson.incorrect", "pl")}
+              </Text>
+            )}
+          </View>
         )}
         <DarkButton
           label={checked ? t("lesson.continue", "pl") : t("lesson.checkAnswer", "pl")}

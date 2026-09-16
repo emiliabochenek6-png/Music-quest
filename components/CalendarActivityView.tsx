@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Pressable, ScrollView, Text, View, StyleSheet } from "react-native";
+import { SoltekMascot } from "@/components/SoltekMascot";
 import { useGamification } from "@/context/GamificationContext";
 import { todayISODate } from "@/lib/gamification/activity";
+import { calendarSoltekComment } from "@/lib/gamification/soltekComments";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 
 const WEEKDAY_LABELS = ["pon", "wt", "śr", "czw", "pt", "sob", "nd"];
@@ -68,6 +70,8 @@ export function CalendarActivityView() {
           <Text style={styles.streakLabel}>passy z rzędu</Text>
         </View>
       </View>
+
+      <SoltekMascot size="sm" expression={state.streakDays >= 1 ? "radosny" : "zachecajacy"} message={calendarSoltekComment(state.streakDays, activeDaysThisMonth)} />
 
       <View style={styles.statsRow}>
         <StatTile icon="⏱" value={`${minutesThisMonth}`} unit="min" label="w tym miesiącu" />
