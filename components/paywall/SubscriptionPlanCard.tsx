@@ -38,12 +38,17 @@ export function SubscriptionPlanCard({
         {
           borderRadius: theme.radius.md,
           borderColor: isSelected ? theme.colors.primary : theme.colors.border,
-          borderWidth: isSelected ? 3 : 1,
-          backgroundColor: theme.colors.surface,
+          borderWidth: theme.borderWidth,
+          backgroundColor: isSelected ? theme.colors.accentSoft : theme.colors.surface,
           padding: theme.spacing(2),
         },
       ]}
     >
+      {isSelected && (
+        <View style={[styles.checkBadge, { backgroundColor: theme.colors.primary, borderColor: theme.colors.cream }]}>
+          <Text style={styles.checkBadgeText}>✓</Text>
+        </View>
+      )}
       {savingsPercent !== undefined && (
         <View style={[styles.badge, { backgroundColor: theme.colors.success }]}>
           <Text style={styles.badgeText}>{t("paywall.plan.savings", "pl", { percent: savingsPercent })}</Text>
@@ -77,5 +82,21 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 11,
     fontWeight: "700",
+  },
+  checkBadge: {
+    position: "absolute",
+    top: -10,
+    left: 12,
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    borderWidth: 2,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  checkBadgeText: {
+    color: "#FFFFFF",
+    fontSize: 12,
+    fontWeight: "800",
   },
 });

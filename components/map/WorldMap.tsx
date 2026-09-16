@@ -3,7 +3,7 @@ import { ScrollView, View, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Defs, LinearGradient, Path, Stop } from "react-native-svg";
 import { NoteGlyph, layoutScatteredNotes } from "@/components/map/NoteGlyph";
-import { WorldNode } from "@/components/map/WorldNode";
+import { WORLD_NODE_ROW_WIDTH, WORLD_NODE_SIZE, WorldNode } from "@/components/map/WorldNode";
 import { WORLDS } from "@/data/worlds";
 import { resolveNodeState } from "@/lib/progression/resolveNodeState";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
@@ -87,9 +87,15 @@ export function WorldMap({ progress, subscription, lessonStars, onSelectWorld }:
 
         {WORLDS.map((world, index) => {
           const state = resolveNodeState(world, progress, subscription, lessonStars);
+          // Label always falls toward whichever side has more room — the
+          // side the path ISN'T currently swung toward (same sine-sign
+          // trick LessonPath's own landmark emoji use) — so it never runs
+          // off the edge of the canvas.
+          const labelSide: "left" | "right" = Math.sin(index * 1.15) >= 0 ? "left" : "right";
+          const left = labelSide === "right" ? nodeX(index) - WORLD_NODE_SIZE / 2 : nodeX(index) - (WORLD_NODE_ROW_WIDTH - WORLD_NODE_SIZE / 2);
           return (
-            <View key={world.id} style={{ position: "absolute", left: nodeX(index) - 65, top: nodeY(index) - 38 }}>
-              <WorldNode world={world} state={state} onPress={onSelectWorld} />
+            <View key={world.id} style={{ position: "absolute", left, top: nodeY(index) - WORLD_NODE_SIZE / 2 }}>
+              <WorldNode world={world} state={state} labelSide={labelSide} onPress={onSelectWorld} />
             </View>
           );
         })}
