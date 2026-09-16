@@ -1,4 +1,6 @@
 import { Pressable, Text, View, StyleSheet } from "react-native";
+import { AppIcon } from "@/components/icons/AppIcon";
+import type { IconName } from "@/components/icons/icons";
 import { t } from "@/lib/i18n/translate";
 import type { TranslationKey } from "@/lib/i18n/translate";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
@@ -16,23 +18,33 @@ interface WorldNodeProps {
   onPress: (world: WorldDefinition) => void;
 }
 
-const WORLD_ICON: Record<string, string> = {
-  note: "🎵",
-  metronome: "🥁",
-  "bar-line": "📏",
-  interval: "🎚️",
-  chord: "🎹",
-  inversion: "🦇",
-  citadel: "🏰",
-  "key-signature": "🗝️",
-  build: "🏗️",
-  beam: "🎼",
-  dictation: "🎧",
-  microphone: "🎤",
+/** mapIconId -> either an emoji fallback or the name of one of the app's
+ * own illustrated icons (components/icons/icons.ts) — only the first 4
+ * worlds have a matching hand-drawn "kraina_" icon so far; the rest keep
+ * their emoji placeholder until the same illustration set is extended. */
+const WORLD_ICON: Record<string, { icon: IconName } | { emoji: string }> = {
+  note: { icon: "kraina_wioska_nut" },
+  metronome: { icon: "kraina_miasto_rytmu" },
+  "bar-line": { icon: "kraina_przystan_taktow" },
+  interval: { icon: "kraina_pasmo_interwalow" },
+  chord: { emoji: "🎹" },
+  inversion: { emoji: "🦇" },
+  citadel: { emoji: "🏰" },
+  "key-signature": { emoji: "🗝️" },
+  build: { emoji: "🏗️" },
+  beam: { emoji: "🎼" },
+  dictation: { emoji: "🎧" },
+  microphone: { emoji: "🎤" },
 };
 
 const LOCKED_COLOR = "#E9DFCE";
 const PREMIUM_COLOR = "#FF9600";
+
+function WorldMapIcon({ mapIconId, size }: { mapIconId: string; size: number }) {
+  const entry = WORLD_ICON[mapIconId];
+  if (!entry) return <Text style={styles.icon}>🎵</Text>;
+  return "icon" in entry ? <AppIcon name={entry.icon} size={size} /> : <Text style={styles.icon}>{entry.emoji}</Text>;
+}
 
 /**
  * One world node on the map — a flat sticker-style circle (thick border,
@@ -71,7 +83,7 @@ export function WorldNode({ world, state, labelSide, onPress }: WorldNodeProps) 
           },
         ]}
       >
-        <Text style={styles.icon}>{isLocked ? "🔒" : (WORLD_ICON[world.mapIconId] ?? "🎵")}</Text>
+        {isLocked ? <AppIcon name="kraina_klodka" size={32} /> : <WorldMapIcon mapIconId={world.mapIconId} size={40} />}
       </Pressable>
     </View>
   );

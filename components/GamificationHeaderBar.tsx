@@ -1,5 +1,7 @@
 import { Pressable, Text, View, StyleSheet } from "react-native";
 import { router } from "expo-router";
+import { AppIcon } from "@/components/icons/AppIcon";
+import type { IconName } from "@/components/icons/icons";
 import { useGamification } from "@/context/GamificationContext";
 import { useSubscription } from "@/context/SubscriptionContext";
 import { getRankForXp } from "@/lib/gamification/rank";
@@ -23,20 +25,20 @@ export function GamificationHeaderBar() {
 
   return (
     <View style={styles.row}>
-      <Pill icon="❤️" label={subscription.isActive ? "∞" : String(heartsInfo.hearts)} />
-      <Pill icon="🔥" label={String(state.streakDays)} />
+      <Pill icon="hud_serce" label={subscription.isActive ? "∞" : String(heartsInfo.hearts)} />
+      <Pill icon="hud_seria_ogien" label={String(state.streakDays)} />
       <Pressable onPress={() => router.push("/(main)/power-ups")} accessibilityRole="button" accessibilityLabel="Sklep Soltka">
-        <Pill icon="🎵" label={String(state.nutki)} />
+        <Pill icon="hud_nutki_waluta" label={String(state.nutki)} />
       </Pressable>
       <RankPill xp={state.xp} />
     </View>
   );
 }
 
-function Pill({ icon, label }: { icon: string; label: string }) {
+function Pill({ icon, label }: { icon: IconName; label: string }) {
   return (
     <View style={styles.pill}>
-      <Text style={styles.pillIcon}>{icon}</Text>
+      <AppIcon name={icon} size={16} />
       <Text style={styles.pillLabel}>{label}</Text>
     </View>
   );
@@ -59,7 +61,7 @@ function RankPill({ xp }: { xp: number }) {
   return (
     <View style={styles.rankPill}>
       <View style={styles.rankHeaderRow}>
-        <Text style={styles.pillIcon}>⭐</Text>
+        <AppIcon name="hud_ranga_gwiazda" size={16} />
         <Text style={styles.pillLabel}>Ranga {rank.rank}</Text>
       </View>
       <View style={styles.rankTrack}>
@@ -86,9 +88,6 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.surface,
     borderWidth: theme.borderWidth,
     borderColor: theme.colors.border,
-  },
-  pillIcon: {
-    fontSize: 13,
   },
   pillLabel: {
     fontSize: 12,

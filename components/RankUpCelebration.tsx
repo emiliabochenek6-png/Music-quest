@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import { Animated, Easing, Modal, Pressable, Text, View, StyleSheet } from "react-native";
 import { DarkButton } from "@/components/exercises/DarkButton";
+import { AppIcon } from "@/components/icons/AppIcon";
 import { SoltekMascot } from "@/components/SoltekMascot";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 
@@ -91,7 +92,9 @@ function ShimmeringStar() {
   return (
     <View style={styles.starWrap}>
       <Animated.View style={[styles.glow, { opacity: glowOpacity, transform: [{ scale: glowScale }] }]} />
-      <Animated.Text style={[styles.starGlyph, { transform: [{ scale: entrance }, { rotate: starRotate }] }]}>⭐</Animated.Text>
+      <Animated.View style={[styles.starGlyph, { transform: [{ scale: entrance }, { rotate: starRotate }] }]}>
+        <AppIcon name="hud_ranga_gwiazda" size={STAR_SIZE} />
+      </Animated.View>
     </View>
   );
 }
@@ -190,7 +193,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#facc15",
   },
   starGlyph: {
-    fontSize: STAR_SIZE,
+    width: STAR_SIZE,
+    height: STAR_SIZE,
   },
   sparkle: {
     position: "absolute",

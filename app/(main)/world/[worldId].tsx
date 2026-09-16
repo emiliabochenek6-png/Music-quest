@@ -1,6 +1,8 @@
 import { Pressable, Text, View, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
+import { AppIcon } from "@/components/icons/AppIcon";
+import type { IconName } from "@/components/icons/icons";
 import { LessonPath } from "@/components/map/LessonPath";
 import { getWorldContent } from "@/data/lessons";
 import { getWorldById } from "@/data/worlds";
@@ -11,20 +13,30 @@ import type { TranslationKey } from "@/lib/i18n/translate";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import type { LessonDefinition } from "@/types/exercises";
 
-const WORLD_ICON: Record<string, string> = {
-  note: "🎵",
-  metronome: "🥁",
-  "bar-line": "📏",
-  interval: "🎚️",
-  chord: "🎹",
-  inversion: "🦇",
-  citadel: "🏰",
-  "key-signature": "🗝️",
-  build: "🏗️",
-  beam: "🎼",
-  dictation: "🎧",
-  microphone: "🎤",
+// Same mapIconId -> icon/emoji table as components/map/WorldNode.tsx's
+// own WORLD_ICON — kept as a separate copy here rather than a shared
+// import since this screen's card renders it at a different size inside
+// a differently-shaped container, not because the mapping itself differs.
+const WORLD_ICON: Record<string, { icon: IconName } | { emoji: string }> = {
+  note: { icon: "kraina_wioska_nut" },
+  metronome: { icon: "kraina_miasto_rytmu" },
+  "bar-line": { icon: "kraina_przystan_taktow" },
+  interval: { icon: "kraina_pasmo_interwalow" },
+  chord: { emoji: "🎹" },
+  inversion: { emoji: "🦇" },
+  citadel: { emoji: "🏰" },
+  "key-signature": { emoji: "🗝️" },
+  build: { emoji: "🏗️" },
+  beam: { emoji: "🎼" },
+  dictation: { emoji: "🎧" },
+  microphone: { emoji: "🎤" },
 };
+
+function WorldCardIcon({ mapIconId }: { mapIconId: string }) {
+  const entry = WORLD_ICON[mapIconId];
+  if (entry && "icon" in entry) return <AppIcon name={entry.icon} size={32} />;
+  return <Text style={{ fontSize: 26 }}>{entry?.emoji ?? "🎵"}</Text>;
+}
 
 /**
  * A world's own "poziomy" (levels) screen — same theme every other
@@ -76,7 +88,7 @@ export default function WorldLevelsScreen() {
 
       <View style={[styles.card, { borderColor: `${world.accentColor}55`, shadowColor: world.accentColor }]}>
         <View style={[styles.cardIcon, { backgroundColor: `${world.accentColor}22`, borderColor: world.accentColor }]}>
-          <Text style={{ fontSize: 26 }}>{WORLD_ICON[world.mapIconId] ?? "🎵"}</Text>
+          <WorldCardIcon mapIconId={world.mapIconId} />
         </View>
         <View style={{ flex: 1 }}>
           <View style={styles.cardTitleRow}>

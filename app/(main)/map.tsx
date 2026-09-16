@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { BottomTabBar } from "@/components/BottomTabBar";
 import { GamificationHeaderBar } from "@/components/GamificationHeaderBar";
+import { AppIcon } from "@/components/icons/AppIcon";
 import { WorldMap } from "@/components/map/WorldMap";
 import { SideMenu } from "@/components/SideMenu";
 import { SideMenuContent } from "@/components/SideMenuContent";
@@ -64,7 +65,7 @@ export default function MapScreen() {
         hitSlop={12}
         style={[styles.menuButton, { top: insets.top + 12 }]}
       >
-        <Text style={{ fontSize: 18 }}>☰</Text>
+        <AppIcon name="hud_menu" size={20} />
       </Pressable>
       <Text style={[styles.title, { top: insets.top + 16 }]}>Music Quest</Text>
       <View style={[styles.headerBarWrap, { top: insets.top + 56 }]}>

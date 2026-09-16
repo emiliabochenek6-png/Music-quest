@@ -1,4 +1,5 @@
 import { Pressable, Text, View, StyleSheet } from "react-native";
+import { AppIcon } from "@/components/icons/AppIcon";
 import type { LessonNodeState } from "@/lib/progression/resolveLessonNodeState";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import type { LessonDefinition } from "@/types/exercises";
@@ -55,7 +56,13 @@ export function LessonNode({ lesson, state, accentHex, stars, onPress }: LessonN
           },
         ]}
       >
-        <Text style={styles.icon}>{isLocked ? "🔒" : state === "completed" ? "⭐" : "▶"}</Text>
+        {isLocked ? (
+          <AppIcon name="kraina_klodka" size={24} />
+        ) : state === "completed" ? (
+          <AppIcon name="hud_ranga_gwiazda" size={24} />
+        ) : (
+          <Text style={styles.icon}>▶</Text>
+        )}
       </Pressable>
       <Text style={[styles.orderLabel, { color: isLocked ? theme.colors.muted : theme.colors.ink }]}>{lesson.order}</Text>
       {state === "completed" && <StarRating stars={stars} />}

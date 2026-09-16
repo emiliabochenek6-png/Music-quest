@@ -1,8 +1,10 @@
 import { useState } from "react";
+import type { ReactNode } from "react";
 import { Pressable, ScrollView, Text, View, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { DarkButton } from "@/components/exercises/DarkButton";
+import { AppIcon } from "@/components/icons/AppIcon";
 import { useGamification } from "@/context/GamificationContext";
 import { useSubscription } from "@/context/SubscriptionContext";
 import { POWER_UP_COSTS } from "@/lib/gamification/powerups";
@@ -36,14 +38,14 @@ export default function PowerUpShopScreen() {
     <View style={[styles.root, { paddingTop: insets.top + 16 }]}>
       <Header onBack={() => router.back()} />
       <View style={styles.balanceRow}>
-        <Text style={styles.balanceIcon}>🎵</Text>
+        <AppIcon name="hud_nutki_waluta" size={22} />
         <Text style={styles.balanceValue}>{state.nutki}</Text>
         <Text style={styles.balanceLabel}>nutek</Text>
       </View>
       {feedback && <Text style={styles.feedback}>{feedback}</Text>}
       <ScrollView contentContainerStyle={styles.list}>
         <ShopCard
-          icon="❄️"
+          icon={<Text style={styles.cardIconText}>❄️</Text>}
           title="Zamrożenie passy"
           description="Chroni Twoją passę, jeśli ominiesz jeden dzień ćwiczeń — zużywa się samo, kiedy będzie potrzebne."
           cost={POWER_UP_COSTS.streakFreeze}
@@ -52,7 +54,7 @@ export default function PowerUpShopScreen() {
           onBuy={handleBuyStreakFreeze}
         />
         <ShopCard
-          icon="❤️"
+          icon={<AppIcon name="hud_serce" size={26} />}
           title="Uzupełnienie serc"
           description={subscription.isActive ? "Masz Premium — serca są już bez limitu." : "Od razu uzupełnia wszystkie serca."}
           cost={POWER_UP_COSTS.heartRefill}
@@ -79,7 +81,7 @@ function ShopCard({
   disabled,
   onBuy,
 }: {
-  icon: string;
+  icon: ReactNode;
   title: string;
   description: string;
   cost: number;
@@ -90,7 +92,7 @@ function ShopCard({
   return (
     <View style={styles.card}>
       <View style={styles.cardHeaderRow}>
-        <Text style={styles.cardIcon}>{icon}</Text>
+        {icon}
         <View style={{ flex: 1 }}>
           <Text style={styles.cardTitle}>{title}</Text>
           {ownedLabel && <Text style={styles.cardOwned}>{ownedLabel}</Text>}
@@ -108,7 +110,8 @@ function Header({ onBack }: { onBack: () => void }) {
       <Pressable onPress={onBack} accessibilityRole="button" accessibilityLabel="Wstecz" hitSlop={12} style={styles.backButton}>
         <Text style={styles.backIcon}>‹</Text>
       </Pressable>
-      <Text style={styles.headerTitle}>🎵 Sklep Soltka</Text>
+      <AppIcon name="hud_nutki_waluta" size={22} />
+      <Text style={styles.headerTitle}>Sklep Soltka</Text>
     </View>
   );
 }
@@ -151,9 +154,6 @@ const styles = StyleSheet.create({
     gap: 6,
     marginBottom: 8,
   },
-  balanceIcon: {
-    fontSize: 20,
-  },
   balanceValue: {
     fontSize: 28,
     fontWeight: "800",
@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 10,
   },
-  cardIcon: {
+  cardIconText: {
     fontSize: 26,
   },
   cardTitle: {

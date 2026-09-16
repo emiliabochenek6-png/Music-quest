@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Pressable, ScrollView, Text, View, StyleSheet } from "react-native";
 import { BadgesCarousel } from "@/components/BadgesCarousel";
+import { AppIcon } from "@/components/icons/AppIcon";
 import { SoltekMascot } from "@/components/SoltekMascot";
 import { useGamification } from "@/context/GamificationContext";
 import { todayISODate } from "@/lib/gamification/activity";
@@ -63,7 +64,7 @@ export function CalendarActivityView() {
   return (
     <ScrollView contentContainerStyle={{ gap: 16, paddingBottom: 24 }}>
       <View style={styles.streakCard}>
-        <Text style={styles.streakIcon}>🔥</Text>
+        <AppIcon name="hud_seria_ogien" size={34} />
         <View style={{ flex: 1 }}>
           <Text style={styles.streakValue}>
             {state.streakDays} {state.streakDays === 1 ? "dzień" : "dni"}
@@ -155,9 +156,6 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.primary,
     borderRadius: theme.radius.md,
     padding: theme.spacing(2),
-  },
-  streakIcon: {
-    fontSize: 34,
   },
   streakValue: {
     fontSize: theme.fontSize.heading,

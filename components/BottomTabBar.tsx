@@ -1,14 +1,15 @@
 import { Pressable, Text, View, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router, usePathname } from "expo-router";
+import { AppIcon } from "@/components/icons/AppIcon";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 
 const TABS = [
-  { href: "/(main)/map", matches: "/map", icon: "🏠", label: "Mapa krain" },
-  { href: "/(main)/daily-challenge", matches: "/daily-challenge", icon: "🎯", label: "Misje" },
-  { href: "/(main)/calendar", matches: "/calendar", icon: "📅", label: "Kalendarz" },
-  { href: "/(main)/settings/subscription-status", matches: "/settings/subscription-status", icon: "💎", label: "Subskrypcja" },
-  { href: "/(main)/settings", matches: "/settings", icon: "⚙️", label: "Ustawienia" },
+  { href: "/(main)/map", matches: "/map", icon: "nav_mapa_krain", label: "Mapa krain" },
+  { href: "/(main)/daily-challenge", matches: "/daily-challenge", icon: "nav_misje", label: "Misje" },
+  { href: "/(main)/calendar", matches: "/calendar", icon: "nav_kalendarz", label: "Kalendarz" },
+  { href: "/(main)/settings/subscription-status", matches: "/settings/subscription-status", icon: "nav_subskrypcja", label: "Subskrypcja" },
+  { href: "/(main)/settings", matches: "/settings", icon: "nav_ustawienia", label: "Ustawienia" },
 ] as const;
 
 /**
@@ -48,7 +49,7 @@ export function BottomTabBar() {
             style={styles.item}
           >
             <View style={[styles.iconWrap, isActive && { backgroundColor: theme.colors.accentSoft }]}>
-              <Text style={{ fontSize: 19 }}>{tab.icon}</Text>
+              <AppIcon name={tab.icon} size={22} />
             </View>
             <Text style={[styles.label, { color: isActive ? theme.colors.primary : theme.colors.muted }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8}>
               {tab.label}
