@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Animated, Pressable, Text, View } from "react-native";
 import { DarkButton } from "@/components/exercises/DarkButton";
+import { scheduleAt } from "@/lib/audio/player";
 import { playMetronome, stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
 import { t } from "@/lib/i18n/translate";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
@@ -27,16 +28,9 @@ export function PulseTapExercise({ exercise, answer, onAnswerChange, checked, lo
   const [started, setStarted] = useState(false);
   const [beatIndex, setBeatIndex] = useState(-1);
   const startTimeRef = useRef<number | null>(null);
-  const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const pulseScale = useRef(new Animated.Value(1)).current;
 
-  useEffect(
-    () => () => {
-      timeoutsRef.current.forEach(clearTimeout);
-      stopAllScheduledAudio();
-    },
-    []
-  );
+  useEffect(() => () => stopAllScheduledAudio(), []);
 
   const taps = answer?.tapTimestampsMs ?? [];
 
@@ -46,20 +40,25 @@ export function PulseTapExercise({ exercise, answer, onAnswerChange, checked, lo
   // getting it wrong never disturbs the already-recorded (and scored)
   // answer.
   function scheduleMetronomeAndPulse() {
-    timeoutsRef.current.forEach(clearTimeout);
-    timeoutsRef.current = [];
     stopAllScheduledAudio();
-    playMetronome({ bpm: exercise.bpm, beatsPerMeasure: exercise.beatsPerMeasure, measureCount: exercise.measureCount });
+    // Shared anchor for both tracks — see MetronomeIndicator's own
+    // startAtMs doc for why the click track and this pulse animation
+    // need to share an exact time origin (and the shared lookahead
+    // scheduler, not independent setTimeouts, to actually stay on it).
+    const startAtMs = Date.now();
+    playMetronome({ bpm: exercise.bpm, beatsPerMeasure: exercise.beatsPerMeasure, measureCount: exercise.measureCount, startAtMs });
     exercise.beatTimesMs.forEach((timeMs, index) => {
-      timeoutsRef.current.push(
-        setTimeout(() => {
+      scheduleAt(
+        timeMs,
+        () => {
           setBeatIndex(index);
           const isAccent = index % exercise.beatsPerMeasure === 0;
           Animated.sequence([
             Animated.timing(pulseScale, { toValue: isAccent ? 1.35 : 1.15, duration: 35, useNativeDriver: true }),
             Animated.timing(pulseScale, { toValue: 1, duration: 140, useNativeDriver: true }),
           ]).start();
-        }, timeMs)
+        },
+        startAtMs
       );
     });
   }

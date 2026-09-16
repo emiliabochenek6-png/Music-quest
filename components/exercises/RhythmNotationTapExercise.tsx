@@ -32,8 +32,10 @@ export function RhythmNotationTapExercise({ exercise, answer, onAnswerChange, ch
   const firstTapTimeRef = useRef<number | null>(null);
   const taps = answer?.tapTimestampsMs ?? [];
   // Drives MetronomeIndicator — token bumps on every play so its pulse
-  // sequence restarts, totalBeats tells it how many beats to schedule.
-  const [metronomePlay, setMetronomePlay] = useState({ token: 0, totalBeats: 0 });
+  // sequence restarts, totalBeats tells it how many beats to schedule,
+  // startAtMs is the SAME anchor passed to playMetronome so the dot
+  // stays in sync with the click track rather than drifting against it.
+  const [metronomePlay, setMetronomePlay] = useState({ token: 0, totalBeats: 0, startAtMs: 0 });
   // Whether the dot's OWN standalone metronome (as opposed to the 🔊
   // button's rhythm-with-metronome playback) is the one currently running.
   const [standaloneOn, setStandaloneOn] = useState(false);
@@ -61,7 +63,7 @@ export function RhythmNotationTapExercise({ exercise, answer, onAnswerChange, ch
     const startAtMs = Date.now();
     playMetronome({ bpm: feltBpm, beatsPerMeasure: feltBeatsPerMeasure, measureCount, pulseSubdivision, startAtMs });
     playRhythm(exercise.requiredTapTimesMs.map((ms) => ms + countInMs), 0.8, startAtMs);
-    setMetronomePlay((prev) => ({ token: prev.token + 1, totalBeats: measureCount * feltBeatsPerMeasure }));
+    setMetronomePlay((prev) => ({ token: prev.token + 1, totalBeats: measureCount * feltBeatsPerMeasure, startAtMs }));
   }
 
   function toggleStandaloneMetronome() {
@@ -71,8 +73,9 @@ export function RhythmNotationTapExercise({ exercise, answer, onAnswerChange, ch
       return;
     }
     setStandaloneOn(true);
-    playMetronome({ bpm: feltBpm, beatsPerMeasure: feltBeatsPerMeasure, measureCount: STANDALONE_METRONOME_MEASURES, pulseSubdivision });
-    setMetronomePlay((prev) => ({ token: prev.token + 1, totalBeats: STANDALONE_METRONOME_MEASURES * feltBeatsPerMeasure }));
+    const startAtMs = Date.now();
+    playMetronome({ bpm: feltBpm, beatsPerMeasure: feltBeatsPerMeasure, measureCount: STANDALONE_METRONOME_MEASURES, pulseSubdivision, startAtMs });
+    setMetronomePlay((prev) => ({ token: prev.token + 1, totalBeats: STANDALONE_METRONOME_MEASURES * feltBeatsPerMeasure, startAtMs }));
   }
 
   function handleTap() {
@@ -114,6 +117,7 @@ export function RhythmNotationTapExercise({ exercise, answer, onAnswerChange, ch
         bpm={feltBpm}
         beatsPerMeasure={feltBeatsPerMeasure}
         totalBeats={metronomePlay.totalBeats}
+        startAtMs={metronomePlay.startAtMs}
         onPress={toggleStandaloneMetronome}
         active={standaloneOn}
       />

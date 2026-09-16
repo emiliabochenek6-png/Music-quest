@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Animated, Pressable } from "react-native";
+import { scheduleAt } from "@/lib/audio/player";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 
 interface MetronomeIndicatorProps {
@@ -10,6 +11,14 @@ interface MetronomeIndicatorProps {
   bpm: number;
   beatsPerMeasure: number;
   totalBeats: number;
+  /** The SAME anchor passed to the matching playMetronome() call (see
+   * MetronomeOptions' own startAtMs doc) — without this, the dot and the
+   * click track each pick their own "now" a beat apart from the other,
+   * which reads as the dot drifting out of sync with what's actually
+   * playing even though each is individually on-tempo. Defaults to
+   * Date.now() only for a caller with no real audio to match (there is
+   * none today — every current use passes this explicitly). */
+  startAtMs?: number;
   size?: number;
   /** When provided, the dot itself becomes tappable — the hosting
    * exercise owns what a tap actually does (see RhythmDictationExercise/
@@ -29,23 +38,29 @@ interface MetronomeIndicatorProps {
  * which play a metronome click track (see lib/audio/rhythmPlayer.ts) but
  * previously gave the player nothing to WATCH, only hear — this
  * schedules the identical bpm/beatsPerMeasure math those exercises' own
- * playMetronome call uses, as a parallel Animated sequence rather than
- * anything wired to the audio itself, so it stays in sync without the
- * audio and visual code needing to share state. */
-export function MetronomeIndicator({ playToken, bpm, beatsPerMeasure, totalBeats, size = 56, onPress, active = false }: MetronomeIndicatorProps) {
+ * playMetronome call uses, through the SAME shared lookahead scheduler
+ * (scheduleAt — see lib/audio/player.ts's own doc on why a raw
+ * setTimeout per event, which this used to do, is a real source of
+ * uneven timing) and the SAME startAtMs anchor, rather than a separately
+ * timed parallel animation loop — that combination is what actually
+ * keeps this in sync with the audio, not just running the same formula
+ * independently. Cancelling old beats on a re-trigger falls out of the
+ * exercises' own stopAllScheduledAudio()/clearScheduledAudio() calls
+ * (already made before scheduling a new play or standalone toggle,
+ * since those need to cancel the CLICK TRACK too) — no separate cleanup
+ * needed here. */
+export function MetronomeIndicator({ playToken, bpm, beatsPerMeasure, totalBeats, startAtMs = Date.now(), size = 56, onPress, active = false }: MetronomeIndicatorProps) {
   const scale = useRef(new Animated.Value(1)).current;
-  const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   useEffect(() => {
-    timeoutsRef.current.forEach(clearTimeout);
-    timeoutsRef.current = [];
     if (playToken === 0) return;
 
     const beatIntervalMs = (60 / bpm) * 1000;
     for (let i = 0; i < totalBeats; i++) {
       const isAccent = i % beatsPerMeasure === 0;
-      timeoutsRef.current.push(
-        setTimeout(() => {
+      scheduleAt(
+        i * beatIntervalMs,
+        () => {
           // A sharp, fast hit followed by a quick return — reads as a
           // percussive "tick" reacting to the beat, rather than a slow
           // breathing pulse (which felt more like ambient animation than
@@ -54,10 +69,10 @@ export function MetronomeIndicator({ playToken, bpm, beatsPerMeasure, totalBeats
             Animated.timing(scale, { toValue: isAccent ? 1.35 : 1.15, duration: 35, useNativeDriver: true }),
             Animated.timing(scale, { toValue: 1, duration: 140, useNativeDriver: true }),
           ]).start();
-        }, i * beatIntervalMs)
+        },
+        startAtMs
       );
     }
-    return () => timeoutsRef.current.forEach(clearTimeout);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playToken]);
 
