@@ -13,6 +13,7 @@ import { useSubscription } from "@/context/SubscriptionContext";
 import { useSessionTimer } from "@/hooks/useSessionTimer";
 import { todayISODate } from "@/lib/gamification/activity";
 import { getUnlockedExercisePool, pickDailyChallengeDefinition } from "@/lib/dailyChallenge/pickDailyChallenge";
+import { NUTKI_REWARDS } from "@/lib/gamification/powerups";
 import { generateExercise } from "@/lib/questions/generate";
 import { isAnswerCorrect } from "@/lib/questions/validate";
 import { t } from "@/lib/i18n/translate";
@@ -60,7 +61,7 @@ export default function DailyChallengeScreen() {
   const insets = useSafeAreaInsets();
   const { progress } = useProgress();
   const { status: subscription } = useSubscription();
-  const { state: gamification, isLoading: gamificationLoading, awardXp, recordActivity, setDailyChallenge } = useGamification();
+  const { state: gamification, isLoading: gamificationLoading, awardXp, addNutki, recordActivity, setDailyChallenge } = useGamification();
   const { getElapsedMinutes } = useSessionTimer("daily-challenge");
 
   const today = todayISODate();
@@ -107,6 +108,7 @@ export default function DailyChallengeScreen() {
     if (correct) {
       setDailyChallenge({ dateISO: today, generated: dailyExercise, completed: true });
       awardXp(XP_DAILY_CHALLENGE_BONUS);
+      addNutki(NUTKI_REWARDS.dailyChallengeCorrect);
       recordActivity(today, { dailyChallengeCompleted: true, minutesSpent: getElapsedMinutes() });
     } else {
       recordActivity(today, { minutesSpent: getElapsedMinutes() });

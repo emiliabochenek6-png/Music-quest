@@ -1,4 +1,5 @@
 import { ScrollView, Text, View, StyleSheet } from "react-native";
+import { POWER_UP_COSTS } from "@/lib/gamification/powerups";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import { HEART_REGEN_MS, MAX_HEARTS, MIN_STARS_TO_ADVANCE_WORLD } from "@/types/gamification";
 
@@ -14,32 +15,42 @@ const RULES: Rule[] = [
   {
     icon: "❤️",
     title: "Serca",
-    body: `Masz ${MAX_HEARTS} serc. Błędna odpowiedź kosztuje 1 serce. Gdy zabraknie serc, nie możesz ćwiczyć dalej, dopóki jedno się nie odnowi (1 serce co ${HEART_REGEN_HOURS} godziny) — albo masz Premium, gdzie serca są bez limitu.`,
+    body: `Masz ${MAX_HEARTS} serc. Błędna odpowiedź kosztuje 1 serce. Gdy zabraknie serc, nie możesz ćwiczyć dalej, dopóki jedno się nie odnowi (1 serce co ${HEART_REGEN_HOURS} godziny) — albo masz Premium, gdzie serca są bez limitu. Serca możesz też uzupełnić od razu za nutki w Sklepie Sołtka.`,
   },
   {
     icon: "⭐",
     title: "XP i ranga",
-    body: "Za każdą poprawną odpowiedź dostajesz punkty doświadczenia (XP). Za ukończenie lekcji bez ani jednego błędu — dodatkowy bonus. Im więcej XP zbierzesz, tym wyższa Twoja ranga.",
+    body: "Za każdą poprawną odpowiedź dostajesz punkty doświadczenia (XP). Za ukończenie lekcji bez ani jednego błędu — dodatkowy bonus. Im więcej XP zbierzesz, tym wyższa Twoja ranga — a Sołtek ogłasza każdy awans osobiście.",
   },
   {
     icon: "🔥",
     title: "Passa",
-    body: "Licznik dni z rzędu, w które ukończyłaś/eś choć jedną lekcję albo wyzwanie dnia. Ćwicz codziennie, żeby jej nie stracić — jeden pominięty dzień i passa wraca do 1.",
+    body: "Licznik dni z rzędu, w które ukończyłaś/eś choć jedną lekcję albo wyzwanie dnia. Ćwicz codziennie, żeby jej nie stracić — jeden pominięty dzień i passa zwykle wraca do 1. Jeśli masz banknięte zamrożenie passy (kupione za nutki), ono samo ochroni Cię przy jednym ominiętym dniu.",
   },
   {
     icon: "🌟",
-    title: "Gwiazdki",
-    body: `Po ukończeniu lekcji dostajesz od 1 do 3 gwiazdek, zależnie od liczby błędów — 0 błędów to zawsze 3 gwiazdki. Możesz wrócić do lekcji jeszcze raz po lepszy wynik. Żeby przejść do następnej krainy, KAŻDA lekcja poprzedniej musi mieć minimum ${MIN_STARS_TO_ADVANCE_WORLD} gwiazdki — samo ukończenie już nie wystarczy.`,
+    title: "Gwiazdki i Perfekcyjna Kraina",
+    body: `Po ukończeniu lekcji dostajesz od 1 do 3 gwiazdek, zależnie od liczby błędów — 0 błędów to zawsze 3 gwiazdki. Możesz wrócić do lekcji jeszcze raz po lepszy wynik. Żeby przejść do następnej krainy, KAŻDA lekcja poprzedniej musi mieć minimum ${MIN_STARS_TO_ADVANCE_WORLD} gwiazdki. A jeśli dociągniesz WSZYSTKIE lekcje danej krainy do 3 gwiazdek — to Perfekcyjna Kraina, specjalna odznaka i bonus w nutkach.`,
+  },
+  {
+    icon: "🎵",
+    title: "Nutki i Sklep Sołtka",
+    body: `Nutki to Twoja własna waluta — zdobywasz je za wyzwanie dnia, perfekcyjną lekcję, ukończenie krainy i co tydzień passy. Nigdy nie da się ich kupić za prawdziwe pieniądze. W Sklepie Sołtka (ikonka 🎵 przy mapie) wymieniasz je na zamrożenie passy (${POWER_UP_COSTS.streakFreeze} nutek) albo uzupełnienie serc (${POWER_UP_COSTS.heartRefill} nutek). Podczas lekcji za ${POWER_UP_COSTS.hint} nutek możesz też poprosić Sołtka o podpowiedź.`,
   },
   {
     icon: "🎯",
     title: "Wyzwanie dnia",
-    body: "Jedno dodatkowe ćwiczenie dziennie z tego, czego już się nauczyłaś/eś w odblokowanych krainach — inne niż te z lekcji, ale tego samego rodzaju. Błędna odpowiedź nic nie kosztuje — od razu dostajesz kolejne zadanie do spróbowania, aż trafisz dobrze i zdobędziesz punkty.",
+    body: "Jedno dodatkowe ćwiczenie dziennie z tego, czego już się nauczyłaś/eś w odblokowanych krainach — inne niż te z lekcji, ale tego samego rodzaju. Częściej trafiają się rzeczy z lekcji, które już skończyłaś/eś — to Twoje powtórki. Błędna odpowiedź nic nie kosztuje — od razu dostajesz kolejne zadanie do spróbowania, aż trafisz dobrze i zdobędziesz punkty.",
+  },
+  {
+    icon: "🏅",
+    title: "Odznaki",
+    body: "Za kamienie milowe — punkty doświadczenia, długość passy, liczbę ukończonych lekcji i perfekcyjne krainy — odblokowujesz odznaki. Zobaczysz je w Kalendarzu aktywności, razem z tym, ile jeszcze brakuje do kolejnej.",
   },
   {
     icon: "📅",
     title: "Kalendarz aktywności",
-    body: "Pokazuje, w które dni ćwiczyłaś/eś, ile to zajęło czasu i ile lekcji ukończyłaś/eś — podsumowanie Twojej passy i postępów.",
+    body: "Pokazuje, w które dni ćwiczyłaś/eś, ile to zajęło czasu i ile lekcji ukończyłaś/eś — podsumowanie Twojej passy, odznak i postępów.",
   },
 ];
 

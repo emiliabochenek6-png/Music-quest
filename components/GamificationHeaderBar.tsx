@@ -1,4 +1,5 @@
-import { Text, View, StyleSheet } from "react-native";
+import { Pressable, Text, View, StyleSheet } from "react-native";
+import { router } from "expo-router";
 import { useGamification } from "@/context/GamificationContext";
 import { useSubscription } from "@/context/SubscriptionContext";
 import { getRankForXp } from "@/lib/gamification/rank";
@@ -24,6 +25,9 @@ export function GamificationHeaderBar() {
     <View style={styles.row}>
       <Pill icon="❤️" label={subscription.isActive ? "∞" : String(heartsInfo.hearts)} />
       <Pill icon="🔥" label={String(state.streakDays)} />
+      <Pressable onPress={() => router.push("/(main)/power-ups")} accessibilityRole="button" accessibilityLabel="Sklep Sołtka">
+        <Pill icon="🎵" label={String(state.nutki)} />
+      </Pressable>
       <RankPill xp={state.xp} />
     </View>
   );

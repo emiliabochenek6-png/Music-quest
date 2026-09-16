@@ -6,11 +6,12 @@ import { applyActivity } from "@/lib/gamification/activity";
 import type { ActivityDelta } from "@/lib/gamification/activity";
 import { deriveHearts, gainHearts as addHearts, loseHeart as deductHeart } from "@/lib/gamification/hearts";
 import type { HeartsInfo } from "@/lib/gamification/hearts";
+import { NUTKI_REWARDS, POWER_UP_COSTS } from "@/lib/gamification/powerups";
 import { getRankForXp, getRankName } from "@/lib/gamification/rank";
 import { mergeGamificationState } from "@/lib/sync/mergeState";
 import { useCloudSync } from "@/lib/sync/useCloudSync";
 import { readJson, STORAGE_KEYS, writeJson } from "@/lib/storage";
-import { INITIAL_GAMIFICATION_STATE } from "@/types/gamification";
+import { INITIAL_GAMIFICATION_STATE, MAX_HEARTS } from "@/types/gamification";
 import type { DailyChallengeState, GamificationState } from "@/types/gamification";
 
 /** A rank-up worth celebrating — see components/RankUpCelebration.tsx's
@@ -49,6 +50,24 @@ interface GamificationContextValue {
   recordLessonStars: (lessonId: string, stars: 1 | 2 | 3) => void;
   recordActivity: (dateISO: string, delta: ActivityDelta) => void;
   setDailyChallenge: (daily: DailyChallengeState | null) => void;
+  /** Adds nutki directly — every award site (a perfect lesson, a
+   * finished world, a correct daily-challenge answer) references
+   * lib/gamification/powerups.ts's own NUTKI_REWARDS rather than a bare
+   * number, so the economy's actual values stay in one place. The
+   * weekly streak bonus is the one exception: it's awarded from inside
+   * recordActivity itself (see that function's own doc), not by a call
+   * site reaching for this. */
+  addNutki: (amount: number) => void;
+  /** Each buy* action does its own single balance-checked setState (see
+   * this provider's own doc) rather than composing a generic
+   * spendNutki — every one of these three is a complete, one-shot
+   * purchase, not a spend that some OTHER effect gets layered onto
+   * after the fact. Returns false (spending nothing) when the balance
+   * is too low, so the calling screen can show "za mało nutek" instead
+   * of silently doing nothing. */
+  buyStreakFreeze: () => boolean;
+  buyHeartRefill: () => boolean;
+  buyHint: () => boolean;
 }
 
 const GamificationContext = createContext<GamificationContextValue | null>(null);
@@ -160,10 +179,70 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
 
   function recordActivity(dateISO: string, delta: ActivityDelta) {
     setState((prev) => {
-      const next: GamificationState = { ...prev, ...applyActivity(prev, dateISO, delta) };
+      const activityResult = applyActivity(prev, dateISO, delta);
+      // Crossing a multiple of 7 (7, 14, 21, ...) — comparing
+      // Math.floor(streakDays / 7) before/after rather than a separate
+      // tracked flag, so this can never fall out of sync with the
+      // streak itself. `> prev` guards the (same-day, no-op) case where
+      // streakDays hasn't actually changed from staying at an exact
+      // multiple of 7.
+      const crossedWeekMilestone =
+        activityResult.streakDays > prev.streakDays &&
+        Math.floor(activityResult.streakDays / 7) > Math.floor(prev.streakDays / 7);
+      const next: GamificationState = {
+        ...prev,
+        ...activityResult,
+        nutki: prev.nutki + (crossedWeekMilestone ? NUTKI_REWARDS.streakWeekMilestone : 0),
+      };
       void writeJson(STORAGE_KEYS.gamification, next);
       return next;
     });
+  }
+
+  function addNutki(amount: number) {
+    setState((prev) => {
+      const next: GamificationState = { ...prev, nutki: prev.nutki + amount };
+      void writeJson(STORAGE_KEYS.gamification, next);
+      return next;
+    });
+  }
+
+  function buyStreakFreeze(): boolean {
+    if (state.nutki < POWER_UP_COSTS.streakFreeze) return false;
+    setState((prev) => {
+      const next: GamificationState = {
+        ...prev,
+        nutki: prev.nutki - POWER_UP_COSTS.streakFreeze,
+        streakFreezes: prev.streakFreezes + 1,
+      };
+      void writeJson(STORAGE_KEYS.gamification, next);
+      return next;
+    });
+    return true;
+  }
+
+  function buyHeartRefill(): boolean {
+    // Nothing to refill — already unlimited. Same no-op stance
+    // loseHeart/gainHearts already take for a premium subscriber.
+    if (subscription.isActive) return false;
+    if (state.nutki < POWER_UP_COSTS.heartRefill) return false;
+    setState((prev) => {
+      const { hearts, lastHeartChangeAtISO } = addHearts(prev, Date.now(), MAX_HEARTS);
+      const next: GamificationState = { ...prev, nutki: prev.nutki - POWER_UP_COSTS.heartRefill, hearts, lastHeartChangeAtISO };
+      void writeJson(STORAGE_KEYS.gamification, next);
+      return next;
+    });
+    return true;
+  }
+
+  function buyHint(): boolean {
+    if (state.nutki < POWER_UP_COSTS.hint) return false;
+    setState((prev) => {
+      const next: GamificationState = { ...prev, nutki: prev.nutki - POWER_UP_COSTS.hint };
+      void writeJson(STORAGE_KEYS.gamification, next);
+      return next;
+    });
+    return true;
   }
 
   function setDailyChallenge(daily: DailyChallengeState | null) {
@@ -188,6 +267,10 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
         recordLessonStars,
         recordActivity,
         setDailyChallenge,
+        addNutki,
+        buyStreakFreeze,
+        buyHeartRefill,
+        buyHint,
       }}
     >
       {children}

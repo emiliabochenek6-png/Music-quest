@@ -13,6 +13,11 @@ interface WorldCompleteModalProps {
    * app/(main)/lesson/[lessonId].tsx's own handleContinue for how this is
    * decided. */
   nextWorldName?: string | null;
+  /** True when every lesson in this world sits at 3 stars — see
+   * app/(main)/lesson/[lessonId].tsx's own handleContinue for how this is
+   * decided. Shows an extra "Perfekcyjna Kraina" plaque alongside the
+   * usual celebration. */
+  isPerfectWorld?: boolean;
   accentHex: string;
   onClose: () => void;
 }
@@ -33,7 +38,7 @@ interface WorldCompleteModalProps {
  * shows through — the celebration owns the whole screen. Confetti only
  * mounts while `visible`, so its fall loops start and stop with the
  * modal rather than animating uselessly in the background. */
-export function WorldCompleteModal({ visible, worldName, nextWorldName, accentHex, onClose }: WorldCompleteModalProps) {
+export function WorldCompleteModal({ visible, worldName, nextWorldName, isPerfectWorld, accentHex, onClose }: WorldCompleteModalProps) {
   return (
     <Modal visible={visible} transparent={false} animationType="fade" onRequestClose={onClose}>
       <View style={styles.backdrop}>
@@ -49,6 +54,17 @@ export function WorldCompleteModal({ visible, worldName, nextWorldName, accentHe
           <Text style={{ fontSize: theme.fontSize.body, fontWeight: "600", color: accentHex, textAlign: "center", marginTop: theme.spacing(0.5) }}>
             Kraina „{worldName}” została ukończona
           </Text>
+          {isPerfectWorld && (
+            <View style={[styles.perfectWorldBadge, { borderColor: `${accentHex}88` }]}>
+              <Text style={{ fontSize: 20 }}>🌟</Text>
+              <Text style={{ fontSize: 13, fontWeight: "800", color: theme.colors.ink, textAlign: "center", marginTop: 2 }}>
+                Perfekcyjna Kraina!
+              </Text>
+              <Text style={{ fontSize: 12, color: theme.colors.muted, textAlign: "center", marginTop: 2 }}>
+                Wszystkie lekcje na 3 gwiazdki
+              </Text>
+            </View>
+          )}
           {nextWorldName && (
             <View style={[styles.nextWorldBadge, { borderColor: `${accentHex}55` }]}>
               <Text style={{ fontSize: 13, color: theme.colors.ink, textAlign: "center" }}>
@@ -103,6 +119,15 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 14,
     borderWidth: theme.borderWidth,
+    backgroundColor: theme.colors.surfaceMuted,
+  },
+  perfectWorldBadge: {
+    marginTop: 14,
+    alignItems: "center",
+    paddingHorizontal: 18,
+    paddingVertical: 12,
+    borderRadius: 14,
+    borderWidth: 2,
     backgroundColor: theme.colors.surfaceMuted,
   },
 });

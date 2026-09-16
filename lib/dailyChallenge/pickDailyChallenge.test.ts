@@ -85,6 +85,21 @@ describe("getUnlockedExercisePool", () => {
     const pool = getUnlockedExercisePool(progress, ACTIVE, fullStars());
     expect(pool.some((e) => e.type === "interval-timed-test")).toBe(false);
   });
+
+  it("enters a COMPLETED lesson's exercises into the pool more times than a merely available one's", () => {
+    const firstWorld = WORLDS[0];
+    const content = getWorldContent(firstWorld.id)!;
+    const firstLesson = content.lessons.find((l) => l.order === 1)!;
+    const secondLesson = content.lessons.find((l) => l.order === 2)!;
+    const progress: ProgressState = { completedWorldIds: new Set(), completedLessonIds: new Set([firstLesson.id]) };
+    const pool = getUnlockedExercisePool(progress, INACTIVE, fullStars());
+
+    const firstLessonExerciseId = firstLesson.exercises[0].id;
+    const secondLessonExerciseId = secondLesson.exercises.find((e) => e.type !== "pulse-tap")?.id ?? secondLesson.exercises[0].id;
+    const countOf = (id: string) => pool.filter((e) => e.id === id).length;
+
+    expect(countOf(firstLessonExerciseId)).toBeGreaterThan(countOf(secondLessonExerciseId));
+  });
 });
 
 describe("pickDailyChallengeDefinition", () => {

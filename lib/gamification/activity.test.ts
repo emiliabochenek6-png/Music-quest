@@ -2,10 +2,10 @@ import { describe, expect, it } from "@jest/globals";
 import { applyActivity, todayISODate } from "@/lib/gamification/activity";
 import type { GamificationState } from "@/types/gamification";
 
-type ActivitySlice = Pick<GamificationState, "lastActiveDateISO" | "streakDays" | "activityLog">;
+type ActivitySlice = Pick<GamificationState, "lastActiveDateISO" | "streakDays" | "activityLog" | "streakFreezes">;
 
-function emptyState(): ActivitySlice {
-  return { lastActiveDateISO: null, streakDays: 0, activityLog: {} };
+function emptyState(streakFreezes = 0): ActivitySlice {
+  return { lastActiveDateISO: null, streakDays: 0, activityLog: {}, streakFreezes };
 }
 
 describe("todayISODate", () => {
@@ -41,6 +41,26 @@ describe("applyActivity", () => {
     const day1 = applyActivity(emptyState(), "2026-03-05", { minutesSpent: 5 });
     const dayAfterGap = applyActivity(day1, "2026-03-08", { minutesSpent: 5 });
     expect(dayAfterGap.streakDays).toBe(1);
+  });
+
+  it("resets the streak after exactly one skipped day when no freeze is banked", () => {
+    const day1 = applyActivity(emptyState(0), "2026-03-05", { minutesSpent: 5 });
+    const afterOneMissedDay = applyActivity(day1, "2026-03-07", { minutesSpent: 5 });
+    expect(afterOneMissedDay.streakDays).toBe(1);
+  });
+
+  it("spends a banked streak freeze to cover exactly one missed day, keeping the streak alive", () => {
+    const day1 = applyActivity(emptyState(1), "2026-03-05", { minutesSpent: 5 });
+    const afterOneMissedDay = applyActivity(day1, "2026-03-07", { minutesSpent: 5 });
+    expect(afterOneMissedDay.streakDays).toBe(2);
+    expect(afterOneMissedDay.streakFreezes).toBe(0);
+  });
+
+  it("still resets the streak when the gap is bigger than one day, even with a freeze banked", () => {
+    const day1 = applyActivity(emptyState(3), "2026-03-05", { minutesSpent: 5 });
+    const afterBigGap = applyActivity(day1, "2026-03-09", { minutesSpent: 5 });
+    expect(afterBigGap.streakDays).toBe(1);
+    expect(afterBigGap.streakFreezes).toBe(3); // untouched — a freeze only covers a 1-day gap
   });
 
   it("accumulates lesson ids completed that day without duplicating a repeat report", () => {

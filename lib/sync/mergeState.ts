@@ -70,13 +70,16 @@ export function mergeProgressState(local: ProgressState, remote: ProgressState):
  * everything here is a monotonic set:
  *   - lessonStars: best-of per lesson id (a worse rating on one side
  *     never overwrites a better one already earned on the other).
- *   - xp: the MAX of the two totals, not the sum — XP is awarded
- *     per-action on whichever device earned it, and two devices under
- *     the same account have likely both been earning XP independently;
- *     summing would double-count every login/merge this ever runs for,
- *     compounding without bound. Max is conservative (undercounts real
- *     total effort across devices) but never inflates — the safer
- *     direction for a number that gates rank-up celebrations.
+ *   - xp/nutki/streakFreezes: the MAX of the two totals, not the sum —
+ *     all three are awarded/bought per-action on whichever device earned
+ *     them, and two devices under the same account have likely both been
+ *     accruing independently; summing would double-count every
+ *     login/merge this ever runs for, compounding without bound. Max is
+ *     conservative (undercounts real total effort/spend across devices)
+ *     but never inflates — the safer direction both for a number that
+ *     gates rank-up celebrations (xp) and for a spendable currency/
+ *     inventory that shouldn't duplicate itself just from logging in on
+ *     a second device (nutki, streakFreezes).
  *   - activityLog: see mergeActivityLogs' own doc.
  *   - streakDays/lastActiveDateISO: the NEWER lastActiveDateISO wins,
  *     taking its own streakDays along with it — a streak is inherently
@@ -112,5 +115,7 @@ export function mergeGamificationState(local: GamificationState, remote: Gamific
     lessonStars,
     activityLog: mergeActivityLogs(local.activityLog, remote.activityLog),
     dailyChallenge: pickNewerDailyChallenge(local.dailyChallenge, remote.dailyChallenge),
+    nutki: Math.max(local.nutki, remote.nutki),
+    streakFreezes: Math.max(local.streakFreezes, remote.streakFreezes),
   };
 }

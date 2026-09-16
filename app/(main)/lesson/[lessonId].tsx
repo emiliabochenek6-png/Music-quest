@@ -20,6 +20,8 @@ import { useSubscription } from "@/context/SubscriptionContext";
 import { useSessionTimer } from "@/hooks/useSessionTimer";
 import { stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
 import { todayISODate } from "@/lib/gamification/activity";
+import { NUTKI_REWARDS, POWER_UP_COSTS } from "@/lib/gamification/powerups";
+import { pickHintTip } from "@/lib/gamification/hintTips";
 import { didWorldJustUnlock } from "@/lib/progression/resolveNodeState";
 import { computeLessonStars, computeLessonStarsProgress } from "@/lib/gamification/stars";
 import { generateExercise, getExerciseSignature } from "@/lib/questions/generate";
@@ -60,7 +62,8 @@ export default function LessonScreen() {
   const { lessonId, worldId } = useLocalSearchParams<{ lessonId: string; worldId: string }>();
   const insets = useSafeAreaInsets();
   const { progress, markLessonCompleted, markWorldCompleted } = useProgress();
-  const { state: gamificationState, getHeartsInfo, loseHeart, gainHearts, awardXp, recordLessonStars, recordActivity } = useGamification();
+  const { state: gamificationState, getHeartsInfo, loseHeart, gainHearts, awardXp, addNutki, buyHint, recordLessonStars, recordActivity } =
+    useGamification();
   const { status: subscriptionStatus } = useSubscription();
   const { getElapsedMinutes } = useSessionTimer(lessonId);
   const [showOutOfHearts, setShowOutOfHearts] = useState(false);
@@ -84,6 +87,10 @@ export default function LessonScreen() {
   // Re-rolled fresh each time handleCheck runs, reset on handleContinue so
   // the next question gets its own independent roll.
   const [showSoltek, setShowSoltek] = useState(false);
+  // Set by handleUseHint below — reset (to null) every time a fresh
+  // exercise starts (handleContinue's advance branch), so a hint bought
+  // for one exercise never lingers onto the next one.
+  const [hintTip, setHintTip] = useState<string | null>(null);
   const [isFinished, setIsFinished] = useState(false);
   const [mistakeCount, setMistakeCount] = useState(0);
   // Disabled for the duration of a clef-trace stroke — see
@@ -104,6 +111,11 @@ export default function LessonScreen() {
   // doc), same "recomputed fresh each time, not carried over" shape as
   // showWorldComplete itself.
   const [unlockedNextWorldName, setUnlockedNextWorldName] = useState<string | null>(null);
+  // True when THIS world-completion also happens to be a "Perfekcyjna
+  // Kraina" — every lesson in the world sitting at 3 stars, not just the
+  // one just finished. Computed fresh in handleContinue (see its own
+  // doc), same "not carried over" shape as unlockedNextWorldName.
+  const [isPerfectWorldCompletion, setIsPerfectWorldCompletion] = useState(false);
 
   // A metronome click track (Miasto Rytmu's rhythm exercises) can run for
   // many measures — without this, leaving the screen any other way than
@@ -189,6 +201,14 @@ export default function LessonScreen() {
   // that kept ringing on into the exercise instead of stopping at the
   // screen transition, same as every other exercise-to-exercise boundary
   // already does via handleContinue/handleCheck below.
+  // Doesn't reveal or eliminate an actual answer option — see
+  // lib/gamification/hintTips.ts's own doc for why. A no-op (nothing
+  // charged, tip stays unset) when the balance is too low; buyHint()
+  // already returns false in that case.
+  function handleUseHint() {
+    if (buyHint()) setHintTip(pickHintTip());
+  }
+
   function handleIntroContinue() {
     stopAllScheduledAudio();
     setIntroDismissed(true);
@@ -214,6 +234,7 @@ export default function LessonScreen() {
       setChecked(false);
       setIsCorrect(null);
       setShowSoltek(false);
+      setHintTip(null);
     } else {
       markLessonCompleted(currentLesson.id);
       const isLastLessonInWorld = currentLesson.order === currentContent.lessons.length;
@@ -221,17 +242,22 @@ export default function LessonScreen() {
       if (isLastLessonInWorld) {
         markWorldCompleted(currentWorld.id);
         setShowWorldComplete(true);
+        addNutki(NUTKI_REWARDS.worldCompleted);
         // Progress/gamification state here is still the PRE-completion
         // snapshot (markWorldCompleted/recordLessonStars just queued their
         // own setState, not applied yet) — projecting this lesson's own
         // just-earned star and this world into synthetic "after" copies
-        // lets didWorldJustUnlock answer this synchronously, without
-        // waiting a render for real state to catch up.
+        // lets didWorldJustUnlock (and the "Perfekcyjna Kraina" check
+        // below) answer synchronously, without waiting a render for real
+        // state to catch up.
+        const bestStarsForThisLesson = Math.max(gamificationState.lessonStars[currentLesson.id] ?? 0, earnedStars) as 1 | 2 | 3;
+        const projectedLessonStars = { ...gamificationState.lessonStars, [currentLesson.id]: bestStarsForThisLesson };
+        const isPerfectWorld = currentContent.lessons.every((l) => projectedLessonStars[l.id] === 3);
+        setIsPerfectWorldCompletion(isPerfectWorld);
+        if (isPerfectWorld) addNutki(NUTKI_REWARDS.perfectWorldBonus);
         const nextWorld = getNextWorld(currentWorld);
         if (nextWorld) {
-          const bestStarsForThisLesson = Math.max(gamificationState.lessonStars[currentLesson.id] ?? 0, earnedStars) as 1 | 2 | 3;
           const projectedProgress = { ...progress, completedWorldIds: new Set(progress.completedWorldIds).add(currentWorld.id) };
-          const projectedLessonStars = { ...gamificationState.lessonStars, [currentLesson.id]: bestStarsForThisLesson };
           const justUnlocked = didWorldJustUnlock(
             nextWorld,
             progress,
@@ -245,7 +271,10 @@ export default function LessonScreen() {
           }
         }
       }
-      if (mistakeCount === 0) awardXp(XP_PERFECT_LESSON_BONUS);
+      if (mistakeCount === 0) {
+        awardXp(XP_PERFECT_LESSON_BONUS);
+        addNutki(NUTKI_REWARDS.perfectLesson);
+      }
       recordLessonStars(currentLesson.id, earnedStars);
       recordActivity(todayISODate(), { minutesSpent: getElapsedMinutes(), lessonIdCompleted: currentLesson.id });
       setIsFinished(true);
@@ -266,6 +295,7 @@ export default function LessonScreen() {
           visible={showWorldComplete}
           worldName={t(world.nameKey as TranslationKey)}
           nextWorldName={unlockedNextWorldName}
+          isPerfectWorld={isPerfectWorldCompletion}
           accentHex={world.accentColor}
           onClose={() => setShowWorldComplete(false)}
         />
@@ -353,6 +383,23 @@ export default function LessonScreen() {
       </ScrollView>
 
       <View style={{ paddingHorizontal: 24, paddingBottom: insets.bottom + 16 }}>
+        {!checked && hintTip && (
+          <View style={{ marginBottom: theme.spacing(1.5) }}>
+            <SoltekMascot size="sm" expression="zachecajacy" message={`💡 ${hintTip}`} />
+          </View>
+        )}
+        {!checked && !hintTip && (
+          <Pressable
+            onPress={handleUseHint}
+            accessibilityRole="button"
+            style={{ alignSelf: "center", marginBottom: theme.spacing(1.5) }}
+            hitSlop={8}
+          >
+            <Text style={{ fontSize: 12, fontWeight: "700", color: theme.colors.muted }}>
+              💡 Podpowiedź Sołtka (-{POWER_UP_COSTS.hint} 🎵)
+            </Text>
+          </Pressable>
+        )}
         {checked && (
           <View style={{ marginBottom: theme.spacing(1.5) }}>
             {showSoltek ? (

@@ -29,22 +29,35 @@ const EMPTY_DAY: DayActivity = { minutesSpent: 0, lessonIdsCompleted: [], dailyC
 
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
+interface StreakResult {
+  streakDays: number;
+  /** Whether a banked streak freeze (GamificationState.streakFreezes)
+   * was just used to cover this gap — the caller (applyActivity) is the
+   * one that actually decrements the count; this function stays pure
+   * and only reports whether it WOULD spend one. */
+  freezeConsumed: boolean;
+}
+
 /** Streak continuation/reset/start logic, isolated from the activityLog
  * merge below so it's easy to reason about (and test) on its own: same
  * day as last time → unchanged; exactly the next calendar day → +1;
- * never active before → starts at 1; anything else (a gap of 2+ days,
- * or a date somehow earlier than `lastActiveDateISO`) → resets to 1,
- * today being the first day of a fresh streak. Comparing two "YYYY-MM-
- * DD" strings via Date.parse (ISO 8601, defaults to UTC midnight for a
- * date-only string) is safe here even though todayISODate itself is
- * timezone-LOCAL — both sides get the same treatment, and only the
- * difference in days between them is ever used, which is invariant
- * under a shared misinterpretation. */
-function nextStreakDays(lastActiveDateISO: string | null, currentStreakDays: number, todayISO: string): number {
-  if (lastActiveDateISO === todayISO) return currentStreakDays;
-  if (lastActiveDateISO === null) return 1;
+ * never active before → starts at 1; EXACTLY one full day skipped (a
+ * gap of 2) with a banked freeze available → still +1, freeze consumed
+ * — the whole point of a streak freeze is covering precisely one missed
+ * day, never more; anything else (a bigger gap, or no freeze left) →
+ * resets to 1, today being the first day of a fresh streak. Comparing
+ * two "YYYY-MM-DD" strings via Date.parse (ISO 8601, defaults to UTC
+ * midnight for a date-only string) is safe here even though
+ * todayISODate itself is timezone-LOCAL — both sides get the same
+ * treatment, and only the difference in days between them is ever used,
+ * which is invariant under a shared misinterpretation. */
+function nextStreakDays(lastActiveDateISO: string | null, currentStreakDays: number, todayISO: string, streakFreezesAvailable: number): StreakResult {
+  if (lastActiveDateISO === todayISO) return { streakDays: currentStreakDays, freezeConsumed: false };
+  if (lastActiveDateISO === null) return { streakDays: 1, freezeConsumed: false };
   const dayDiff = Math.round((Date.parse(todayISO) - Date.parse(lastActiveDateISO)) / MS_PER_DAY);
-  return dayDiff === 1 ? currentStreakDays + 1 : 1;
+  if (dayDiff === 1) return { streakDays: currentStreakDays + 1, freezeConsumed: false };
+  if (dayDiff === 2 && streakFreezesAvailable > 0) return { streakDays: currentStreakDays + 1, freezeConsumed: true };
+  return { streakDays: 1, freezeConsumed: false };
 }
 
 /** Folds one day's new activity into GamificationState's own
@@ -59,10 +72,10 @@ function nextStreakDays(lastActiveDateISO: string | null, currentStreakDays: num
  * once even if the same lesson is somehow reported twice, and
  * dailyChallengeCompleted only ever goes false → true, never back. */
 export function applyActivity(
-  state: Pick<GamificationState, "lastActiveDateISO" | "streakDays" | "activityLog">,
+  state: Pick<GamificationState, "lastActiveDateISO" | "streakDays" | "activityLog" | "streakFreezes">,
   dateISO: string,
   delta: ActivityDelta
-): Pick<GamificationState, "lastActiveDateISO" | "streakDays" | "activityLog"> {
+): Pick<GamificationState, "lastActiveDateISO" | "streakDays" | "activityLog" | "streakFreezes"> {
   const existing = state.activityLog[dateISO] ?? EMPTY_DAY;
   const lessonIdsCompleted =
     delta.lessonIdCompleted && !existing.lessonIdsCompleted.includes(delta.lessonIdCompleted)
@@ -73,9 +86,11 @@ export function applyActivity(
     lessonIdsCompleted,
     dailyChallengeCompleted: existing.dailyChallengeCompleted || (delta.dailyChallengeCompleted ?? false),
   };
+  const { streakDays, freezeConsumed } = nextStreakDays(state.lastActiveDateISO, state.streakDays, dateISO, state.streakFreezes);
   return {
     lastActiveDateISO: dateISO,
-    streakDays: nextStreakDays(state.lastActiveDateISO, state.streakDays, dateISO),
+    streakDays,
     activityLog: { ...state.activityLog, [dateISO]: merged },
+    streakFreezes: freezeConsumed ? state.streakFreezes - 1 : state.streakFreezes,
   };
 }

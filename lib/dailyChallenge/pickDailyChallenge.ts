@@ -22,11 +22,24 @@ const EXCLUDED_TYPES: ReadonlySet<ExerciseType> = new Set<ExerciseType>([
   "rhythm-notation-tap",
 ]);
 
+/** A completed lesson's own exercises are entered into the pool this many
+ * times each, vs. once for a lesson that's merely available/in-progress —
+ * uniform random selection over a pool built this way then naturally
+ * favors already-learned material more often than brand-new material,
+ * without needing a separate weighted-random implementation or a second
+ * pool type. This is the daily challenge's actual "review" lever: recently
+ * finished content resurfaces more, not exclusively. */
+const REVIEW_WEIGHT = 3;
+
 /** Every ExerciseDefinition across every world/lesson the player has
  * already unlocked (available OR completed — a finished lesson's own
  * content still fairly counts as "known," and re-testing it is exactly
  * the kind of light review a daily challenge is for), short excluded
- * multi-step types. Reuses the SAME resolveNodeState/resolveLessonNodeState
+ * multi-step types. Completed lessons' exercises are repeated
+ * REVIEW_WEIGHT times each (see that constant's own doc) so the daily
+ * challenge leans toward reviewing what's already been learned rather
+ * than picking uniformly across "just unlocked" and "long finished"
+ * content alike. Reuses the SAME resolveNodeState/resolveLessonNodeState
  * this app's own map/levels screens already gate navigation with, so the
  * pool can never include content the player couldn't otherwise reach —
  * including resolveNodeState's own __DEV__ bypass (unlock-everything in
@@ -46,8 +59,10 @@ export function getUnlockedExercisePool(
     for (const lesson of content.lessons) {
       const lessonState = resolveLessonNodeState(lesson, content.lessons, progress.completedLessonIds);
       if (lessonState !== "available" && lessonState !== "completed") continue;
+      const weight = lessonState === "completed" ? REVIEW_WEIGHT : 1;
       for (const exercise of lesson.exercises) {
-        if (!EXCLUDED_TYPES.has(exercise.type)) pool.push(exercise);
+        if (EXCLUDED_TYPES.has(exercise.type)) continue;
+        for (let i = 0; i < weight; i++) pool.push(exercise);
       }
     }
   }

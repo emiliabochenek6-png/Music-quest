@@ -44,6 +44,14 @@ describe("mergeGamificationState", () => {
     expect(merged.xp).toBe(300);
   });
 
+  it("takes the MAX of nutki and streakFreezes too, not the sum", () => {
+    const local = gamification({ nutki: 40, streakFreezes: 2 });
+    const remote = gamification({ nutki: 12, streakFreezes: 3 });
+    const merged = mergeGamificationState(local, remote, NOW);
+    expect(merged.nutki).toBe(40);
+    expect(merged.streakFreezes).toBe(3);
+  });
+
   it("sums minutesSpent and unions lessons for a day BOTH sides logged activity on", () => {
     const local = gamification({
       activityLog: { "2026-03-09": { minutesSpent: 10, lessonIdsCompleted: ["l1"], dailyChallengeCompleted: false } },

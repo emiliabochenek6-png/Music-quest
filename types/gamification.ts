@@ -63,6 +63,18 @@ export interface GamificationState {
   lessonStars: Record<string, 1 | 2 | 3>;
   activityLog: Record<string, DayActivity>;
   dailyChallenge: DailyChallengeState | null;
+  /** The spendable soft currency — see lib/gamification/powerups.ts's
+   * own doc. Deliberately separate from `xp`: xp stays a pure skill/rank
+   * measure that only ever goes up, nutki is meant to be earned AND
+   * spent. Never purchasable with real money (see that same doc). */
+  nutki: number;
+  /** How many missed-day passes are banked — consumed automatically by
+   * lib/gamification/activity.ts's own nextStreakDays the next time a
+   * gap would otherwise reset the streak to 1, one freeze per missed
+   * day. Bought with nutki (components/powerups/PowerUpShop.tsx), never
+   * applied manually — there's no "use" action, only "own one or not"
+   * at the moment a gap actually happens. */
+  streakFreezes: number;
 }
 
 export const INITIAL_GAMIFICATION_STATE: GamificationState = {
@@ -74,4 +86,6 @@ export const INITIAL_GAMIFICATION_STATE: GamificationState = {
   lessonStars: {},
   activityLog: {},
   dailyChallenge: null,
+  nutki: 0,
+  streakFreezes: 0,
 };
