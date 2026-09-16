@@ -288,20 +288,42 @@ export function clearScheduledAudio(): void {
 export interface SamplePool {
   trigger(velocity: number): void;
   stop(): void;
+  /** Forces the pool's native players to exist right now, if they don't
+   * already — see the pool's own doc for why a caller about to schedule a
+   * sequence should call this once, up front, rather than leaving it to
+   * happen implicitly on the first trigger(). Idempotent — a pool already
+   * warmed up (or already used) does nothing. */
+  warmUp(): void;
 }
 
 /** A small pool of players for the same short sample, reused instead of
  * constructing (and tearing down) a brand-new native player on every
  * trigger — see the block doc above for why that construction cost is a
  * real source of uneven-sounding playback once several sounds are
- * scheduled close together. The rewind-to-start each reuse needs happens
- * in a "just finished" listener (attached once, at creation) rather than
- * at trigger time — seekTo() is itself an async native call, and calling
- * it immediately before play() would put that latency right on the
- * critical "fire exactly on time" path. */
+ * scheduled close together. Construction stays LAZY — deferred until
+ * warmUp()/trigger() actually runs, not done here at createSamplePool()
+ * itself — because every pool in this module is built as a top-level
+ * `const` at module load (see rhythmPlayer.ts), and that same module gets
+ * imported during this app's static web export, which pre-renders every
+ * route in a plain Node.js process with no `Audio`/browser APIs at all;
+ * constructing real players that early crashed that build outright.
+ * What USED to make this lazy scheme a smoothness problem wasn't laziness
+ * itself, but WHERE the deferred construction landed: inside the
+ * scheduler's fire callback for the very first scheduled beat — the one
+ * moment most critical to get right, since a session's opening beat is
+ * also the one a player's ear has nothing else to judge timing against
+ * yet. warmUp() exists so a caller (playMetronome/playRhythm/
+ * playDanceFragment, all real interactive code paths, never touched
+ * during static rendering) can force that same construction to happen
+ * synchronously, up front, before scheduling a single event — still
+ * lazy relative to module load, just no longer lazy relative to when a
+ * beat is actually due. The rewind-to-start each reuse needs happens in
+ * a "just finished" listener (attached once, at construction) rather
+ * than at trigger time — seekTo() is itself an async native call, and
+ * calling it immediately before play() would put that latency right on
+ * the critical "fire exactly on time" path. */
 export function createSamplePool(source: number, size: number): SamplePool {
   let players: AudioPlayer[] | null = null;
-  let nextIndex = 0;
 
   function ensurePlayers(): AudioPlayer[] {
     if (!players) {
@@ -318,7 +340,12 @@ export function createSamplePool(source: number, size: number): SamplePool {
     return players;
   }
 
+  let nextIndex = 0;
+
   return {
+    warmUp(): void {
+      ensurePlayers();
+    },
     trigger(velocity: number): void {
       const pool = ensurePlayers();
       const player = pool[nextIndex];

@@ -18,8 +18,19 @@ import { formatScientific, midiToNote, noteToMidi, type Note } from "@/lib/music
 // NAMED pools below (accent/weak click, clap) since each needs its own
 // tuned size, distinct from the generic lazy per-source pool getPool()
 // provides.
-const accentClickPool = createSamplePool(CLICK_ACCENT_SAMPLE, 3);
-const weakClickPool = createSamplePool(CLICK_WEAK_SAMPLE, 3);
+// Sized past "one per beat" — a compound-meter click track doesn't just
+// click once per felt pulse, it also reuses weakClickPool for every
+// subdivision "-ta" tick inside that same pulse (see playMetronome
+// below), so this pool cycles through far more triggers per second than
+// its old size of 3 assumed. Bumped for the same reason clapPool was
+// (see its own doc): too few players means the Nth-ahead reuse lands
+// before a still-settling seekTo(0) from a couple of triggers ago has
+// actually finished, which is exactly what an uneven-sounding click
+// track traces back to. accentClickPool never gets subdivision ticks
+// (only ever one trigger per measure's downbeat), so it keeps a smaller,
+// still-comfortable margin.
+const accentClickPool = createSamplePool(CLICK_ACCENT_SAMPLE, 4);
+const weakClickPool = createSamplePool(CLICK_WEAK_SAMPLE, 6);
 // Sized a bit larger than the click pools — some authored rhythm patterns
 // have onsets much closer together than most metronome beat intervals, so
 // a clap needs to be free for reuse sooner. clap.wav itself is 130ms —
@@ -126,6 +137,12 @@ export interface MetronomeOptions {
  * why this app trades live synthesis for pre-rendered samples throughout). */
 export function playMetronome(options: MetronomeOptions): void {
   const { bpm, beatsPerMeasure, measureCount, accentVelocity = 0.55, weakVelocity = 0.3, pulseSubdivision = 1, startAtMs = Date.now() } = options;
+  // Forces both pools' native players to exist right now, before the
+  // FIRST beat is even scheduled — see createSamplePool's own warmUp()
+  // doc for why that first beat used to be the one most likely to sound
+  // late/uneven.
+  accentClickPool.warmUp();
+  weakClickPool.warmUp();
   const beatIntervalMs = (60 / bpm) * 1000;
   const subdivisionIntervalMs = beatIntervalMs / pulseSubdivision;
   metronomeBeatTimesMs(bpm, beatsPerMeasure, measureCount).forEach((timeMs, index) => {
@@ -150,6 +167,9 @@ export function playMetronome(options: MetronomeOptions): void {
  * identical value both calls were given when a metronome plays underneath
  * this pattern, so the two tracks share one exact time origin. */
 export function playRhythm(onsetsMs: readonly number[], velocity = 0.8, startAtMs: number = Date.now()): void {
+  // Same reasoning as playMetronome's own warmUp() call — get the pool's
+  // players built before the first onset is even scheduled, not on it.
+  clapPool.warmUp();
   onsetsMs.forEach((timeMs) => {
     schedulePooled(clapPool, velocity, timeMs, startAtMs);
   });
@@ -255,6 +275,10 @@ const OFFBEAT_CHORD_TONES = [MELODY_NOTE_SAMPLES.C4, MELODY_NOTE_SAMPLES.E4, MEL
  * construction jitter became audible here too. */
 export function playDanceFragment(options: DanceFragmentOptions): void {
   const { bpm, beatsPerMeasure, measureCount = 4, pulseSubdivision = 1 } = options;
+  // Same reasoning as playMetronome/playRhythm's own warmUp() calls —
+  // every distinct sample source this fragment ever plays, warmed up
+  // before the downbeat is even scheduled.
+  [MELODY_NOTE_SAMPLES.C3, MELODY_NOTE_SAMPLES.G4, ...OFFBEAT_CHORD_TONES].forEach((source) => getPool(source).warmUp());
   const beatIntervalMs = (60 / bpm) * 1000;
   const subdivisionIntervalMs = beatIntervalMs / pulseSubdivision;
   const totalBeats = beatsPerMeasure * measureCount;
