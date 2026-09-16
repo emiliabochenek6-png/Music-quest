@@ -36,7 +36,7 @@ describe("getEarnedBadgeIds", () => {
   it("earns xp/streak/lesson-count badges once their threshold is crossed", () => {
     const earned = getEarnedBadgeIds(gamification({ xp: 500, streakDays: 7 }), 25);
     expect(earned.has("xp-500")).toBe(true);
-    expect(earned.has("xp-2000")).toBe(false);
+    expect(earned.has("xp-1500")).toBe(false);
     expect(earned.has("streak-7")).toBe(true);
     expect(earned.has("lessons-25")).toBe(true);
     expect(earned.has("lessons-100")).toBe(false);

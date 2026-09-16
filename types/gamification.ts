@@ -71,7 +71,7 @@ export interface GamificationState {
   /** How many missed-day passes are banked — consumed automatically by
    * lib/gamification/activity.ts's own nextStreakDays the next time a
    * gap would otherwise reset the streak to 1, one freeze per missed
-   * day. Bought with nutki (components/powerups/PowerUpShop.tsx), never
+   * day. Bought with nutki (app/(main)/power-ups.tsx), never
    * applied manually — there's no "use" action, only "own one or not"
    * at the moment a gap actually happens. */
   streakFreezes: number;
@@ -89,3 +89,32 @@ export const INITIAL_GAMIFICATION_STATE: GamificationState = {
   nutki: 0,
   streakFreezes: 0,
 };
+
+function finiteOr(value: unknown, fallback: number): number {
+  return typeof value === "number" && Number.isFinite(value) ? value : fallback;
+}
+
+/** Reconciles a value loaded from storage (AsyncStorage or the Supabase
+ * cloud mirror) against INITIAL_GAMIFICATION_STATE — a blob saved by an
+ * older version of the app, before a field like `nutki`/`streakFreezes`
+ * existed, is missing that key entirely, so `{ ...stored }` alone would
+ * leave it `undefined`. The FIRST arithmetic op on an undefined number
+ * (e.g. addNutki's `prev.nutki + amount`) then produces NaN, which
+ * happily round-trips through more state updates and UI labels
+ * (`String(NaN)` renders as the literal text "NaN") without ever
+ * crashing anything — so it has to be caught here, at the one place
+ * every stored/remote snapshot passes through before becoming real
+ * state, rather than patched at each call site. `null`/`undefined`
+ * input (nothing stored yet) returns the defaults outright. */
+export function sanitizeGamificationState(stored: Partial<GamificationState> | null | undefined): GamificationState {
+  if (!stored) return INITIAL_GAMIFICATION_STATE;
+  return {
+    ...INITIAL_GAMIFICATION_STATE,
+    ...stored,
+    xp: finiteOr(stored.xp, 0),
+    hearts: finiteOr(stored.hearts, MAX_HEARTS),
+    streakDays: finiteOr(stored.streakDays, 0),
+    nutki: finiteOr(stored.nutki, 0),
+    streakFreezes: finiteOr(stored.streakFreezes, 0),
+  };
+}

@@ -2,11 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { Platform } from "react-native";
 import Purchases from "react-native-purchases";
-import {
-  purchasePlan,
-  restorePurchases as restorePurchasesApi,
-  subscriptionStatusFromCustomerInfo,
-} from "@/lib/subscriptions/purchases";
+import { purchasePlan, subscriptionStatusFromCustomerInfo } from "@/lib/subscriptions/purchases";
 import type { SubscriptionPlan, SubscriptionStatus } from "@/types/content";
 
 /** react-native-purchases wraps StoreKit/Play Billing — there is no web
@@ -33,7 +29,6 @@ interface SubscriptionContextValue {
   status: SubscriptionStatus;
   isLoading: boolean;
   purchase: (plan: SubscriptionPlan) => Promise<void>;
-  restore: () => Promise<void>;
 }
 
 const SubscriptionContext = createContext<SubscriptionContextValue | null>(null);
@@ -84,16 +79,8 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
     setStatus(subscriptionStatusFromCustomerInfo(info));
   }
 
-  async function restore() {
-    if (IS_WEB) {
-      throw new Error("Przywracanie zakupów nie jest dostępne w wersji przeglądarkowej — pobierz aplikację na telefon.");
-    }
-    const info = await restorePurchasesApi();
-    setStatus(subscriptionStatusFromCustomerInfo(info));
-  }
-
   return (
-    <SubscriptionContext.Provider value={{ status, isLoading, purchase, restore }}>
+    <SubscriptionContext.Provider value={{ status, isLoading, purchase }}>
       {children}
     </SubscriptionContext.Provider>
   );

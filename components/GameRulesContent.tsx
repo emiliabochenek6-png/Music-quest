@@ -15,12 +15,12 @@ const RULES: Rule[] = [
   {
     icon: "❤️",
     title: "Serca",
-    body: `Masz ${MAX_HEARTS} serc. Błędna odpowiedź kosztuje 1 serce. Gdy zabraknie serc, nie możesz ćwiczyć dalej, dopóki jedno się nie odnowi (1 serce co ${HEART_REGEN_HOURS} godziny) — albo masz Premium, gdzie serca są bez limitu. Serca możesz też uzupełnić od razu za nutki w Sklepie Sołtka.`,
+    body: `Masz ${MAX_HEARTS} serc. Błędna odpowiedź kosztuje 1 serce. Gdy zabraknie serc, nie możesz ćwiczyć dalej, dopóki jedno się nie odnowi (1 serce co ${HEART_REGEN_HOURS} godziny) — albo masz Premium, gdzie serca są bez limitu. Serca możesz też uzupełnić od razu za nutki w Sklepie Soltka.`,
   },
   {
     icon: "⭐",
     title: "XP i ranga",
-    body: "Za każdą poprawną odpowiedź dostajesz punkty doświadczenia (XP). Za ukończenie lekcji bez ani jednego błędu — dodatkowy bonus. Im więcej XP zbierzesz, tym wyższa Twoja ranga — a Sołtek ogłasza każdy awans osobiście.",
+    body: "Za każdą poprawną odpowiedź dostajesz punkty doświadczenia (XP). Za ukończenie lekcji bez ani jednego błędu — dodatkowy bonus. Im więcej XP zbierzesz, tym wyższa Twoja ranga — a Soltek ogłasza każdy awans osobiście.",
   },
   {
     icon: "🔥",
@@ -34,8 +34,8 @@ const RULES: Rule[] = [
   },
   {
     icon: "🎵",
-    title: "Nutki i Sklep Sołtka",
-    body: `Nutki to Twoja własna waluta — zdobywasz je za wyzwanie dnia, perfekcyjną lekcję, ukończenie krainy i co tydzień passy. Nigdy nie da się ich kupić za prawdziwe pieniądze. W Sklepie Sołtka (ikonka 🎵 przy mapie) wymieniasz je na zamrożenie passy (${POWER_UP_COSTS.streakFreeze} nutek) albo uzupełnienie serc (${POWER_UP_COSTS.heartRefill} nutek). Podczas lekcji za ${POWER_UP_COSTS.hint} nutek możesz też poprosić Sołtka o podpowiedź.`,
+    title: "Nutki i Sklep Soltka",
+    body: `Nutki to Twoja własna waluta — zdobywasz je za wyzwanie dnia, perfekcyjną lekcję, ukończenie krainy i co tydzień passy. Nigdy nie da się ich kupić za prawdziwe pieniądze. W Sklepie Soltka (ikonka 🎵 przy mapie) wymieniasz je na zamrożenie passy (${POWER_UP_COSTS.streakFreeze} nutek) albo uzupełnienie serc (${POWER_UP_COSTS.heartRefill} nutek). Podczas lekcji za ${POWER_UP_COSTS.hint} nutek możesz też poprosić Soltka o podpowiedź.`,
   },
   {
     icon: "🎯",

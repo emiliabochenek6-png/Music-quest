@@ -15,7 +15,7 @@ import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
  * one of the app's five main sections. Only sells power-ups that make
  * sense to buy AHEAD of time — a banked streak freeze (consumed
  * automatically later, see lib/gamification/activity.ts's own doc) and
- * an instant heart refill. "Podpowiedź Sołtka" (hint) is bought in the
+ * an instant heart refill. "Podpowiedź Soltka" (hint) is bought in the
  * moment it's needed, from inside a lesson itself, not stocked up here.
  */
 export default function PowerUpShopScreen() {
@@ -62,7 +62,7 @@ export default function PowerUpShopScreen() {
         <View style={styles.hintNote}>
           <Text style={styles.hintNoteIcon}>💡</Text>
           <Text style={styles.hintNoteText}>
-            Podpowiedź Sołtka (-{POWER_UP_COSTS.hint} 🎵) kupujesz podczas lekcji, w chwili gdy jej potrzebujesz.
+            Podpowiedź Soltka (-{POWER_UP_COSTS.hint} 🎵) kupujesz podczas lekcji, w chwili gdy jej potrzebujesz.
           </Text>
         </View>
       </ScrollView>
@@ -108,7 +108,7 @@ function Header({ onBack }: { onBack: () => void }) {
       <Pressable onPress={onBack} accessibilityRole="button" accessibilityLabel="Wstecz" hitSlop={12} style={styles.backButton}>
         <Text style={styles.backIcon}>‹</Text>
       </Pressable>
-      <Text style={styles.headerTitle}>🎵 Sklep Sołtka</Text>
+      <Text style={styles.headerTitle}>🎵 Sklep Soltka</Text>
     </View>
   );
 }

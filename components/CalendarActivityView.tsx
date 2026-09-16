@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { Pressable, ScrollView, Text, View, StyleSheet } from "react-native";
+import { BadgesCarousel } from "@/components/BadgesCarousel";
 import { SoltekMascot } from "@/components/SoltekMascot";
 import { useGamification } from "@/context/GamificationContext";
-import { useProgress } from "@/context/ProgressContext";
 import { todayISODate } from "@/lib/gamification/activity";
-import { BADGES, getEarnedBadgeIds } from "@/lib/gamification/badges";
 import { calendarSoltekComment } from "@/lib/gamification/soltekComments";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 
@@ -39,9 +38,7 @@ function buildMonthCells(year: number, month0: number): (string | null)[] {
  * spędziło się i co się zrobiło"). */
 export function CalendarActivityView() {
   const { state } = useGamification();
-  const { progress } = useProgress();
   const [monthOffset, setMonthOffset] = useState(0);
-  const earnedBadgeIds = getEarnedBadgeIds(state, progress.completedLessonIds.size);
 
   const today = new Date();
   const viewedYear = today.getFullYear();
@@ -84,23 +81,7 @@ export function CalendarActivityView() {
       </View>
 
       <View style={styles.calendarCard}>
-        <Text style={styles.badgesTitle}>🏅 Odznaki</Text>
-        <View style={styles.badgesGrid}>
-          {BADGES.map((badge) => {
-            const earned = earnedBadgeIds.has(badge.id);
-            return (
-              <View key={badge.id} style={[styles.badgeChip, !earned && styles.badgeChipLocked]}>
-                <Text style={[styles.badgeIcon, !earned && styles.badgeIconLocked]}>{badge.icon}</Text>
-                <Text style={styles.badgeTitle} numberOfLines={2}>
-                  {badge.title}
-                </Text>
-                <Text style={styles.badgeDescription} numberOfLines={2}>
-                  {badge.description}
-                </Text>
-              </View>
-            );
-          })}
-        </View>
+        <BadgesCarousel />
       </View>
 
       <View style={styles.calendarCard}>
@@ -223,47 +204,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: theme.colors.muted,
     textAlign: "center",
-  },
-  badgesTitle: {
-    fontSize: 15,
-    fontWeight: "800",
-    color: theme.colors.ink,
-    marginBottom: 10,
-  },
-  badgesGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 10,
-  },
-  badgeChip: {
-    width: "47%",
-    gap: 2,
-    backgroundColor: theme.colors.accentSoft,
-    borderWidth: theme.borderWidth,
-    borderColor: theme.colors.primary,
-    borderRadius: theme.radius.sm,
-    padding: theme.spacing(1.25),
-  },
-  badgeChipLocked: {
-    backgroundColor: theme.colors.surfaceMuted,
-    borderColor: theme.colors.border,
-    opacity: 0.6,
-  },
-  badgeIcon: {
-    fontSize: 20,
-  },
-  badgeIconLocked: {
-    opacity: 0.5,
-  },
-  badgeTitle: {
-    fontSize: 12,
-    fontWeight: "800",
-    color: theme.colors.ink,
-  },
-  badgeDescription: {
-    fontSize: 10.5,
-    fontWeight: "600",
-    color: theme.colors.muted,
   },
   calendarCard: {
     backgroundColor: theme.colors.surface,

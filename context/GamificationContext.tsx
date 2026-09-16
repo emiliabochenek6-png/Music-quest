@@ -11,7 +11,7 @@ import { getRankForXp, getRankName } from "@/lib/gamification/rank";
 import { mergeGamificationState } from "@/lib/sync/mergeState";
 import { useCloudSync } from "@/lib/sync/useCloudSync";
 import { readJson, STORAGE_KEYS, writeJson } from "@/lib/storage";
-import { INITIAL_GAMIFICATION_STATE, MAX_HEARTS } from "@/types/gamification";
+import { INITIAL_GAMIFICATION_STATE, MAX_HEARTS, sanitizeGamificationState } from "@/types/gamification";
 import type { DailyChallengeState, GamificationState } from "@/types/gamification";
 
 /** A rank-up worth celebrating — see components/RankUpCelebration.tsx's
@@ -99,7 +99,11 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
     let cancelled = false;
     readJson<GamificationState>(STORAGE_KEYS.gamification).then((stored) => {
       if (cancelled) return;
-      if (stored) setState(stored);
+      // sanitizeGamificationState fills in any field a pre-Nutki save
+      // never had (see its own doc) — without this, an old blob missing
+      // `nutki` loads as `undefined` and the first addNutki call turns it
+      // into a persistent NaN.
+      if (stored) setState(sanitizeGamificationState(stored));
       setIsLoading(false);
     });
     return () => {

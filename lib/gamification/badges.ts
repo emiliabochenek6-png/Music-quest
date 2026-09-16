@@ -6,22 +6,81 @@ export interface BadgeDefinition {
   id: string;
   icon: string;
   title: string;
-  /** Describes the THRESHOLD, not whether it's met — CalendarActivityView
-   * (the one consumer) decides how to style an earned vs. not-yet-earned
-   * badge itself. */
+  /** Describes the THRESHOLD, not whether it's met — CalendarActivityView/
+   * DailyMissionsCard (the two consumers) decide how to style an earned
+   * vs. not-yet-earned badge themselves. */
   description: string;
 }
 
+/** Badge copy defaults to the masculine grammatical form throughout
+ * ("uczeń", not "uczennica") — ProfileContext has no stored gender to
+ * branch on, and masculine is the requested fallback when one form has
+ * to be picked. */
+interface BadgeTier {
+  threshold: number;
+  title: string;
+}
+
+const XP_TIERS: readonly BadgeTier[] = [
+  { threshold: 500, title: "Uczeń gwiazd" },
+  { threshold: 1500, title: "Kolekcjoner gwiazd" },
+  { threshold: 3000, title: "Mistrz gwiazd" },
+  { threshold: 5000, title: "Wirtuoz punktów" },
+  { threshold: 8000, title: "Legenda XP" },
+  { threshold: 12000, title: "Geniusz muzyki" },
+  { threshold: 20000, title: "Nieśmiertelny Mistrz" },
+];
+
+const STREAK_TIERS: readonly BadgeTier[] = [
+  { threshold: 3, title: "Pierwszy krok" },
+  { threshold: 7, title: "Tydzień w rytmie" },
+  { threshold: 14, title: "Dwa tygodnie mocy" },
+  { threshold: 30, title: "Miesiąc w rytmie" },
+  { threshold: 60, title: "Dwa miesiące pasji" },
+  { threshold: 100, title: "Setka passy" },
+  { threshold: 365, title: "Cały rok muzyki" },
+];
+
+const LESSON_TIERS: readonly BadgeTier[] = [
+  { threshold: 10, title: "Pierwsze kroki" },
+  { threshold: 25, title: "Pilny uczeń" },
+  { threshold: 50, title: "Zapalony uczeń" },
+  { threshold: 100, title: "Znawca teorii" },
+  { threshold: 150, title: "Ekspert teorii" },
+  { threshold: 200, title: "Mistrz teorii" },
+  { threshold: 300, title: "Encyklopedia muzyki" },
+];
+
+const PERFECT_WORLD_TIERS: readonly BadgeTier[] = [
+  { threshold: 1, title: "Perfekcyjna Kraina" },
+  { threshold: 2, title: "Podwójna Perfekcja" },
+  { threshold: 3, title: "Król Perfekcji" },
+  { threshold: 5, title: "Mistrz Perfekcji" },
+  { threshold: 8, title: "Perfekcyjny Wędrowiec" },
+  { threshold: 10, title: "Perfekcyjny Podróżnik" },
+  { threshold: 12, title: "Perfekcyjny Mistrz Muzyki" },
+];
+
+function buildTierBadges(prefix: string, icon: string, describe: (threshold: number) => string, tiers: readonly BadgeTier[]): BadgeDefinition[] {
+  return tiers.map((tier) => ({ id: `${prefix}-${tier.threshold}`, icon, title: tier.title, description: describe(tier.threshold) }));
+}
+
+/** Deliberately many, ever-escalating tiers per category ("never ending
+ * story") rather than one badge each — CalendarActivityView/
+ * DailyMissionsCard render this as a horizontally scrollable strip
+ * specifically so there's always a next one to chase, not a short list
+ * that's fully earned within a few weeks. */
 export const BADGES: readonly BadgeDefinition[] = [
-  { id: "xp-500", icon: "⭐", title: "Uczennica gwiazd", description: "Zdobądź 500 XP" },
-  { id: "xp-2000", icon: "🌠", title: "Mistrzyni gwiazd", description: "Zdobądź 2000 XP" },
-  { id: "streak-7", icon: "🔥", title: "Tydzień w rytmie", description: "7 dni passy z rzędu" },
-  { id: "streak-20", icon: "🔥", title: "Miesiąc w rytmie", description: "20 dni passy z rzędu" },
-  { id: "lessons-25", icon: "📘", title: "Pilna uczennica", description: "Ukończ 25 lekcji" },
-  { id: "lessons-100", icon: "📚", title: "Znawczyni teorii", description: "Ukończ 100 lekcji" },
-  { id: "perfect-world-1", icon: "🌟", title: "Perfekcyjna Kraina", description: "Ukończ całą krainę na 3 gwiazdki" },
-  { id: "perfect-world-3", icon: "👑", title: "Królowa Perfekcji", description: "Ukończ 3 krainy na same 3 gwiazdki" },
-] as const;
+  ...buildTierBadges("xp", "⭐", (t) => `Zdobądź ${t} XP`, XP_TIERS),
+  ...buildTierBadges("streak", "🔥", (t) => `${t} ${t === 1 ? "dzień" : "dni"} passy z rzędu`, STREAK_TIERS),
+  ...buildTierBadges("lessons", "📘", (t) => `Ukończ ${t} lekcji`, LESSON_TIERS),
+  ...buildTierBadges(
+    "perfect-world",
+    "🌟",
+    (t) => (t === 1 ? "Ukończ całą krainę na 3 gwiazdki" : `Ukończ ${t} krain na same 3 gwiazdki`),
+    PERFECT_WORLD_TIERS
+  ),
+];
 
 /** How many worlds currently have EVERY one of their lessons at 3 stars —
  * derived straight from lessonStars + the static world/lesson content,
@@ -46,13 +105,9 @@ export function countPerfectWorlds(lessonStars: GamificationState["lessonStars"]
 export function getEarnedBadgeIds(state: GamificationState, completedLessonsCount: number): Set<string> {
   const perfectWorlds = countPerfectWorlds(state.lessonStars);
   const earned = new Set<string>();
-  if (state.xp >= 500) earned.add("xp-500");
-  if (state.xp >= 2000) earned.add("xp-2000");
-  if (state.streakDays >= 7) earned.add("streak-7");
-  if (state.streakDays >= 20) earned.add("streak-20");
-  if (completedLessonsCount >= 25) earned.add("lessons-25");
-  if (completedLessonsCount >= 100) earned.add("lessons-100");
-  if (perfectWorlds >= 1) earned.add("perfect-world-1");
-  if (perfectWorlds >= 3) earned.add("perfect-world-3");
+  for (const tier of XP_TIERS) if (state.xp >= tier.threshold) earned.add(`xp-${tier.threshold}`);
+  for (const tier of STREAK_TIERS) if (state.streakDays >= tier.threshold) earned.add(`streak-${tier.threshold}`);
+  for (const tier of LESSON_TIERS) if (completedLessonsCount >= tier.threshold) earned.add(`lessons-${tier.threshold}`);
+  for (const tier of PERFECT_WORLD_TIERS) if (perfectWorlds >= tier.threshold) earned.add(`perfect-world-${tier.threshold}`);
   return earned;
 }

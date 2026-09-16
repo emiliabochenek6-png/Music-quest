@@ -30,7 +30,7 @@ export const NUTKI_REWARDS = {
   perfectWorldBonus: 15,
 } as const;
 
-/** What each power-up costs — see components/powerups/PowerUpShop.tsx,
+/** What each power-up costs — see app/(main)/power-ups.tsx,
  * the one screen that spends these. */
 export const POWER_UP_COSTS = {
   streakFreeze: 15,

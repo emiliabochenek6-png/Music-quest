@@ -25,7 +25,7 @@ export function GamificationHeaderBar() {
     <View style={styles.row}>
       <Pill icon="❤️" label={subscription.isActive ? "∞" : String(heartsInfo.hearts)} />
       <Pill icon="🔥" label={String(state.streakDays)} />
-      <Pressable onPress={() => router.push("/(main)/power-ups")} accessibilityRole="button" accessibilityLabel="Sklep Sołtka">
+      <Pressable onPress={() => router.push("/(main)/power-ups")} accessibilityRole="button" accessibilityLabel="Sklep Soltka">
         <Pill icon="🎵" label={String(state.nutki)} />
       </Pressable>
       <RankPill xp={state.xp} />

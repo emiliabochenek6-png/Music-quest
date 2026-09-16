@@ -33,7 +33,7 @@ const SAVINGS_PERCENT = Math.round((1 - YEARLY_PRICE_ZL / (MONTHLY_PRICE_ZL * 12
 export default function PaywallScreen() {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
-  const { purchase, restore } = useSubscription();
+  const { purchase } = useSubscription();
   const [purchasingPlan, setPurchasingPlan] = useState<SubscriptionPlan | null>(null);
 
   async function handlePurchase(plan: SubscriptionPlan) {
@@ -45,15 +45,6 @@ export default function PaywallScreen() {
       Alert.alert("Zakup nie powiódł się", error instanceof Error ? error.message : String(error));
     } finally {
       setPurchasingPlan(null);
-    }
-  }
-
-  async function handleRestore() {
-    try {
-      await restore();
-      router.back();
-    } catch (error) {
-      Alert.alert("Nie udało się przywrócić zakupów", error instanceof Error ? error.message : String(error));
     }
   }
 
@@ -95,10 +86,6 @@ export default function PaywallScreen() {
           onPress={() => handlePurchase("yearly")}
         />
       </View>
-
-      <Pressable onPress={handleRestore} style={styles.linkButton}>
-        <Text style={{ color: theme.colors.muted }}>{t("paywall.restorePurchases")}</Text>
-      </Pressable>
 
       <Pressable onPress={() => router.back()} style={styles.linkButton}>
         <Text style={{ color: theme.colors.muted }}>{t("paywall.notNow")}</Text>

@@ -396,7 +396,7 @@ export default function LessonScreen() {
             hitSlop={8}
           >
             <Text style={{ fontSize: 12, fontWeight: "700", color: theme.colors.muted }}>
-              💡 Podpowiedź Sołtka (-{POWER_UP_COSTS.hint} 🎵)
+              💡 Podpowiedź Soltka (-{POWER_UP_COSTS.hint} 🎵)
             </Text>
           </Pressable>
         )}

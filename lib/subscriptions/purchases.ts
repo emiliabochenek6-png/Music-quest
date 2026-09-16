@@ -34,10 +34,6 @@ export async function purchasePlan(plan: SubscriptionPlan): Promise<CustomerInfo
   return customerInfo;
 }
 
-export async function restorePurchases(): Promise<CustomerInfo> {
-  return Purchases.restorePurchases();
-}
-
 /** Translates RevenueCat's own CustomerInfo shape into this app's plain
  * SubscriptionStatus — the one place that knows RevenueCat's data model, so
  * every other module (SubscriptionContext, resolveNodeState) works against

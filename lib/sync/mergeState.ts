@@ -1,4 +1,5 @@
 import { deriveHearts } from "@/lib/gamification/hearts";
+import { sanitizeGamificationState } from "@/types/gamification";
 import type { ProgressState } from "@/types/content";
 import type { DailyChallengeState, DayActivity, GamificationState } from "@/types/gamification";
 
@@ -92,7 +93,15 @@ export function mergeProgressState(local: ProgressState, remote: ProgressState):
  *     {hearts, lastHeartChangeAtISO} PAIR derives to more hearts right
  *     now — the two fields must travel together (mixing one side's
  *     count with the other's clock would misrepresent both). */
-export function mergeGamificationState(local: GamificationState, remote: GamificationState, nowMs: number = Date.now()): GamificationState {
+export function mergeGamificationState(localIn: GamificationState, remoteIn: GamificationState, nowMs: number = Date.now()): GamificationState {
+  // Either side could be an account's own OLDER snapshot, saved before a
+  // field like `nutki` existed — sanitizeGamificationState fills those
+  // in (and clamps any NaN that already leaked through) before any
+  // arithmetic below (Math.max in particular: Math.max(NaN, 5) is itself
+  // NaN, so an unsanitized side would poison the merged result even when
+  // the OTHER side is perfectly fine).
+  const local = sanitizeGamificationState(localIn);
+  const remote = sanitizeGamificationState(remoteIn);
   const lessonStars: Record<string, 1 | 2 | 3> = { ...local.lessonStars };
   for (const [lessonId, stars] of Object.entries(remote.lessonStars)) {
     const existing = lessonStars[lessonId];
