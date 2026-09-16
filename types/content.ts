@@ -2,6 +2,11 @@ export interface ProfileState {
   displayName: string | null;
   narratorEnabled: boolean;
   soundEffectsEnabled: boolean;
+  /** Whether Soltek's own one-time welcome modal (see
+   * components/SoltekWelcomeModal.tsx) has already been shown on this
+   * device — presentation state, same as everything else in
+   * ProfileState, so it's deliberately per-device rather than synced. */
+  hasSeenSoltekGreeting: boolean;
 }
 
 /** One of the 12 curriculum worlds — see ARCHITECTURE.md section 3.2. This

@@ -7,7 +7,9 @@ import { GamificationHeaderBar } from "@/components/GamificationHeaderBar";
 import { WorldMap } from "@/components/map/WorldMap";
 import { SideMenu } from "@/components/SideMenu";
 import { SideMenuContent } from "@/components/SideMenuContent";
+import { SoltekWelcomeModal } from "@/components/SoltekWelcomeModal";
 import { useGamification } from "@/context/GamificationContext";
+import { useProfile } from "@/context/ProfileContext";
 import { useProgress } from "@/context/ProgressContext";
 import { useSubscription } from "@/context/SubscriptionContext";
 import { resolveNodeState } from "@/lib/progression/resolveNodeState";
@@ -33,7 +35,12 @@ export default function MapScreen() {
   const { progress } = useProgress();
   const { status } = useSubscription();
   const { state: gamification } = useGamification();
+  const { profile, isLoading: isProfileLoading, setHasSeenSoltekGreeting } = useProfile();
   const [sideMenuOpen, setSideMenuOpen] = useState(false);
+  // Not loading AND not-yet-seen — reading `profile` before it's finished
+  // loading would show the modal for a returning player too, for the one
+  // frame before the real (already-true) stored value arrives.
+  const showSoltekWelcome = !isProfileLoading && !profile.hasSeenSoltekGreeting;
 
   function handleSelectWorld(world: WorldDefinition) {
     const state = resolveNodeState(world, progress, status, gamification.lessonStars);
@@ -70,6 +77,8 @@ export default function MapScreen() {
       <SideMenu visible={sideMenuOpen} onClose={() => setSideMenuOpen(false)}>
         <SideMenuContent onClose={() => setSideMenuOpen(false)} />
       </SideMenu>
+
+      <SoltekWelcomeModal visible={showSoltekWelcome} onDismiss={() => setHasSeenSoltekGreeting(true)} />
     </View>
   );
 }

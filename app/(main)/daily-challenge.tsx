@@ -6,6 +6,7 @@ import { BottomTabBar } from "@/components/BottomTabBar";
 import { DailyMissionsCard } from "@/components/DailyMissionsCard";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { ExerciseRenderer, hasAnswerToCheck } from "@/components/exercises/ExerciseRenderer";
+import { SoltekMascot } from "@/components/SoltekMascot";
 import { useGamification } from "@/context/GamificationContext";
 import { useProgress } from "@/context/ProgressContext";
 import { useSubscription } from "@/context/SubscriptionContext";
@@ -175,17 +176,13 @@ export default function DailyChallengeScreen() {
           </ScrollView>
           <View style={{ paddingHorizontal: 24, paddingBottom: insets.bottom + 16 }}>
             {checked && (
-              <Text
-                style={{
-                  textAlign: "center",
-                  fontWeight: "700",
-                  fontSize: theme.fontSize.body,
-                  color: isCorrect ? theme.colors.success : theme.colors.warning,
-                  marginBottom: theme.spacing(1.5),
-                }}
-              >
-                {isCorrect ? `${t("lesson.correct", "pl")} +${XP_DAILY_CHALLENGE_BONUS} XP` : t("lesson.incorrectTryAnother", "pl")}
-              </Text>
+              <View style={{ marginBottom: theme.spacing(1.5) }}>
+                <SoltekMascot
+                  size="sm"
+                  expression={isCorrect ? "radosny" : "zachecajacy"}
+                  message={isCorrect ? `${t("lesson.correct", "pl")} +${XP_DAILY_CHALLENGE_BONUS} XP` : t("lesson.incorrectTryAnother", "pl")}
+                />
+              </View>
             )}
             <DarkButton
               label={checked ? (isCorrect ? "Wróć do mapy" : "Następne zadanie") : t("lesson.checkAnswer", "pl")}

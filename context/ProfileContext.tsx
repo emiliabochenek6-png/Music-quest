@@ -7,6 +7,7 @@ const DEFAULT_PROFILE: ProfileState = {
   displayName: null,
   narratorEnabled: true,
   soundEffectsEnabled: true,
+  hasSeenSoltekGreeting: false,
 };
 
 interface ProfileContextValue {
@@ -18,6 +19,7 @@ interface ProfileContextValue {
   setDisplayName: (name: string | null) => void;
   setNarratorEnabled: (enabled: boolean) => void;
   setSoundEffectsEnabled: (enabled: boolean) => void;
+  setHasSeenSoltekGreeting: (seen: boolean) => void;
 }
 
 const ProfileContext = createContext<ProfileContextValue | null>(null);
@@ -51,6 +53,7 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
     setDisplayName: (displayName) => persist({ ...profile, displayName }),
     setNarratorEnabled: (narratorEnabled) => persist({ ...profile, narratorEnabled }),
     setSoundEffectsEnabled: (soundEffectsEnabled) => persist({ ...profile, soundEffectsEnabled }),
+    setHasSeenSoltekGreeting: (hasSeenSoltekGreeting) => persist({ ...profile, hasSeenSoltekGreeting }),
   };
 
   return <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>;
