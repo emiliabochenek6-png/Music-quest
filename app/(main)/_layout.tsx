@@ -24,6 +24,7 @@ export default function MainLayout() {
       <Stack.Screen name="world/[worldId]" options={{ presentation: "card" }} />
       <Stack.Screen name="lesson/[lessonId]" options={{ presentation: "card" }} />
       <Stack.Screen name="daily-challenge" options={{ presentation: "card" }} />
+      <Stack.Screen name="calendar" />
       <Stack.Screen name="settings/index" />
       <Stack.Screen name="settings/subscription-status" />
     </Stack>

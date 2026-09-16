@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Pressable, Text, View, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router } from "expo-router";
+import { BottomTabBar } from "@/components/BottomTabBar";
 import { GamificationHeaderBar } from "@/components/GamificationHeaderBar";
 import { WorldMap } from "@/components/map/WorldMap";
 import { SideMenu } from "@/components/SideMenu";
@@ -9,7 +10,6 @@ import { SideMenuContent } from "@/components/SideMenuContent";
 import { useGamification } from "@/context/GamificationContext";
 import { useProgress } from "@/context/ProgressContext";
 import { useSubscription } from "@/context/SubscriptionContext";
-import { todayISODate } from "@/lib/gamification/activity";
 import { resolveNodeState } from "@/lib/progression/resolveNodeState";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import type { WorldDefinition } from "@/types/content";
@@ -23,13 +23,16 @@ import type { WorldDefinition } from "@/types/content";
  *  - "locked-subscription" -> the paywall modal
  *  - "locked-progression" -> nowhere (WorldNode itself surfaces the
  *    "finish the previous world" state inline, no navigation needed)
+ *
+ * Settings and the daily challenge used to have their own dedicated
+ * top-right/floating entry points here — both dropped in favor of the
+ * app's own persistent BottomTabBar, which already covers them.
  */
 export default function MapScreen() {
   const insets = useSafeAreaInsets();
   const { progress } = useProgress();
   const { status } = useSubscription();
   const { state: gamification } = useGamification();
-  const dailyChallengeDoneToday = gamification.dailyChallenge?.dateISO === todayISODate() && gamification.dailyChallenge.completed;
   const [sideMenuOpen, setSideMenuOpen] = useState(false);
 
   function handleSelectWorld(world: WorldDefinition) {
@@ -60,26 +63,9 @@ export default function MapScreen() {
       <View style={[styles.headerBarWrap, { top: insets.top + 56 }]}>
         <GamificationHeaderBar />
       </View>
-      <Pressable
-        onPress={() => router.push("/(main)/settings")}
-        accessibilityRole="button"
-        accessibilityLabel="Ustawienia"
-        hitSlop={12}
-        style={[styles.settingsButton, { top: insets.top + 12 }]}
-      >
-        <Text style={{ fontSize: 18 }}>⚙️</Text>
-      </Pressable>
       <WorldMap progress={progress} subscription={status} lessonStars={gamification.lessonStars} onSelectWorld={handleSelectWorld} />
 
-      <Pressable
-        onPress={() => router.push("/(main)/daily-challenge")}
-        accessibilityRole="button"
-        accessibilityLabel="Wyzwanie dnia"
-        style={[styles.dailyChallengeButton, { bottom: insets.bottom + 16 }]}
-      >
-        <Text style={{ fontSize: 22 }}>{dailyChallengeDoneToday ? "✅" : "🎯"}</Text>
-        <Text style={styles.dailyChallengeLabel}>{dailyChallengeDoneToday ? "Wyzwanie zrobione" : "Wyzwanie dnia"}</Text>
-      </Pressable>
+      <BottomTabBar />
 
       <SideMenu visible={sideMenuOpen} onClose={() => setSideMenuOpen(false)}>
         <SideMenuContent onClose={() => setSideMenuOpen(false)} />
@@ -119,19 +105,6 @@ const styles = StyleSheet.create({
     left: 64,
     zIndex: 10,
   },
-  settingsButton: {
-    position: "absolute",
-    right: 16,
-    zIndex: 10,
-    width: 40,
-    height: 40,
-    borderRadius: theme.radius.md,
-    backgroundColor: theme.colors.surface,
-    borderWidth: theme.borderWidth,
-    borderColor: theme.colors.border,
-    alignItems: "center",
-    justifyContent: "center",
-  },
   menuButton: {
     position: "absolute",
     left: 16,
@@ -144,24 +117,5 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.border,
     alignItems: "center",
     justifyContent: "center",
-  },
-  dailyChallengeButton: {
-    position: "absolute",
-    alignSelf: "center",
-    zIndex: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 999,
-    backgroundColor: theme.colors.surface,
-    borderWidth: theme.borderWidth,
-    borderColor: theme.colors.border,
-  },
-  dailyChallengeLabel: {
-    fontSize: 13,
-    fontWeight: "800",
-    color: theme.colors.ink,
   },
 });

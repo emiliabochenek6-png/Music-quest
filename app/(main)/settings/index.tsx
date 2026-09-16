@@ -1,5 +1,6 @@
 import { View, Text, Switch, Pressable, ScrollView, StyleSheet } from "react-native";
 import { router } from "expo-router";
+import { BottomTabBar } from "@/components/BottomTabBar";
 import { ScreenHeader } from "@/components/ui/ScreenHeader";
 import { useAuth } from "@/context/AuthContext";
 import { useProfile } from "@/context/ProfileContext";
@@ -51,6 +52,7 @@ export default function SettingsScreen() {
         <Text style={{ color: theme.colors.warning, fontSize: theme.fontSize.body }}>Wyloguj się</Text>
       </Pressable>
       </ScrollView>
+      <BottomTabBar />
     </View>
   );
 }

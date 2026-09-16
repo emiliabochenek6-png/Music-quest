@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Pressable, ScrollView, Text, View, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router } from "expo-router";
+import { BottomTabBar } from "@/components/BottomTabBar";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { ExerciseRenderer, hasAnswerToCheck } from "@/components/exercises/ExerciseRenderer";
 import { useGamification } from "@/context/GamificationContext";
@@ -186,6 +187,8 @@ export default function DailyChallengeScreen() {
           </View>
         </>
       ) : null}
+
+      <BottomTabBar />
     </View>
   );
 }
