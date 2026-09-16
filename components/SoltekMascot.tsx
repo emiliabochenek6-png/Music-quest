@@ -1,18 +1,19 @@
-import { Text, View, StyleSheet } from "react-native";
+import { Image, Text, View, StyleSheet } from "react-native";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 
-export type SoltekExpression = "radosny" | "zaskoczony" | "myslacy" | "zachecajacy";
+export type SoltekExpression = "radosny" | "zaskoczony" | "myslacy" | "zachecajacy" | "glowny";
 
-/** A small corner badge on top of the avatar hinting at Soltek's current
- * mood — standing in for the real four-expression artwork (see this
- * component's own top-of-file doc) until that's available; swap this out
- * once real per-expression sprites exist instead of layering a badge
- * over one fixed avatar. */
-const EXPRESSION_BADGE: Record<SoltekExpression, string> = {
-  radosny: "✨",
-  zaskoczony: "❓",
-  myslacy: "💭",
-  zachecajacy: "💪",
+/** Soltek's real character art — one square, transparent-background PNG
+ * per expression, provided by the app's owner (see assets/soltek/ — the
+ * emoji placeholder this component used to render is gone). "glowny" is
+ * the general-purpose hero pose (no specific mood), used for the welcome
+ * modal's own introduction rather than any of the four reaction faces. */
+const EXPRESSION_IMAGES: Record<SoltekExpression, ReturnType<typeof require>> = {
+  radosny: require("@/assets/soltek/radosny.png"),
+  zaskoczony: require("@/assets/soltek/zaskoczony.png"),
+  myslacy: require("@/assets/soltek/myslacy.png"),
+  zachecajacy: require("@/assets/soltek/zachecajacy.png"),
+  glowny: require("@/assets/soltek/glowny.png"),
 };
 
 interface SoltekMascotProps {
@@ -20,33 +21,45 @@ interface SoltekMascotProps {
   /** What Soltek says — required, since an avatar with nothing to say
    * isn't really "Soltek talking to you", just a decorative icon. */
   message: string;
-  /** "sm" for a compact inline appearance next to exercise feedback,
-   * "md" (default) for the welcome modal and other full-attention
-   * moments. */
-  size?: "sm" | "md";
+  /** "sm" for a compact inline appearance next to exercise feedback, "md"
+   * (default) for most full-attention moments, "lg" for a standalone
+   * portrait (no speech bubble beside it — see SoltekWelcomeModal's own
+   * use) where Soltek himself is the focus. */
+  size?: "sm" | "md" | "lg";
 }
 
 /**
  * Soltek — the app's own guide character (a friendly, music-loving fox
- * in a wizard hat, per the reference sheet the app's design is now based
- * on). PLACEHOLDER AVATAR: real character art (the four expressions —
- * radosny/zaskoczony/myślący/zachęcający — shown on the reference sheet)
- * hasn't been exported as app-ready image assets yet, so this renders a
- * 🦊 emoji in a themed badge instead, with a small corner emoji hinting
- * at the current expression — swap the avatar View's contents for a real
- * <Image> per expression once those PNGs exist, everything else here
- * (the speech-bubble layout, the props contract) stays the same.
+ * in a wizard hat). Renders his real artwork (see EXPRESSION_IMAGES)
+ * with `resizeMode: "contain"` inside a rounded-square frame rather than
+ * a tight circle — his pose isn't circular (the hat's curled tip, an
+ * outstretched hand), so a circular crop would clip him at some
+ * expressions but not others; a square frame never does.
  */
 export function SoltekMascot({ expression = "radosny", message, size = "md" }: SoltekMascotProps) {
   const isSmall = size === "sm";
-  return (
-    <View style={[styles.row, isSmall && styles.rowSmall]}>
-      <View style={[styles.avatarWrap, isSmall && styles.avatarWrapSmall]}>
-        <Text style={{ fontSize: isSmall ? 22 : 34 }}>🦊</Text>
-        <View style={styles.badge}>
-          <Text style={{ fontSize: isSmall ? 9 : 11 }}>{EXPRESSION_BADGE[expression]}</Text>
+  const isLarge = size === "lg";
+
+  const avatar = (
+    <View style={[styles.avatarWrap, isSmall && styles.avatarWrapSmall, isLarge && styles.avatarWrapLarge]}>
+      <Image source={EXPRESSION_IMAGES[expression]} style={styles.avatarImage} resizeMode="contain" />
+    </View>
+  );
+
+  if (isLarge) {
+    return (
+      <View style={styles.stacked}>
+        {avatar}
+        <View style={styles.bubble}>
+          <Text style={[styles.bubbleText, styles.bubbleTextCentered]}>{message}</Text>
         </View>
       </View>
+    );
+  }
+
+  return (
+    <View style={[styles.row, isSmall && styles.rowSmall]}>
+      {avatar}
       <View style={[styles.bubble, isSmall && styles.bubbleSmall]}>
         <Text style={[styles.bubbleText, isSmall && styles.bubbleTextSmall]}>{message}</Text>
       </View>
@@ -63,34 +76,37 @@ const styles = StyleSheet.create({
   rowSmall: {
     gap: 8,
   },
+  stacked: {
+    alignItems: "center",
+    gap: 12,
+  },
   avatarWrap: {
     width: 56,
     height: 56,
-    borderRadius: 28,
+    borderRadius: theme.radius.md,
     backgroundColor: theme.colors.accentSoft,
     borderWidth: theme.borderWidth,
     borderColor: theme.colors.primary,
     alignItems: "center",
     justifyContent: "center",
     flexShrink: 0,
+    padding: 4,
   },
   avatarWrapSmall: {
     width: 38,
     height: 38,
-    borderRadius: 19,
+    borderRadius: theme.radius.sm,
+    padding: 2,
   },
-  badge: {
-    position: "absolute",
-    bottom: -2,
-    right: -2,
-    width: 18,
-    height: 18,
-    borderRadius: 9,
-    backgroundColor: theme.colors.surface,
-    borderWidth: 1.5,
-    borderColor: theme.colors.primary,
-    alignItems: "center",
-    justifyContent: "center",
+  avatarWrapLarge: {
+    width: 132,
+    height: 132,
+    borderRadius: theme.radius.lg,
+    padding: 8,
+  },
+  avatarImage: {
+    width: "100%",
+    height: "100%",
   },
   bubble: {
     flex: 1,
@@ -109,6 +125,9 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: theme.colors.ink,
     lineHeight: 19,
+  },
+  bubbleTextCentered: {
+    textAlign: "center",
   },
   bubbleTextSmall: {
     fontSize: 12.5,

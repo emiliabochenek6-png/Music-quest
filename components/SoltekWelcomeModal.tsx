@@ -24,7 +24,8 @@ export function SoltekWelcomeModal({ visible, onDismiss }: SoltekWelcomeModalPro
         <View style={styles.card}>
           <Text style={styles.title}>🎵 Poznaj Soltka!</Text>
           <SoltekMascot
-            expression="radosny"
+            size="lg"
+            expression="glowny"
             message={
               "Cześć! Jestem Soltek, Twój przewodnik po świecie muzyki. Będę Ci towarzyszyć, podpowiadać i kibicować w każdym zadaniu. Gotowy na przygodę?"
             }
