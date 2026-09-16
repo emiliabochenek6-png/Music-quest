@@ -5,12 +5,15 @@ import { CalendarActivityView } from "@/components/CalendarActivityView";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 
 /**
- * The activity calendar as its own tab — CalendarActivityView used to
- * live only inside SideMenu's own "list, then detail" panel; now that
- * the app has a persistent bottom tab bar, it's promoted to a real
- * top-level screen (dropped from the side menu itself, see
- * SideMenuContent's own doc, to avoid the same destination living in two
- * places).
+ * The activity calendar's own full screen — reached from the side menu's
+ * "Kalendarz aktywności" row (see SideMenuContent's own doc), not from
+ * BottomTabBar itself: this briefly WAS one of its four tabs, but that
+ * bar's slots are Mapa krain/Misje/Subskrypcja/Ustawienia now, so the
+ * calendar moved back to being menu-reachable — as a real screen (not
+ * re-embedded inline in the slide-out panel) so there's still only one
+ * place this content actually lives. Still renders BottomTabBar itself
+ * (none of its four tabs highlight here, which is correct — this screen
+ * isn't one of them, just reachable alongside them).
  */
 export default function CalendarScreen() {
   const insets = useSafeAreaInsets();

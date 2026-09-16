@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { View, Text, Linking, StyleSheet, Platform } from "react-native";
 import { router } from "expo-router";
+import { BottomTabBar } from "@/components/BottomTabBar";
 import { MathGateModal } from "@/components/paywall/MathGateModal";
 import { Button } from "@/components/ui/Button";
 import { ScreenHeader } from "@/components/ui/ScreenHeader";
@@ -11,7 +12,11 @@ import { useTheme } from "@/theme/ThemeProvider";
  * — see ARCHITECTURE.md section 4.4: cancellation always goes through the
  * store, this screen never implements it directly. Behind the same
  * parental math gate as the paywall itself (settings can't be a side door
- * around it). */
+ * around it). Also BottomTabBar's own "Subskrypcja" destination — a
+ * non-subscriber landing here from that tab needs an actual way to
+ * upgrade, not just a "manage in store" link that has nothing to manage
+ * yet, so the CTA below branches on `status.isActive` rather than always
+ * pointing at the store. */
 export default function SubscriptionStatusScreen() {
   const theme = useTheme();
   const { status } = useSubscription();
@@ -51,8 +56,13 @@ export default function SubscriptionStatusScreen() {
           )}
         </>
       )}
-      <Button label="Zarządzaj w sklepie" onPress={openStoreManagement} variant="secondary" />
+      {status.isActive ? (
+        <Button label="Zarządzaj w sklepie" onPress={openStoreManagement} variant="secondary" />
+      ) : (
+        <Button label="Zobacz plany Premium" onPress={() => router.push("/paywall")} />
+      )}
       </View>
+      <BottomTabBar />
     </View>
   );
 }
