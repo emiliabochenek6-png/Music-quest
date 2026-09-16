@@ -20,11 +20,11 @@ interface WorldCompleteModalProps {
 /** A one-time celebration popup shown the moment a world's last lesson is
  * finished — separate from LessonSummary (which reports on that one
  * lesson) since "you finished this exercise set" and "you finished the
- * whole world" are different, bigger news. Dismisses via its own ✕ (same
- * reasoning as MathGateModal's own cancel button: Modal's onRequestClose
- * only fires from Android's hardware back button, not any iOS gesture for
- * a transparent overFullScreen modal, so a visible close control is the
- * only reliable dismiss on iOS). Names the world with a fixed "Kraina „…”"
+ * whole world" are different, bigger news. Dismisses via its own ✕ —
+ * Modal's onRequestClose only fires from Android's hardware back button,
+ * not any iOS gesture for a transparent overFullScreen modal, so a
+ * visible close control is the only reliable dismiss on iOS. Names the
+ * world with a fixed "Kraina „…”"
  * subject rather than the world's own name directly, so the sentence
  * stays grammatically correct regardless of that name's gender in Polish
  * (a feminine "Wioska", neuter "Miasto", masculine "Labirynt", ...).

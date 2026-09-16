@@ -1,85 +1,50 @@
-import { useEffect, useState } from "react";
-import { View, Text, Pressable, ScrollView, StyleSheet, ActivityIndicator, Alert } from "react-native";
+import { useState } from "react";
+import { View, Text, Pressable, ScrollView, StyleSheet, Alert } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router } from "expo-router";
-import { MathGateModal } from "@/components/paywall/MathGateModal";
 import { PaywallBenefitsList } from "@/components/paywall/PaywallBenefitsList";
 import { SubscriptionPlanCard } from "@/components/paywall/SubscriptionPlanCard";
-import { Button } from "@/components/ui/Button";
 import { useSubscription } from "@/context/SubscriptionContext";
-import { fetchCurrentOffering, PRODUCT_IDS } from "@/lib/subscriptions/purchases";
 import { t } from "@/lib/i18n/translate";
 import { useTheme } from "@/theme/ThemeProvider";
-import type { PurchasesPackage } from "react-native-purchases";
 import type { SubscriptionPlan } from "@/types/content";
 
+// Fixed marketing prices, shown immediately — no more waiting on
+// fetchCurrentOffering() (RevenueCat's real store prices) before this
+// screen can render anything, and no more "ceny niedostępne" fallback
+// when that fetch fails/isn't configured yet. The actual charge still
+// goes through purchase(plan) below, which resolves the real store
+// product on its own (see SubscriptionContext/lib/subscriptions/
+// purchases.ts) — these two numbers are what the player is TOLD, kept in
+// sync with the real App Store Connect/Play Console prices by hand
+// rather than read live, which is the tradeoff for never blocking on a
+// network fetch here.
+const MONTHLY_PRICE_ZL = 59;
+const YEARLY_PRICE_ZL = 590;
+const SAVINGS_PERCENT = Math.round((1 - YEARLY_PRICE_ZL / (MONTHLY_PRICE_ZL * 12)) * 100);
+
 /**
- * Paywall — see ARCHITECTURE.md section 4. The math gate blocks the whole
- * screen until passed, once per app session (see `useState` below, which
- * intentionally resets on remount rather than persisting — matches the
- * spec's "once per session" rule, since a fresh app launch is a fresh
- * session). Plan prices are read from `fetchCurrentOffering()`'s real,
- * localized store prices (App Store/Play Store prices vary by region and
- * change over time outside the app's own control) — never hardcoded, so
- * what's shown here always matches what StoreKit/Play Billing actually
- * charges.
+ * Paywall — see ARCHITECTURE.md section 4. No longer gated behind
+ * MathGateModal's own parental math question (dropped along with
+ * settings/subscription-status.tsx's own copy of the same gate) — every
+ * plan/price/description below is now visible the instant this screen
+ * opens.
  */
 export default function PaywallScreen() {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
   const { purchase, restore } = useSubscription();
-  const [isGatePassed, setIsGatePassed] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan>("yearly");
-  const [isPurchasing, setIsPurchasing] = useState(false);
-  const [monthlyPackage, setMonthlyPackage] = useState<PurchasesPackage | null>(null);
-  const [yearlyPackage, setYearlyPackage] = useState<PurchasesPackage | null>(null);
-  const [isLoadingPrices, setIsLoadingPrices] = useState(true);
+  const [purchasingPlan, setPurchasingPlan] = useState<SubscriptionPlan | null>(null);
 
-  // Runs once the math gate is passed (not on mount) — no point fetching
-  // the offering while the gate itself is still on screen, since the
-  // player can't reach the plan cards until then anyway.
-  useEffect(() => {
-    if (!isGatePassed) return;
-    let cancelled = false;
-    fetchCurrentOffering()
-      .then((offering) => {
-        if (cancelled) return;
-        const packages = offering?.availablePackages ?? [];
-        setMonthlyPackage(packages.find((pkg) => pkg.product.identifier === PRODUCT_IDS.monthly) ?? null);
-        setYearlyPackage(packages.find((pkg) => pkg.product.identifier === PRODUCT_IDS.yearly) ?? null);
-      })
-      .catch(() => {
-        // Leaves both packages null — the screen below renders a "prices
-        // unavailable" fallback rather than throwing, so a network hiccup
-        // never strands the player on a blank/crashed paywall.
-      })
-      .finally(() => {
-        if (!cancelled) setIsLoadingPrices(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [isGatePassed]);
-
-  const selectedPackage = selectedPlan === "yearly" ? yearlyPackage : monthlyPackage;
-  // Real percentage saved on the yearly plan vs. paying the monthly price
-  // for 12 months, computed from the two actual store prices — never
-  // hardcoded, since a hardcoded number silently goes stale the moment
-  // either product's price changes in App Store Connect/Play Console.
-  const savingsPercent =
-    monthlyPackage && yearlyPackage
-      ? Math.max(0, Math.round((1 - yearlyPackage.product.price / (monthlyPackage.product.price * 12)) * 100))
-      : undefined;
-
-  async function handlePurchase() {
-    setIsPurchasing(true);
+  async function handlePurchase(plan: SubscriptionPlan) {
+    setPurchasingPlan(plan);
     try {
-      await purchase(selectedPlan);
+      await purchase(plan);
       router.back();
     } catch (error) {
       Alert.alert("Zakup nie powiódł się", error instanceof Error ? error.message : String(error));
     } finally {
-      setIsPurchasing(false);
+      setPurchasingPlan(null);
     }
   }
 
@@ -90,12 +55,6 @@ export default function PaywallScreen() {
     } catch (error) {
       Alert.alert("Nie udało się przywrócić zakupów", error instanceof Error ? error.message : String(error));
     }
-  }
-
-  if (!isGatePassed) {
-    return (
-      <MathGateModal visible onPassed={() => setIsGatePassed(true)} onDismiss={() => router.back()} />
-    );
   }
 
   return (
@@ -112,33 +71,30 @@ export default function PaywallScreen() {
 
       <PaywallBenefitsList />
 
-      {isLoadingPrices ? (
-        <ActivityIndicator color={theme.colors.primary} />
-      ) : !monthlyPackage || !yearlyPackage ? (
-        <Text style={{ color: theme.colors.muted, textAlign: "center" }}>{t("paywall.pricesUnavailable")}</Text>
-      ) : (
-        <View style={styles.plans}>
-          <SubscriptionPlanCard
-            plan="monthly"
-            priceLabel={monthlyPackage.product.priceString}
-            isSelected={selectedPlan === "monthly"}
-            onSelect={setSelectedPlan}
-          />
-          <SubscriptionPlanCard
-            plan="yearly"
-            priceLabel={yearlyPackage.product.priceString}
-            savingsPercent={savingsPercent}
-            isSelected={selectedPlan === "yearly"}
-            onSelect={setSelectedPlan}
-          />
-        </View>
-      )}
-
-      <Button
-        label={t("paywall.cta", "pl", { price: selectedPackage?.product.priceString ?? "" })}
-        onPress={handlePurchase}
-        disabled={isPurchasing || !selectedPackage}
-      />
+      <View style={styles.plans}>
+        <SubscriptionPlanCard
+          plan="monthly"
+          priceLabel={t("paywall.plan.monthlyPrice")}
+          periodLabel={t("paywall.plan.monthlyPeriod")}
+          description={t("paywall.plan.monthlyDescription")}
+          ctaLabel={t("paywall.cta.monthly")}
+          loading={purchasingPlan === "monthly"}
+          disabled={purchasingPlan !== null}
+          onPress={() => handlePurchase("monthly")}
+        />
+        <SubscriptionPlanCard
+          plan="yearly"
+          priceLabel={t("paywall.plan.yearlyPrice")}
+          periodLabel={t("paywall.plan.yearlyPeriod")}
+          description={t("paywall.plan.yearlyDescription")}
+          ctaLabel={t("paywall.cta.yearly")}
+          savingsPercent={SAVINGS_PERCENT}
+          highlighted
+          loading={purchasingPlan === "yearly"}
+          disabled={purchasingPlan !== null}
+          onPress={() => handlePurchase("yearly")}
+        />
+      </View>
 
       <Pressable onPress={handleRestore} style={styles.linkButton}>
         <Text style={{ color: theme.colors.muted }}>{t("paywall.restorePurchases")}</Text>
@@ -160,9 +116,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   plans: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 12,
+    gap: 14,
   },
   linkButton: {
     alignItems: "center",
