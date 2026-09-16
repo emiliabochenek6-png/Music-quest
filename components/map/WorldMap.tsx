@@ -1,12 +1,10 @@
-import { Fragment, useMemo } from "react";
+import { Fragment } from "react";
 import { ScrollView, View, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Defs, LinearGradient, Path, Stop } from "react-native-svg";
-import { NoteGlyph, layoutScatteredNotes } from "@/components/map/NoteGlyph";
 import { WORLD_NODE_ROW_WIDTH, WORLD_NODE_SIZE, WorldNode } from "@/components/map/WorldNode";
 import { WORLDS } from "@/data/worlds";
 import { resolveNodeState } from "@/lib/progression/resolveNodeState";
-import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import type { ProgressState, SubscriptionStatus, WorldDefinition } from "@/types/content";
 
 interface WorldMapProps {
@@ -32,24 +30,18 @@ function nodeY(index: number): number {
   return TOP_PADDING + index * NODE_SPACING_Y;
 }
 
-/** The top-level map of all 12 worlds — same dark, glowing winding-path
- * language as components/map/LessonPath.tsx (see that file's own doc for
- * the sine-wave node-position formula and the reference-art research
- * behind this direction), one granularity level up. The connecting line's
- * own color shifts to each SEGMENT's destination world's accent, so the
- * path itself hints at what's ahead — WorldNode still owns each node's
- * own glow/lock/name rendering. */
+/** The top-level map of all 12 worlds — same winding-path language as
+ * components/map/LessonPath.tsx (see that file's own doc for the
+ * sine-wave node-position formula and the reference-art research behind
+ * this direction), one granularity level up. The connecting line's own
+ * color shifts to each SEGMENT's destination world's accent, so the path
+ * itself hints at what's ahead — WorldNode still owns each node's own
+ * glow/lock/name rendering. Deliberately a plain canvas with no scattered
+ * decoration — the light "educational" pass dropped the note-glyph
+ * background the earlier dark theme had. */
 export function WorldMap({ progress, subscription, lessonStars, onSelectWorld }: WorldMapProps) {
   const insets = useSafeAreaInsets();
   const totalHeight = TOP_PADDING + (WORLDS.length - 1) * NODE_SPACING_Y + 100;
-  // Scattered faintly behind the path/nodes — a count scaled to the
-  // canvas area so a longer scroll (more worlds) doesn't thin out to a
-  // sparse-looking field, seeded so the layout stays put across
-  // re-renders (see layoutScatteredNotes's own doc).
-  const scatteredNotes = useMemo(
-    () => layoutScatteredNotes(PATH_WIDTH, totalHeight, Math.round((PATH_WIDTH * totalHeight) / 9000), 1),
-    [totalHeight]
-  );
 
   return (
     <ScrollView
@@ -65,9 +57,6 @@ export function WorldMap({ progress, subscription, lessonStars, onSelectWorld }:
               <Stop offset="1" stopColor={NEUTRAL_GLOW} stopOpacity={0.35} />
             </LinearGradient>
           </Defs>
-          {scatteredNotes.map((note, index) => (
-            <NoteGlyph key={index} x={note.x} y={note.y} size={note.size} rotation={note.rotation} color={theme.colors.ink} opacity={note.opacity} />
-          ))}
           {WORLDS.map((world, index) => {
             if (index === 0) return null;
             const x1 = nodeX(index - 1);
