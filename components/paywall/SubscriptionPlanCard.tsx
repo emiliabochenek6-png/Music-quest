@@ -12,6 +12,12 @@ interface SubscriptionPlanCardProps {
    * always shows these two numbers immediately. The actual charge still
    * goes through the real store product when `onPress` fires. */
   priceLabel: string;
+  /** A short unit suffix ("/ mies.", "/ rok") set right after the price
+   * itself, small and muted — NOT the plan's own name repeated (that
+   * used to render as "Miesięcznie … 59 zł / miesiąc", the same word
+   * twice in one card, which read as a mistake rather than a deliberate
+   * label). The plan name is now its own small uppercase eyebrow above
+   * the price instead of sitting in the same row as it. */
   periodLabel: string;
   description: string;
   ctaLabel: string;
@@ -62,12 +68,14 @@ export function SubscriptionPlanCard({
           <Text style={styles.badgeText}>{t("paywall.plan.savings", "pl", { percent: savingsPercent })}</Text>
         </View>
       )}
-      <View style={styles.headerRow}>
-        <Text style={{ fontSize: theme.fontSize.body, fontWeight: "700", color: theme.colors.ink }}>{t(titleKey)}</Text>
-        <View style={styles.priceRow}>
-          <Text style={{ fontSize: theme.fontSize.heading, fontWeight: "800", color: theme.colors.ink }}>{priceLabel}</Text>
-          <Text style={{ fontSize: theme.fontSize.body * 0.8, color: theme.colors.muted, marginLeft: 4 }}>{periodLabel}</Text>
-        </View>
+      <Text style={[styles.eyebrow, { color: highlighted ? theme.colors.primaryDark : theme.colors.muted }]}>
+        {t(titleKey)}
+      </Text>
+      <View style={styles.priceRow}>
+        <Text style={{ fontSize: theme.fontSize.display, fontWeight: "800", color: theme.colors.ink }}>{priceLabel}</Text>
+        <Text style={{ fontSize: theme.fontSize.body * 0.8, fontWeight: "600", color: theme.colors.muted, marginLeft: 4 }}>
+          {periodLabel}
+        </Text>
       </View>
       <Text style={{ fontSize: theme.fontSize.body * 0.85, color: theme.colors.muted, marginBottom: theme.spacing(1.5) }}>
         {description}
@@ -81,14 +89,17 @@ const styles = StyleSheet.create({
   card: {
     gap: 4,
   },
-  headerRow: {
-    flexDirection: "row",
-    alignItems: "baseline",
-    justifyContent: "space-between",
+  eyebrow: {
+    fontSize: 11.5,
+    fontWeight: "800",
+    letterSpacing: 0.6,
+    textTransform: "uppercase",
+    marginBottom: 2,
   },
   priceRow: {
     flexDirection: "row",
     alignItems: "baseline",
+    marginBottom: 4,
   },
   badge: {
     position: "absolute",
