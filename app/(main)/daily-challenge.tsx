@@ -3,6 +3,7 @@ import { Pressable, ScrollView, Text, View, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { BottomTabBar } from "@/components/BottomTabBar";
+import { DailyMissionsCard } from "@/components/DailyMissionsCard";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { ExerciseRenderer, hasAnswerToCheck } from "@/components/exercises/ExerciseRenderer";
 import { useGamification } from "@/context/GamificationContext";
@@ -17,6 +18,9 @@ import { t } from "@/lib/i18n/translate";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import type { AnswerInput, ExerciseDefinition, GeneratedExercise } from "@/types/exercises";
 
+// Passed into DailyMissionsCard as its own challengeXpReward prop below,
+// so that card's "Wykonaj wyzwanie dnia" mission labels its reward with
+// this SAME number rather than a second, independently-maintained copy.
 const XP_DAILY_CHALLENGE_BONUS = 30;
 /** Retrying with a fresh pick after a wrong answer should avoid handing
  * back the SAME definition immediately (a near-instant "try again" on
@@ -135,6 +139,10 @@ export default function DailyChallengeScreen() {
     <View style={styles.root}>
       <Header onBack={goBackToMap} />
 
+      <View style={styles.missionsWrap}>
+        <DailyMissionsCard challengeXpReward={XP_DAILY_CHALLENGE_BONUS} />
+      </View>
+
       {alreadyCompletedToday ? (
         <View style={styles.centerFill}>
           <Text style={{ fontSize: 48 }}>✅</Text>
@@ -201,7 +209,7 @@ function Header({ onBack }: { onBack: () => void }) {
         <Text style={styles.backIcon}>‹</Text>
       </Pressable>
       <Text style={styles.headerTitle} numberOfLines={1}>
-        🎯 Wyzwanie dnia
+        🎯 Misje dnia
       </Text>
     </View>
   );
@@ -224,6 +232,10 @@ const styles = StyleSheet.create({
     gap: 10,
     paddingHorizontal: 16,
     paddingBottom: 10,
+  },
+  missionsWrap: {
+    paddingHorizontal: 16,
+    paddingBottom: 12,
   },
   backButton: {
     width: 40,
