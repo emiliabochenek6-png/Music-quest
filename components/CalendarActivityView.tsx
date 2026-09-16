@@ -25,14 +25,14 @@ function buildMonthCells(year: number, month0: number): (string | null)[] {
   return cells;
 }
 
-/** The side menu's own calendar/summary panel — a plain month grid (no
- * date-picker library exists in this app to reuse, see the gamification
- * plan's own research note) marking every day GamificationContext's own
- * `activityLog` has an entry for, plus a running total for whichever
- * month is currently shown. Purely presentational/read-only — tapping a
- * day doesn't drill into anything further yet, the point is the
- * at-a-glance pattern of activity, matching what the user actually
- * asked for ("ile czasu spędziło się i co się zrobiło"). */
+/** The activity calendar's own content — a streak hero, a small stat-tile
+ * row, and a month grid, each its own card (matching DailyMissionsCard/
+ * the paywall's plan cards — flat surface, theme.borderWidth border, no
+ * shadow) rather than the plain unbordered rows this used to be laid out
+ * with. Purely presentational/read-only — tapping a day doesn't drill
+ * into anything further, the point is the at-a-glance pattern of
+ * activity, matching what the user actually asked for ("ile czasu
+ * spędziło się i co się zrobiło"). */
 export function CalendarActivityView() {
   const { state } = useGamification();
   const [monthOffset, setMonthOffset] = useState(0);
@@ -59,58 +59,77 @@ export function CalendarActivityView() {
 
   return (
     <ScrollView contentContainerStyle={{ gap: 16, paddingBottom: 24 }}>
-      <View style={styles.monthNav}>
-        <Pressable onPress={() => setMonthOffset((m) => m - 1)} accessibilityRole="button" accessibilityLabel="Poprzedni miesiąc" hitSlop={10}>
-          <Text style={styles.navArrow}>‹</Text>
-        </Pressable>
-        <Text style={styles.monthLabel}>{monthLabel}</Text>
-        <Pressable
-          onPress={() => setMonthOffset((m) => Math.min(0, m + 1))}
-          disabled={monthOffset >= 0}
-          accessibilityRole="button"
-          accessibilityLabel="Następny miesiąc"
-          hitSlop={10}
-        >
-          <Text style={[styles.navArrow, monthOffset >= 0 && styles.navArrowDisabled]}>›</Text>
-        </Pressable>
-      </View>
-
-      <View style={styles.grid}>
-        {WEEKDAY_LABELS.map((label) => (
-          <Text key={label} style={styles.weekdayLabel}>
-            {label}
+      <View style={styles.streakCard}>
+        <Text style={styles.streakIcon}>🔥</Text>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.streakValue}>
+            {state.streakDays} {state.streakDays === 1 ? "dzień" : "dni"}
           </Text>
-        ))}
-        {cells.map((iso, index) => {
-          if (!iso) return <View key={`blank-${index}`} style={styles.cell} />;
-          const active = Boolean(state.activityLog[iso]);
-          const isToday = iso === todayISO;
-          return (
-            <View key={iso} style={styles.cell}>
-              <View style={[styles.dayDot, active && styles.dayDotActive, isToday && styles.dayDotToday]}>
-                <Text style={[styles.dayNumber, active && styles.dayNumberActive]}>{Number(iso.slice(-2))}</Text>
-              </View>
-            </View>
-          );
-        })}
+          <Text style={styles.streakLabel}>passy z rzędu</Text>
+        </View>
       </View>
 
-      <View style={styles.summary}>
-        <SummaryRow icon="🔥" label="Passa" value={`${state.streakDays} ${state.streakDays === 1 ? "dzień" : "dni"}`} />
-        <SummaryRow icon="⏱" label="Czas w tym miesiącu" value={`${minutesThisMonth} min`} />
-        <SummaryRow icon="✅" label="Ukończone lekcje" value={String(lessonsThisMonth)} />
-        <SummaryRow icon="📅" label="Aktywne dni" value={String(activeDaysThisMonth)} />
+      <View style={styles.statsRow}>
+        <StatTile icon="⏱" value={`${minutesThisMonth}`} unit="min" label="w tym miesiącu" />
+        <StatTile icon="✅" value={String(lessonsThisMonth)} label="lekcji" />
+        <StatTile icon="📅" value={String(activeDaysThisMonth)} label="aktywnych dni" />
+      </View>
+
+      <View style={styles.calendarCard}>
+        <View style={styles.monthNav}>
+          <Pressable onPress={() => setMonthOffset((m) => m - 1)} accessibilityRole="button" accessibilityLabel="Poprzedni miesiąc" hitSlop={10} style={styles.navButton}>
+            <Text style={styles.navArrow}>‹</Text>
+          </Pressable>
+          <Text style={styles.monthLabel}>{monthLabel}</Text>
+          <Pressable
+            onPress={() => setMonthOffset((m) => Math.min(0, m + 1))}
+            disabled={monthOffset >= 0}
+            accessibilityRole="button"
+            accessibilityLabel="Następny miesiąc"
+            hitSlop={10}
+            style={styles.navButton}
+          >
+            <Text style={[styles.navArrow, monthOffset >= 0 && styles.navArrowDisabled]}>›</Text>
+          </Pressable>
+        </View>
+
+        <View style={styles.grid}>
+          {WEEKDAY_LABELS.map((label) => (
+            <Text key={label} style={styles.weekdayLabel}>
+              {label}
+            </Text>
+          ))}
+          {cells.map((iso, index) => {
+            if (!iso) return <View key={`blank-${index}`} style={styles.cell} />;
+            const active = Boolean(state.activityLog[iso]);
+            const isToday = iso === todayISO;
+            return (
+              <View key={iso} style={styles.cell}>
+                <View style={[styles.dayDot, active && styles.dayDotActive, isToday && styles.dayDotToday]}>
+                  <Text style={[styles.dayNumber, active && styles.dayNumberActive, isToday && !active && styles.dayNumberToday]}>
+                    {Number(iso.slice(-2))}
+                  </Text>
+                </View>
+              </View>
+            );
+          })}
+        </View>
       </View>
     </ScrollView>
   );
 }
 
-function SummaryRow({ icon, label, value }: { icon: string; label: string; value: string }) {
+function StatTile({ icon, value, unit, label }: { icon: string; value: string; unit?: string; label: string }) {
   return (
-    <View style={styles.summaryRow}>
-      <Text style={styles.summaryIcon}>{icon}</Text>
-      <Text style={styles.summaryLabel}>{label}</Text>
-      <Text style={styles.summaryValue}>{value}</Text>
+    <View style={styles.statTile}>
+      <Text style={styles.statIcon}>{icon}</Text>
+      <Text style={styles.statValue} numberOfLines={1}>
+        {value}
+        {unit && <Text style={styles.statUnit}> {unit}</Text>}
+      </Text>
+      <Text style={styles.statLabel} numberOfLines={2}>
+        {label}
+      </Text>
     </View>
   );
 }
@@ -118,15 +137,91 @@ function SummaryRow({ icon, label, value }: { icon: string; label: string; value
 const CELL_WIDTH = "14.28%" as const;
 
 const styles = StyleSheet.create({
+  streakCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    backgroundColor: theme.colors.accentSoft,
+    borderWidth: theme.borderWidth,
+    borderColor: theme.colors.primary,
+    borderRadius: theme.radius.md,
+    padding: theme.spacing(2),
+  },
+  streakIcon: {
+    fontSize: 34,
+  },
+  streakValue: {
+    fontSize: theme.fontSize.heading,
+    fontWeight: "800",
+    color: theme.colors.ink,
+  },
+  streakLabel: {
+    fontSize: 12.5,
+    fontWeight: "600",
+    color: theme.colors.muted,
+    marginTop: 1,
+  },
+  statsRow: {
+    flexDirection: "row",
+    gap: 10,
+  },
+  statTile: {
+    flex: 1,
+    alignItems: "center",
+    gap: 2,
+    backgroundColor: theme.colors.surface,
+    borderWidth: theme.borderWidth,
+    borderColor: theme.colors.border,
+    borderRadius: theme.radius.md,
+    paddingVertical: theme.spacing(1.5),
+    paddingHorizontal: 6,
+  },
+  statIcon: {
+    fontSize: 18,
+    marginBottom: 2,
+  },
+  statValue: {
+    fontSize: 17,
+    fontWeight: "800",
+    color: theme.colors.ink,
+  },
+  statUnit: {
+    fontSize: 12,
+    fontWeight: "700",
+    color: theme.colors.muted,
+  },
+  statLabel: {
+    fontSize: 10.5,
+    fontWeight: "600",
+    color: theme.colors.muted,
+    textAlign: "center",
+  },
+  calendarCard: {
+    backgroundColor: theme.colors.surface,
+    borderWidth: theme.borderWidth,
+    borderColor: theme.colors.border,
+    borderRadius: theme.radius.md,
+    padding: theme.spacing(2),
+    gap: 6,
+  },
   monthNav: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    marginBottom: 8,
+  },
+  navButton: {
+    width: 32,
+    height: 32,
+    borderRadius: theme.radius.sm,
+    backgroundColor: theme.colors.surfaceMuted,
+    alignItems: "center",
+    justifyContent: "center",
   },
   navArrow: {
-    fontSize: 22,
+    fontSize: 20,
     color: theme.colors.ink,
-    paddingHorizontal: 8,
+    lineHeight: 22,
   },
   navArrowDisabled: {
     opacity: 0.25,
@@ -166,8 +261,8 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.primary,
   },
   dayDotToday: {
-    borderWidth: 1.5,
-    borderColor: theme.colors.ink,
+    borderWidth: 2,
+    borderColor: theme.colors.accent,
   },
   dayNumber: {
     fontSize: 12,
@@ -178,26 +273,8 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "800",
   },
-  summary: {
-    gap: 8,
-    marginTop: 4,
-  },
-  summaryRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  summaryIcon: {
-    fontSize: 15,
-  },
-  summaryLabel: {
-    flex: 1,
-    fontSize: 13,
-    color: theme.colors.muted,
-  },
-  summaryValue: {
-    fontSize: 13,
+  dayNumberToday: {
+    color: theme.colors.accent,
     fontWeight: "800",
-    color: theme.colors.ink,
   },
 });
