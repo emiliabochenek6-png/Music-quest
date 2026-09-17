@@ -1,6 +1,8 @@
-import { View, Text } from "react-native";
+import { Pressable, View, Text } from "react-native";
 import { OptionButton } from "@/components/exercises/OptionButton";
 import { StaffNotation } from "@/components/exercises/StaffNotation";
+import { playNote } from "@/lib/audio/player";
+import { parseScientific } from "@/lib/music/notes";
 import { t } from "@/lib/i18n/translate";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import type { Locale } from "@/types/locale";
@@ -15,14 +17,37 @@ interface LineOrSpaceChoiceExerciseProps {
 }
 
 /** "Ta nuta jest na linii czy w polu?" — ported from the web app's
- * LineOrSpaceChoiceExercise.tsx. */
+ * LineOrSpaceChoiceExercise.tsx. Same added 🔊 as MultipleChoiceNotationExercise
+ * (see its own doc) — lets the player hear exercise.targetNote too. */
 export function LineOrSpaceChoiceExercise({ exercise, selectedAnswer, onSelect, checked, locale }: LineOrSpaceChoiceExerciseProps) {
+  function playTargetNote() {
+    playNote(parseScientific(exercise.targetNote));
+  }
+
   return (
     <View style={{ alignItems: "center", gap: theme.spacing(3) }}>
       <Text style={{ fontSize: theme.fontSize.body, fontWeight: "600", color: theme.colors.ink, textAlign: "center" }}>
         {t("lesson.lineOrSpacePrompt", locale)}
       </Text>
       <StaffNotation note={exercise.targetNote} />
+      <Pressable
+        onPress={playTargetNote}
+        accessibilityRole="button"
+        accessibilityLabel={t("lesson.listenToNote", locale)}
+        hitSlop={8}
+        style={{
+          width: 44,
+          height: 44,
+          borderRadius: 22,
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: theme.colors.surfaceMuted,
+          borderWidth: theme.borderWidth,
+          borderColor: theme.colors.border,
+        }}
+      >
+        <Text style={{ fontSize: 20 }}>🔊</Text>
+      </Pressable>
       <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center", gap: theme.spacing(2) }}>
         <OptionButton
           label={t("lesson.lineLabel", locale)}

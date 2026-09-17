@@ -1,8 +1,9 @@
+import { useEffect, useRef, useState } from "react";
 import { View, Text } from "react-native";
 import { DarkButton as Button } from "@/components/exercises/DarkButton";
 import { OptionButton } from "@/components/exercises/OptionButton";
-import { playMelody } from "@/lib/audio/player";
-import { parseScientific } from "@/lib/music/notes";
+import { playSample, type SamplePlaybackHandle } from "@/lib/audio/player";
+import { MELODY_DIRECTION_SAMPLES } from "@/lib/audio/samples";
 import { t } from "@/lib/i18n/translate";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import type { Locale } from "@/types/locale";
@@ -22,11 +23,50 @@ const DIRECTIONS: { value: MelodyDirection; labelKey: "lesson.melodyDirectionUp"
   { value: "down", labelKey: "lesson.melodyDirectionDown", arrow: "↓" },
 ];
 
-/** "Dokąd leci melodia?" — ported from the web app's MelodyDirectionExercise.tsx. */
+/** "Dokąd leci melodia?" — plays a real piano recording of the exercise's
+ * own correctDirection (see MELODY_DIRECTION_SAMPLES' own doc for why
+ * this is keyed by direction, not by exercise.notes' specific pitches —
+ * this used to synthesize the melody note-by-note from exercise.notes
+ * via playMelody instead). A genuine play/stop toggle rather than
+ * fire-and-forget, same reasoning as MeterChoiceExercise's own
+ * referenceAudioSource handling: these recordings run several seconds,
+ * unlike this app's usual near-instant samples, so there needs to be a
+ * way to cut one off early. Ported from the web app's
+ * MelodyDirectionExercise.tsx. */
 export function MelodyDirectionExercise({ exercise, selectedDirection, onSelect, checked, locale }: MelodyDirectionExerciseProps) {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const handleRef = useRef<SamplePlaybackHandle | null>(null);
+
+  useEffect(() => {
+    return () => {
+      handleRef.current?.stop();
+    };
+  }, []);
+
+  // Same reasoning as MeterChoiceExercise's own doc — checking the
+  // answer stops all scheduled/active audio from OUTSIDE this component
+  // (the lesson screen's own handleCheck), which silences the native
+  // player without going through this handle's stop()/onFinish, so
+  // without this the ⏹ button would stay stuck showing "playing".
+  useEffect(() => {
+    if (checked) {
+      handleRef.current = null;
+      setIsPlaying(false);
+    }
+  }, [checked]);
 
   function play() {
-    playMelody(exercise.notes.map((n) => parseScientific(n)));
+    if (isPlaying) {
+      handleRef.current?.stop();
+      handleRef.current = null;
+      setIsPlaying(false);
+      return;
+    }
+    setIsPlaying(true);
+    handleRef.current = playSample(MELODY_DIRECTION_SAMPLES[exercise.correctDirection], 0.9, () => {
+      setIsPlaying(false);
+      handleRef.current = null;
+    });
   }
 
   return (
@@ -34,7 +74,7 @@ export function MelodyDirectionExercise({ exercise, selectedDirection, onSelect,
       <Text style={{ fontSize: theme.fontSize.body, fontWeight: "600", color: theme.colors.ink, textAlign: "center" }}>
         {t("lesson.melodyDirectionPrompt", locale)}
       </Text>
-      <Button label="🔊" onPress={play} variant="secondary" size={84} fontSize={42} />
+      <Button label={isPlaying ? "⏹" : "🔊"} onPress={play} variant={isPlaying ? "primary" : "secondary"} size={84} fontSize={42} />
       <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center", gap: theme.spacing(2) }}>
         {DIRECTIONS.map(({ value, labelKey, arrow }) => (
           <OptionButton

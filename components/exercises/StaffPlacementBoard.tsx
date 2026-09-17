@@ -49,7 +49,7 @@ export function StaffPlacementBoard({ selectedStep, onSelect, disabled, correctS
         const label = ordinal
           ? t(ordinal.kind === "line" ? "lesson.placeOnLine" : "lesson.placeOnSpace", locale, { n: ordinal.ordinal })
           : undefined;
-        const dotColor = isCorrect ? theme.colors.success : isWrongSelected ? theme.colors.warning : "#ffffff";
+        const dotColor = isCorrect ? theme.colors.success : isWrongSelected ? theme.colors.warning : theme.colors.ink;
 
         return (
           <Pressable

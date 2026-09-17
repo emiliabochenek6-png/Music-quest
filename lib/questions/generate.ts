@@ -107,8 +107,11 @@ function sample<T>(items: readonly T[], count: number): T[] {
   return shuffled(items).slice(0, count);
 }
 
+/** Answer choices are written in caps ("FIS", not "fis") — getNoteDisplayName's
+ * lowercase altered names (see its own doc) read fine mid-sentence, but as a
+ * standalone answer option they should read like a label, not a word. */
 function toOption(note: string, locale: Locale): MultipleChoiceOption {
-  return { id: note, label: getNoteDisplayName(parseScientific(note), locale) };
+  return { id: note, label: getNoteDisplayName(parseScientific(note), locale).toUpperCase() };
 }
 
 function buildMultipleChoiceOptions(

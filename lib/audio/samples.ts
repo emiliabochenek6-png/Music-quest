@@ -1,3 +1,5 @@
+import type { MelodyDirection } from "@/types/exercises";
+
 /**
  * Pre-rendered sine-tone WAV samples, one per note actually used by
  * Wioska Nut's audio-driven exercise types (pitch-height-choice,
@@ -172,3 +174,21 @@ export const DRUMMER_4_4_SAMPLE: number = require("@/assets/audio/reference/drum
 export const DRUMMER_6_8_SAMPLE: number = require("@/assets/audio/reference/drummer-modern-rnb-6-8.wav");
 export const DRUMMER_9_8_SAMPLE: number = require("@/assets/audio/reference/drummer-modern-rnb-9-8.wav");
 export const DRUMMER_12_8_SAMPLE: number = require("@/assets/audio/reference/drummer-modern-rnb-12-8.wav");
+
+/** Real piano recordings (exported from MuseScore, converted to this
+ * app's usual mono 16-bit PCM and peak-normalized to match — see this
+ * commit's own history for the exact conversion) — one per
+ * MelodyDirection, played by MelodyDirectionExercise's own "Dokąd leci
+ * melodia?" 🔊 button in place of the single-note-by-single-note
+ * playMelody() synthesis it used before. Fixed per DIRECTION rather than
+ * per exercise: every "up" exercise anywhere in the app shares this same
+ * recording (there's no per-exercise pitch info left to vary it by, and
+ * that's the point — a real musical phrase moving up/down/staying level,
+ * not a generated one). More directions' worth of content across other
+ * worlds/lessons still reuses these same three — MelodyDirection only
+ * ever has 3 values. */
+export const MELODY_DIRECTION_SAMPLES: Record<MelodyDirection, number> = {
+  up: require("@/assets/audio/reference/melody-direction-up.wav"),
+  down: require("@/assets/audio/reference/melody-direction-down.wav"),
+  same: require("@/assets/audio/reference/melody-direction-same.wav"),
+};

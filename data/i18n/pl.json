@@ -62,6 +62,7 @@
 
   "lesson.notationPrompt": "Zobacz zapis nutowy. Jak się nazywa ta nuta?",
   "lesson.notationPromptBass": "Zobacz zapis nutowy (klucz basowy). Jak się nazywa ta nuta?",
+  "lesson.listenToNote": "Odsłuchaj nutę",
   "lesson.pitchHeightPrompt": "Posłuchaj dźwięku. Wysoki czy niski?",
   "lesson.highCreatureLabel": "Wysoki",
   "lesson.lowCreatureLabel": "Niski",
