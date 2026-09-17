@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { MetronomeIndicator } from "@/components/exercises/MetronomeIndicator";
 import { NoteValueIcon } from "@/components/exercises/NoteValueIcon";
-import { schedulerNow } from "@/lib/audio/player";
+import { playSample, schedulerNow, type SamplePlaybackHandle } from "@/lib/audio/player";
 import { STANDALONE_METRONOME_MEASURES, playMetronome, playMetronomeWithClaps, stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
 import { t } from "@/lib/i18n/translate";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
@@ -42,15 +42,57 @@ const TRAILING_METRONOME_BEATS = 2;
  * RhythmSequencingExercise.tsx. The dot is ALSO its own tappable toggle
  * for a standalone metronome, independent of the 🔊 button — same
  * MetronomeIndicator pattern RhythmDictationExercise already has (see
- * that component's own doc). */
+ * that component's own doc).
+ *
+ * When exercise.referenceAudioSource is set (Miasto Rytmu lekcja 2 — see
+ * data/lessons/miasto-rytmu.ts and lib/audio/samples.ts's own
+ * RHYTHM_SEQUENCING_RECORDING_SAMPLES), the 🔊 button plays that real
+ * recording instead, as a genuine play/stop toggle — same
+ * MeterChoiceExercise/RhythmEchoExercise pattern. shuffledMotif/
+ * correctOrder/onsetsMs stay the grading ground truth either way; tile
+ * selection and the standalone metronome dot both keep working exactly
+ * as before. */
 export function RhythmSequencingExercise({ exercise, answer, onAnswerChange, checked, locale }: RhythmSequencingExerciseProps) {
   const selectedIndexes = answer?.selectedIndexes ?? [];
   // Same shape as RhythmDictationExercise's own metronomePlay/standaloneOn
   // — see that component's own doc.
   const [metronomePlay, setMetronomePlay] = useState({ token: 0, totalBeats: 0, startAtMs: 0 });
   const [standaloneOn, setStandaloneOn] = useState(false);
+  // Same real-recording play/stop toggle as RhythmEchoExercise's own —
+  // see that component's own doc for why it doesn't touch metronomePlay.
+  const [isPlayingReference, setIsPlayingReference] = useState(false);
+  const referenceHandleRef = useRef<SamplePlaybackHandle | null>(null);
+
+  useEffect(() => {
+    return () => {
+      referenceHandleRef.current?.stop();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (checked) {
+      referenceHandleRef.current = null;
+      setIsPlayingReference(false);
+    }
+  }, [checked]);
 
   function play() {
+    if (exercise.referenceAudioSource !== undefined) {
+      if (isPlayingReference) {
+        referenceHandleRef.current?.stop();
+        referenceHandleRef.current = null;
+        setIsPlayingReference(false);
+        return;
+      }
+      stopAllScheduledAudio();
+      setStandaloneOn(false);
+      setIsPlayingReference(true);
+      referenceHandleRef.current = playSample(exercise.referenceAudioSource, 0.9, () => {
+        setIsPlayingReference(false);
+        referenceHandleRef.current = null;
+      });
+      return;
+    }
     stopAllScheduledAudio();
     setStandaloneOn(false);
     const beatIntervalMs = (60 / exercise.bpm) * 1000;
@@ -68,6 +110,8 @@ export function RhythmSequencingExercise({ exercise, answer, onAnswerChange, che
 
   function toggleStandaloneMetronome() {
     stopAllScheduledAudio();
+    referenceHandleRef.current = null;
+    setIsPlayingReference(false);
     if (standaloneOn) {
       setStandaloneOn(false);
       return;
@@ -95,7 +139,13 @@ export function RhythmSequencingExercise({ exercise, answer, onAnswerChange, che
       <Text style={{ fontSize: theme.fontSize.body * 0.8, color: theme.colors.muted, textAlign: "center" }}>
         {t("lesson.metronomeDotHint", locale)}
       </Text>
-      <DarkButton label="🔊" onPress={play} variant="secondary" size={84} fontSize={42} />
+      <DarkButton
+        label={isPlayingReference ? "⏹" : "🔊"}
+        onPress={play}
+        variant={isPlayingReference ? "primary" : "secondary"}
+        size={84}
+        fontSize={42}
+      />
       <MetronomeIndicator
         playToken={metronomePlay.token}
         bpm={exercise.bpm}

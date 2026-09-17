@@ -1,8 +1,8 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { MetronomeIndicator } from "@/components/exercises/MetronomeIndicator";
-import { schedulerNow } from "@/lib/audio/player";
+import { playSample, schedulerNow, type SamplePlaybackHandle } from "@/lib/audio/player";
 import { STANDALONE_METRONOME_MEASURES, playMetronome, playMetronomeWithClaps, stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
 import { t } from "@/lib/i18n/translate";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
@@ -38,7 +38,18 @@ const TRAILING_METRONOME_BEATS = 2;
  * pattern back. Taps are recorded relative to the player's OWN first tap
  * (not to when playback started), so isValidRhythmEcho's gap-based
  * scoring works regardless of how long the player waits before starting
- * — ported from the web app's RhythmEchoExercise.tsx. */
+ * — ported from the web app's RhythmEchoExercise.tsx.
+ *
+ * When exercise.referenceAudioSource is set (Miasto Rytmu lekcja 2 — see
+ * data/lessons/miasto-rytmu.ts and lib/audio/samples.ts's own
+ * RHYTHM_ECHO_RECORDING_SAMPLES), the 🔊 button plays that real recording
+ * instead, as a genuine play/stop toggle (several seconds long, unlike
+ * the near-instant synthesized pattern) — same MeterChoiceExercise
+ * pattern. onsetsMs stays the grading ground truth either way; the
+ * recording only changes what's audible, not what a correct echo is
+ * judged against. Tapping the pattern back and the standalone metronome
+ * dot both keep working exactly as before, untouched by which source the
+ * 🔊 button plays. */
 export function RhythmEchoExercise({ exercise, answer, onAnswerChange, checked, locale }: RhythmEchoExerciseProps) {
   const firstTapTimeRef = useRef<number | null>(null);
   const taps = answer?.tapTimestampsMs ?? [];
@@ -46,8 +57,47 @@ export function RhythmEchoExercise({ exercise, answer, onAnswerChange, checked, 
   // — see that component's own doc.
   const [metronomePlay, setMetronomePlay] = useState({ token: 0, totalBeats: 0, startAtMs: 0 });
   const [standaloneOn, setStandaloneOn] = useState(false);
+  // Same real-recording play/stop toggle as MeterChoiceExercise's own
+  // referenceAudioSource handling — see this component's own doc for why
+  // it doesn't touch metronomePlay (that's the synthesized path's own
+  // visual-sync state, meaningless for a recording whose beat timing
+  // isn't known here).
+  const [isPlayingReference, setIsPlayingReference] = useState(false);
+  const referenceHandleRef = useRef<SamplePlaybackHandle | null>(null);
+
+  useEffect(() => {
+    return () => {
+      referenceHandleRef.current?.stop();
+    };
+  }, []);
+
+  // Same "outside stop leaves our own flag stuck" fix MeterChoiceExercise
+  // already needs — checking the answer silences the native player from
+  // the lesson screen's own handleCheck, not through our handle.
+  useEffect(() => {
+    if (checked) {
+      referenceHandleRef.current = null;
+      setIsPlayingReference(false);
+    }
+  }, [checked]);
 
   function play() {
+    if (exercise.referenceAudioSource !== undefined) {
+      if (isPlayingReference) {
+        referenceHandleRef.current?.stop();
+        referenceHandleRef.current = null;
+        setIsPlayingReference(false);
+        return;
+      }
+      stopAllScheduledAudio();
+      setStandaloneOn(false);
+      setIsPlayingReference(true);
+      referenceHandleRef.current = playSample(exercise.referenceAudioSource, 0.9, () => {
+        setIsPlayingReference(false);
+        referenceHandleRef.current = null;
+      });
+      return;
+    }
     stopAllScheduledAudio();
     setStandaloneOn(false);
     const beatIntervalMs = (60 / METRONOME_BPM) * 1000;
@@ -65,6 +115,8 @@ export function RhythmEchoExercise({ exercise, answer, onAnswerChange, checked, 
 
   function toggleStandaloneMetronome() {
     stopAllScheduledAudio();
+    referenceHandleRef.current = null;
+    setIsPlayingReference(false);
     if (standaloneOn) {
       setStandaloneOn(false);
       return;
@@ -99,7 +151,13 @@ export function RhythmEchoExercise({ exercise, answer, onAnswerChange, checked, 
       <Text style={{ fontSize: theme.fontSize.body * 0.8, color: theme.colors.muted, textAlign: "center" }}>
         {t("lesson.metronomeDotHint", locale)}
       </Text>
-      <DarkButton label="🔊" onPress={play} variant="secondary" size={84} fontSize={42} />
+      <DarkButton
+        label={isPlayingReference ? "⏹" : "🔊"}
+        onPress={play}
+        variant={isPlayingReference ? "primary" : "secondary"}
+        size={84}
+        fontSize={42}
+      />
       <MetronomeIndicator
         playToken={metronomePlay.token}
         bpm={METRONOME_BPM}

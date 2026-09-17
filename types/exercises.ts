@@ -89,8 +89,24 @@ export type ExerciseSpec =
        * actual song, not just a procedural click pattern. */
       referenceAudioSource?: number;
     }
-  | { type: "rhythm-echo"; onsetsMs: number[] }
-  | { type: "rhythm-sequencing"; motif: RhythmNoteValue[]; bpm?: number }
+  | {
+      type: "rhythm-echo";
+      onsetsMs: number[];
+      /** A real recorded rhythm (require()'d from lib/audio/samples.ts's
+       * own RHYTHM_ECHO_RECORDING_SAMPLES) to play instead of the
+       * synthesized playMetronomeWithClaps demo — same
+       * meter-choice-established pattern as ExerciseSpec's own
+       * meter-choice.referenceAudioSource. */
+      referenceAudioSource?: number;
+    }
+  | {
+      type: "rhythm-sequencing";
+      motif: RhythmNoteValue[];
+      bpm?: number;
+      /** See rhythm-echo's own referenceAudioSource doc just above — same
+       * pattern, RHYTHM_SEQUENCING_RECORDING_SAMPLES instead. */
+      referenceAudioSource?: number;
+    }
   | { type: "rhythm-dictation"; bpm: number; meter?: Meter; sequence: (RhythmNoteValue | RhythmRestValue)[] }
   | { type: "rhythm-notation-tap"; bpm: number; meter: Meter; sequence: (RhythmNoteValue | RhythmRestValue)[] }
   // Pasmo Interwałów (intervals world) — see data/lessons/pasmo-interwalow.ts's own doc.
@@ -409,8 +425,16 @@ export type GeneratedExercise =
       minHits: number;
     }
   | { id: string; type: "meter-choice"; correctMeter: Meter; bpm: number; optionPool: Meter[]; referenceAudioSource?: number }
-  | { id: string; type: "rhythm-echo"; onsetsMs: number[] }
-  | { id: string; type: "rhythm-sequencing"; shuffledMotif: RhythmNoteValue[]; correctOrder: RhythmNoteValue[]; onsetsMs: number[]; bpm: number }
+  | { id: string; type: "rhythm-echo"; onsetsMs: number[]; referenceAudioSource?: number }
+  | {
+      id: string;
+      type: "rhythm-sequencing";
+      shuffledMotif: RhythmNoteValue[];
+      correctOrder: RhythmNoteValue[];
+      onsetsMs: number[];
+      bpm: number;
+      referenceAudioSource?: number;
+    }
   | {
       id: string;
       type: "rhythm-dictation";

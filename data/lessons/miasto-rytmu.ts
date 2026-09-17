@@ -1,4 +1,9 @@
-import { DRUMMER_3_4_SAMPLE, DRUMMER_4_4_SAMPLE } from "@/lib/audio/samples";
+import {
+  DRUMMER_3_4_SAMPLE,
+  DRUMMER_4_4_SAMPLE,
+  RHYTHM_ECHO_RECORDING_SAMPLES,
+  RHYTHM_SEQUENCING_RECORDING_SAMPLES,
+} from "@/lib/audio/samples";
 import type { WorldContent } from "@/types/exercises";
 
 /**
@@ -31,7 +36,6 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
         },
       ],
       exercises: [
-        { id: "mr-l1-e1", type: "pulse-tap", difficulty: 1, spec: { type: "pulse-tap", bpm: 80, beatsPerMeasure: 1, measureCount: 20, minHits: 15 } },
         {
           id: "mr-l1-e3",
           type: "meter-choice",
@@ -61,15 +65,74 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
         },
       ],
       exercises: [
-        { id: "mr-l2-e1", type: "pulse-tap", difficulty: 1, spec: { type: "pulse-tap", bpm: 96, beatsPerMeasure: 4, measureCount: 6, minHits: 17 } },
-        { id: "mr-l2-e2", type: "rhythm-echo", difficulty: 2, spec: { type: "rhythm-echo", onsetsMs: [0, 450] } },
-        { id: "mr-l2-e3", type: "rhythm-echo", difficulty: 2, spec: { type: "rhythm-echo", onsetsMs: [0, 400, 800] } },
-        { id: "mr-l2-e4", type: "rhythm-echo", difficulty: 3, spec: { type: "rhythm-echo", onsetsMs: [0, 300, 750] } },
-        { id: "mr-l2-e5", type: "rhythm-echo", difficulty: 3, spec: { type: "rhythm-echo", onsetsMs: [0, 300, 750, 1050] } },
-        { id: "mr-l2-e6", type: "rhythm-sequencing", difficulty: 2, spec: { type: "rhythm-sequencing", motif: ["quarter", "quarter", "half"], bpm: 90 } },
-        { id: "mr-l2-e7", type: "rhythm-sequencing", difficulty: 2, spec: { type: "rhythm-sequencing", motif: ["half", "quarter", "whole"], bpm: 90 } },
-        { id: "mr-l2-e8", type: "rhythm-sequencing", difficulty: 3, spec: { type: "rhythm-sequencing", motif: ["quarter", "half", "quarter", "half"], bpm: 90 } },
-        { id: "mr-l2-e9", type: "rhythm-sequencing", difficulty: 3, spec: { type: "rhythm-sequencing", motif: ["whole", "quarter", "half", "quarter"], bpm: 90 } },
+        {
+          id: "mr-l2-e2",
+          type: "rhythm-echo",
+          difficulty: 2,
+          spec: { type: "rhythm-echo", onsetsMs: [0, 450], referenceAudioSource: RHYTHM_ECHO_RECORDING_SAMPLES[0] },
+        },
+        {
+          id: "mr-l2-e3",
+          type: "rhythm-echo",
+          difficulty: 2,
+          spec: { type: "rhythm-echo", onsetsMs: [0, 400, 800], referenceAudioSource: RHYTHM_ECHO_RECORDING_SAMPLES[1] },
+        },
+        {
+          id: "mr-l2-e4",
+          type: "rhythm-echo",
+          difficulty: 3,
+          spec: { type: "rhythm-echo", onsetsMs: [0, 300, 750], referenceAudioSource: RHYTHM_ECHO_RECORDING_SAMPLES[2] },
+        },
+        {
+          id: "mr-l2-e5",
+          type: "rhythm-echo",
+          difficulty: 3,
+          spec: { type: "rhythm-echo", onsetsMs: [0, 300, 750, 1050], referenceAudioSource: RHYTHM_ECHO_RECORDING_SAMPLES[3] },
+        },
+        {
+          id: "mr-l2-e6",
+          type: "rhythm-sequencing",
+          difficulty: 2,
+          spec: {
+            type: "rhythm-sequencing",
+            motif: ["quarter", "quarter", "half"],
+            bpm: 90,
+            referenceAudioSource: RHYTHM_SEQUENCING_RECORDING_SAMPLES[0],
+          },
+        },
+        {
+          id: "mr-l2-e7",
+          type: "rhythm-sequencing",
+          difficulty: 2,
+          spec: {
+            type: "rhythm-sequencing",
+            motif: ["half", "quarter", "whole"],
+            bpm: 90,
+            referenceAudioSource: RHYTHM_SEQUENCING_RECORDING_SAMPLES[1],
+          },
+        },
+        {
+          id: "mr-l2-e8",
+          type: "rhythm-sequencing",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-sequencing",
+            motif: ["quarter", "half", "quarter", "half"],
+            bpm: 90,
+            referenceAudioSource: RHYTHM_SEQUENCING_RECORDING_SAMPLES[2],
+          },
+        },
+        {
+          id: "mr-l2-e9",
+          type: "rhythm-sequencing",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-sequencing",
+            motif: ["whole", "quarter", "half", "quarter"],
+            bpm: 90,
+            referenceAudioSource: RHYTHM_SEQUENCING_RECORDING_SAMPLES[3],
+          },
+        },
       ],
     },
     {
@@ -89,7 +152,6 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
         },
       ],
       exercises: [
-        { id: "mr-l3-e1", type: "pulse-tap", difficulty: 1, spec: { type: "pulse-tap", bpm: 96, beatsPerMeasure: 4, measureCount: 6, minHits: 17 } },
         { id: "mr-l3-e2", type: "rhythm-echo", difficulty: 2, spec: { type: "rhythm-echo", onsetsMs: [0, 400] } },
         { id: "mr-l3-e3", type: "rhythm-echo", difficulty: 2, spec: { type: "rhythm-echo", onsetsMs: [0, 350, 700] } },
         { id: "mr-l3-e4", type: "rhythm-echo", difficulty: 3, spec: { type: "rhythm-echo", onsetsMs: [0, 250, 650] } },

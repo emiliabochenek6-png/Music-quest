@@ -192,3 +192,30 @@ export const MELODY_DIRECTION_SAMPLES: Record<MelodyDirection, number> = {
   down: require("@/assets/audio/reference/melody-direction-down.wav"),
   same: require("@/assets/audio/reference/melody-direction-same.wav"),
 };
+
+/** Real recorded rhythms (same MuseScore-export/mono-16-bit/peak-0.9
+ * conversion as MELODY_DIRECTION_SAMPLES above) for Miasto Rytmu lekcja
+ * 2's own rhythm-echo and rhythm-sequencing exercises — one recording per
+ * exercise (mr-l2-e2..e5 and mr-l2-e6..e9 respectively, in that order —
+ * see data/lessons/miasto-rytmu.ts's own referenceAudioSource usage),
+ * played in place of the synthesized playMetronomeWithClaps demo when set
+ * (RhythmEchoExercise/RhythmSequencingExercise's own 🔊 button — same
+ * "real recording overrides the procedural one" pattern meter-choice's
+ * DRUMMER_*_SAMPLE already established). Each recording already contains
+ * its own metronome/count-in, same as every other "own recording, own
+ * metronome" rhythm exercise — the tap area and the independent
+ * standalone-metronome dot both stay exactly as they were, unaffected by
+ * which source the 🔊 button plays. */
+export const RHYTHM_ECHO_RECORDING_SAMPLES: readonly number[] = [
+  require("@/assets/audio/reference/rhythm-echo-1.wav"),
+  require("@/assets/audio/reference/rhythm-echo-2.wav"),
+  require("@/assets/audio/reference/rhythm-echo-3.wav"),
+  require("@/assets/audio/reference/rhythm-echo-4.wav"),
+];
+
+export const RHYTHM_SEQUENCING_RECORDING_SAMPLES: readonly number[] = [
+  require("@/assets/audio/reference/rhythm-sequencing-1.wav"),
+  require("@/assets/audio/reference/rhythm-sequencing-2.wav"),
+  require("@/assets/audio/reference/rhythm-sequencing-3.wav"),
+  require("@/assets/audio/reference/rhythm-sequencing-4.wav"),
+];
