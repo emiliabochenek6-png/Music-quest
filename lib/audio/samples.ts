@@ -194,18 +194,22 @@ export const MELODY_DIRECTION_SAMPLES: Record<MelodyDirection, number> = {
 };
 
 /** Real recorded rhythms (same MuseScore-export/mono-16-bit/peak-0.9
- * conversion as MELODY_DIRECTION_SAMPLES above) for Miasto Rytmu lekcja
- * 2's own rhythm-echo and rhythm-sequencing exercises — one recording per
- * exercise (mr-l2-e2..e5 and mr-l2-e6..e9 respectively, in that order —
- * see data/lessons/miasto-rytmu.ts's own referenceAudioSource usage),
- * played in place of the synthesized playMetronomeWithClaps demo when set
- * (RhythmEchoExercise/RhythmSequencingExercise's own 🔊 button — same
- * "real recording overrides the procedural one" pattern meter-choice's
- * DRUMMER_*_SAMPLE already established). Each recording already contains
- * its own metronome/count-in, same as every other "own recording, own
- * metronome" rhythm exercise — the tap area and the independent
- * standalone-metronome dot both stay exactly as they were, unaffected by
- * which source the 🔊 button plays. */
+ * conversion as MELODY_DIRECTION_SAMPLES above), converted for Miasto
+ * Rytmu lekcja 2's own rhythm-echo exercises (mr-l2-e2..e5) — see
+ * RhythmEchoExercise.tsx's own referenceAudioSource handling for how a
+ * recording here WOULD override the synthesized playMetronomeWithClaps
+ * demo. **Not currently wired into data/lessons/miasto-rytmu.ts** —
+ * isValidRhythmEcho (lib/questions/rhythmEcho.ts) requires the player's
+ * tap COUNT to exactly match onsetsMs.length and each gap to land within
+ * ±200ms, so the recording's actual clap timing has to be known exactly
+ * or grading breaks (a real regression this session shipped and then
+ * reverted — automatic onset detection on these 4 files gave
+ * inconsistent, not-obviously-trustworthy counts, so onsetsMs stays the
+ * original synthesized-pattern data instead). Kept here, unused, for
+ * whenever the actual note-value content of each recording is confirmed
+ * (from the person who made them) and onsetsMs can be set to match it
+ * exactly — see RHYTHM_SEQUENCING_RECORDING_SAMPLES just below for why
+ * rhythm-sequencing's own recordings didn't hit this problem. */
 export const RHYTHM_ECHO_RECORDING_SAMPLES: readonly number[] = [
   require("@/assets/audio/reference/rhythm-echo-1.wav"),
   require("@/assets/audio/reference/rhythm-echo-2.wav"),
@@ -213,6 +217,14 @@ export const RHYTHM_ECHO_RECORDING_SAMPLES: readonly number[] = [
   require("@/assets/audio/reference/rhythm-echo-4.wav"),
 ];
 
+/** Same recorded-rhythm treatment as RHYTHM_ECHO_RECORDING_SAMPLES above,
+ * for lekcja 2's rhythm-sequencing exercises (mr-l2-e6..e9) — IS wired
+ * into data/lessons/miasto-rytmu.ts's own referenceAudioSource, unlike
+ * its rhythm-echo counterpart, because rhythm-sequencing's own grading
+ * (lib/questions/validate.ts's "rhythm-sequencing" case) compares
+ * clicked-tile ORDER against correctOrder — pure note-value sequence,
+ * never onsetsMs or any timing at all — so nothing about the recording's
+ * actual tempo/exact clap timing can ever make that grading wrong. */
 export const RHYTHM_SEQUENCING_RECORDING_SAMPLES: readonly number[] = [
   require("@/assets/audio/reference/rhythm-sequencing-1.wav"),
   require("@/assets/audio/reference/rhythm-sequencing-2.wav"),

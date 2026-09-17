@@ -1,9 +1,4 @@
-import {
-  DRUMMER_3_4_SAMPLE,
-  DRUMMER_4_4_SAMPLE,
-  RHYTHM_ECHO_RECORDING_SAMPLES,
-  RHYTHM_SEQUENCING_RECORDING_SAMPLES,
-} from "@/lib/audio/samples";
+import { DRUMMER_3_4_SAMPLE, DRUMMER_4_4_SAMPLE, RHYTHM_SEQUENCING_RECORDING_SAMPLES } from "@/lib/audio/samples";
 import type { WorldContent } from "@/types/exercises";
 
 /**
@@ -65,30 +60,18 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
         },
       ],
       exercises: [
-        {
-          id: "mr-l2-e2",
-          type: "rhythm-echo",
-          difficulty: 2,
-          spec: { type: "rhythm-echo", onsetsMs: [0, 450], referenceAudioSource: RHYTHM_ECHO_RECORDING_SAMPLES[0] },
-        },
-        {
-          id: "mr-l2-e3",
-          type: "rhythm-echo",
-          difficulty: 2,
-          spec: { type: "rhythm-echo", onsetsMs: [0, 400, 800], referenceAudioSource: RHYTHM_ECHO_RECORDING_SAMPLES[1] },
-        },
-        {
-          id: "mr-l2-e4",
-          type: "rhythm-echo",
-          difficulty: 3,
-          spec: { type: "rhythm-echo", onsetsMs: [0, 300, 750], referenceAudioSource: RHYTHM_ECHO_RECORDING_SAMPLES[2] },
-        },
-        {
-          id: "mr-l2-e5",
-          type: "rhythm-echo",
-          difficulty: 3,
-          spec: { type: "rhythm-echo", onsetsMs: [0, 300, 750, 1050], referenceAudioSource: RHYTHM_ECHO_RECORDING_SAMPLES[3] },
-        },
+        // referenceAudioSource deliberately NOT set on these 4 — see
+        // RHYTHM_ECHO_RECORDING_SAMPLES's own doc in lib/audio/samples.ts
+        // for why rhythm-echo's real recordings aren't wired in yet
+        // (isValidRhythmEcho needs onsetsMs to match the recording's
+        // ACTUAL clap count/timing exactly, which turned out not to be
+        // reliably recoverable by automatic onset detection). These 4
+        // play the synthesized click+clap demo built from onsetsMs
+        // itself, guaranteeing the audio and the grading always agree.
+        { id: "mr-l2-e2", type: "rhythm-echo", difficulty: 2, spec: { type: "rhythm-echo", onsetsMs: [0, 450] } },
+        { id: "mr-l2-e3", type: "rhythm-echo", difficulty: 2, spec: { type: "rhythm-echo", onsetsMs: [0, 400, 800] } },
+        { id: "mr-l2-e4", type: "rhythm-echo", difficulty: 3, spec: { type: "rhythm-echo", onsetsMs: [0, 300, 750] } },
+        { id: "mr-l2-e5", type: "rhythm-echo", difficulty: 3, spec: { type: "rhythm-echo", onsetsMs: [0, 300, 750, 1050] } },
         {
           id: "mr-l2-e6",
           type: "rhythm-sequencing",
