@@ -4,7 +4,7 @@ import { DarkButton } from "@/components/exercises/DarkButton";
 import { MeteredNotationRow } from "@/components/exercises/MeteredNotationRow";
 import { MetronomeIndicator } from "@/components/exercises/MetronomeIndicator";
 import { schedulerNow } from "@/lib/audio/player";
-import { STANDALONE_METRONOME_MEASURES, playMetronome, playRhythm, stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
+import { STANDALONE_METRONOME_MEASURES, playMetronome, playMetronomeWithClaps, stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
 import { meterFeltPulseCount, meterFeltPulseQuarterBeats, meterPulseSubdivision } from "@/lib/rhythm/meter";
 import { t } from "@/lib/i18n/translate";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
@@ -82,8 +82,10 @@ export function RhythmDictationExercise({ exercise, answer, onAnswerChange, chec
     // startAtMs doc for why the click track and the clap pattern
     // playing under it need to share an exact time origin.
     const startAtMs = schedulerNow();
-    playMetronome({ bpm: feltBpm, beatsPerMeasure: feltBeatsPerMeasure, measureCount, pulseSubdivision, startAtMs });
-    playRhythm(exercise.onsetsMs.map((ms) => ms + countInMs), 0.8, startAtMs);
+    playMetronomeWithClaps(
+      { bpm: feltBpm, beatsPerMeasure: feltBeatsPerMeasure, measureCount, pulseSubdivision, startAtMs },
+      exercise.onsetsMs.map((ms) => ms + countInMs)
+    );
     setMetronomePlay((prev) => ({ token: prev.token + 1, totalBeats: measureCount * feltBeatsPerMeasure, startAtMs }));
   }
 

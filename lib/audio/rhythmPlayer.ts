@@ -9,7 +9,15 @@ import {
   stopAllPooledSamples,
   type SamplePlaybackHandle,
 } from "@/lib/audio/player";
-import { CLAP_SAMPLE, CLICK_ACCENT_SAMPLE, CLICK_WEAK_SAMPLE, MELODY_NOTE_SAMPLES, NOTE_SAMPLES } from "@/lib/audio/samples";
+import {
+  CLAP_SAMPLE,
+  CLICK_ACCENT_CLAP_SAMPLE,
+  CLICK_ACCENT_SAMPLE,
+  CLICK_WEAK_CLAP_SAMPLE,
+  CLICK_WEAK_SAMPLE,
+  MELODY_NOTE_SAMPLES,
+  NOTE_SAMPLES,
+} from "@/lib/audio/samples";
 import { formatScientific, midiToNote, noteToMidi, type Note } from "@/lib/music/notes";
 
 // createSamplePool/scheduleAt/getPool and the lookahead scheduler they run
@@ -45,6 +53,15 @@ const weakClickPool = createSamplePool(CLICK_WEAK_SAMPLE, 6);
 // to this one tightest case — cheap (just more idle AudioPlayer
 // instances) and safe against anything denser than today's content too.
 const clapPool = createSamplePool(CLAP_SAMPLE, 10);
+// One pre-mixed click+clap sample per click kind (see samples.ts's own
+// doc on CLICK_ACCENT_CLAP_SAMPLE/CLICK_WEAK_CLAP_SAMPLE) — used by
+// playMetronomeWithClaps below in place of triggering the plain click
+// AND a plain clap as two separate native players at the same instant.
+// Sized the same as their un-merged counterparts — a coincidence-heavy
+// pattern (straight eighths in a compound meter) can lean on these just
+// as hard as the plain click pools do.
+const accentClapPool = createSamplePool(CLICK_ACCENT_CLAP_SAMPLE, 4);
+const weakClapPool = createSamplePool(CLICK_WEAK_CLAP_SAMPLE, 6);
 
 // playDanceFragment's own notes (bass/chord/pickup/lilt) use the generic
 // getPool() (imported from lib/audio/player.ts) rather than a named pool
@@ -85,6 +102,8 @@ export function stopAllScheduledAudio(): void {
   accentClickPool.stop();
   weakClickPool.stop();
   clapPool.stop();
+  accentClapPool.stop();
+  weakClapPool.stop();
 }
 
 /** How many measures a "standalone metronome" (the tappable
@@ -144,58 +163,119 @@ export function playMetronome(options: MetronomeOptions): void {
   // late/uneven.
   accentClickPool.warmUp();
   weakClickPool.warmUp();
-  const beatIntervalMs = (60 / bpm) * 1000;
-  const subdivisionIntervalMs = beatIntervalMs / pulseSubdivision;
-  metronomeBeatTimesMs(bpm, beatsPerMeasure, measureCount).forEach((timeMs, index) => {
-    const isAccent = index % beatsPerMeasure === 0;
+  buildClickGrid(bpm, beatsPerMeasure, measureCount, pulseSubdivision).forEach(({ timeMs, isAccent }) => {
     schedulePooled(isAccent ? accentClickPool : weakClickPool, isAccent ? accentVelocity : weakVelocity, timeMs, startAtMs);
-    // Quiet in-between ticks on the SAME weak-click sample, at a lower
-    // volume than even the weak beat — a subtle "-ta(-ta)" filling out
-    // each pulse rather than a second competing accent.
-    for (let sub = 1; sub < pulseSubdivision; sub++) {
-      schedulePooled(weakClickPool, 0.14, timeMs + sub * subdivisionIntervalMs, startAtMs);
-    }
   });
 }
 
-/** Every current caller pairs playRhythm with a playMetronome() call on the
- * SAME startAtMs (a click track under the clap pattern) — the compound
- * meters (6/8/9/8/12/8) most notably author a lot of their content as
- * straight, unbroken eighth notes (see e.g. przystan-taktow.ts's own
- * "pt-l5-e5"/"pt-l6-e5"), which lands a clap onset on EVERY metronome
- * subdivision tick, not just some of them. When a clap and a click are
- * scheduled for the exact same millisecond, the shared lookahead
- * scheduler (see lib/audio/player.ts's own doc) finds both "due" in the
- * same tick and fires both pools' own player.play() back to back, in the
- * same synchronous JS turn, over and over for as long as the pattern
- * keeps coinciding — reported as an audible, unevenly-timed "zacina się"
- * (stutters) specifically on that kind of content, not a steady drift.
- * This tiny, fixed, inaudible offset (well under the ~20-30ms two
- * different-timbre onsets need to separate before an ear perceives them
- * as not-quite-together) breaks that exact coincidence for every caller
- * at once, rather than needing each one to stagger its own onsets by
- * hand — applied uniformly to every onset, so the GAPS between claps
- * (what isValidRhythmEcho's own gap-based scoring — always run against
- * the exercise's own unshifted onsetsMs/requiredTapTimesMs, never this
- * playback copy — actually cares about) are unaffected. */
-const CLAP_METRONOME_DESYNC_MS = 15;
+interface ClickGridEntry {
+  timeMs: number;
+  /** True only for a measure's own main downbeat pulse — every OTHER
+   * click position (a non-downbeat main pulse, or one of pulseSubdivision's
+   * own quiet in-between ticks) counts as "weak" for both which plain
+   * click sample plays AND, in playMetronomeWithClaps below, which
+   * pre-mixed click+clap sample a coincident onset gets merged into. */
+  isAccent: boolean;
+}
+
+/** The full sequence of click positions playMetronome's own click track
+ * fires at — factored out so playMetronomeWithClaps can build the exact
+ * same grid to check onsets against, without duplicating the beat/
+ * subdivision math. */
+function buildClickGrid(bpm: number, beatsPerMeasure: number, measureCount: number, pulseSubdivision: number): ClickGridEntry[] {
+  const beatIntervalMs = (60 / bpm) * 1000;
+  const subdivisionIntervalMs = beatIntervalMs / pulseSubdivision;
+  const grid: ClickGridEntry[] = [];
+  metronomeBeatTimesMs(bpm, beatsPerMeasure, measureCount).forEach((timeMs, index) => {
+    grid.push({ timeMs, isAccent: index % beatsPerMeasure === 0 });
+    // Quiet in-between ticks — a subtle "-ta(-ta)" filling out each pulse
+    // rather than a second competing accent, same reasoning as
+    // playMetronome's own pulseSubdivision doc.
+    for (let sub = 1; sub < pulseSubdivision; sub++) {
+      grid.push({ timeMs: timeMs + sub * subdivisionIntervalMs, isAccent: false });
+    }
+  });
+  return grid;
+}
+
+/** How close a clap onset has to land to a click-grid position to count as
+ * "the same beat" and get merged into one pre-mixed sample rather than
+ * scheduled as two separate ones (see playMetronomeWithClaps' own doc).
+ * Generous enough to absorb float-rounding between the click grid's own
+ * beatIntervalMs arithmetic and however a specific exercise's onsets were
+ * generated (both ultimately derived from the same bpm/meter, so a
+ * genuine coincidence should land within a couple of ms, never anywhere
+ * close to this), but well under the ~20-30ms two different-timbre
+ * onsets need to separate before an ear perceives them as not-quite-
+ * together — so two events that are merely NEARBY, not truly coincident,
+ * never get folded into one by mistake. */
+const COINCIDENCE_EPSILON_MS = 8;
 
 /** Schedules one clap one-shot per onset — the rhythm-playback counterpart
- * to playMetronome, used by rhythm-echo/rhythm-sequencing/rhythm-dictation/
- * rhythm-notation-tap to let the player HEAR the target pattern before
- * tapping it back. Pooled the same way playMetronome's clicks are (see
+ * to playMetronome, for a pattern played entirely on its own (no
+ * metronome underneath — see playMetronomeWithClaps below for that
+ * combination instead, which every current rhythm exercise actually
+ * uses). Pooled the same way playMetronome's clicks are (see
  * createSamplePool's own doc) so the claps themselves land evenly instead
- * of drifting from one-shot player construction overhead. `startAtMs` is
- * playMetronome's own shared-anchor param, same reasoning — pass the
- * identical value both calls were given when a metronome plays underneath
- * this pattern, so the two tracks share one exact time origin (see
- * CLAP_METRONOME_DESYNC_MS's own doc for the one deliberate exception). */
+ * of drifting from one-shot player construction overhead. */
 export function playRhythm(onsetsMs: readonly number[], velocity = 0.8, startAtMs: number = schedulerNow()): void {
-  // Same reasoning as playMetronome's own warmUp() call — get the pool's
-  // players built before the first onset is even scheduled, not on it.
   clapPool.warmUp();
   onsetsMs.forEach((timeMs) => {
-    schedulePooled(clapPool, velocity, timeMs + CLAP_METRONOME_DESYNC_MS, startAtMs);
+    schedulePooled(clapPool, velocity, timeMs, startAtMs);
+  });
+}
+
+/** The actual "🔊 recording" shape every rhythm exercise (dictation,
+ * notation-tap, echo, sequencing, value-dictation) plays: a metronome
+ * click track WITH a clap pattern sounding at the same time underneath
+ * it. Compound meters (6/8/9/8/12/8) especially tend to author straight,
+ * unbroken eighth notes (see e.g. przystan-taktow.ts's own
+ * "pt-l5-e5"/"pt-l6-e5"), which lands a clap onset on EVERY click-grid
+ * position, not just some of them — scheduling the plain click AND a
+ * plain clap as two separate native players at that same instant, over
+ * and over for as long as the pattern keeps coinciding, was the actual
+ * source of the reported "zacina się" (stutters): asking the device to
+ * start two different one-shot samples in the same JS scheduler tick,
+ * repeatedly, rather than a timing bug in either track's own scheduling.
+ * A small fixed offset between the two tracks was tried first and wasn't
+ * enough — this instead detects every coincidence (an onset landing
+ * within COINCIDENCE_EPSILON_MS of a click-grid position) and plays ONE
+ * pre-mixed click+clap sample there instead of two separate ones (see
+ * samples.ts's own CLICK_ACCENT_CLAP_SAMPLE/CLICK_WEAK_CLAP_SAMPLE doc),
+ * so the device is never asked for two simultaneous one-shots at all.
+ * Every click position that ISN'T matched by an onset still plays its
+ * own plain click, and every onset that ISN'T matched by a click
+ * position still plays its own plain clap, exactly as playMetronome/
+ * playRhythm would separately — only the genuinely-coincident pairs are
+ * different. Onset matching is greedy and one-to-one (an onset can only
+ * consume ONE grid position, and vice versa), which is exactly right
+ * here since two onsets are never authored close enough together to both
+ * plausibly match the same single click position. */
+export function playMetronomeWithClaps(metronomeOptions: MetronomeOptions, onsetsMs: readonly number[], clapVelocity = 0.8): void {
+  const { bpm, beatsPerMeasure, measureCount, accentVelocity = 0.55, weakVelocity = 0.3, pulseSubdivision = 1, startAtMs = schedulerNow() } = metronomeOptions;
+  accentClickPool.warmUp();
+  weakClickPool.warmUp();
+  clapPool.warmUp();
+  accentClapPool.warmUp();
+  weakClapPool.warmUp();
+
+  const grid = buildClickGrid(bpm, beatsPerMeasure, measureCount, pulseSubdivision);
+  const consumedOnsetIndexes = new Set<number>();
+
+  grid.forEach(({ timeMs, isAccent }) => {
+    const onsetIndex = onsetsMs.findIndex((onsetMs, index) => !consumedOnsetIndexes.has(index) && Math.abs(onsetMs - timeMs) <= COINCIDENCE_EPSILON_MS);
+    if (onsetIndex === -1) {
+      schedulePooled(isAccent ? accentClickPool : weakClickPool, isAccent ? accentVelocity : weakVelocity, timeMs, startAtMs);
+      return;
+    }
+    consumedOnsetIndexes.add(onsetIndex);
+    schedulePooled(isAccent ? accentClapPool : weakClapPool, isAccent ? accentVelocity : weakVelocity, timeMs, startAtMs);
+  });
+
+  onsetsMs.forEach((onsetMs, index) => {
+    if (!consumedOnsetIndexes.has(index)) {
+      schedulePooled(clapPool, clapVelocity, onsetMs, startAtMs);
+    }
   });
 }
 

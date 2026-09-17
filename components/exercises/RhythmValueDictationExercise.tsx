@@ -5,7 +5,7 @@ import { DarkButton } from "@/components/exercises/DarkButton";
 import { NoteValueIcon } from "@/components/exercises/NoteValueIcon";
 import { RestValueIcon } from "@/components/exercises/RestValueIcon";
 import { schedulerNow } from "@/lib/audio/player";
-import { playMetronome, playRhythm, stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
+import { playMetronomeWithClaps, stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
 import { meterFeltPulseQuarterBeats } from "@/lib/rhythm/meter";
 import { beatsOf, measureIndexAt, REST_VALUES } from "@/lib/rhythm/valueBeats";
 import { t, type TranslationKey } from "@/lib/i18n/translate";
@@ -100,9 +100,11 @@ export function RhythmValueDictationExercise({ exercise, sequence, groups, onAdd
     const lastOnsetSeconds = (exercise.onsetsMs[exercise.onsetsMs.length - 1] ?? 0) / 1000;
     const patternBeats = Math.ceil(lastOnsetSeconds / beatIntervalSeconds) + TRAILING_METRONOME_BEATS;
     const startAtMs = schedulerNow();
-    playMetronome({ bpm: 60 / beatIntervalSeconds, beatsPerMeasure: 1, measureCount: COUNT_IN_BEATS + patternBeats, startAtMs });
     const countInOffsetMs = COUNT_IN_BEATS * beatIntervalSeconds * 1000;
-    playRhythm(exercise.onsetsMs.map((ms) => ms + countInOffsetMs), 0.8, startAtMs);
+    playMetronomeWithClaps(
+      { bpm: 60 / beatIntervalSeconds, beatsPerMeasure: 1, measureCount: COUNT_IN_BEATS + patternBeats, startAtMs },
+      exercise.onsetsMs.map((ms) => ms + countInOffsetMs)
+    );
   }
 
   function handleNoteClick(globalIndex: number) {

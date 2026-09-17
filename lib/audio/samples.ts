@@ -141,6 +141,20 @@ export const CLICK_ACCENT_SAMPLE: number = require("@/assets/audio/click-accent.
 export const CLICK_WEAK_SAMPLE: number = require("@/assets/audio/click-weak.wav");
 export const CLAP_SAMPLE: number = require("@/assets/audio/clap.wav");
 
+/** click-accent.wav/click-weak.wav pre-mixed together with clap.wav (peak-
+ * normalized, no clipping — see the small Python mix script this was
+ * generated with in this commit's own history) — used ONLY when a
+ * metronome click and a clap onset are scheduled for the same instant
+ * (see rhythmPlayer.ts's own playMetronomeWithClaps). Playing two
+ * separate native samples at once for every coincident beat (which
+ * straight-eighth-note compound-meter content produces a lot of, e.g.
+ * przystan-taktow.ts's own "pt-l5-e5") was a real source of uneven/
+ * glitchy playback even after staggering them by a few ms — one
+ * pre-mixed sample per coincidence sidesteps that entirely by only ever
+ * asking the device to play ONE thing at that instant. */
+export const CLICK_ACCENT_CLAP_SAMPLE: number = require("@/assets/audio/click-accent-clap.wav");
+export const CLICK_WEAK_CLAP_SAMPLE: number = require("@/assets/audio/click-weak-clap.wav");
+
 /** Real recorded reference tracks (not synthesized one-shots like the
  * samples above) — a "posłuchaj przykładu" button on a lesson's own intro
  * slide plays one via the ordinary playSample (lib/audio/player.ts), same

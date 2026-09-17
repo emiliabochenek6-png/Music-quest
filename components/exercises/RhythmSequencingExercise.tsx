@@ -4,7 +4,7 @@ import { DarkButton } from "@/components/exercises/DarkButton";
 import { MetronomeIndicator } from "@/components/exercises/MetronomeIndicator";
 import { NoteValueIcon } from "@/components/exercises/NoteValueIcon";
 import { schedulerNow } from "@/lib/audio/player";
-import { STANDALONE_METRONOME_MEASURES, playMetronome, playRhythm, stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
+import { STANDALONE_METRONOME_MEASURES, playMetronome, playMetronomeWithClaps, stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
 import { t } from "@/lib/i18n/translate";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import type { Locale } from "@/types/locale";
@@ -58,9 +58,11 @@ export function RhythmSequencingExercise({ exercise, answer, onAnswerChange, che
     const patternBeats = Math.ceil(lastOnsetMs / beatIntervalMs) + TRAILING_METRONOME_BEATS;
     const measureCount = COUNT_IN_BEATS + patternBeats;
     const startAtMs = schedulerNow();
-    playMetronome({ bpm: exercise.bpm, beatsPerMeasure: 1, measureCount, startAtMs });
     const countInOffsetMs = COUNT_IN_BEATS * beatIntervalMs;
-    playRhythm(exercise.onsetsMs.map((ms) => ms + countInOffsetMs), 0.8, startAtMs);
+    playMetronomeWithClaps(
+      { bpm: exercise.bpm, beatsPerMeasure: 1, measureCount, startAtMs },
+      exercise.onsetsMs.map((ms) => ms + countInOffsetMs)
+    );
     setMetronomePlay((prev) => ({ token: prev.token + 1, totalBeats: measureCount, startAtMs }));
   }
 
