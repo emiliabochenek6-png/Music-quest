@@ -1,8 +1,9 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { DarkButton } from "@/components/exercises/DarkButton";
+import { MetronomeIndicator } from "@/components/exercises/MetronomeIndicator";
 import { schedulerNow } from "@/lib/audio/player";
-import { playMetronome, playRhythm, stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
+import { STANDALONE_METRONOME_MEASURES, playMetronome, playRhythm, stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
 import { t } from "@/lib/i18n/translate";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import type { Locale } from "@/types/locale";
@@ -30,25 +31,46 @@ const TRAILING_METRONOME_BEATS = 2;
  * (see METRONOME_BPM's own doc for why that's a fixed reference tempo
  * rather than one derived from the pattern itself) — the SAME "own
  * recording, own metronome" shape every other rhythm exercise's 🔊
- * button already has, this one just didn't get it originally. The
- * player taps the pattern back. Taps are recorded relative to the
- * player's OWN first tap (not to when playback started), so
- * isValidRhythmEcho's gap-based scoring works regardless of how long the
- * player waits before starting — ported from the web app's
- * RhythmEchoExercise.tsx. */
+ * button already has, this one just didn't get it originally. The dot
+ * is ALSO its own tappable toggle for a standalone metronome, independent
+ * of the 🔊 button — same MetronomeIndicator pattern RhythmDictationExercise
+ * already has (see that component's own doc). The player taps the
+ * pattern back. Taps are recorded relative to the player's OWN first tap
+ * (not to when playback started), so isValidRhythmEcho's gap-based
+ * scoring works regardless of how long the player waits before starting
+ * — ported from the web app's RhythmEchoExercise.tsx. */
 export function RhythmEchoExercise({ exercise, answer, onAnswerChange, checked, locale }: RhythmEchoExerciseProps) {
   const firstTapTimeRef = useRef<number | null>(null);
   const taps = answer?.tapTimestampsMs ?? [];
+  // Same shape as RhythmDictationExercise's own metronomePlay/standaloneOn
+  // — see that component's own doc.
+  const [metronomePlay, setMetronomePlay] = useState({ token: 0, totalBeats: 0, startAtMs: 0 });
+  const [standaloneOn, setStandaloneOn] = useState(false);
 
   function play() {
     stopAllScheduledAudio();
+    setStandaloneOn(false);
     const beatIntervalMs = (60 / METRONOME_BPM) * 1000;
     const lastOnsetMs = exercise.onsetsMs[exercise.onsetsMs.length - 1] ?? 0;
     const patternBeats = Math.ceil(lastOnsetMs / beatIntervalMs) + TRAILING_METRONOME_BEATS;
+    const measureCount = COUNT_IN_BEATS + patternBeats;
     const startAtMs = schedulerNow();
-    playMetronome({ bpm: METRONOME_BPM, beatsPerMeasure: 1, measureCount: COUNT_IN_BEATS + patternBeats, startAtMs });
+    playMetronome({ bpm: METRONOME_BPM, beatsPerMeasure: 1, measureCount, startAtMs });
     const countInOffsetMs = COUNT_IN_BEATS * beatIntervalMs;
     playRhythm(exercise.onsetsMs.map((ms) => ms + countInOffsetMs), 0.8, startAtMs);
+    setMetronomePlay((prev) => ({ token: prev.token + 1, totalBeats: measureCount, startAtMs }));
+  }
+
+  function toggleStandaloneMetronome() {
+    stopAllScheduledAudio();
+    if (standaloneOn) {
+      setStandaloneOn(false);
+      return;
+    }
+    setStandaloneOn(true);
+    const startAtMs = schedulerNow();
+    playMetronome({ bpm: METRONOME_BPM, beatsPerMeasure: 1, measureCount: STANDALONE_METRONOME_MEASURES, startAtMs });
+    setMetronomePlay((prev) => ({ token: prev.token + 1, totalBeats: STANDALONE_METRONOME_MEASURES, startAtMs }));
   }
 
   function handleTap() {
@@ -72,7 +94,19 @@ export function RhythmEchoExercise({ exercise, answer, onAnswerChange, checked, 
       <Text style={{ fontSize: theme.fontSize.body, fontWeight: "600", color: theme.colors.ink, textAlign: "center" }}>
         {t("lesson.rhythmEchoPrompt", locale)}
       </Text>
+      <Text style={{ fontSize: theme.fontSize.body * 0.8, color: theme.colors.muted, textAlign: "center" }}>
+        {t("lesson.metronomeDotHint", locale)}
+      </Text>
       <DarkButton label="🔊" onPress={play} variant="secondary" size={84} fontSize={42} />
+      <MetronomeIndicator
+        playToken={metronomePlay.token}
+        bpm={METRONOME_BPM}
+        beatsPerMeasure={1}
+        totalBeats={metronomePlay.totalBeats}
+        startAtMs={metronomePlay.startAtMs}
+        onPress={toggleStandaloneMetronome}
+        active={standaloneOn}
+      />
       <Pressable
         onPress={handleTap}
         disabled={checked}

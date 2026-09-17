@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { DarkButton } from "@/components/exercises/DarkButton";
+import { MetronomeIndicator } from "@/components/exercises/MetronomeIndicator";
 import { NoteValueIcon } from "@/components/exercises/NoteValueIcon";
 import { schedulerNow } from "@/lib/audio/player";
-import { playMetronome, playRhythm, stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
+import { STANDALONE_METRONOME_MEASURES, playMetronome, playRhythm, stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
 import { t } from "@/lib/i18n/translate";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import type { Locale } from "@/types/locale";
@@ -37,19 +39,41 @@ const TRAILING_METRONOME_BEATS = 2;
  * they heard them. Selection is tracked by SLOT index (a position in the
  * shuffled row), not by value, so two tiles sharing the same value stay
  * independently clickable — ported from the web app's
- * RhythmSequencingExercise.tsx. */
+ * RhythmSequencingExercise.tsx. The dot is ALSO its own tappable toggle
+ * for a standalone metronome, independent of the 🔊 button — same
+ * MetronomeIndicator pattern RhythmDictationExercise already has (see
+ * that component's own doc). */
 export function RhythmSequencingExercise({ exercise, answer, onAnswerChange, checked, locale }: RhythmSequencingExerciseProps) {
   const selectedIndexes = answer?.selectedIndexes ?? [];
+  // Same shape as RhythmDictationExercise's own metronomePlay/standaloneOn
+  // — see that component's own doc.
+  const [metronomePlay, setMetronomePlay] = useState({ token: 0, totalBeats: 0, startAtMs: 0 });
+  const [standaloneOn, setStandaloneOn] = useState(false);
 
   function play() {
     stopAllScheduledAudio();
+    setStandaloneOn(false);
     const beatIntervalMs = (60 / exercise.bpm) * 1000;
     const lastOnsetMs = exercise.onsetsMs[exercise.onsetsMs.length - 1] ?? 0;
     const patternBeats = Math.ceil(lastOnsetMs / beatIntervalMs) + TRAILING_METRONOME_BEATS;
+    const measureCount = COUNT_IN_BEATS + patternBeats;
     const startAtMs = schedulerNow();
-    playMetronome({ bpm: exercise.bpm, beatsPerMeasure: 1, measureCount: COUNT_IN_BEATS + patternBeats, startAtMs });
+    playMetronome({ bpm: exercise.bpm, beatsPerMeasure: 1, measureCount, startAtMs });
     const countInOffsetMs = COUNT_IN_BEATS * beatIntervalMs;
     playRhythm(exercise.onsetsMs.map((ms) => ms + countInOffsetMs), 0.8, startAtMs);
+    setMetronomePlay((prev) => ({ token: prev.token + 1, totalBeats: measureCount, startAtMs }));
+  }
+
+  function toggleStandaloneMetronome() {
+    stopAllScheduledAudio();
+    if (standaloneOn) {
+      setStandaloneOn(false);
+      return;
+    }
+    setStandaloneOn(true);
+    const startAtMs = schedulerNow();
+    playMetronome({ bpm: exercise.bpm, beatsPerMeasure: 1, measureCount: STANDALONE_METRONOME_MEASURES, startAtMs });
+    setMetronomePlay((prev) => ({ token: prev.token + 1, totalBeats: STANDALONE_METRONOME_MEASURES, startAtMs }));
   }
 
   function handleTileTap(slotIndex: number) {
@@ -66,7 +90,19 @@ export function RhythmSequencingExercise({ exercise, answer, onAnswerChange, che
       <Text style={{ fontSize: theme.fontSize.body, fontWeight: "600", color: theme.colors.ink, textAlign: "center" }}>
         {t("lesson.rhythmSequencingPrompt", locale)}
       </Text>
+      <Text style={{ fontSize: theme.fontSize.body * 0.8, color: theme.colors.muted, textAlign: "center" }}>
+        {t("lesson.metronomeDotHint", locale)}
+      </Text>
       <DarkButton label="🔊" onPress={play} variant="secondary" size={84} fontSize={42} />
+      <MetronomeIndicator
+        playToken={metronomePlay.token}
+        bpm={exercise.bpm}
+        beatsPerMeasure={1}
+        totalBeats={metronomePlay.totalBeats}
+        startAtMs={metronomePlay.startAtMs}
+        onPress={toggleStandaloneMetronome}
+        active={standaloneOn}
+      />
 
       <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center", gap: theme.spacing(1.5) }}>
         {exercise.shuffledMotif.map((value, slotIndex) => {
