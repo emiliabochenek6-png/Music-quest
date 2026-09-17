@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Pressable, ScrollView, Text, View, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router } from "expo-router";
-import { BadgesCarousel } from "@/components/BadgesCarousel";
 import { BottomTabBar } from "@/components/BottomTabBar";
 import { DailyMissionsCard } from "@/components/DailyMissionsCard";
 import { DarkButton } from "@/components/exercises/DarkButton";
@@ -147,10 +146,6 @@ export default function DailyChallengeScreen() {
         <DailyMissionsCard challengeXpReward={XP_DAILY_CHALLENGE_BONUS} />
       </View>
 
-      <View style={styles.badgesWrap}>
-        <BadgesCarousel />
-      </View>
-
       {alreadyCompletedToday ? (
         <View style={styles.centerFill}>
           <Text style={{ fontSize: 48 }}>✅</Text>
@@ -238,10 +233,6 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   missionsWrap: {
-    paddingHorizontal: 16,
-    paddingBottom: 12,
-  },
-  badgesWrap: {
     paddingHorizontal: 16,
     paddingBottom: 12,
   },
