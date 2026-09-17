@@ -158,6 +158,28 @@ export function playMetronome(options: MetronomeOptions): void {
   });
 }
 
+/** Every current caller pairs playRhythm with a playMetronome() call on the
+ * SAME startAtMs (a click track under the clap pattern) — the compound
+ * meters (6/8/9/8/12/8) most notably author a lot of their content as
+ * straight, unbroken eighth notes (see e.g. przystan-taktow.ts's own
+ * "pt-l5-e5"/"pt-l6-e5"), which lands a clap onset on EVERY metronome
+ * subdivision tick, not just some of them. When a clap and a click are
+ * scheduled for the exact same millisecond, the shared lookahead
+ * scheduler (see lib/audio/player.ts's own doc) finds both "due" in the
+ * same tick and fires both pools' own player.play() back to back, in the
+ * same synchronous JS turn, over and over for as long as the pattern
+ * keeps coinciding — reported as an audible, unevenly-timed "zacina się"
+ * (stutters) specifically on that kind of content, not a steady drift.
+ * This tiny, fixed, inaudible offset (well under the ~20-30ms two
+ * different-timbre onsets need to separate before an ear perceives them
+ * as not-quite-together) breaks that exact coincidence for every caller
+ * at once, rather than needing each one to stagger its own onsets by
+ * hand — applied uniformly to every onset, so the GAPS between claps
+ * (what isValidRhythmEcho's own gap-based scoring — always run against
+ * the exercise's own unshifted onsetsMs/requiredTapTimesMs, never this
+ * playback copy — actually cares about) are unaffected. */
+const CLAP_METRONOME_DESYNC_MS = 15;
+
 /** Schedules one clap one-shot per onset — the rhythm-playback counterpart
  * to playMetronome, used by rhythm-echo/rhythm-sequencing/rhythm-dictation/
  * rhythm-notation-tap to let the player HEAR the target pattern before
@@ -166,13 +188,14 @@ export function playMetronome(options: MetronomeOptions): void {
  * of drifting from one-shot player construction overhead. `startAtMs` is
  * playMetronome's own shared-anchor param, same reasoning — pass the
  * identical value both calls were given when a metronome plays underneath
- * this pattern, so the two tracks share one exact time origin. */
+ * this pattern, so the two tracks share one exact time origin (see
+ * CLAP_METRONOME_DESYNC_MS's own doc for the one deliberate exception). */
 export function playRhythm(onsetsMs: readonly number[], velocity = 0.8, startAtMs: number = schedulerNow()): void {
   // Same reasoning as playMetronome's own warmUp() call — get the pool's
   // players built before the first onset is even scheduled, not on it.
   clapPool.warmUp();
   onsetsMs.forEach((timeMs) => {
-    schedulePooled(clapPool, velocity, timeMs, startAtMs);
+    schedulePooled(clapPool, velocity, timeMs + CLAP_METRONOME_DESYNC_MS, startAtMs);
   });
 }
 
