@@ -1,3 +1,4 @@
+import { Asset } from "expo-asset";
 import { createAudioPlayer, type AudioPlayer } from "expo-audio";
 import { formatScientific, midiToNote, noteToMidi, type Note } from "@/lib/music/notes";
 import { MELODY_NOTE_SAMPLES, NOTE_SAMPLES } from "@/lib/audio/samples";
@@ -108,24 +109,110 @@ export function playSample(source: number, velocity: number, onFinish?: () => vo
   return { stop };
 }
 
-/** Plays one pre-rendered sample on a seamless NATIVE loop (expo-audio's
- * own `player.loop = true`, handled entirely by the platform's audio
- * engine) — for a "steady click track running indefinitely" need (the
- * standalone-metronome dot's own MetronomeIndicator toggle — see
- * RhythmDictationExercise/RhythmNotationTapExercise's own
- * toggleStandaloneMetronome), this is categorically more even than
- * scheduling hundreds of individual one-shot triggers through
- * lib/audio/rhythmPlayer.ts's own lookahead scheduler + sample-pool
- * reuse: there's no JS timer, no pool, no repeated seekTo(0) race to ever
- * land unluckily on (see createSamplePool's own doc for that whole class
- * of problem) — the native engine just keeps replaying the same buffer,
- * gapless, for as long as `stop()` isn't called. `source` must already BE
- * exactly one loop's worth of audio with no leading/trailing silence (see
- * lib/audio/samples.ts's own METRONOME_LOOP_*_120BPM doc) — this function
- * doesn't trim or crossfade anything, it only sets the native flag and
- * presses play. Same activeStops/stop() shape as playSample, minus
- * onFinish (a loop never finishes on its own). */
+// expo-audio's web player is a plain HTMLAudioElement under the hood
+// (`new Audio(uri)`, `media.loop = true`) — and HTMLAudioElement's own
+// native loop is well-documented as NOT gapless in every browser: the
+// seek-back-to-0 the browser does when playback reaches the end isn't
+// instantaneous, so an audible gap (confirmed in practice — a "lekka
+// cisza", a beat's worth of extra silence, right at the loop seam) lands
+// on top of whatever silence the loop's own content already has, exactly
+// once per repeat. The Web Audio API's AudioBufferSourceNode doesn't have
+// this problem: it loops an already-decoded in-memory buffer with sample
+// accuracy, no re-seek/re-decode step at all. getWebAudioLoopContext
+// exists so playLoopingSample can reach for that path on web specifically
+// (native iOS/Android's own AVAudioPlayer/ExoPlayer-backed loop doesn't
+// have the HTMLAudioElement problem this exists to route around, so they
+// keep using expo-audio's own `loop = true` unchanged).
+let webAudioLoopContext: AudioContext | null | undefined;
+
+function getWebAudioLoopContext(): AudioContext | null {
+  if (webAudioLoopContext !== undefined) return webAudioLoopContext;
+  if (typeof window === "undefined") {
+    webAudioLoopContext = null;
+    return webAudioLoopContext;
+  }
+  const Ctor = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+  webAudioLoopContext = Ctor ? new Ctor() : null;
+  return webAudioLoopContext;
+}
+
+// One decode per distinct source, reused across every playLoopingSample
+// call for it — fetch+decodeAudioData is real work (a network round trip
+// plus PCM decoding) that would otherwise repeat on every single dot
+// toggle-on.
+const decodedLoopBuffers = new Map<number, Promise<AudioBuffer>>();
+
+function decodeLoopBuffer(context: AudioContext, source: number): Promise<AudioBuffer> {
+  let cached = decodedLoopBuffers.get(source);
+  if (!cached) {
+    cached = Asset.fromModule(source)
+      .downloadAsync()
+      .then((asset) => fetch(asset.localUri ?? asset.uri))
+      .then((response) => response.arrayBuffer())
+      .then((arrayBuffer) => context.decodeAudioData(arrayBuffer));
+    decodedLoopBuffers.set(source, cached);
+  }
+  return cached;
+}
+
+/** Plays one pre-rendered sample on a seamless loop — for a "steady click
+ * track running indefinitely" need (the standalone-metronome dot's own
+ * MetronomeIndicator toggle — see RhythmDictationExercise/
+ * RhythmNotationTapExercise's own toggleStandaloneMetronome), this is
+ * categorically more even than scheduling hundreds of individual one-shot
+ * triggers through lib/audio/rhythmPlayer.ts's own lookahead scheduler +
+ * sample-pool reuse: there's no JS timer, no pool, no repeated seekTo(0)
+ * race to ever land unluckily on (see createSamplePool's own doc for that
+ * whole class of problem). On web, uses the Web Audio API directly (see
+ * getWebAudioLoopContext's own doc for why — expo-audio's own web
+ * `loop = true` isn't actually gapless there); everywhere else, expo-
+ * audio's native `loop = true` is already gapless, so this just sets that
+ * flag and presses play. `source` must already BE exactly one loop's
+ * worth of audio with no leading/trailing silence beyond what the
+ * rhythm itself calls for (see lib/audio/samples.ts's own
+ * METRONOME_LOOP_*_120BPM doc) — this function doesn't trim or crossfade
+ * anything. Same activeStops/stop() shape as playSample, minus onFinish
+ * (a loop never finishes on its own). */
 export function playLoopingSample(source: number, velocity: number): SamplePlaybackHandle {
+  const webContext = getWebAudioLoopContext();
+  if (webContext) {
+    let settled = false;
+    let node: AudioBufferSourceNode | null = null;
+    const gainNode = webContext.createGain();
+    gainNode.gain.value = velocity;
+    gainNode.connect(webContext.destination);
+
+    function stop(): void {
+      if (settled) return;
+      settled = true;
+      activeStops.delete(stop);
+      try {
+        node?.stop();
+      } catch {
+        // Never actually started (stopped while still decoding) — nothing to stop.
+      }
+      node?.disconnect();
+      gainNode.disconnect();
+    }
+
+    activeStops.add(stop);
+    // A fresh AudioContext can start "suspended" under a browser's
+    // autoplay policy — resume() is a no-op if it's already running, and
+    // this call always originates from a real tap (the dot's own
+    // onPress), so the browser's own gesture requirement is already
+    // satisfied by the time this runs.
+    void webContext.resume();
+    void decodeLoopBuffer(webContext, source).then((buffer) => {
+      if (settled) return;
+      node = webContext.createBufferSource();
+      node.buffer = buffer;
+      node.loop = true;
+      node.connect(gainNode);
+      node.start();
+    });
+    return { stop };
+  }
+
   const player = createAudioPlayer(source);
   player.volume = velocity;
   player.loop = true;
