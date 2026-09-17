@@ -506,7 +506,8 @@ export function generateExercise(definition: ExerciseDefinition, locale: Locale,
     }
     case "rhythm-sequencing": {
       const { motif, bpm } = definition.spec;
-      const beatIntervalMs = (60 / (bpm ?? 100)) * 1000;
+      const resolvedBpm = bpm ?? 100;
+      const beatIntervalMs = (60 / resolvedBpm) * 1000;
       // Exactly one onset per tile — onset i marks where tile i begins, so
       // the gap to the NEXT onset is the preceding tile's duration.
       const onsetsMs = [0];
@@ -519,7 +520,7 @@ export function generateExercise(definition: ExerciseDefinition, locale: Locale,
       for (let attempt = 0; attempt < 10 && shuffledMotif.join() === motif.join(); attempt++) {
         shuffledMotif = shuffled(motif);
       }
-      return { id: definition.id, type: "rhythm-sequencing", shuffledMotif, correctOrder: motif, onsetsMs };
+      return { id: definition.id, type: "rhythm-sequencing", shuffledMotif, correctOrder: motif, onsetsMs, bpm: resolvedBpm };
     }
     case "rhythm-dictation": {
       const { bpm, sequence } = definition.spec;

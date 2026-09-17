@@ -155,6 +155,9 @@ describe("generateExercise", () => {
       // At 60bpm a quarter note is exactly 1000ms.
       expect(exercise.onsetsMs).toEqual([0, 1000, 2000]);
       expect(exercise.correctOrder).toEqual(["quarter", "quarter", "half"]);
+      // Carried through so the exercise's own metronome click track can
+      // match the tempo its onsets were actually generated at.
+      expect(exercise.bpm).toBe(60);
     }
   });
 

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Animated, Pressable, Text, View } from "react-native";
 import { DarkButton } from "@/components/exercises/DarkButton";
-import { scheduleAt } from "@/lib/audio/player";
+import { scheduleAt, schedulerNow } from "@/lib/audio/player";
 import { playMetronome, stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
 import { t } from "@/lib/i18n/translate";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
@@ -38,14 +38,12 @@ export function PulseTapExercise({ exercise, answer, onAnswerChange, checked, lo
   // the metronome and pulses the indicator in sync, WITHOUT touching taps
   // or startTimeRef, so replaying the correct pulse for reference after
   // getting it wrong never disturbs the already-recorded (and scored)
-  // answer.
-  function scheduleMetronomeAndPulse() {
+  // answer. `startAtMs` defaults to a fresh schedulerNow() for that
+  // reference-replay case; handleStart passes its own explicit one (see
+  // its own doc) so the SAME read also becomes startTimeRef's origin,
+  // instead of two separate clock reads a few JS steps apart.
+  function scheduleMetronomeAndPulse(startAtMs: number = schedulerNow()) {
     stopAllScheduledAudio();
-    // Shared anchor for both tracks — see MetronomeIndicator's own
-    // startAtMs doc for why the click track and this pulse animation
-    // need to share an exact time origin (and the shared lookahead
-    // scheduler, not independent setTimeouts, to actually stay on it).
-    const startAtMs = Date.now();
     playMetronome({ bpm: exercise.bpm, beatsPerMeasure: exercise.beatsPerMeasure, measureCount: exercise.measureCount, startAtMs });
     exercise.beatTimesMs.forEach((timeMs, index) => {
       scheduleAt(
@@ -67,13 +65,22 @@ export function PulseTapExercise({ exercise, answer, onAnswerChange, checked, lo
     if (started || checked) return;
     setStarted(true);
     onAnswerChange({ type: "pulse-tap", tapTimestampsMs: [] });
-    startTimeRef.current = Date.now();
-    scheduleMetronomeAndPulse();
+    // One clock read shared as BOTH the metronome/pulse anchor and
+    // startTimeRef's own origin (see scheduleMetronomeAndPulse's own
+    // doc) — taps are scored against exercise.beatTimesMs, which are
+    // themselves relative to this same startAtMs, so using one shared
+    // read here (instead of two separate Date.now() calls a few JS
+    // steps apart, as this used to) removes a small but real skew
+    // between "when scoring thinks playback started" and "when it
+    // actually did".
+    const startAtMs = schedulerNow();
+    startTimeRef.current = startAtMs;
+    scheduleMetronomeAndPulse(startAtMs);
   }
 
   function handleTap() {
     if (!started || checked || startTimeRef.current === null) return;
-    onAnswerChange({ type: "pulse-tap", tapTimestampsMs: [...taps, Date.now() - startTimeRef.current] });
+    onAnswerChange({ type: "pulse-tap", tapTimestampsMs: [...taps, schedulerNow() - startTimeRef.current] });
   }
 
   return (
@@ -97,7 +104,7 @@ export function PulseTapExercise({ exercise, answer, onAnswerChange, checked, lo
         // letting the player feel/hear the correct beat again (as many
         // times as they like) after checking is the equivalent of
         // showing a correct answer for a discrete-choice exercise.
-        <DarkButton label={t("lesson.playAgain", locale)} onPress={scheduleMetronomeAndPulse} variant="secondary" />
+        <DarkButton label={t("lesson.playAgain", locale)} onPress={() => scheduleMetronomeAndPulse()} variant="secondary" />
       ) : started ? (
         <Text style={{ color: theme.colors.muted, fontSize: theme.fontSize.body * 0.85 }}>
           {t("lesson.pulseTapProgress", locale, { current: Math.max(beatIndex + 1, 0), total: exercise.beatTimesMs.length, taps: taps.length })}

@@ -3,6 +3,7 @@ import { Pressable, Text, View } from "react-native";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { MeteredNotationRow } from "@/components/exercises/MeteredNotationRow";
 import { MetronomeIndicator } from "@/components/exercises/MetronomeIndicator";
+import { schedulerNow } from "@/lib/audio/player";
 import { STANDALONE_METRONOME_MEASURES, playMetronome, playRhythm, stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
 import { meterFeltPulseCount, meterFeltPulseQuarterBeats, meterPulseSubdivision } from "@/lib/rhythm/meter";
 import { t } from "@/lib/i18n/translate";
@@ -60,7 +61,7 @@ export function RhythmNotationTapExercise({ exercise, answer, onAnswerChange, ch
     // One shared anchor for both tracks — see MetronomeOptions'
     // startAtMs doc for why the click track and the clap pattern
     // playing under it need to share an exact time origin.
-    const startAtMs = Date.now();
+    const startAtMs = schedulerNow();
     playMetronome({ bpm: feltBpm, beatsPerMeasure: feltBeatsPerMeasure, measureCount, pulseSubdivision, startAtMs });
     playRhythm(exercise.requiredTapTimesMs.map((ms) => ms + countInMs), 0.8, startAtMs);
     setMetronomePlay((prev) => ({ token: prev.token + 1, totalBeats: measureCount * feltBeatsPerMeasure, startAtMs }));
@@ -73,7 +74,7 @@ export function RhythmNotationTapExercise({ exercise, answer, onAnswerChange, ch
       return;
     }
     setStandaloneOn(true);
-    const startAtMs = Date.now();
+    const startAtMs = schedulerNow();
     playMetronome({ bpm: feltBpm, beatsPerMeasure: feltBeatsPerMeasure, measureCount: STANDALONE_METRONOME_MEASURES, pulseSubdivision, startAtMs });
     setMetronomePlay((prev) => ({ token: prev.token + 1, totalBeats: STANDALONE_METRONOME_MEASURES * feltBeatsPerMeasure, startAtMs }));
   }

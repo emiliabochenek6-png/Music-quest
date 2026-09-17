@@ -231,6 +231,24 @@ export function stopAllActiveSamples(): void {
 // accuracy, never however late one particular one-shot timer happened to
 // wake up.
 
+/** A monotonic clock for scheduling — `performance.now()` when available
+ * (React Native/Hermes and every web target this app ships to both
+ * provide it), falling back to `Date.now()` only if it genuinely isn't
+ * there. `Date.now()` is wall-clock time: it can jump (an NTP
+ * correction, the device's clock being adjusted, DST) without warning,
+ * and every `dueAtMs` already scheduled would jump with it — a metronome
+ * that's been ticking steadily suddenly skips or stalls. `performance.
+ * now()` only ever moves forward at a steady rate, immune to that class
+ * of glitch, which is exactly what a scheduler computing every event's
+ * due time up front (see the block doc below) needs from its clock.
+ * Every scheduling anchor in this module and lib/audio/rhythmPlayer.ts's
+ * own call sites goes through this SAME function — mixing it with
+ * Date.now() anywhere in that chain would silently reintroduce the
+ * problem by comparing two clocks with different epochs. */
+export function schedulerNow(): number {
+  return typeof performance !== "undefined" && typeof performance.now === "function" ? performance.now() : Date.now();
+}
+
 interface ScheduledAudioEvent {
   dueAtMs: number;
   fire: () => void;
@@ -241,7 +259,7 @@ let scheduledEvents: ScheduledAudioEvent[] = [];
 let schedulerHandle: ReturnType<typeof setInterval> | null = null;
 
 function runSchedulerTick(): void {
-  const now = Date.now();
+  const now = schedulerNow();
   let dueCount = 0;
   while (dueCount < scheduledEvents.length && scheduledEvents[dueCount].dueAtMs <= now) {
     dueCount++;
@@ -262,7 +280,7 @@ function runSchedulerTick(): void {
  * lib/audio/rhythmPlayer.ts's own metronome/clap/dance-fragment
  * scheduling, which needs the exact same "many events, one shared
  * anchor" shape. */
-export function scheduleAt(delayMs: number, fire: () => void, anchorMs: number = Date.now()): void {
+export function scheduleAt(delayMs: number, fire: () => void, anchorMs: number = schedulerNow()): void {
   const dueAtMs = anchorMs + delayMs;
   let insertAt = scheduledEvents.length;
   while (insertAt > 0 && scheduledEvents[insertAt - 1].dueAtMs > dueAtMs) {
@@ -445,7 +463,7 @@ export function playMelody(notes: readonly Note[], options: MelodyOptions = {}):
   const gapSeconds = options.gapSeconds ?? 0.05;
   const stepSeconds = MELODY_NOTE_DURATION_SECONDS + gapSeconds;
   const velocity = options.velocity ?? 0.7;
-  const startAtMs = Date.now();
+  const startAtMs = schedulerNow();
   notes.forEach((note, index) => {
     const source = resolveSample(MELODY_NOTE_SAMPLES, note);
     scheduleAt(index * stepSeconds * 1000, () => getPool(source).trigger(velocity), startAtMs);
@@ -498,7 +516,7 @@ interface ChordSequenceOptions extends ToneOptions {
 export function playChordSequence(chords: readonly (readonly Note[])[], options: ChordSequenceOptions = {}): void {
   const gapSeconds = options.gapSeconds ?? 0.3;
   const stepSeconds = CHORD_DURATION_SECONDS + gapSeconds;
-  const startAtMs = Date.now();
+  const startAtMs = schedulerNow();
   chords.forEach((chord, index) => {
     scheduleAt(index * stepSeconds * 1000, () => playChord(chord, options), startAtMs);
   });

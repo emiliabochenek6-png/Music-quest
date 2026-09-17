@@ -3,6 +3,7 @@ import { Pressable, Text, View } from "react-native";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { MelodicDictationStaff } from "@/components/exercises/MelodicDictationStaff";
 import { NoteValueIcon } from "@/components/exercises/NoteValueIcon";
+import { schedulerNow } from "@/lib/audio/player";
 import { playMelodicRhythm, playMetronome, stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
 import { parseScientific, type Accidental } from "@/lib/music/notes";
 import { meterFeltPulseQuarterBeats, meterQuarterNoteBeats } from "@/lib/rhythm/meter";
@@ -128,7 +129,7 @@ export function MelodicRhythmicDictationExercise({
     const lastIndex = exercise.notes.length - 1;
     const phraseEndSeconds = (exercise.onsetsMs[lastIndex] + exercise.durationsMs[lastIndex]) / 1000;
     const patternBeats = Math.ceil(phraseEndSeconds / beatIntervalSeconds) + TRAILING_METRONOME_BEATS;
-    const startAtMs = Date.now();
+    const startAtMs = schedulerNow();
     playMetronome({ bpm: 60 / beatIntervalSeconds, beatsPerMeasure: 1, measureCount: COUNT_IN_BEATS + patternBeats, startAtMs });
 
     const countInOffsetMs = COUNT_IN_BEATS * beatIntervalSeconds * 1000;

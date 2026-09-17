@@ -1,7 +1,8 @@
 import { Pressable, Text, View } from "react-native";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { NoteValueIcon } from "@/components/exercises/NoteValueIcon";
-import { playRhythm, stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
+import { schedulerNow } from "@/lib/audio/player";
+import { playMetronome, playRhythm, stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
 import { t } from "@/lib/i18n/translate";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import type { Locale } from "@/types/locale";
@@ -15,18 +16,40 @@ interface RhythmSequencingExerciseProps {
   locale: Locale;
 }
 
+// Same count-in/trailing-click shape as RhythmValueDictationExercise's own
+// playTarget — a beat or two to settle into the pulse before the motif
+// starts, and enough click track after the last onset that the final
+// tile's own duration doesn't get cut off mid-click.
+const COUNT_IN_BEATS = 2;
+const TRAILING_METRONOME_BEATS = 2;
+
 /** "Posłuchaj rytmu i kliknij wartości w usłyszanej kolejności" — a motif
- * plays (see playRhythm), the player taps shuffled note-value tiles back
- * in the order they heard them. Selection is tracked by SLOT index (a
- * position in the shuffled row), not by value, so two tiles sharing the
- * same value stay independently clickable — ported from the web app's
+ * plays (see playRhythm) with a plain quarter-note metronome click track
+ * underneath at the exercise's own bpm (exercise.bpm — see generateExercise's
+ * own rhythm-sequencing case for where that comes from), the same felt-
+ * pulse reference every other rhythm exercise's own recording already
+ * gets, giving the ear a steady beat to judge the motif's note VALUES
+ * against instead of just bare claps. No meter/measure grouping here
+ * (rhythm-sequencing has no meter field, just a flat bpm), so this is a
+ * plain 1-beat-per-"measure" click, not the felt-pulse scaling
+ * RhythmDictationExercise/RhythmNotationTapExercise do for real metered
+ * content. The player taps shuffled note-value tiles back in the order
+ * they heard them. Selection is tracked by SLOT index (a position in the
+ * shuffled row), not by value, so two tiles sharing the same value stay
+ * independently clickable — ported from the web app's
  * RhythmSequencingExercise.tsx. */
 export function RhythmSequencingExercise({ exercise, answer, onAnswerChange, checked, locale }: RhythmSequencingExerciseProps) {
   const selectedIndexes = answer?.selectedIndexes ?? [];
 
   function play() {
     stopAllScheduledAudio();
-    playRhythm(exercise.onsetsMs);
+    const beatIntervalMs = (60 / exercise.bpm) * 1000;
+    const lastOnsetMs = exercise.onsetsMs[exercise.onsetsMs.length - 1] ?? 0;
+    const patternBeats = Math.ceil(lastOnsetMs / beatIntervalMs) + TRAILING_METRONOME_BEATS;
+    const startAtMs = schedulerNow();
+    playMetronome({ bpm: exercise.bpm, beatsPerMeasure: 1, measureCount: COUNT_IN_BEATS + patternBeats, startAtMs });
+    const countInOffsetMs = COUNT_IN_BEATS * beatIntervalMs;
+    playRhythm(exercise.onsetsMs.map((ms) => ms + countInOffsetMs), 0.8, startAtMs);
   }
 
   function handleTileTap(slotIndex: number) {

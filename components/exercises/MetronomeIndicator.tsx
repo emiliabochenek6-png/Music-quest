@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Animated, Pressable } from "react-native";
-import { scheduleAt } from "@/lib/audio/player";
+import { scheduleAt, schedulerNow } from "@/lib/audio/player";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 
 interface MetronomeIndicatorProps {
@@ -16,8 +16,8 @@ interface MetronomeIndicatorProps {
    * click track each pick their own "now" a beat apart from the other,
    * which reads as the dot drifting out of sync with what's actually
    * playing even though each is individually on-tempo. Defaults to
-   * Date.now() only for a caller with no real audio to match (there is
-   * none today — every current use passes this explicitly). */
+   * schedulerNow() only for a caller with no real audio to match (there
+   * is none today — every current use passes this explicitly). */
   startAtMs?: number;
   size?: number;
   /** When provided, the dot itself becomes tappable — the hosting
@@ -49,7 +49,7 @@ interface MetronomeIndicatorProps {
  * (already made before scheduling a new play or standalone toggle,
  * since those need to cancel the CLICK TRACK too) — no separate cleanup
  * needed here. */
-export function MetronomeIndicator({ playToken, bpm, beatsPerMeasure, totalBeats, startAtMs = Date.now(), size = 56, onPress, active = false }: MetronomeIndicatorProps) {
+export function MetronomeIndicator({ playToken, bpm, beatsPerMeasure, totalBeats, startAtMs = schedulerNow(), size = 56, onPress, active = false }: MetronomeIndicatorProps) {
   const scale = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {

@@ -126,6 +126,7 @@ describe("isAnswerCorrect", () => {
       shuffledMotif: ["half", "quarter"],
       correctOrder: ["quarter", "half"],
       onsetsMs: [0, 500],
+      bpm: 60,
     };
     // shuffledMotif[1]="quarter" picked first, shuffledMotif[0]="half" second — matches correctOrder.
     expect(isAnswerCorrect(exercise, { type: "rhythm-sequencing", selectedIndexes: [1, 0] })).toBe(true);

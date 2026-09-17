@@ -1,7 +1,8 @@
 import { useRef } from "react";
 import { Pressable, Text, View } from "react-native";
 import { DarkButton } from "@/components/exercises/DarkButton";
-import { playRhythm, stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
+import { schedulerNow } from "@/lib/audio/player";
+import { playMetronome, playRhythm, stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
 import { t } from "@/lib/i18n/translate";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import type { Locale } from "@/types/locale";
@@ -15,11 +16,25 @@ interface RhythmEchoExerciseProps {
   locale: Locale;
 }
 
+// rhythm-echo's own onsetsMs (data/lessons/miasto-rytmu.ts) are authored
+// as raw milliseconds, not derived from any bpm — there's no "correct"
+// tempo to recover from them, only a felt pulse worth giving the ear as
+// a reference. 90 matches the bpm its own sibling rhythm-sequencing
+// exercises in the same Miasto Rytmu lessons already use.
+const METRONOME_BPM = 90;
+const COUNT_IN_BEATS = 2;
+const TRAILING_METRONOME_BEATS = 2;
+
 /** "Posłuchaj rytmu, a potem powtórz go, stukając" — a short clap pattern
- * plays (see playRhythm), the player taps it back. Taps are recorded
- * relative to the player's OWN first tap (not to when playback started),
- * so isValidRhythmEcho's gap-based scoring works regardless of how long
- * the player waits before starting — ported from the web app's
+ * plays (see playRhythm) with a steady metronome click track underneath
+ * (see METRONOME_BPM's own doc for why that's a fixed reference tempo
+ * rather than one derived from the pattern itself) — the SAME "own
+ * recording, own metronome" shape every other rhythm exercise's 🔊
+ * button already has, this one just didn't get it originally. The
+ * player taps the pattern back. Taps are recorded relative to the
+ * player's OWN first tap (not to when playback started), so
+ * isValidRhythmEcho's gap-based scoring works regardless of how long the
+ * player waits before starting — ported from the web app's
  * RhythmEchoExercise.tsx. */
 export function RhythmEchoExercise({ exercise, answer, onAnswerChange, checked, locale }: RhythmEchoExerciseProps) {
   const firstTapTimeRef = useRef<number | null>(null);
@@ -27,7 +42,13 @@ export function RhythmEchoExercise({ exercise, answer, onAnswerChange, checked, 
 
   function play() {
     stopAllScheduledAudio();
-    playRhythm(exercise.onsetsMs);
+    const beatIntervalMs = (60 / METRONOME_BPM) * 1000;
+    const lastOnsetMs = exercise.onsetsMs[exercise.onsetsMs.length - 1] ?? 0;
+    const patternBeats = Math.ceil(lastOnsetMs / beatIntervalMs) + TRAILING_METRONOME_BEATS;
+    const startAtMs = schedulerNow();
+    playMetronome({ bpm: METRONOME_BPM, beatsPerMeasure: 1, measureCount: COUNT_IN_BEATS + patternBeats, startAtMs });
+    const countInOffsetMs = COUNT_IN_BEATS * beatIntervalMs;
+    playRhythm(exercise.onsetsMs.map((ms) => ms + countInOffsetMs), 0.8, startAtMs);
   }
 
   function handleTap() {

@@ -410,7 +410,7 @@ export type GeneratedExercise =
     }
   | { id: string; type: "meter-choice"; correctMeter: Meter; bpm: number; optionPool: Meter[]; referenceAudioSource?: number }
   | { id: string; type: "rhythm-echo"; onsetsMs: number[] }
-  | { id: string; type: "rhythm-sequencing"; shuffledMotif: RhythmNoteValue[]; correctOrder: RhythmNoteValue[]; onsetsMs: number[] }
+  | { id: string; type: "rhythm-sequencing"; shuffledMotif: RhythmNoteValue[]; correctOrder: RhythmNoteValue[]; onsetsMs: number[]; bpm: number }
   | {
       id: string;
       type: "rhythm-dictation";

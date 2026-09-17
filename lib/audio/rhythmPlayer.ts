@@ -4,6 +4,7 @@ import {
   getPool,
   playSample,
   scheduleAt,
+  schedulerNow,
   stopAllActiveSamples,
   stopAllPooledSamples,
   type SamplePlaybackHandle,
@@ -57,7 +58,7 @@ const clapPool = createSamplePool(CLAP_SAMPLE, 10);
 // playRhythm's own `startAtMs` param for why a CALLER driving two tracks
 // together (a metronome click track underneath a clap pattern, most
 // notably) needs to pass one shared anchor instead of letting each track
-// default to its own Date.now(): even a sub-millisecond gap between the
+// default to its own schedulerNow(): even a sub-millisecond gap between the
 // two calls (schedulePooled iterating one track's events before the other
 // track's own loop even starts) is a real, if usually tiny, relative
 // offset between "beat 0" of one track and "beat 0" of the other — using
@@ -124,7 +125,7 @@ export interface MetronomeOptions {
    * RhythmNotationTapExercise's own play()) so the click track and the
    * clap pattern it's playing under are scheduled against one identical
    * "now" instead of each independently calling Date.now() a few
-   * JS-execution-steps apart. Defaults to Date.now() for a track played
+   * JS-execution-steps apart. Defaults to schedulerNow() for a track played
    * on its own (e.g. the standalone-metronome dot toggle). */
   startAtMs?: number;
 }
@@ -136,7 +137,7 @@ export interface MetronomeOptions {
  * oscillator code — unavailable in Expo Go (see NOTE_SAMPLES's own doc for
  * why this app trades live synthesis for pre-rendered samples throughout). */
 export function playMetronome(options: MetronomeOptions): void {
-  const { bpm, beatsPerMeasure, measureCount, accentVelocity = 0.55, weakVelocity = 0.3, pulseSubdivision = 1, startAtMs = Date.now() } = options;
+  const { bpm, beatsPerMeasure, measureCount, accentVelocity = 0.55, weakVelocity = 0.3, pulseSubdivision = 1, startAtMs = schedulerNow() } = options;
   // Forces both pools' native players to exist right now, before the
   // FIRST beat is even scheduled — see createSamplePool's own warmUp()
   // doc for why that first beat used to be the one most likely to sound
@@ -166,7 +167,7 @@ export function playMetronome(options: MetronomeOptions): void {
  * playMetronome's own shared-anchor param, same reasoning — pass the
  * identical value both calls were given when a metronome plays underneath
  * this pattern, so the two tracks share one exact time origin. */
-export function playRhythm(onsetsMs: readonly number[], velocity = 0.8, startAtMs: number = Date.now()): void {
+export function playRhythm(onsetsMs: readonly number[], velocity = 0.8, startAtMs: number = schedulerNow()): void {
   // Same reasoning as playMetronome's own warmUp() call — get the pool's
   // players built before the first onset is even scheduled, not on it.
   clapPool.warmUp();
@@ -211,7 +212,7 @@ const MIN_HOLD_MS = 60;
  * web app's live oscillators are, per-note, via envelope duration — but
  * "play a long-ring sample, then stop it early" gets the same audible
  * result without needing live synthesis). */
-export function playMelodicRhythm(notes: readonly MelodicRhythmNote[], velocity = 0.55, startAtMs: number = Date.now()): void {
+export function playMelodicRhythm(notes: readonly MelodicRhythmNote[], velocity = 0.55, startAtMs: number = schedulerNow()): void {
   notes.forEach(({ note, onsetMs, durationMs }) => {
     const key = formatScientific(midiToNote(noteToMidi(note)));
     const source = NOTE_SAMPLES[key];
