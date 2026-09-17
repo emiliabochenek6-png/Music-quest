@@ -67,6 +67,9 @@ interface GamificationContextValue {
    * doing nothing. */
   buyStreakFreeze: () => boolean;
   buyHeartRefill: () => boolean;
+  /** Per-world "Zapoznaj się" toggle — see types/gamification.ts's own
+   * introModeEnabledByWorld doc. */
+  setIntroModeEnabled: (worldId: string, enabled: boolean) => void;
 }
 
 const GamificationContext = createContext<GamificationContextValue | null>(null);
@@ -238,6 +241,14 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
     return true;
   }
 
+  function setIntroModeEnabled(worldId: string, enabled: boolean) {
+    setState((prev) => {
+      const next: GamificationState = { ...prev, introModeEnabledByWorld: { ...prev.introModeEnabledByWorld, [worldId]: enabled } };
+      void writeJson(STORAGE_KEYS.gamification, next);
+      return next;
+    });
+  }
+
   function setDailyChallenge(daily: DailyChallengeState | null) {
     setState((prev) => {
       const next: GamificationState = { ...prev, dailyChallenge: daily };
@@ -263,6 +274,7 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
         addNutki,
         buyStreakFreeze,
         buyHeartRefill,
+        setIntroModeEnabled,
       }}
     >
       {children}

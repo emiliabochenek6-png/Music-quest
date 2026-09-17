@@ -75,6 +75,15 @@ export interface GamificationState {
    * applied manually — there's no "use" action, only "own one or not"
    * at the moment a gap actually happens. */
   streakFreezes: number;
+  /** Per-world "Zapoznaj się" toggle — see app/(main)/world/[worldId].tsx's
+   * own toggle row. Missing entry (the common case) means enabled, same
+   * as every player has today: the recap panels
+   * (ExerciseIntroRecap/PianoKeyboardRecap/LessonIntroRecap) show during
+   * that world's lessons. Explicitly `false` hides them and doubles the
+   * nutki earned in that world (app/(main)/lesson/[lessonId].tsx's own
+   * NUTKI_MULTIPLIER_WHEN_INTRO_DISABLED) — the trade a player opts into
+   * once they no longer need the training wheels for that world. */
+  introModeEnabledByWorld: Record<string, boolean>;
 }
 
 export const INITIAL_GAMIFICATION_STATE: GamificationState = {
@@ -88,6 +97,7 @@ export const INITIAL_GAMIFICATION_STATE: GamificationState = {
   dailyChallenge: null,
   nutki: 0,
   streakFreezes: 0,
+  introModeEnabledByWorld: {},
 };
 
 function finiteOr(value: unknown, fallback: number): number {

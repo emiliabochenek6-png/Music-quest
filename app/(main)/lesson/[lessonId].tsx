@@ -43,6 +43,12 @@ const SOLTEK_APPEARANCE_CHANCE = 0.35;
  * before the slow passive regen would, instead of hearts being a purely
  * one-directional (lose-only) resource during a lesson. */
 const HEARTS_PER_CORRECT_ANSWER = 2;
+/** The reward for playing a world with its "Zapoznaj się" toggle off (see
+ * app/(main)/world/[worldId].tsx's own toggle row and
+ * types/gamification.ts's own introModeEnabledByWorld doc) — every nutki
+ * award below that's tied to THIS world gets doubled, in exchange for the
+ * recap panels not being rendered at all. */
+const NUTKI_MULTIPLIER_WHEN_INTRO_DISABLED = 2;
 
 /**
  * Runs ONE lesson's exercises, in order — reached from a world's own
@@ -63,6 +69,8 @@ export default function LessonScreen() {
   const { progress, markLessonCompleted, markWorldCompleted } = useProgress();
   const { state: gamificationState, getHeartsInfo, loseHeart, gainHearts, awardXp, addNutki, recordLessonStars, recordActivity } =
     useGamification();
+  const introModeEnabled = gamificationState.introModeEnabledByWorld[worldId] ?? true;
+  const nutkiMultiplier = introModeEnabled ? 1 : NUTKI_MULTIPLIER_WHEN_INTRO_DISABLED;
   const { status: subscriptionStatus } = useSubscription();
   const { getElapsedMinutes } = useSessionTimer(lessonId);
   const [showOutOfHearts, setShowOutOfHearts] = useState(false);
@@ -228,7 +236,7 @@ export default function LessonScreen() {
       if (isLastLessonInWorld) {
         markWorldCompleted(currentWorld.id);
         setShowWorldComplete(true);
-        addNutki(NUTKI_REWARDS.worldCompleted);
+        addNutki(NUTKI_REWARDS.worldCompleted * nutkiMultiplier);
         // Progress/gamification state here is still the PRE-completion
         // snapshot (markWorldCompleted/recordLessonStars just queued their
         // own setState, not applied yet) — projecting this lesson's own
@@ -240,7 +248,7 @@ export default function LessonScreen() {
         const projectedLessonStars = { ...gamificationState.lessonStars, [currentLesson.id]: bestStarsForThisLesson };
         const isPerfectWorld = currentContent.lessons.every((l) => projectedLessonStars[l.id] === 3);
         setIsPerfectWorldCompletion(isPerfectWorld);
-        if (isPerfectWorld) addNutki(NUTKI_REWARDS.perfectWorldBonus);
+        if (isPerfectWorld) addNutki(NUTKI_REWARDS.perfectWorldBonus * nutkiMultiplier);
         const nextWorld = getNextWorld(currentWorld);
         if (nextWorld) {
           const projectedProgress = { ...progress, completedWorldIds: new Set(progress.completedWorldIds).add(currentWorld.id) };
@@ -259,7 +267,7 @@ export default function LessonScreen() {
       }
       if (mistakeCount === 0) {
         awardXp(XP_PERFECT_LESSON_BONUS);
-        addNutki(NUTKI_REWARDS.perfectLesson);
+        addNutki(NUTKI_REWARDS.perfectLesson * nutkiMultiplier);
       }
       recordLessonStars(currentLesson.id, earnedStars);
       recordActivity(todayISODate(), { minutesSpent: getElapsedMinutes(), lessonIdCompleted: currentLesson.id });
@@ -342,13 +350,13 @@ export default function LessonScreen() {
             preview/perform phase, ...) over from the previous exercise
             instead of starting fresh. Keying by the exercise's own id
             forces a full remount on every exercise change. */}
-        {currentLesson.introSlides && currentLesson.introSlides.length > 0 && (
+        {introModeEnabled && currentLesson.introSlides && currentLesson.introSlides.length > 0 && (
           <ExerciseIntroRecap key={`${definition.id}-recap`} slides={currentLesson.introSlides} locale="pl" />
         )}
-        {currentLesson.pianoKeyboardReference && (
+        {introModeEnabled && currentLesson.pianoKeyboardReference && (
           <PianoKeyboardRecap key={`${definition.id}-piano-recap`} range={currentLesson.pianoKeyboardReference.range} />
         )}
-        {currentLesson.introNotes && currentLesson.introNotes.length > 0 && (
+        {introModeEnabled && currentLesson.introNotes && currentLesson.introNotes.length > 0 && (
           <LessonIntroRecap
             key={`${definition.id}-notes-recap`}
             notes={currentLesson.introNotes}

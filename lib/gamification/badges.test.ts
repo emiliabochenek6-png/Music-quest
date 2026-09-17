@@ -1,7 +1,7 @@
 import { describe, expect, it } from "@jest/globals";
 import { WORLDS } from "@/data/worlds";
 import { getWorldContent } from "@/data/lessons";
-import { countPerfectWorlds, getEarnedBadgeIds } from "@/lib/gamification/badges";
+import { countIntroModeDisabledWorlds, countPerfectWorlds, getEarnedBadgeIds } from "@/lib/gamification/badges";
 import { INITIAL_GAMIFICATION_STATE } from "@/types/gamification";
 import type { GamificationState } from "@/types/gamification";
 
@@ -27,6 +27,14 @@ describe("countPerfectWorlds", () => {
   });
 });
 
+describe("countIntroModeDisabledWorlds", () => {
+  it("counts only entries explicitly set to false", () => {
+    expect(countIntroModeDisabledWorlds({})).toBe(0);
+    expect(countIntroModeDisabledWorlds({ "wioska-nut": true })).toBe(0);
+    expect(countIntroModeDisabledWorlds({ "wioska-nut": false, "miasto-rytmu": false, "przystan-taktow": true })).toBe(2);
+  });
+});
+
 describe("getEarnedBadgeIds", () => {
   it("earns nothing from a fresh state", () => {
     const earned = getEarnedBadgeIds(gamification({}), 0);
@@ -40,5 +48,15 @@ describe("getEarnedBadgeIds", () => {
     expect(earned.has("streak-7")).toBe(true);
     expect(earned.has("lessons-25")).toBe(true);
     expect(earned.has("lessons-100")).toBe(false);
+  });
+
+  it("earns self-reliant badges from worlds with intro mode disabled", () => {
+    const earned = getEarnedBadgeIds(
+      gamification({ introModeEnabledByWorld: { "wioska-nut": false, "miasto-rytmu": false, "przystan-taktow": false } }),
+      0
+    );
+    expect(earned.has("self-reliant-1")).toBe(true);
+    expect(earned.has("self-reliant-3")).toBe(true);
+    expect(earned.has("self-reliant-6")).toBe(false);
   });
 });

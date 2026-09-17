@@ -1,4 +1,4 @@
-import { Pressable, Text, View, StyleSheet } from "react-native";
+import { Pressable, Switch, Text, View, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
 import { AppIcon } from "@/components/icons/AppIcon";
@@ -46,7 +46,7 @@ export default function WorldLevelsScreen() {
   const { worldId } = useLocalSearchParams<{ worldId: string }>();
   const insets = useSafeAreaInsets();
   const { progress } = useProgress();
-  const { state: gamification } = useGamification();
+  const { state: gamification, setIntroModeEnabled } = useGamification();
   const world = getWorldById(worldId);
   const content = getWorldContent(worldId);
 
@@ -61,6 +61,7 @@ export default function WorldLevelsScreen() {
   const completedCount = content ? content.lessons.filter((l) => progress.completedLessonIds.has(l.id)).length : 0;
   const totalCount = content?.lessons.length ?? 0;
   const progressPct = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+  const introModeEnabled = gamification.introModeEnabledByWorld[worldId] ?? true;
 
   function handleSelectLesson(lesson: LessonDefinition) {
     router.push({ pathname: "/(main)/lesson/[lessonId]", params: { lessonId: lesson.id, worldId } });
@@ -100,6 +101,19 @@ export default function WorldLevelsScreen() {
             )}
           </View>
           <Text style={styles.cardDescription}>{t(world.descriptionKey as TranslationKey)}</Text>
+          <View style={styles.introModeRow}>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.introModeLabel}>{t("world.introModeToggle.label")}</Text>
+              <Text style={styles.introModeHint}>
+                {t(introModeEnabled ? "world.introModeToggle.hintOn" : "world.introModeToggle.hintOff")}
+              </Text>
+            </View>
+            <Switch
+              value={introModeEnabled}
+              onValueChange={(enabled) => setIntroModeEnabled(worldId, enabled)}
+              trackColor={{ true: world.accentColor }}
+            />
+          </View>
           {content && (
             <>
               <View style={styles.progressTrack}>
@@ -205,6 +219,27 @@ const styles = StyleSheet.create({
     marginTop: 4,
     marginBottom: 10,
     lineHeight: 17,
+  },
+  introModeRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    paddingTop: 10,
+    paddingBottom: 10,
+    borderTopWidth: theme.borderWidth,
+    borderTopColor: theme.colors.border,
+    marginBottom: 4,
+  },
+  introModeLabel: {
+    color: theme.colors.ink,
+    fontSize: 13,
+    fontWeight: "700",
+  },
+  introModeHint: {
+    color: theme.colors.muted,
+    fontSize: 11,
+    marginTop: 2,
+    lineHeight: 14,
   },
   progressTrack: {
     height: 5,

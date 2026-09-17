@@ -117,4 +117,11 @@ describe("mergeGamificationState", () => {
     const merged = mergeGamificationState(gamification({}), gamification({}), NOW);
     expect(merged.dailyChallenge).toBeNull();
   });
+
+  it("keeps a world's intro mode disabled once EITHER side turned it off", () => {
+    const local = gamification({ introModeEnabledByWorld: { "wioska-nut": false, "miasto-rytmu": true } });
+    const remote = gamification({ introModeEnabledByWorld: { "wioska-nut": true, "miasto-rytmu": true, "przystan-taktow": false } });
+    const merged = mergeGamificationState(local, remote, NOW);
+    expect(merged.introModeEnabledByWorld).toEqual({ "wioska-nut": false, "miasto-rytmu": true, "przystan-taktow": false });
+  });
 });

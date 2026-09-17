@@ -61,6 +61,17 @@ const PERFECT_WORLD_TIERS: readonly BadgeTier[] = [
   { threshold: 12, title: "Perfekcyjny Mistrz Muzyki" },
 ];
 
+/** Worlds with their "Zapoznaj się" toggle turned OFF (see
+ * types/gamification.ts's own introModeEnabledByWorld doc) — earned by
+ * choosing to play without the recap panels, not by any skill
+ * threshold, same spirit as the other tiered badges above. */
+const SELF_RELIANT_TIERS: readonly BadgeTier[] = [
+  { threshold: 1, title: "Samodzielny Odkrywca" },
+  { threshold: 3, title: "Niezależny Podróżnik" },
+  { threshold: 6, title: "Mistrz Samodzielności" },
+  { threshold: 12, title: "Legenda Bez Podpowiedzi" },
+];
+
 function buildTierBadges(prefix: string, icon: string, describe: (threshold: number) => string, tiers: readonly BadgeTier[]): BadgeDefinition[] {
   return tiers.map((tier) => ({ id: `${prefix}-${tier.threshold}`, icon, title: tier.title, description: describe(tier.threshold) }));
 }
@@ -80,7 +91,20 @@ export const BADGES: readonly BadgeDefinition[] = [
     (t) => (t === 1 ? "Ukończ całą krainę na 3 gwiazdki" : `Ukończ ${t} krain na same 3 gwiazdki`),
     PERFECT_WORLD_TIERS
   ),
+  ...buildTierBadges(
+    "self-reliant",
+    "🎯",
+    (t) => (t === 1 ? "Wyłącz tryb Zapoznaj się w 1 krainie" : `Wyłącz tryb Zapoznaj się w ${t} krainach`),
+    SELF_RELIANT_TIERS
+  ),
 ];
+
+/** How many worlds currently have their "Zapoznaj się" toggle turned
+ * off — the self-reliant badges' own counter, same "derive it, don't
+ * separately track it" stance countPerfectWorlds already takes. */
+export function countIntroModeDisabledWorlds(introModeEnabledByWorld: GamificationState["introModeEnabledByWorld"]): number {
+  return Object.values(introModeEnabledByWorld).filter((enabled) => enabled === false).length;
+}
 
 /** How many worlds currently have EVERY one of their lessons at 3 stars —
  * derived straight from lessonStars + the static world/lesson content,
@@ -109,5 +133,7 @@ export function getEarnedBadgeIds(state: GamificationState, completedLessonsCoun
   for (const tier of STREAK_TIERS) if (state.streakDays >= tier.threshold) earned.add(`streak-${tier.threshold}`);
   for (const tier of LESSON_TIERS) if (completedLessonsCount >= tier.threshold) earned.add(`lessons-${tier.threshold}`);
   for (const tier of PERFECT_WORLD_TIERS) if (perfectWorlds >= tier.threshold) earned.add(`perfect-world-${tier.threshold}`);
+  const introModeDisabledWorlds = countIntroModeDisabledWorlds(state.introModeEnabledByWorld);
+  for (const tier of SELF_RELIANT_TIERS) if (introModeDisabledWorlds >= tier.threshold) earned.add(`self-reliant-${tier.threshold}`);
   return earned;
 }

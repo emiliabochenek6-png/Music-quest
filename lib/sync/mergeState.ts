@@ -39,6 +39,20 @@ function mergeActivityLogs(a: Record<string, DayActivity>, b: Record<string, Day
   return merged;
 }
 
+/** Once a world's intro mode is turned OFF on either device, the merged
+ * result stays off — same "never lose progress toward an achievement"
+ * direction as everything else here: getEarnedBadgeIds' self-reliance
+ * tiers (lib/gamification/badges.ts) count disabled worlds, and letting
+ * a login silently flip one back to enabled would un-earn a badge the
+ * player already has. */
+function mergeIntroModeEnabledByWorld(a: Record<string, boolean>, b: Record<string, boolean>): Record<string, boolean> {
+  const merged: Record<string, boolean> = { ...a };
+  for (const [worldId, enabled] of Object.entries(b)) {
+    merged[worldId] = (merged[worldId] ?? true) && enabled;
+  }
+  return merged;
+}
+
 function pickNewerDailyChallenge(local: DailyChallengeState | null, remote: DailyChallengeState | null): DailyChallengeState | null {
   if (!local) return remote;
   if (!remote) return local;
@@ -126,5 +140,6 @@ export function mergeGamificationState(localIn: GamificationState, remoteIn: Gam
     dailyChallenge: pickNewerDailyChallenge(local.dailyChallenge, remote.dailyChallenge),
     nutki: Math.max(local.nutki, remote.nutki),
     streakFreezes: Math.max(local.streakFreezes, remote.streakFreezes),
+    introModeEnabledByWorld: mergeIntroModeEnabledByWorld(local.introModeEnabledByWorld, remote.introModeEnabledByWorld),
   };
 }

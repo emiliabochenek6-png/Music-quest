@@ -25,6 +25,9 @@
   "world.szczytDyktand.description": "Połącz wszystko w dyktandzie melodyczno-rytmicznym.",
   "world.zaczarowanySolfez.description": "Naucz się śpiewać nuty z pięciolinii solmizacją — do, re, mi, fa, sol, la, si.",
 
+  "world.introModeToggle.label": "Tryb „Zapoznaj się”",
+  "world.introModeToggle.hintOn": "Włączony — możesz podglądać podpowiedzi podczas lekcji.",
+  "world.introModeToggle.hintOff": "Wyłączony — grasz bez podpowiedzi i zdobywasz podwójne nutki w tej krainie.",
 
   "paywall.title": "Odblokuj wszystkie krainy",
   "paywall.benefit.allWorlds": "Wszystkie 9 krain teorii muzyki",
