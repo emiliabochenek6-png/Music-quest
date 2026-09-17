@@ -1,10 +1,13 @@
+import { useState } from "react";
 import { Pressable, Text, View, StyleSheet } from "react-native";
 import { router } from "expo-router";
 import { AppIcon } from "@/components/icons/AppIcon";
 import type { IconName } from "@/components/icons/icons";
+import { RuleInfoModal } from "@/components/RuleInfoModal";
 import { useGamification } from "@/context/GamificationContext";
 import { useSubscription } from "@/context/SubscriptionContext";
 import { getRankForXp } from "@/lib/gamification/rank";
+import { getRuleById } from "@/lib/gamification/rulesText";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 
 /** The map screen's own "at a glance" strip — hearts, streak, rank —
@@ -18,6 +21,11 @@ import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 export function GamificationHeaderBar() {
   const { state, getHeartsInfo, isLoading } = useGamification();
   const { status: subscription } = useSubscription();
+  // Which "Zasady gry" entry the last-tapped HUD pill (serca/passa/
+  // ranga) should open — null closes RuleInfoModal. The nutki pill
+  // deliberately doesn't set this: it already has its own destination
+  // (Sklep Soltka), so tapping it navigates instead of explaining.
+  const [openRuleId, setOpenRuleId] = useState<string | null>(null);
 
   if (isLoading) return null;
 
@@ -25,12 +33,19 @@ export function GamificationHeaderBar() {
 
   return (
     <View style={styles.row}>
-      <Pill icon="hud_serce" label={subscription.isActive ? "∞" : String(heartsInfo.hearts)} />
-      <Pill icon="hud_seria_ogien" label={String(state.streakDays)} />
+      <Pressable onPress={() => setOpenRuleId("hearts")} accessibilityRole="button" accessibilityLabel="Zasady: Serca">
+        <Pill icon="hud_serce" label={subscription.isActive ? "∞" : String(heartsInfo.hearts)} />
+      </Pressable>
+      <Pressable onPress={() => setOpenRuleId("streak")} accessibilityRole="button" accessibilityLabel="Zasady: Passa">
+        <Pill icon="hud_seria_ogien" label={String(state.streakDays)} />
+      </Pressable>
       <Pressable onPress={() => router.push("/(main)/power-ups")} accessibilityRole="button" accessibilityLabel="Sklep Soltka">
         <Pill icon="hud_nutki_waluta" label={String(state.nutki)} />
       </Pressable>
-      <RankPill xp={state.xp} />
+      <Pressable onPress={() => setOpenRuleId("rank")} accessibilityRole="button" accessibilityLabel="Zasady: XP i ranga">
+        <RankPill xp={state.xp} />
+      </Pressable>
+      <RuleInfoModal visible={openRuleId !== null} rule={openRuleId ? (getRuleById(openRuleId) ?? null) : null} onClose={() => setOpenRuleId(null)} />
     </View>
   );
 }
