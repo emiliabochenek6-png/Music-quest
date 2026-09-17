@@ -50,7 +50,7 @@ export const RULES: Rule[] = [
     id: "nutki",
     icon: { name: "hud_nutki_waluta" },
     title: "Nutki i Sklep Soltka",
-    body: `Nutki to Twoja własna waluta — zdobywasz je za wyzwanie dnia, perfekcyjną lekcję, ukończenie krainy i co tydzień passy. Nigdy nie da się ich kupić za prawdziwe pieniądze. W Sklepie Soltka (ikonka przy mapie) wymieniasz je na zamrożenie passy (${POWER_UP_COSTS.streakFreeze} nutek) albo uzupełnienie serc (${POWER_UP_COSTS.heartRefill} nutek). Podczas lekcji za ${POWER_UP_COSTS.hint} nutek możesz też poprosić Soltka o podpowiedź.`,
+    body: `Nutki to Twoja własna waluta — zdobywasz je za wyzwanie dnia, perfekcyjną lekcję, ukończenie krainy i co tydzień passy. Nigdy nie da się ich kupić za prawdziwe pieniądze. W Sklepie Soltka (ikonka przy mapie) wymieniasz je na zamrożenie passy (${POWER_UP_COSTS.streakFreeze} nutek) albo uzupełnienie serc (${POWER_UP_COSTS.heartRefill} nutek).`,
   },
   {
     id: "daily-challenge",

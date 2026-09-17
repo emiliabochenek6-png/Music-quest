@@ -60,14 +60,13 @@ interface GamificationContextValue {
   addNutki: (amount: number) => void;
   /** Each buy* action does its own single balance-checked setState (see
    * this provider's own doc) rather than composing a generic
-   * spendNutki — every one of these three is a complete, one-shot
-   * purchase, not a spend that some OTHER effect gets layered onto
-   * after the fact. Returns false (spending nothing) when the balance
-   * is too low, so the calling screen can show "za mało nutek" instead
-   * of silently doing nothing. */
+   * spendNutki — each of these is a complete, one-shot purchase, not a
+   * spend that some OTHER effect gets layered onto after the fact.
+   * Returns false (spending nothing) when the balance is too low, so
+   * the calling screen can show "za mało nutek" instead of silently
+   * doing nothing. */
   buyStreakFreeze: () => boolean;
   buyHeartRefill: () => boolean;
-  buyHint: () => boolean;
 }
 
 const GamificationContext = createContext<GamificationContextValue | null>(null);
@@ -239,16 +238,6 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
     return true;
   }
 
-  function buyHint(): boolean {
-    if (state.nutki < POWER_UP_COSTS.hint) return false;
-    setState((prev) => {
-      const next: GamificationState = { ...prev, nutki: prev.nutki - POWER_UP_COSTS.hint };
-      void writeJson(STORAGE_KEYS.gamification, next);
-      return next;
-    });
-    return true;
-  }
-
   function setDailyChallenge(daily: DailyChallengeState | null) {
     setState((prev) => {
       const next: GamificationState = { ...prev, dailyChallenge: daily };
@@ -274,7 +263,6 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
         addNutki,
         buyStreakFreeze,
         buyHeartRefill,
-        buyHint,
       }}
     >
       {children}

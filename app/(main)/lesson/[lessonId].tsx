@@ -20,8 +20,7 @@ import { useSubscription } from "@/context/SubscriptionContext";
 import { useSessionTimer } from "@/hooks/useSessionTimer";
 import { stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
 import { todayISODate } from "@/lib/gamification/activity";
-import { NUTKI_REWARDS, POWER_UP_COSTS } from "@/lib/gamification/powerups";
-import { pickHintTip } from "@/lib/gamification/hintTips";
+import { NUTKI_REWARDS } from "@/lib/gamification/powerups";
 import { didWorldJustUnlock } from "@/lib/progression/resolveNodeState";
 import { computeLessonStars, computeLessonStarsProgress } from "@/lib/gamification/stars";
 import { generateExercise, getExerciseSignature } from "@/lib/questions/generate";
@@ -62,7 +61,7 @@ export default function LessonScreen() {
   const { lessonId, worldId } = useLocalSearchParams<{ lessonId: string; worldId: string }>();
   const insets = useSafeAreaInsets();
   const { progress, markLessonCompleted, markWorldCompleted } = useProgress();
-  const { state: gamificationState, getHeartsInfo, loseHeart, gainHearts, awardXp, addNutki, buyHint, recordLessonStars, recordActivity } =
+  const { state: gamificationState, getHeartsInfo, loseHeart, gainHearts, awardXp, addNutki, recordLessonStars, recordActivity } =
     useGamification();
   const { status: subscriptionStatus } = useSubscription();
   const { getElapsedMinutes } = useSessionTimer(lessonId);
@@ -87,10 +86,6 @@ export default function LessonScreen() {
   // Re-rolled fresh each time handleCheck runs, reset on handleContinue so
   // the next question gets its own independent roll.
   const [showSoltek, setShowSoltek] = useState(false);
-  // Set by handleUseHint below — reset (to null) every time a fresh
-  // exercise starts (handleContinue's advance branch), so a hint bought
-  // for one exercise never lingers onto the next one.
-  const [hintTip, setHintTip] = useState<string | null>(null);
   const [isFinished, setIsFinished] = useState(false);
   const [mistakeCount, setMistakeCount] = useState(0);
   // Disabled for the duration of a clef-trace stroke — see
@@ -201,14 +196,6 @@ export default function LessonScreen() {
   // that kept ringing on into the exercise instead of stopping at the
   // screen transition, same as every other exercise-to-exercise boundary
   // already does via handleContinue/handleCheck below.
-  // Doesn't reveal or eliminate an actual answer option — see
-  // lib/gamification/hintTips.ts's own doc for why. A no-op (nothing
-  // charged, tip stays unset) when the balance is too low; buyHint()
-  // already returns false in that case.
-  function handleUseHint() {
-    if (buyHint()) setHintTip(pickHintTip());
-  }
-
   function handleIntroContinue() {
     stopAllScheduledAudio();
     setIntroDismissed(true);
@@ -234,7 +221,6 @@ export default function LessonScreen() {
       setChecked(false);
       setIsCorrect(null);
       setShowSoltek(false);
-      setHintTip(null);
     } else {
       markLessonCompleted(currentLesson.id);
       const isLastLessonInWorld = currentLesson.order === currentContent.lessons.length;
@@ -383,23 +369,6 @@ export default function LessonScreen() {
       </ScrollView>
 
       <View style={{ paddingHorizontal: 24, paddingBottom: insets.bottom + 16 }}>
-        {!checked && hintTip && (
-          <View style={{ marginBottom: theme.spacing(1.5) }}>
-            <SoltekMascot size="sm" expression="zachecajacy" message={`💡 ${hintTip}`} />
-          </View>
-        )}
-        {!checked && !hintTip && (
-          <Pressable
-            onPress={handleUseHint}
-            accessibilityRole="button"
-            style={{ alignSelf: "center", marginBottom: theme.spacing(1.5) }}
-            hitSlop={8}
-          >
-            <Text style={{ fontSize: 12, fontWeight: "700", color: theme.colors.muted }}>
-              💡 Podpowiedź Soltka (-{POWER_UP_COSTS.hint} 🎵)
-            </Text>
-          </Pressable>
-        )}
         {checked && (
           <View style={{ marginBottom: theme.spacing(1.5) }}>
             {showSoltek ? (

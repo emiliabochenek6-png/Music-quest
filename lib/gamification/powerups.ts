@@ -35,5 +35,4 @@ export const NUTKI_REWARDS = {
 export const POWER_UP_COSTS = {
   streakFreeze: 15,
   heartRefill: 10,
-  hint: 5,
 } as const;

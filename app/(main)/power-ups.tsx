@@ -17,8 +17,7 @@ import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
  * one of the app's five main sections. Only sells power-ups that make
  * sense to buy AHEAD of time — a banked streak freeze (consumed
  * automatically later, see lib/gamification/activity.ts's own doc) and
- * an instant heart refill. "Podpowiedź Soltka" (hint) is bought in the
- * moment it's needed, from inside a lesson itself, not stocked up here.
+ * an instant heart refill.
  */
 export default function PowerUpShopScreen() {
   const insets = useSafeAreaInsets();
@@ -61,12 +60,6 @@ export default function PowerUpShopScreen() {
           disabled={subscription.isActive || state.nutki < POWER_UP_COSTS.heartRefill}
           onBuy={handleBuyHeartRefill}
         />
-        <View style={styles.hintNote}>
-          <Text style={styles.hintNoteIcon}>💡</Text>
-          <Text style={styles.hintNoteText}>
-            Podpowiedź Soltka (-{POWER_UP_COSTS.hint} 🎵) kupujesz podczas lekcji, w chwili gdy jej potrzebujesz.
-          </Text>
-        </View>
       </ScrollView>
     </View>
   );
@@ -205,22 +198,6 @@ const styles = StyleSheet.create({
   cardDescription: {
     fontSize: 13,
     lineHeight: 18,
-    color: theme.colors.muted,
-  },
-  hintNote: {
-    flexDirection: "row",
-    gap: 10,
-    padding: 14,
-    borderRadius: theme.radius.lg,
-    backgroundColor: theme.colors.surfaceMuted,
-  },
-  hintNoteIcon: {
-    fontSize: 18,
-  },
-  hintNoteText: {
-    flex: 1,
-    fontSize: 12,
-    lineHeight: 17,
     color: theme.colors.muted,
   },
 });
