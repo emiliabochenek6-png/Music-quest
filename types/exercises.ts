@@ -117,7 +117,23 @@ export type ExerciseSpec =
        * pattern, RHYTHM_SEQUENCING_RECORDING_SAMPLES instead. */
       referenceAudioSource?: number;
     }
-  | { type: "rhythm-dictation"; bpm: number; meter?: Meter; sequence: (RhythmNoteValue | RhythmRestValue)[] }
+  | {
+      type: "rhythm-dictation";
+      bpm: number;
+      meter?: Meter;
+      sequence: (RhythmNoteValue | RhythmRestValue)[];
+      /** A real recorded performance of this exact sequence to play
+       * instead of the synthesized playMetronomeWithClaps demo — same
+       * pattern as rhythm-echo's own referenceAudioSource, but here it's
+       * PURELY illustrative: onsetsMs (the grading ground truth) is still
+       * derived straight from `sequence`/`bpm`, never from the recording,
+       * and the notation is shown on screen regardless — a mismatch
+       * between the recording's own exact timing and onsetsMs can't
+       * break "zastukaj to samo" the way it did for rhythm-echo, since
+       * the player always has the notation (not just their ear) to tap
+       * against. */
+      referenceAudioSource?: number;
+    }
   | { type: "rhythm-notation-tap"; bpm: number; meter: Meter; sequence: (RhythmNoteValue | RhythmRestValue)[] }
   // Pasmo Interwałów (intervals world) — see data/lessons/pasmo-interwalow.ts's own doc.
   | {
@@ -455,6 +471,7 @@ export type GeneratedExercise =
       sequence: (RhythmNoteValue | RhythmRestValue)[];
       slotTimesMs: number[];
       onsetsMs: number[];
+      referenceAudioSource?: number;
     }
   | {
       id: string;

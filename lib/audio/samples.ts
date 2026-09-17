@@ -243,3 +243,18 @@ export const RHYTHM_SEQUENCING_L3_RECORDING_SAMPLES: readonly number[] = [
   require("@/assets/audio/reference/rhythm-sequencing-l3-3.wav"),
   require("@/assets/audio/reference/rhythm-sequencing-l3-4.wav"),
 ];
+
+/** Same treatment, for lekcja 4's own rhythm-dictation exercises
+ * (mr-l4-e1..e5) — unlike every RHYTHM_*_RECORDING_SAMPLES above,
+ * these play PURELY as illustration (RhythmDictationExercise's own
+ * referenceAudioSource doc explains why a timing mismatch can't break
+ * grading here the way it did for rhythm-echo): the notation is shown on
+ * screen and onsetsMs is derived from the authored sequence/bpm, never
+ * from the recording. */
+export const RHYTHM_DICTATION_L4_RECORDING_SAMPLES: readonly number[] = [
+  require("@/assets/audio/reference/rhythm-dictation-l4-1.wav"),
+  require("@/assets/audio/reference/rhythm-dictation-l4-2.wav"),
+  require("@/assets/audio/reference/rhythm-dictation-l4-3.wav"),
+  require("@/assets/audio/reference/rhythm-dictation-l4-4.wav"),
+  require("@/assets/audio/reference/rhythm-dictation-l4-5.wav"),
+];

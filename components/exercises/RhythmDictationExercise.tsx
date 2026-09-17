@@ -1,9 +1,9 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Pressable, Text, View } from "react-native";
+import { BeamedRhythmRow } from "@/components/exercises/BeamedRhythmRow";
 import { DarkButton } from "@/components/exercises/DarkButton";
-import { MeteredNotationRow } from "@/components/exercises/MeteredNotationRow";
 import { MetronomeIndicator } from "@/components/exercises/MetronomeIndicator";
-import { schedulerNow } from "@/lib/audio/player";
+import { playSample, schedulerNow, type SamplePlaybackHandle } from "@/lib/audio/player";
 import { STANDALONE_METRONOME_MEASURES, playMetronome, playMetronomeWithClaps, stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
 import { meterFeltPulseCount, meterFeltPulseQuarterBeats, meterPulseSubdivision } from "@/lib/rhythm/meter";
 import { t } from "@/lib/i18n/translate";
@@ -33,7 +33,18 @@ interface RhythmDictationExerciseProps {
  * buffer beat counts are this port's own reasonable choice rather than a
  * byte-verbatim copy of the web timing formula (its source wasn't
  * available to copy from), but the mechanic (gap-based tap scoring
- * against exercise.onsetsMs, metronome not itself scored) matches. */
+ * against exercise.onsetsMs, metronome not itself scored) matches.
+ *
+ * When exercise.referenceAudioSource is set (Miasto Rytmu lekcja 4 — see
+ * data/lessons/miasto-rytmu.ts and lib/audio/samples.ts's own
+ * RHYTHM_DICTATION_L4_RECORDING_SAMPLES), the 🔊 button plays that real
+ * recording instead, as a genuine play/stop toggle — same
+ * MeterChoiceExercise/RhythmEchoExercise pattern. Purely illustrative:
+ * exercise.onsetsMs (what tapping is actually scored against) is always
+ * derived from the authored sequence/bpm, never touched by which source
+ * 🔊 plays — see that field's own doc for why a recording can't make
+ * grading wrong here. The standalone-metronome dot is untouched either
+ * way, same as before. */
 export function RhythmDictationExercise({ exercise, answer, onAnswerChange, checked, locale }: RhythmDictationExerciseProps) {
   const firstTapTimeRef = useRef<number | null>(null);
   const taps = answer?.tapTimestampsMs ?? [];
@@ -45,6 +56,23 @@ export function RhythmDictationExercise({ exercise, answer, onAnswerChange, chec
   // Whether the dot's OWN standalone metronome (as opposed to the 🔊
   // button's rhythm-with-metronome playback) is the one currently running.
   const [standaloneOn, setStandaloneOn] = useState(false);
+  // Same real-recording play/stop toggle as RhythmEchoExercise's own —
+  // see that component's own doc for why it doesn't touch metronomePlay.
+  const [isPlayingReference, setIsPlayingReference] = useState(false);
+  const referenceHandleRef = useRef<SamplePlaybackHandle | null>(null);
+
+  useEffect(() => {
+    return () => {
+      referenceHandleRef.current?.stop();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (checked) {
+      referenceHandleRef.current = null;
+      setIsPlayingReference(false);
+    }
+  }, [checked]);
 
   // The click's own rate follows the meter's FELT pulse, not a bare
   // quarter note — for a simple /4 meter those are the same thing, but a
@@ -72,6 +100,22 @@ export function RhythmDictationExercise({ exercise, answer, onAnswerChange, chec
   const pulseSubdivision = meterPulseSubdivision(exercise.meter);
 
   function play() {
+    if (exercise.referenceAudioSource !== undefined) {
+      if (isPlayingReference) {
+        referenceHandleRef.current?.stop();
+        referenceHandleRef.current = null;
+        setIsPlayingReference(false);
+        return;
+      }
+      stopAllScheduledAudio();
+      setStandaloneOn(false);
+      setIsPlayingReference(true);
+      referenceHandleRef.current = playSample(exercise.referenceAudioSource, 0.9, () => {
+        setIsPlayingReference(false);
+        referenceHandleRef.current = null;
+      });
+      return;
+    }
     stopAllScheduledAudio();
     setStandaloneOn(false);
     const countInMs = feltBeatsPerMeasure * feltBeatIntervalMs;
@@ -91,6 +135,8 @@ export function RhythmDictationExercise({ exercise, answer, onAnswerChange, chec
 
   function toggleStandaloneMetronome() {
     stopAllScheduledAudio();
+    referenceHandleRef.current = null;
+    setIsPlayingReference(false);
     if (standaloneOn) {
       setStandaloneOn(false);
       return;
@@ -126,9 +172,15 @@ export function RhythmDictationExercise({ exercise, answer, onAnswerChange, chec
         {t("lesson.metronomeDotHint", locale)}
       </Text>
       <View style={{ paddingVertical: theme.spacing(1) }}>
-        <MeteredNotationRow bpm={exercise.bpm} meter={exercise.meter} beatsPerMeasure={exercise.beatsPerMeasure} sequence={exercise.sequence} slotTimesMs={exercise.slotTimesMs} />
+        <BeamedRhythmRow meter={exercise.meter} beatsPerMeasure={exercise.beatsPerMeasure} sequence={exercise.sequence} />
       </View>
-      <DarkButton label="🔊" onPress={play} variant="secondary" size={84} fontSize={42} />
+      <DarkButton
+        label={isPlayingReference ? "⏹" : "🔊"}
+        onPress={play}
+        variant={isPlayingReference ? "primary" : "secondary"}
+        size={84}
+        fontSize={42}
+      />
       <MetronomeIndicator
         playToken={metronomePlay.token}
         bpm={feltBpm}

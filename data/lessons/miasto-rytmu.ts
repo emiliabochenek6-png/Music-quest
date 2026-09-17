@@ -1,6 +1,7 @@
 import {
   DRUMMER_3_4_SAMPLE,
   DRUMMER_4_4_SAMPLE,
+  RHYTHM_DICTATION_L4_RECORDING_SAMPLES,
   RHYTHM_SEQUENCING_L3_RECORDING_SAMPLES,
   RHYTHM_SEQUENCING_RECORDING_SAMPLES,
 } from "@/lib/audio/samples";
@@ -254,6 +255,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
             bpm: 76,
             meter: "4/4",
             sequence: ["quarter", "quarterRest", "quarter", "quarterRest", "quarter", "quarterRest", "quarter", "quarterRest"],
+            referenceAudioSource: RHYTHM_DICTATION_L4_RECORDING_SAMPLES[0],
           },
         },
         {
@@ -270,6 +272,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
               "eighth", "eighthRest", "eighth", "eighthRest",
               "eighth", "eighthRest", "eighth", "eighthRest",
             ],
+            referenceAudioSource: RHYTHM_DICTATION_L4_RECORDING_SAMPLES[1],
           },
         },
         {
@@ -284,6 +287,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
               "quarter", "quarterRest", "eighth", "eighth", "quarterRest",
               "quarter", "quarterRest", "eighth", "eighth", "quarterRest",
             ],
+            referenceAudioSource: RHYTHM_DICTATION_L4_RECORDING_SAMPLES[2],
           },
         },
         {
@@ -295,6 +299,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
             bpm: 80,
             meter: "4/4",
             sequence: ["whole", "half", "half", "quarterRest", "quarter", "quarter", "quarterRest"],
+            referenceAudioSource: RHYTHM_DICTATION_L4_RECORDING_SAMPLES[3],
           },
         },
         {
@@ -312,11 +317,11 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
             // into a 4/4 measure. A whole note is, by definition, an
             // entire measure — it can't start mid-measure, so that
             // arrangement wasn't valid notation to begin with (and made
-            // MeteredNotationRow's bar-line grouping, which places bars
-            // by elapsed time, split the whole note awkwardly across two
-            // "measures"). Same multiset of note/rest values, same total
-            // length, just reordered so every measure actually adds up
-            // to 4 beats: [half,quarter,eighth,eighth] | [whole] |
+            // BeamedRhythmRow's bar-line grouping split the whole note
+            // awkwardly across two "measures"). Same multiset of note/
+            // rest values, same total length, just reordered so every
+            // measure actually adds up to 4 beats:
+            // [half,quarter,eighth,eighth] | [whole] |
             // [quarterRest,quarter,quarter,quarterRest] | [half,half].
             sequence: [
               "half", "quarter", "eighth", "eighth",
@@ -324,6 +329,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
               "quarterRest", "quarter", "quarter", "quarterRest",
               "half", "half",
             ],
+            referenceAudioSource: RHYTHM_DICTATION_L4_RECORDING_SAMPLES[4],
           },
         },
       ],

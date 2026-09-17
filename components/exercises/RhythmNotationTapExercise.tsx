@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { Pressable, Text, View } from "react-native";
+import { BeamedRhythmRow } from "@/components/exercises/BeamedRhythmRow";
 import { DarkButton } from "@/components/exercises/DarkButton";
-import { MeteredNotationRow } from "@/components/exercises/MeteredNotationRow";
 import { MetronomeIndicator } from "@/components/exercises/MetronomeIndicator";
 import { schedulerNow } from "@/lib/audio/player";
 import { STANDALONE_METRONOME_MEASURES, playMetronome, playMetronomeWithClaps, stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
@@ -106,13 +106,7 @@ export function RhythmNotationTapExercise({ exercise, answer, onAnswerChange, ch
         {t("lesson.metronomeDotHint", locale)}
       </Text>
       <View style={{ paddingVertical: theme.spacing(1) }}>
-        <MeteredNotationRow
-          bpm={exercise.bpm}
-          meter={exercise.meter}
-          beatsPerMeasure={exercise.beatsPerMeasure}
-          sequence={exercise.sequence}
-          slotTimesMs={exercise.slotTimesMs}
-        />
+        <BeamedRhythmRow meter={exercise.meter} beatsPerMeasure={exercise.beatsPerMeasure} sequence={exercise.sequence} />
       </View>
       <DarkButton label="🔊" onPress={play} variant="secondary" size={84} fontSize={42} />
       <MetronomeIndicator
