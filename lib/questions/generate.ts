@@ -554,7 +554,7 @@ export function generateExercise(definition: ExerciseDefinition, locale: Locale,
       return { id: definition.id, type: "rhythm-dictation", bpm, meter, beatsPerMeasure, sequence, slotTimesMs, onsetsMs, referenceAudioSource };
     }
     case "rhythm-notation-tap": {
-      const { bpm, meter, sequence } = definition.spec;
+      const { bpm, meter, sequence, referenceAudioSource } = definition.spec;
       const beatIntervalMs = (60 / bpm) * 1000;
       const beatsPerMeasure = meterQuarterNoteBeats(meter);
       const slotTimesMs: number[] = [];
@@ -578,6 +578,7 @@ export function generateExercise(definition: ExerciseDefinition, locale: Locale,
         sequence,
         slotTimesMs,
         requiredTapTimesMs,
+        referenceAudioSource,
       };
     }
     case "interval-name-choice": {

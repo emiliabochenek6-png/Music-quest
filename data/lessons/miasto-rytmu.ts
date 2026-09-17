@@ -2,6 +2,7 @@ import {
   DRUMMER_3_4_SAMPLE,
   DRUMMER_4_4_SAMPLE,
   RHYTHM_DICTATION_L4_RECORDING_SAMPLES,
+  RHYTHM_NOTATION_TAP_L5_RECORDING_SAMPLES,
   RHYTHM_SEQUENCING_L3_RECORDING_SAMPLES,
   RHYTHM_SEQUENCING_RECORDING_SAMPLES,
 } from "@/lib/audio/samples";
@@ -348,7 +349,13 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
           id: "mr-l5-e1",
           type: "rhythm-notation-tap",
           difficulty: 2,
-          spec: { type: "rhythm-notation-tap", bpm: 92, meter: "4/4", sequence: ["quarter", "quarter", "half", "quarter", "quarter", "half"] },
+          spec: {
+            type: "rhythm-notation-tap",
+            bpm: 92,
+            meter: "4/4",
+            sequence: ["quarter", "quarter", "half", "quarter", "quarter", "half"],
+            referenceAudioSource: RHYTHM_NOTATION_TAP_L5_RECORDING_SAMPLES[0],
+          },
         },
         {
           id: "mr-l5-e2",
@@ -359,6 +366,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
             bpm: 100,
             meter: "3/4",
             sequence: ["quarter", "quarter", "quarter", "half", "quarter", "quarterRest", "quarter", "quarterRest"],
+            referenceAudioSource: RHYTHM_NOTATION_TAP_L5_RECORDING_SAMPLES[1],
           },
         },
         {
@@ -370,6 +378,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
             bpm: 88,
             meter: "4/4",
             sequence: ["eighth", "eighth", "quarter", "half", "quarter", "quarter", "eighth", "eighth", "quarter"],
+            referenceAudioSource: RHYTHM_NOTATION_TAP_L5_RECORDING_SAMPLES[2],
           },
         },
         {
@@ -381,6 +390,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
             bpm: 96,
             meter: "3/4",
             sequence: ["half", "quarterRest", "quarter", "eighth", "eighth", "quarter", "quarterRest", "quarter", "quarter"],
+            referenceAudioSource: RHYTHM_NOTATION_TAP_L5_RECORDING_SAMPLES[3],
           },
         },
       ],

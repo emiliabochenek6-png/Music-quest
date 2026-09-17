@@ -38,8 +38,20 @@ import { formatScientific, midiToNote, noteToMidi, type Note } from "@/lib/music
 // track traces back to. accentClickPool never gets subdivision ticks
 // (only ever one trigger per measure's downbeat), so it keeps a smaller,
 // still-comfortable margin.
-const accentClickPool = createSamplePool(CLICK_ACCENT_SAMPLE, 4);
-const weakClickPool = createSamplePool(CLICK_WEAK_SAMPLE, 6);
+//
+// Doubled again (4→8, 6→12) after reports of the STANDALONE metronome
+// dot (MetronomeIndicator's own toggle — see STANDALONE_METRONOME_MEASURES'
+// own doc) occasionally lagging/sounding uneven partway through a long
+// continuous run: at 200 measures, even a comfortable per-reuse margin
+// gets exercised hundreds of times over, and a single unlucky slow
+// seekTo() (a GC pause, the JS thread briefly busy with something else)
+// anywhere in that run is enough to be audible once. A wider pool doesn't
+// make any single reuse's margin infinite, but it multiplies how much
+// margin every reuse has, making that rare miss rarer still — cheap (a
+// few more idle AudioPlayer instances) same as every other bump in this
+// file.
+const accentClickPool = createSamplePool(CLICK_ACCENT_SAMPLE, 8);
+const weakClickPool = createSamplePool(CLICK_WEAK_SAMPLE, 12);
 // Sized a bit larger than the click pools — some authored rhythm patterns
 // have onsets much closer together than most metronome beat intervals, so
 // a clap needs to be free for reuse sooner. clap.wav itself is 130ms —
@@ -57,11 +69,11 @@ const clapPool = createSamplePool(CLAP_SAMPLE, 10);
 // doc on CLICK_ACCENT_CLAP_SAMPLE/CLICK_WEAK_CLAP_SAMPLE) — used by
 // playMetronomeWithClaps below in place of triggering the plain click
 // AND a plain clap as two separate native players at the same instant.
-// Sized the same as their un-merged counterparts — a coincidence-heavy
-// pattern (straight eighths in a compound meter) can lean on these just
-// as hard as the plain click pools do.
-const accentClapPool = createSamplePool(CLICK_ACCENT_CLAP_SAMPLE, 4);
-const weakClapPool = createSamplePool(CLICK_WEAK_CLAP_SAMPLE, 6);
+// Sized the same as their un-merged counterparts (see that doubling's own
+// doc) — a coincidence-heavy pattern (straight eighths in a compound
+// meter) can lean on these just as hard as the plain click pools do.
+const accentClapPool = createSamplePool(CLICK_ACCENT_CLAP_SAMPLE, 8);
+const weakClapPool = createSamplePool(CLICK_WEAK_CLAP_SAMPLE, 12);
 
 // playDanceFragment's own notes (bass/chord/pickup/lilt) use the generic
 // getPool() (imported from lib/audio/player.ts) rather than a named pool

@@ -134,7 +134,16 @@ export type ExerciseSpec =
        * against. */
       referenceAudioSource?: number;
     }
-  | { type: "rhythm-notation-tap"; bpm: number; meter: Meter; sequence: (RhythmNoteValue | RhythmRestValue)[] }
+  | {
+      type: "rhythm-notation-tap";
+      bpm: number;
+      meter: Meter;
+      sequence: (RhythmNoteValue | RhythmRestValue)[];
+      /** See rhythm-dictation's own referenceAudioSource doc — same
+       * purely-illustrative pattern, requiredTapTimesMs (not the
+       * recording) stays what tapping is actually graded against. */
+      referenceAudioSource?: number;
+    }
   // Pasmo Interwałów (intervals world) — see data/lessons/pasmo-interwalow.ts's own doc.
   | {
       type: "interval-name-choice";
@@ -482,6 +491,7 @@ export type GeneratedExercise =
       sequence: (RhythmNoteValue | RhythmRestValue)[];
       slotTimesMs: number[];
       requiredTapTimesMs: number[];
+      referenceAudioSource?: number;
     }
   | {
       id: string;

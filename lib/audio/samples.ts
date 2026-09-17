@@ -258,3 +258,15 @@ export const RHYTHM_DICTATION_L4_RECORDING_SAMPLES: readonly number[] = [
   require("@/assets/audio/reference/rhythm-dictation-l4-4.wav"),
   require("@/assets/audio/reference/rhythm-dictation-l4-5.wav"),
 ];
+
+/** Same treatment, for lekcja 5's own rhythm-notation-tap exercises
+ * (mr-l5-e1..e4) — same purely-illustrative pattern as
+ * RHYTHM_DICTATION_L4_RECORDING_SAMPLES above (RhythmNotationTapExercise's
+ * own referenceAudioSource doc), just against requiredTapTimesMs instead
+ * of onsetsMs. */
+export const RHYTHM_NOTATION_TAP_L5_RECORDING_SAMPLES: readonly number[] = [
+  require("@/assets/audio/reference/rhythm-notation-tap-l5-1.wav"),
+  require("@/assets/audio/reference/rhythm-notation-tap-l5-2.wav"),
+  require("@/assets/audio/reference/rhythm-notation-tap-l5-3.wav"),
+  require("@/assets/audio/reference/rhythm-notation-tap-l5-4.wav"),
+];

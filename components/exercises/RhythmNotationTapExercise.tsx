@@ -1,9 +1,9 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { BeamedRhythmRow } from "@/components/exercises/BeamedRhythmRow";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { MetronomeIndicator } from "@/components/exercises/MetronomeIndicator";
-import { schedulerNow } from "@/lib/audio/player";
+import { playSample, schedulerNow, type SamplePlaybackHandle } from "@/lib/audio/player";
 import { STANDALONE_METRONOME_MEASURES, playMetronome, playMetronomeWithClaps, stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
 import { meterFeltPulseCount, meterFeltPulseQuarterBeats, meterPulseSubdivision } from "@/lib/rhythm/meter";
 import { t } from "@/lib/i18n/translate";
@@ -28,7 +28,16 @@ interface RhythmNotationTapExerciseProps {
  * free-timed tap-back button scores against exercise.requiredTapTimesMs
  * (the only real difference from RhythmDictationExercise, which scores
  * against exercise.onsetsMs — same gap-based isValidRhythmEcho mechanic
- * either way). */
+ * either way).
+ *
+ * When exercise.referenceAudioSource is set (Miasto Rytmu lekcja 5 — see
+ * data/lessons/miasto-rytmu.ts and lib/audio/samples.ts's own
+ * RHYTHM_NOTATION_TAP_L5_RECORDING_SAMPLES), the 🔊 button plays that real
+ * recording instead, as a genuine play/stop toggle — same
+ * RhythmDictationExercise pattern, purely illustrative:
+ * requiredTapTimesMs (what tapping is scored against) is always derived
+ * from the authored sequence/bpm, never touched by which source 🔊
+ * plays. */
 export function RhythmNotationTapExercise({ exercise, answer, onAnswerChange, checked, locale }: RhythmNotationTapExerciseProps) {
   const firstTapTimeRef = useRef<number | null>(null);
   const taps = answer?.tapTimestampsMs ?? [];
@@ -40,6 +49,23 @@ export function RhythmNotationTapExercise({ exercise, answer, onAnswerChange, ch
   // Whether the dot's OWN standalone metronome (as opposed to the 🔊
   // button's rhythm-with-metronome playback) is the one currently running.
   const [standaloneOn, setStandaloneOn] = useState(false);
+  // Same real-recording play/stop toggle as RhythmDictationExercise's own
+  // — see that component's own doc for why it doesn't touch metronomePlay.
+  const [isPlayingReference, setIsPlayingReference] = useState(false);
+  const referenceHandleRef = useRef<SamplePlaybackHandle | null>(null);
+
+  useEffect(() => {
+    return () => {
+      referenceHandleRef.current?.stop();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (checked) {
+      referenceHandleRef.current = null;
+      setIsPlayingReference(false);
+    }
+  }, [checked]);
 
   // See RhythmDictationExercise's own doc for why the metronome's rate
   // has to follow the meter's FELT pulse rather than a bare quarter note.
@@ -52,6 +78,22 @@ export function RhythmNotationTapExercise({ exercise, answer, onAnswerChange, ch
   const pulseSubdivision = meterPulseSubdivision(exercise.meter);
 
   function play() {
+    if (exercise.referenceAudioSource !== undefined) {
+      if (isPlayingReference) {
+        referenceHandleRef.current?.stop();
+        referenceHandleRef.current = null;
+        setIsPlayingReference(false);
+        return;
+      }
+      stopAllScheduledAudio();
+      setStandaloneOn(false);
+      setIsPlayingReference(true);
+      referenceHandleRef.current = playSample(exercise.referenceAudioSource, 0.9, () => {
+        setIsPlayingReference(false);
+        referenceHandleRef.current = null;
+      });
+      return;
+    }
     stopAllScheduledAudio();
     setStandaloneOn(false);
     const countInMs = feltBeatsPerMeasure * feltBeatIntervalMs;
@@ -71,6 +113,8 @@ export function RhythmNotationTapExercise({ exercise, answer, onAnswerChange, ch
 
   function toggleStandaloneMetronome() {
     stopAllScheduledAudio();
+    referenceHandleRef.current = null;
+    setIsPlayingReference(false);
     if (standaloneOn) {
       setStandaloneOn(false);
       return;
@@ -108,7 +152,13 @@ export function RhythmNotationTapExercise({ exercise, answer, onAnswerChange, ch
       <View style={{ paddingVertical: theme.spacing(1) }}>
         <BeamedRhythmRow meter={exercise.meter} beatsPerMeasure={exercise.beatsPerMeasure} sequence={exercise.sequence} />
       </View>
-      <DarkButton label="🔊" onPress={play} variant="secondary" size={84} fontSize={42} />
+      <DarkButton
+        label={isPlayingReference ? "⏹" : "🔊"}
+        onPress={play}
+        variant={isPlayingReference ? "primary" : "secondary"}
+        size={84}
+        fontSize={42}
+      />
       <MetronomeIndicator
         playToken={metronomePlay.token}
         bpm={feltBpm}
