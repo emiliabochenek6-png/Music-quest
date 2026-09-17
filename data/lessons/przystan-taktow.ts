@@ -6,6 +6,8 @@ import {
   DRUMMER_6_8_SAMPLE,
   DRUMMER_9_8_SAMPLE,
   DRUMMER_12_8_SAMPLE,
+  RHYTHM_DICTATION_PT_L1_RECORDING_SAMPLES,
+  RHYTHM_DICTATION_PT_L2_RECORDING_SAMPLES,
 } from "@/lib/audio/samples";
 import type { WorldContent } from "@/types/exercises";
 
@@ -70,13 +72,25 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
           id: "pt-l1-e5",
           type: "rhythm-dictation",
           difficulty: 2,
-          spec: { type: "rhythm-dictation", bpm: 90, meter: "2/4", sequence: ["quarter", "quarter", "quarter", "quarterRest"] },
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 90,
+            meter: "2/4",
+            sequence: ["quarter", "quarter", "quarter", "quarterRest"],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L1_RECORDING_SAMPLES[0],
+          },
         },
         {
           id: "pt-l1-e6",
           type: "rhythm-dictation",
           difficulty: 2,
-          spec: { type: "rhythm-dictation", bpm: 96, meter: "2/4", sequence: ["eighth", "eighth", "quarter", "quarter", "quarter"] },
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 96,
+            meter: "2/4",
+            sequence: ["eighth", "eighth", "quarter", "quarter", "quarter"],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L1_RECORDING_SAMPLES[1],
+          },
         },
       ],
     },
@@ -94,7 +108,13 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
           id: "pt-l2-e2",
           type: "rhythm-dictation",
           difficulty: 2,
-          spec: { type: "rhythm-dictation", bpm: 96, meter: "2/2", sequence: ["half", "quarter", "quarter", "half", "half"] },
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 96,
+            meter: "2/2",
+            sequence: ["half", "quarter", "quarter", "half", "half"],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L2_RECORDING_SAMPLES[0],
+          },
         },
         {
           id: "pt-l2-e3",
@@ -118,7 +138,13 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
           id: "pt-l2-e6",
           type: "rhythm-dictation",
           difficulty: 2,
-          spec: { type: "rhythm-dictation", bpm: 92, meter: "2/2", sequence: ["whole", "half", "quarter", "quarter"] },
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 92,
+            meter: "2/2",
+            sequence: ["whole", "half", "quarter", "quarter"],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L2_RECORDING_SAMPLES[1],
+          },
         },
       ],
     },
