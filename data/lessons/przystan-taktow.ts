@@ -8,6 +8,7 @@ import {
   DRUMMER_12_8_SAMPLE,
   RHYTHM_DICTATION_PT_L1_RECORDING_SAMPLES,
   RHYTHM_DICTATION_PT_L2_RECORDING_SAMPLES,
+  RHYTHM_DICTATION_PT_L3_RECORDING_SAMPLES,
 } from "@/lib/audio/samples";
 import type { WorldContent } from "@/types/exercises";
 
@@ -132,7 +133,13 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
           id: "pt-l2-e5",
           type: "rhythm-dictation",
           difficulty: 2,
-          spec: { type: "rhythm-dictation", bpm: 100, meter: "2/2", sequence: ["half", "half", "half", "half"] },
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 100,
+            meter: "2/2",
+            sequence: ["half", "half", "half", "half"],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L2_RECORDING_SAMPLES[1],
+          },
         },
         {
           id: "pt-l2-e6",
@@ -143,7 +150,7 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
             bpm: 92,
             meter: "2/2",
             sequence: ["whole", "half", "quarter", "quarter"],
-            referenceAudioSource: RHYTHM_DICTATION_PT_L2_RECORDING_SAMPLES[1],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L2_RECORDING_SAMPLES[2],
           },
         },
       ],
@@ -180,19 +187,37 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
           id: "pt-l3-e4",
           type: "rhythm-dictation",
           difficulty: 2,
-          spec: { type: "rhythm-dictation", bpm: 92, meter: "2/4", sequence: ["quarter", "quarter", "eighth", "eighth", "quarter"] },
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 92,
+            meter: "2/4",
+            sequence: ["quarter", "quarter", "eighth", "eighth", "quarter"],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L3_RECORDING_SAMPLES[0],
+          },
         },
         {
           id: "pt-l3-e5",
           type: "rhythm-dictation",
           difficulty: 2,
-          spec: { type: "rhythm-dictation", bpm: 92, meter: "2/2", sequence: ["half", "quarter", "quarter", "half", "half"] },
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 92,
+            meter: "2/2",
+            sequence: ["half", "quarter", "quarter", "half", "half"],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L3_RECORDING_SAMPLES[1],
+          },
         },
         {
           id: "pt-l3-e6",
           type: "rhythm-dictation",
           difficulty: 2,
-          spec: { type: "rhythm-dictation", bpm: 92, meter: "3/4", sequence: ["quarter", "quarter", "quarter", "quarter", "quarter", "quarter"] },
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 92,
+            meter: "3/4",
+            sequence: ["quarter", "quarter", "quarter", "quarter", "quarter", "quarter"],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L3_RECORDING_SAMPLES[2],
+          },
         },
       ],
     },

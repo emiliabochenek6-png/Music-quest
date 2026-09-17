@@ -323,14 +323,21 @@ export const METRONOME_LOOP_BPM = 120;
 
 /** Same purely-illustrative referenceAudioSource treatment as
  * RHYTHM_DICTATION_L4_RECORDING_SAMPLES above, for Przystań Taktów's own
- * rhythm-dictation exercises — lekcja 1 (pt-l1-e5, pt-l1-e6, both 2/4)
- * and lekcja 2 (pt-l2-e2, pt-l2-e6 — pt-l2-e5 keeps the synthesized demo,
- * all 2/2). */
+ * rhythm-dictation exercises — lekcja 1 (pt-l1-e5, pt-l1-e6, both 2/4),
+ * lekcja 2 (pt-l2-e2, pt-l2-e5, pt-l2-e6, all 2/2), and lekcja 3
+ * (pt-l3-e4 2/4, pt-l3-e5 2/2, pt-l3-e6 3/4 — one of each simple meter
+ * this lesson mixes together). */
 export const RHYTHM_DICTATION_PT_L1_RECORDING_SAMPLES: readonly number[] = [
   require("@/assets/audio/reference/rhythm-dictation-pt-l1-1.wav"),
   require("@/assets/audio/reference/rhythm-dictation-pt-l1-2.wav"),
 ];
 export const RHYTHM_DICTATION_PT_L2_RECORDING_SAMPLES: readonly number[] = [
   require("@/assets/audio/reference/rhythm-dictation-pt-l2-1.wav"),
+  require("@/assets/audio/reference/rhythm-dictation-pt-l2-2.wav"),
   require("@/assets/audio/reference/rhythm-dictation-pt-l2-3.wav"),
+];
+export const RHYTHM_DICTATION_PT_L3_RECORDING_SAMPLES: readonly number[] = [
+  require("@/assets/audio/reference/rhythm-dictation-pt-l3-1.wav"),
+  require("@/assets/audio/reference/rhythm-dictation-pt-l3-2.wav"),
+  require("@/assets/audio/reference/rhythm-dictation-pt-l3-3.wav"),
 ];
