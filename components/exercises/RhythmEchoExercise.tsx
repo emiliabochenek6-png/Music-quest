@@ -49,8 +49,16 @@ const TRAILING_METRONOME_BEATS = 2;
  * recording only changes what's audible, not what a correct echo is
  * judged against. Tapping the pattern back and the standalone metronome
  * dot both keep working exactly as before, untouched by which source the
- * 🔊 button plays. */
+ * 🔊 button plays.
+ *
+ * exercise.showStandaloneMetronome (default true) hides that dot and its
+ * toggle entirely when false — Miasto Rytmu lekcje 2 and 3 set this false
+ * across the board (see data/lessons/miasto-rytmu.ts), the hint text
+ * dropping to just "🔊 odtwarza rytm z metronomem w tle." (no dot to
+ * explain) via lesson.metronomeBackgroundHint instead of
+ * lesson.metronomeDotHint. */
 export function RhythmEchoExercise({ exercise, answer, onAnswerChange, checked, locale }: RhythmEchoExerciseProps) {
+  const showStandaloneMetronome = exercise.showStandaloneMetronome ?? true;
   const firstTapTimeRef = useRef<number | null>(null);
   const taps = answer?.tapTimestampsMs ?? [];
   // Same shape as RhythmDictationExercise's own metronomePlay/standaloneOn
@@ -149,7 +157,7 @@ export function RhythmEchoExercise({ exercise, answer, onAnswerChange, checked, 
         {t("lesson.rhythmEchoPrompt", locale)}
       </Text>
       <Text style={{ fontSize: theme.fontSize.body * 0.8, color: theme.colors.muted, textAlign: "center" }}>
-        {t("lesson.metronomeDotHint", locale)}
+        {t(showStandaloneMetronome ? "lesson.metronomeDotHint" : "lesson.metronomeBackgroundHint", locale)}
       </Text>
       <DarkButton
         label={isPlayingReference ? "⏹" : "🔊"}
@@ -158,15 +166,17 @@ export function RhythmEchoExercise({ exercise, answer, onAnswerChange, checked, 
         size={84}
         fontSize={42}
       />
-      <MetronomeIndicator
-        playToken={metronomePlay.token}
-        bpm={METRONOME_BPM}
-        beatsPerMeasure={1}
-        totalBeats={metronomePlay.totalBeats}
-        startAtMs={metronomePlay.startAtMs}
-        onPress={toggleStandaloneMetronome}
-        active={standaloneOn}
-      />
+      {showStandaloneMetronome && (
+        <MetronomeIndicator
+          playToken={metronomePlay.token}
+          bpm={METRONOME_BPM}
+          beatsPerMeasure={1}
+          totalBeats={metronomePlay.totalBeats}
+          startAtMs={metronomePlay.startAtMs}
+          onPress={toggleStandaloneMetronome}
+          active={standaloneOn}
+        />
+      )}
       <Pressable
         onPress={handleTap}
         disabled={checked}

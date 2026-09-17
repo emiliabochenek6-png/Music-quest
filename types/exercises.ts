@@ -98,11 +98,21 @@ export type ExerciseSpec =
        * meter-choice-established pattern as ExerciseSpec's own
        * meter-choice.referenceAudioSource. */
       referenceAudioSource?: number;
+      /** Whether the independent standalone-metronome dot
+       * (MetronomeIndicator) shows at all — defaults to true (every
+       * rhythm-echo exercise had it up to now). Miasto Rytmu lekcja 2
+       * (data/lessons/miasto-rytmu.ts) sets this false: with the 🔊
+       * button's own click track doing the "steady beat" job, the extra
+       * standalone toggle next to it was redundant for that lesson. */
+      showStandaloneMetronome?: boolean;
     }
   | {
       type: "rhythm-sequencing";
       motif: RhythmNoteValue[];
       bpm?: number;
+      /** See rhythm-echo's own showStandaloneMetronome doc just above —
+       * same field, same default. */
+      showStandaloneMetronome?: boolean;
       /** See rhythm-echo's own referenceAudioSource doc just above — same
        * pattern, RHYTHM_SEQUENCING_RECORDING_SAMPLES instead. */
       referenceAudioSource?: number;
@@ -425,7 +435,7 @@ export type GeneratedExercise =
       minHits: number;
     }
   | { id: string; type: "meter-choice"; correctMeter: Meter; bpm: number; optionPool: Meter[]; referenceAudioSource?: number }
-  | { id: string; type: "rhythm-echo"; onsetsMs: number[]; referenceAudioSource?: number }
+  | { id: string; type: "rhythm-echo"; onsetsMs: number[]; referenceAudioSource?: number; showStandaloneMetronome?: boolean }
   | {
       id: string;
       type: "rhythm-sequencing";
@@ -434,6 +444,7 @@ export type GeneratedExercise =
       onsetsMs: number[];
       bpm: number;
       referenceAudioSource?: number;
+      showStandaloneMetronome?: boolean;
     }
   | {
       id: string;

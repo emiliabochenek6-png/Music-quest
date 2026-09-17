@@ -51,8 +51,14 @@ const TRAILING_METRONOME_BEATS = 2;
  * MeterChoiceExercise/RhythmEchoExercise pattern. shuffledMotif/
  * correctOrder/onsetsMs stay the grading ground truth either way; tile
  * selection and the standalone metronome dot both keep working exactly
- * as before. */
+ * as before.
+ *
+ * exercise.showStandaloneMetronome (default true) hides that dot and its
+ * toggle entirely when false — same field/default/reasoning as
+ * RhythmEchoExercise's own (see that component's own doc); Miasto Rytmu
+ * lekcje 2 and 3 set it false across the board. */
 export function RhythmSequencingExercise({ exercise, answer, onAnswerChange, checked, locale }: RhythmSequencingExerciseProps) {
+  const showStandaloneMetronome = exercise.showStandaloneMetronome ?? true;
   const selectedIndexes = answer?.selectedIndexes ?? [];
   // Same shape as RhythmDictationExercise's own metronomePlay/standaloneOn
   // — see that component's own doc.
@@ -137,7 +143,7 @@ export function RhythmSequencingExercise({ exercise, answer, onAnswerChange, che
         {t("lesson.rhythmSequencingPrompt", locale)}
       </Text>
       <Text style={{ fontSize: theme.fontSize.body * 0.8, color: theme.colors.muted, textAlign: "center" }}>
-        {t("lesson.metronomeDotHint", locale)}
+        {t(showStandaloneMetronome ? "lesson.metronomeDotHint" : "lesson.metronomeBackgroundHint", locale)}
       </Text>
       <DarkButton
         label={isPlayingReference ? "⏹" : "🔊"}
@@ -146,15 +152,17 @@ export function RhythmSequencingExercise({ exercise, answer, onAnswerChange, che
         size={84}
         fontSize={42}
       />
-      <MetronomeIndicator
-        playToken={metronomePlay.token}
-        bpm={exercise.bpm}
-        beatsPerMeasure={1}
-        totalBeats={metronomePlay.totalBeats}
-        startAtMs={metronomePlay.startAtMs}
-        onPress={toggleStandaloneMetronome}
-        active={standaloneOn}
-      />
+      {showStandaloneMetronome && (
+        <MetronomeIndicator
+          playToken={metronomePlay.token}
+          bpm={exercise.bpm}
+          beatsPerMeasure={1}
+          totalBeats={metronomePlay.totalBeats}
+          startAtMs={metronomePlay.startAtMs}
+          onPress={toggleStandaloneMetronome}
+          active={standaloneOn}
+        />
+      )}
 
       <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center", gap: theme.spacing(1.5) }}>
         {exercise.shuffledMotif.map((value, slotIndex) => {

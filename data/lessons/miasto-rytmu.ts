@@ -68,10 +68,28 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
         // reliably recoverable by automatic onset detection). These 4
         // play the synthesized click+clap demo built from onsetsMs
         // itself, guaranteeing the audio and the grading always agree.
-        { id: "mr-l2-e2", type: "rhythm-echo", difficulty: 2, spec: { type: "rhythm-echo", onsetsMs: [0, 450] } },
-        { id: "mr-l2-e3", type: "rhythm-echo", difficulty: 2, spec: { type: "rhythm-echo", onsetsMs: [0, 400, 800] } },
-        { id: "mr-l2-e4", type: "rhythm-echo", difficulty: 3, spec: { type: "rhythm-echo", onsetsMs: [0, 300, 750] } },
-        { id: "mr-l2-e5", type: "rhythm-echo", difficulty: 3, spec: { type: "rhythm-echo", onsetsMs: [0, 300, 750, 1050] } },
+        // showStandaloneMetronome:false on every exercise in lekcje 2
+        // and 3 — see RhythmEchoExercise.tsx's own doc for what that
+        // hides (the separate tappable metronome dot).
+        { id: "mr-l2-e2", type: "rhythm-echo", difficulty: 2, spec: { type: "rhythm-echo", onsetsMs: [0, 450], showStandaloneMetronome: false } },
+        {
+          id: "mr-l2-e3",
+          type: "rhythm-echo",
+          difficulty: 2,
+          spec: { type: "rhythm-echo", onsetsMs: [0, 400, 800], showStandaloneMetronome: false },
+        },
+        {
+          id: "mr-l2-e4",
+          type: "rhythm-echo",
+          difficulty: 3,
+          spec: { type: "rhythm-echo", onsetsMs: [0, 300, 750], showStandaloneMetronome: false },
+        },
+        {
+          id: "mr-l2-e5",
+          type: "rhythm-echo",
+          difficulty: 3,
+          spec: { type: "rhythm-echo", onsetsMs: [0, 300, 750, 1050], showStandaloneMetronome: false },
+        },
         {
           id: "mr-l2-e6",
           type: "rhythm-sequencing",
@@ -81,6 +99,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
             motif: ["quarter", "quarter", "half"],
             bpm: 90,
             referenceAudioSource: RHYTHM_SEQUENCING_RECORDING_SAMPLES[0],
+            showStandaloneMetronome: false,
           },
         },
         {
@@ -92,6 +111,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
             motif: ["half", "quarter", "whole"],
             bpm: 90,
             referenceAudioSource: RHYTHM_SEQUENCING_RECORDING_SAMPLES[1],
+            showStandaloneMetronome: false,
           },
         },
         {
@@ -103,6 +123,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
             motif: ["quarter", "half", "quarter", "half"],
             bpm: 90,
             referenceAudioSource: RHYTHM_SEQUENCING_RECORDING_SAMPLES[2],
+            showStandaloneMetronome: false,
           },
         },
         {
@@ -114,6 +135,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
             motif: ["whole", "quarter", "half", "quarter"],
             bpm: 90,
             referenceAudioSource: RHYTHM_SEQUENCING_RECORDING_SAMPLES[3],
+            showStandaloneMetronome: false,
           },
         },
       ],
@@ -135,18 +157,53 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
         },
       ],
       exercises: [
-        { id: "mr-l3-e2", type: "rhythm-echo", difficulty: 2, spec: { type: "rhythm-echo", onsetsMs: [0, 400] } },
-        { id: "mr-l3-e3", type: "rhythm-echo", difficulty: 2, spec: { type: "rhythm-echo", onsetsMs: [0, 350, 700] } },
-        { id: "mr-l3-e4", type: "rhythm-echo", difficulty: 3, spec: { type: "rhythm-echo", onsetsMs: [0, 250, 650] } },
-        { id: "mr-l3-e5", type: "rhythm-echo", difficulty: 3, spec: { type: "rhythm-echo", onsetsMs: [0, 250, 650, 900] } },
-        { id: "mr-l3-e6", type: "rhythm-sequencing", difficulty: 2, spec: { type: "rhythm-sequencing", motif: ["eighth", "eighth", "quarter"], bpm: 90 } },
-        { id: "mr-l3-e7", type: "rhythm-sequencing", difficulty: 2, spec: { type: "rhythm-sequencing", motif: ["quarter", "eighth", "eighth", "half"], bpm: 90 } },
-        { id: "mr-l3-e8", type: "rhythm-sequencing", difficulty: 3, spec: { type: "rhythm-sequencing", motif: ["sixteenth", "sixteenth", "eighth", "quarter"], bpm: 80 } },
+        { id: "mr-l3-e2", type: "rhythm-echo", difficulty: 2, spec: { type: "rhythm-echo", onsetsMs: [0, 400], showStandaloneMetronome: false } },
+        {
+          id: "mr-l3-e3",
+          type: "rhythm-echo",
+          difficulty: 2,
+          spec: { type: "rhythm-echo", onsetsMs: [0, 350, 700], showStandaloneMetronome: false },
+        },
+        {
+          id: "mr-l3-e4",
+          type: "rhythm-echo",
+          difficulty: 3,
+          spec: { type: "rhythm-echo", onsetsMs: [0, 250, 650], showStandaloneMetronome: false },
+        },
+        {
+          id: "mr-l3-e5",
+          type: "rhythm-echo",
+          difficulty: 3,
+          spec: { type: "rhythm-echo", onsetsMs: [0, 250, 650, 900], showStandaloneMetronome: false },
+        },
+        {
+          id: "mr-l3-e6",
+          type: "rhythm-sequencing",
+          difficulty: 2,
+          spec: { type: "rhythm-sequencing", motif: ["eighth", "eighth", "quarter"], bpm: 90, showStandaloneMetronome: false },
+        },
+        {
+          id: "mr-l3-e7",
+          type: "rhythm-sequencing",
+          difficulty: 2,
+          spec: { type: "rhythm-sequencing", motif: ["quarter", "eighth", "eighth", "half"], bpm: 90, showStandaloneMetronome: false },
+        },
+        {
+          id: "mr-l3-e8",
+          type: "rhythm-sequencing",
+          difficulty: 3,
+          spec: { type: "rhythm-sequencing", motif: ["sixteenth", "sixteenth", "eighth", "quarter"], bpm: 80, showStandaloneMetronome: false },
+        },
         {
           id: "mr-l3-e9",
           type: "rhythm-sequencing",
           difficulty: 3,
-          spec: { type: "rhythm-sequencing", motif: ["eighth", "sixteenth", "sixteenth", "quarter", "half"], bpm: 80 },
+          spec: {
+            type: "rhythm-sequencing",
+            motif: ["eighth", "sixteenth", "sixteenth", "quarter", "half"],
+            bpm: 80,
+            showStandaloneMetronome: false,
+          },
         },
       ],
     },

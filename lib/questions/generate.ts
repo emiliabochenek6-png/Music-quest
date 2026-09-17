@@ -504,11 +504,11 @@ export function generateExercise(definition: ExerciseDefinition, locale: Locale,
       };
     }
     case "rhythm-echo": {
-      const { onsetsMs, referenceAudioSource } = definition.spec;
-      return { id: definition.id, type: "rhythm-echo", onsetsMs, referenceAudioSource };
+      const { onsetsMs, referenceAudioSource, showStandaloneMetronome } = definition.spec;
+      return { id: definition.id, type: "rhythm-echo", onsetsMs, referenceAudioSource, showStandaloneMetronome };
     }
     case "rhythm-sequencing": {
-      const { motif, bpm, referenceAudioSource } = definition.spec;
+      const { motif, bpm, referenceAudioSource, showStandaloneMetronome } = definition.spec;
       const resolvedBpm = bpm ?? 100;
       const beatIntervalMs = (60 / resolvedBpm) * 1000;
       // Exactly one onset per tile — onset i marks where tile i begins, so
@@ -523,7 +523,16 @@ export function generateExercise(definition: ExerciseDefinition, locale: Locale,
       for (let attempt = 0; attempt < 10 && shuffledMotif.join() === motif.join(); attempt++) {
         shuffledMotif = shuffled(motif);
       }
-      return { id: definition.id, type: "rhythm-sequencing", shuffledMotif, correctOrder: motif, onsetsMs, bpm: resolvedBpm, referenceAudioSource };
+      return {
+        id: definition.id,
+        type: "rhythm-sequencing",
+        shuffledMotif,
+        correctOrder: motif,
+        onsetsMs,
+        bpm: resolvedBpm,
+        referenceAudioSource,
+        showStandaloneMetronome,
+      };
     }
     case "rhythm-dictation": {
       const { bpm, sequence } = definition.spec;
