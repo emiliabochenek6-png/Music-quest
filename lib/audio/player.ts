@@ -108,6 +108,46 @@ export function playSample(source: number, velocity: number, onFinish?: () => vo
   return { stop };
 }
 
+/** Plays one pre-rendered sample on a seamless NATIVE loop (expo-audio's
+ * own `player.loop = true`, handled entirely by the platform's audio
+ * engine) — for a "steady click track running indefinitely" need (the
+ * standalone-metronome dot's own MetronomeIndicator toggle — see
+ * RhythmDictationExercise/RhythmNotationTapExercise's own
+ * toggleStandaloneMetronome), this is categorically more even than
+ * scheduling hundreds of individual one-shot triggers through
+ * lib/audio/rhythmPlayer.ts's own lookahead scheduler + sample-pool
+ * reuse: there's no JS timer, no pool, no repeated seekTo(0) race to ever
+ * land unluckily on (see createSamplePool's own doc for that whole class
+ * of problem) — the native engine just keeps replaying the same buffer,
+ * gapless, for as long as `stop()` isn't called. `source` must already BE
+ * exactly one loop's worth of audio with no leading/trailing silence (see
+ * lib/audio/samples.ts's own METRONOME_LOOP_*_120BPM doc) — this function
+ * doesn't trim or crossfade anything, it only sets the native flag and
+ * presses play. Same activeStops/stop() shape as playSample, minus
+ * onFinish (a loop never finishes on its own). */
+export function playLoopingSample(source: number, velocity: number): SamplePlaybackHandle {
+  const player = createAudioPlayer(source);
+  player.volume = velocity;
+  player.loop = true;
+  let settled = false;
+
+  function stop(): void {
+    if (settled) return;
+    settled = true;
+    activeStops.delete(stop);
+    try {
+      player.pause();
+      player.remove();
+    } catch {
+      // Already removed via some other teardown path — nothing left to stop.
+    }
+  }
+
+  activeStops.add(stop);
+  player.play();
+  return { stop };
+}
+
 /** Plays back an on-device audio file by URI (a `file://...` path) rather
  * than a bundled require()'d sample — "Zaczarowany Solfeż"'s own
  * "odsłuchaj swoją nagrywkę" button, the one place in this app that plays

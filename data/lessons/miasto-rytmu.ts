@@ -253,7 +253,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
           difficulty: 2,
           spec: {
             type: "rhythm-dictation",
-            bpm: 76,
+            bpm: 120,
             meter: "4/4",
             sequence: ["quarter", "quarterRest", "quarter", "quarterRest", "quarter", "quarterRest", "quarter", "quarterRest"],
             referenceAudioSource: RHYTHM_DICTATION_L4_RECORDING_SAMPLES[0],
@@ -265,7 +265,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
           difficulty: 2,
           spec: {
             type: "rhythm-dictation",
-            bpm: 96,
+            bpm: 120,
             meter: "4/4",
             sequence: [
               "eighth", "eighthRest", "eighth", "eighthRest",
@@ -282,7 +282,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
           difficulty: 3,
           spec: {
             type: "rhythm-dictation",
-            bpm: 84,
+            bpm: 120,
             meter: "4/4",
             sequence: [
               "quarter", "quarterRest", "eighth", "eighth", "quarterRest",
@@ -297,7 +297,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
           difficulty: 3,
           spec: {
             type: "rhythm-dictation",
-            bpm: 80,
+            bpm: 120,
             meter: "4/4",
             sequence: ["whole", "half", "half", "quarterRest", "quarter", "quarter", "quarterRest"],
             referenceAudioSource: RHYTHM_DICTATION_L4_RECORDING_SAMPLES[3],
@@ -309,7 +309,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
           difficulty: 3,
           spec: {
             type: "rhythm-dictation",
-            bpm: 88,
+            bpm: 120,
             meter: "4/4",
             // Reordered from the web app's own authored sequence (half,
             // quarter, eighth, eighth, quarterRest, whole, quarterRest,
@@ -351,7 +351,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
           difficulty: 2,
           spec: {
             type: "rhythm-notation-tap",
-            bpm: 92,
+            bpm: 120,
             meter: "4/4",
             sequence: ["quarter", "quarter", "half", "quarter", "quarter", "half"],
             referenceAudioSource: RHYTHM_NOTATION_TAP_L5_RECORDING_SAMPLES[0],
@@ -363,7 +363,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
           difficulty: 2,
           spec: {
             type: "rhythm-notation-tap",
-            bpm: 100,
+            bpm: 120,
             meter: "3/4",
             sequence: ["quarter", "quarter", "quarter", "half", "quarter", "quarterRest", "quarter", "quarterRest"],
             referenceAudioSource: RHYTHM_NOTATION_TAP_L5_RECORDING_SAMPLES[1],
@@ -375,7 +375,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
           difficulty: 3,
           spec: {
             type: "rhythm-notation-tap",
-            bpm: 88,
+            bpm: 120,
             meter: "4/4",
             sequence: ["eighth", "eighth", "quarter", "half", "quarter", "quarter", "eighth", "eighth", "quarter"],
             referenceAudioSource: RHYTHM_NOTATION_TAP_L5_RECORDING_SAMPLES[2],
@@ -387,7 +387,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
           difficulty: 3,
           spec: {
             type: "rhythm-notation-tap",
-            bpm: 96,
+            bpm: 120,
             meter: "3/4",
             sequence: ["half", "quarterRest", "quarter", "eighth", "eighth", "quarter", "quarterRest", "quarter", "quarter"],
             referenceAudioSource: RHYTHM_NOTATION_TAP_L5_RECORDING_SAMPLES[3],

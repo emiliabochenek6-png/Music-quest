@@ -1,4 +1,4 @@
-import type { MelodyDirection } from "@/types/exercises";
+import type { MelodyDirection, Meter } from "@/types/exercises";
 
 /**
  * Pre-rendered sine-tone WAV samples, one per note actually used by
@@ -270,3 +270,41 @@ export const RHYTHM_NOTATION_TAP_L5_RECORDING_SAMPLES: readonly number[] = [
   require("@/assets/audio/reference/rhythm-notation-tap-l5-3.wav"),
   require("@/assets/audio/reference/rhythm-notation-tap-l5-4.wav"),
 ];
+
+/** One seamless, sample-accurate loop per meter — built (not recorded)
+ * from this app's own click-accent.wav/click-weak.wav at a fixed 120bpm
+ * reference tempo (a generic script, not MuseScore: hand-trimming a real
+ * recording to loop with zero gap/click at the seam is hard to get
+ * exactly right, and this app's own existing click samples already sound
+ * consistent with everything else in it). Exactly N beats long (N =
+ * the meter's own numerator) with the accent on sample 0 and weak clicks
+ * on each subsequent beat, so the native loop point IS the next accent —
+ * gapless by construction. Played via lib/audio/player.ts's own
+ * playLoopingSample (see its own doc for why this whole approach exists:
+ * a real native loop has no JS scheduling/sample-pool-reuse timing to
+ * ever land unevenly on, unlike playMetronome's per-click scheduling).
+ * Only 4/4 and 3/4 exist — RhythmDictationExercise/RhythmNotationTapExercise's
+ * own standalone-metronome toggle falls back to the synthesized
+ * playMetronome path for every other meter Przystań Taktów's own content
+ * uses (6/8, 9/8, 12/8, 2/2, 2/4 — see METRONOME_LOOP_SAMPLES_BY_METER's
+ * own doc). Deliberately NOT tempo-matched to any one exercise's own bpm
+ * — this dot is a general pulse-training aid (see
+ * STANDALONE_METRONOME_MEASURES's own doc), not required to match the
+ * specific exercise being attempted. */
+export const METRONOME_LOOP_4_4_120BPM_SAMPLE: number = require("@/assets/audio/reference/metronome-loop-4-4-120bpm.wav");
+export const METRONOME_LOOP_3_4_120BPM_SAMPLE: number = require("@/assets/audio/reference/metronome-loop-3-4-120bpm.wav");
+
+/** Looked up by exercise.meter in RhythmDictationExercise/
+ * RhythmNotationTapExercise's own toggleStandaloneMetronome — an entry
+ * present means "use the real native loop for this meter", absent means
+ * "fall back to the synthesized click track" (every meter besides 4/4
+ * and 3/4, for now). */
+export const METRONOME_LOOP_SAMPLES_BY_METER: Partial<Record<Meter, number>> = {
+  "4/4": METRONOME_LOOP_4_4_120BPM_SAMPLE,
+  "3/4": METRONOME_LOOP_3_4_120BPM_SAMPLE,
+};
+
+/** The fixed reference tempo every METRONOME_LOOP_*_SAMPLE was built at —
+ * see that constant's own doc for why the dot intentionally doesn't
+ * match each exercise's own authored bpm. */
+export const METRONOME_LOOP_BPM = 120;

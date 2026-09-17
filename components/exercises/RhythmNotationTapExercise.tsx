@@ -3,8 +3,9 @@ import { Pressable, Text, View } from "react-native";
 import { BeamedRhythmRow } from "@/components/exercises/BeamedRhythmRow";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { MetronomeIndicator } from "@/components/exercises/MetronomeIndicator";
-import { playSample, schedulerNow, type SamplePlaybackHandle } from "@/lib/audio/player";
+import { playLoopingSample, playSample, schedulerNow, type SamplePlaybackHandle } from "@/lib/audio/player";
 import { STANDALONE_METRONOME_MEASURES, playMetronome, playMetronomeWithClaps, stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
+import { METRONOME_LOOP_BPM, METRONOME_LOOP_SAMPLES_BY_METER } from "@/lib/audio/samples";
 import { meterFeltPulseCount, meterFeltPulseQuarterBeats, meterPulseSubdivision } from "@/lib/rhythm/meter";
 import { t } from "@/lib/i18n/translate";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
@@ -45,7 +46,11 @@ export function RhythmNotationTapExercise({ exercise, answer, onAnswerChange, ch
   // sequence restarts, totalBeats tells it how many beats to schedule,
   // startAtMs is the SAME anchor passed to playMetronome so the dot
   // stays in sync with the click track rather than drifting against it.
-  const [metronomePlay, setMetronomePlay] = useState({ token: 0, totalBeats: 0, startAtMs: 0 });
+  // bpm/beatsPerMeasure travel with it too — see RhythmDictationExercise's
+  // own doc for why (the standalone dot's native-loop path pulses at
+  // METRONOME_LOOP_BPM/exercise.beatsPerMeasure, not feltBpm/
+  // feltBeatsPerMeasure, whenever a loop is available for this meter).
+  const [metronomePlay, setMetronomePlay] = useState({ token: 0, totalBeats: 0, startAtMs: 0, bpm: 0, beatsPerMeasure: 0 });
   // Whether the dot's OWN standalone metronome (as opposed to the 🔊
   // button's rhythm-with-metronome playback) is the one currently running.
   const [standaloneOn, setStandaloneOn] = useState(false);
@@ -53,10 +58,14 @@ export function RhythmNotationTapExercise({ exercise, answer, onAnswerChange, ch
   // — see that component's own doc for why it doesn't touch metronomePlay.
   const [isPlayingReference, setIsPlayingReference] = useState(false);
   const referenceHandleRef = useRef<SamplePlaybackHandle | null>(null);
+  // The standalone dot's own handle when it's running a real native loop
+  // — see RhythmDictationExercise's own loopHandleRef doc.
+  const loopHandleRef = useRef<SamplePlaybackHandle | null>(null);
 
   useEffect(() => {
     return () => {
       referenceHandleRef.current?.stop();
+      loopHandleRef.current?.stop();
     };
   }, []);
 
@@ -64,6 +73,7 @@ export function RhythmNotationTapExercise({ exercise, answer, onAnswerChange, ch
     if (checked) {
       referenceHandleRef.current = null;
       setIsPlayingReference(false);
+      loopHandleRef.current = null;
     }
   }, [checked]);
 
@@ -86,6 +96,7 @@ export function RhythmNotationTapExercise({ exercise, answer, onAnswerChange, ch
         return;
       }
       stopAllScheduledAudio();
+      loopHandleRef.current = null;
       setStandaloneOn(false);
       setIsPlayingReference(true);
       referenceHandleRef.current = playSample(exercise.referenceAudioSource, 0.9, () => {
@@ -95,6 +106,7 @@ export function RhythmNotationTapExercise({ exercise, answer, onAnswerChange, ch
       return;
     }
     stopAllScheduledAudio();
+    loopHandleRef.current = null;
     setStandaloneOn(false);
     const countInMs = feltBeatsPerMeasure * feltBeatIntervalMs;
     const lastMs = exercise.requiredTapTimesMs[exercise.requiredTapTimesMs.length - 1] ?? 0;
@@ -108,21 +120,48 @@ export function RhythmNotationTapExercise({ exercise, answer, onAnswerChange, ch
       { bpm: feltBpm, beatsPerMeasure: feltBeatsPerMeasure, measureCount, pulseSubdivision, startAtMs },
       exercise.requiredTapTimesMs.map((ms) => ms + countInMs)
     );
-    setMetronomePlay((prev) => ({ token: prev.token + 1, totalBeats: measureCount * feltBeatsPerMeasure, startAtMs }));
+    setMetronomePlay((prev) => ({
+      token: prev.token + 1,
+      totalBeats: measureCount * feltBeatsPerMeasure,
+      startAtMs,
+      bpm: feltBpm,
+      beatsPerMeasure: feltBeatsPerMeasure,
+    }));
   }
 
   function toggleStandaloneMetronome() {
     stopAllScheduledAudio();
     referenceHandleRef.current = null;
     setIsPlayingReference(false);
+    loopHandleRef.current = null;
     if (standaloneOn) {
       setStandaloneOn(false);
       return;
     }
     setStandaloneOn(true);
     const startAtMs = schedulerNow();
+    const loopSource = METRONOME_LOOP_SAMPLES_BY_METER[exercise.meter];
+    if (loopSource !== undefined) {
+      // A real native loop — see RhythmDictationExercise's own
+      // toggleStandaloneMetronome doc for the full reasoning.
+      loopHandleRef.current = playLoopingSample(loopSource, 0.55);
+      setMetronomePlay((prev) => ({
+        token: prev.token + 1,
+        totalBeats: STANDALONE_METRONOME_MEASURES * exercise.beatsPerMeasure,
+        startAtMs,
+        bpm: METRONOME_LOOP_BPM,
+        beatsPerMeasure: exercise.beatsPerMeasure,
+      }));
+      return;
+    }
     playMetronome({ bpm: feltBpm, beatsPerMeasure: feltBeatsPerMeasure, measureCount: STANDALONE_METRONOME_MEASURES, pulseSubdivision, startAtMs });
-    setMetronomePlay((prev) => ({ token: prev.token + 1, totalBeats: STANDALONE_METRONOME_MEASURES * feltBeatsPerMeasure, startAtMs }));
+    setMetronomePlay((prev) => ({
+      token: prev.token + 1,
+      totalBeats: STANDALONE_METRONOME_MEASURES * feltBeatsPerMeasure,
+      startAtMs,
+      bpm: feltBpm,
+      beatsPerMeasure: feltBeatsPerMeasure,
+    }));
   }
 
   function handleTap() {
@@ -161,8 +200,8 @@ export function RhythmNotationTapExercise({ exercise, answer, onAnswerChange, ch
       />
       <MetronomeIndicator
         playToken={metronomePlay.token}
-        bpm={feltBpm}
-        beatsPerMeasure={feltBeatsPerMeasure}
+        bpm={metronomePlay.bpm || feltBpm}
+        beatsPerMeasure={metronomePlay.beatsPerMeasure || feltBeatsPerMeasure}
         totalBeats={metronomePlay.totalBeats}
         startAtMs={metronomePlay.startAtMs}
         onPress={toggleStandaloneMetronome}
