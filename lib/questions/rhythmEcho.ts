@@ -1,4 +1,11 @@
-const DEFAULT_TOLERANCE_MS = 200;
+// Bumped from 200 — Miasto Rytmu lekcje 2/3 dropped their metronome
+// reference entirely (see RhythmEchoExercise.tsx's own
+// showStandaloneMetronome doc), so a player now taps back a rhythm with
+// no steady click to anchor against, only the felt gaps between claps.
+// 300ms stays comfortably below half a beat at any tempo these lessons
+// use, so a genuinely wrong gap (echoing the wrong note VALUE, not just
+// slightly early/late) still fails.
+const DEFAULT_TOLERANCE_MS = 300;
 
 /** Ported verbatim from the web app's lib/questions/rhythmEcho.ts — scores
  * the GAPS between consecutive taps against the gaps between consecutive

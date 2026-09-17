@@ -231,3 +231,15 @@ export const RHYTHM_SEQUENCING_RECORDING_SAMPLES: readonly number[] = [
   require("@/assets/audio/reference/rhythm-sequencing-3.wav"),
   require("@/assets/audio/reference/rhythm-sequencing-4.wav"),
 ];
+
+/** Same treatment, for lekcja 3's own rhythm-sequencing exercises
+ * (mr-l3-e6..e9) — a separate set from RHYTHM_SEQUENCING_RECORDING_SAMPLES
+ * above since lekcja 3's motifs are their own (shorter note values —
+ * eighths/sixteenths — not lekcja 2's quarter/half/whole), not the same
+ * recordings reused. */
+export const RHYTHM_SEQUENCING_L3_RECORDING_SAMPLES: readonly number[] = [
+  require("@/assets/audio/reference/rhythm-sequencing-l3-1.wav"),
+  require("@/assets/audio/reference/rhythm-sequencing-l3-2.wav"),
+  require("@/assets/audio/reference/rhythm-sequencing-l3-3.wav"),
+  require("@/assets/audio/reference/rhythm-sequencing-l3-4.wav"),
+];

@@ -4,7 +4,13 @@ import { DarkButton } from "@/components/exercises/DarkButton";
 import { MetronomeIndicator } from "@/components/exercises/MetronomeIndicator";
 import { NoteValueIcon } from "@/components/exercises/NoteValueIcon";
 import { playSample, schedulerNow, type SamplePlaybackHandle } from "@/lib/audio/player";
-import { STANDALONE_METRONOME_MEASURES, playMetronome, playMetronomeWithClaps, stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
+import {
+  STANDALONE_METRONOME_MEASURES,
+  playMetronome,
+  playMetronomeWithClaps,
+  playRhythm,
+  stopAllScheduledAudio,
+} from "@/lib/audio/rhythmPlayer";
 import { t } from "@/lib/i18n/translate";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import type { Locale } from "@/types/locale";
@@ -53,10 +59,15 @@ const TRAILING_METRONOME_BEATS = 2;
  * selection and the standalone metronome dot both keep working exactly
  * as before.
  *
- * exercise.showStandaloneMetronome (default true) hides that dot and its
- * toggle entirely when false — same field/default/reasoning as
- * RhythmEchoExercise's own (see that component's own doc); Miasto Rytmu
- * lekcje 2 and 3 set it false across the board. */
+ * exercise.showStandaloneMetronome (default true) turns off EVERY
+ * metronome-related feature when false — same field/default/reasoning
+ * as RhythmEchoExercise's own (see that component's own doc): no dot,
+ * and the 🔊 demo drops to bare claps (playRhythm) instead of a click
+ * track underneath them. Miasto Rytmu lekcje 2 and 3 set it false across
+ * the board. Unlike rhythm-echo, this is a pure presentation change here
+ * — this exercise type's own grading (validate.ts's "rhythm-sequencing"
+ * case) compares clicked-tile order, never onsetsMs or any audio timing
+ * at all. */
 export function RhythmSequencingExercise({ exercise, answer, onAnswerChange, checked, locale }: RhythmSequencingExerciseProps) {
   const showStandaloneMetronome = exercise.showStandaloneMetronome ?? true;
   const selectedIndexes = answer?.selectedIndexes ?? [];
@@ -102,11 +113,19 @@ export function RhythmSequencingExercise({ exercise, answer, onAnswerChange, che
     stopAllScheduledAudio();
     setStandaloneOn(false);
     const beatIntervalMs = (60 / exercise.bpm) * 1000;
+    const startAtMs = schedulerNow();
+    const countInOffsetMs = COUNT_IN_BEATS * beatIntervalMs;
+    if (!showStandaloneMetronome) {
+      playRhythm(
+        exercise.onsetsMs.map((ms) => ms + countInOffsetMs),
+        0.9,
+        startAtMs
+      );
+      return;
+    }
     const lastOnsetMs = exercise.onsetsMs[exercise.onsetsMs.length - 1] ?? 0;
     const patternBeats = Math.ceil(lastOnsetMs / beatIntervalMs) + TRAILING_METRONOME_BEATS;
     const measureCount = COUNT_IN_BEATS + patternBeats;
-    const startAtMs = schedulerNow();
-    const countInOffsetMs = COUNT_IN_BEATS * beatIntervalMs;
     playMetronomeWithClaps(
       { bpm: exercise.bpm, beatsPerMeasure: 1, measureCount, startAtMs },
       exercise.onsetsMs.map((ms) => ms + countInOffsetMs)
@@ -142,9 +161,11 @@ export function RhythmSequencingExercise({ exercise, answer, onAnswerChange, che
       <Text style={{ fontSize: theme.fontSize.body, fontWeight: "600", color: theme.colors.ink, textAlign: "center" }}>
         {t("lesson.rhythmSequencingPrompt", locale)}
       </Text>
-      <Text style={{ fontSize: theme.fontSize.body * 0.8, color: theme.colors.muted, textAlign: "center" }}>
-        {t(showStandaloneMetronome ? "lesson.metronomeDotHint" : "lesson.metronomeBackgroundHint", locale)}
-      </Text>
+      {showStandaloneMetronome && (
+        <Text style={{ fontSize: theme.fontSize.body * 0.8, color: theme.colors.muted, textAlign: "center" }}>
+          {t("lesson.metronomeDotHint", locale)}
+        </Text>
+      )}
       <DarkButton
         label={isPlayingReference ? "⏹" : "🔊"}
         onPress={play}

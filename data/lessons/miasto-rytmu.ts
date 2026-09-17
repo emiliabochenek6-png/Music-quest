@@ -1,4 +1,9 @@
-import { DRUMMER_3_4_SAMPLE, DRUMMER_4_4_SAMPLE, RHYTHM_SEQUENCING_RECORDING_SAMPLES } from "@/lib/audio/samples";
+import {
+  DRUMMER_3_4_SAMPLE,
+  DRUMMER_4_4_SAMPLE,
+  RHYTHM_SEQUENCING_L3_RECORDING_SAMPLES,
+  RHYTHM_SEQUENCING_RECORDING_SAMPLES,
+} from "@/lib/audio/samples";
 import type { WorldContent } from "@/types/exercises";
 
 /**
@@ -180,19 +185,37 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
           id: "mr-l3-e6",
           type: "rhythm-sequencing",
           difficulty: 2,
-          spec: { type: "rhythm-sequencing", motif: ["eighth", "eighth", "quarter"], bpm: 90, showStandaloneMetronome: false },
+          spec: {
+            type: "rhythm-sequencing",
+            motif: ["eighth", "eighth", "quarter"],
+            bpm: 90,
+            showStandaloneMetronome: false,
+            referenceAudioSource: RHYTHM_SEQUENCING_L3_RECORDING_SAMPLES[0],
+          },
         },
         {
           id: "mr-l3-e7",
           type: "rhythm-sequencing",
           difficulty: 2,
-          spec: { type: "rhythm-sequencing", motif: ["quarter", "eighth", "eighth", "half"], bpm: 90, showStandaloneMetronome: false },
+          spec: {
+            type: "rhythm-sequencing",
+            motif: ["quarter", "eighth", "eighth", "half"],
+            bpm: 90,
+            showStandaloneMetronome: false,
+            referenceAudioSource: RHYTHM_SEQUENCING_L3_RECORDING_SAMPLES[1],
+          },
         },
         {
           id: "mr-l3-e8",
           type: "rhythm-sequencing",
           difficulty: 3,
-          spec: { type: "rhythm-sequencing", motif: ["sixteenth", "sixteenth", "eighth", "quarter"], bpm: 80, showStandaloneMetronome: false },
+          spec: {
+            type: "rhythm-sequencing",
+            motif: ["sixteenth", "sixteenth", "eighth", "quarter"],
+            bpm: 80,
+            showStandaloneMetronome: false,
+            referenceAudioSource: RHYTHM_SEQUENCING_L3_RECORDING_SAMPLES[2],
+          },
         },
         {
           id: "mr-l3-e9",
@@ -203,6 +226,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
             motif: ["eighth", "sixteenth", "sixteenth", "quarter", "half"],
             bpm: 80,
             showStandaloneMetronome: false,
+            referenceAudioSource: RHYTHM_SEQUENCING_L3_RECORDING_SAMPLES[3],
           },
         },
       ],

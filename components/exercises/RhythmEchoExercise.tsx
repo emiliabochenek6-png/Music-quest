@@ -3,7 +3,13 @@ import { Pressable, Text, View } from "react-native";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { MetronomeIndicator } from "@/components/exercises/MetronomeIndicator";
 import { playSample, schedulerNow, type SamplePlaybackHandle } from "@/lib/audio/player";
-import { STANDALONE_METRONOME_MEASURES, playMetronome, playMetronomeWithClaps, stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
+import {
+  STANDALONE_METRONOME_MEASURES,
+  playMetronome,
+  playMetronomeWithClaps,
+  playRhythm,
+  stopAllScheduledAudio,
+} from "@/lib/audio/rhythmPlayer";
 import { t } from "@/lib/i18n/translate";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import type { Locale } from "@/types/locale";
@@ -51,12 +57,16 @@ const TRAILING_METRONOME_BEATS = 2;
  * dot both keep working exactly as before, untouched by which source the
  * 🔊 button plays.
  *
- * exercise.showStandaloneMetronome (default true) hides that dot and its
- * toggle entirely when false — Miasto Rytmu lekcje 2 and 3 set this false
- * across the board (see data/lessons/miasto-rytmu.ts), the hint text
- * dropping to just "🔊 odtwarza rytm z metronomem w tle." (no dot to
- * explain) via lesson.metronomeBackgroundHint instead of
- * lesson.metronomeDotHint. */
+ * exercise.showStandaloneMetronome (default true) turns off EVERY
+ * metronome-related feature when false, not just the dot: the 🔊
+ * button's synthesized demo drops the click track entirely (playRhythm's
+ * bare claps instead of playMetronomeWithClaps' click+clap mix) and the
+ * standalone-metronome dot/toggle doesn't render at all. Miasto Rytmu
+ * lekcje 2 and 3 set this false across the board (see
+ * data/lessons/miasto-rytmu.ts) — no metronome anywhere in those two
+ * lessons' rhythm-echo exercises, only the claps to echo back. The hint
+ * text is skipped entirely in that case (nothing metronome-related left
+ * to explain) rather than shown with different wording. */
 export function RhythmEchoExercise({ exercise, answer, onAnswerChange, checked, locale }: RhythmEchoExerciseProps) {
   const showStandaloneMetronome = exercise.showStandaloneMetronome ?? true;
   const firstTapTimeRef = useRef<number | null>(null);
@@ -109,11 +119,23 @@ export function RhythmEchoExercise({ exercise, answer, onAnswerChange, checked, 
     stopAllScheduledAudio();
     setStandaloneOn(false);
     const beatIntervalMs = (60 / METRONOME_BPM) * 1000;
+    const startAtMs = schedulerNow();
+    const countInOffsetMs = COUNT_IN_BEATS * beatIntervalMs;
+    if (!showStandaloneMetronome) {
+      // No metronome anywhere in this lesson (see this component's own
+      // doc) — bare claps, no click track underneath. Still a short
+      // silent lead-in (same COUNT_IN_BEATS-derived delay) so the first
+      // clap doesn't fire the instant 🔊 is pressed.
+      playRhythm(
+        exercise.onsetsMs.map((ms) => ms + countInOffsetMs),
+        0.9,
+        startAtMs
+      );
+      return;
+    }
     const lastOnsetMs = exercise.onsetsMs[exercise.onsetsMs.length - 1] ?? 0;
     const patternBeats = Math.ceil(lastOnsetMs / beatIntervalMs) + TRAILING_METRONOME_BEATS;
     const measureCount = COUNT_IN_BEATS + patternBeats;
-    const startAtMs = schedulerNow();
-    const countInOffsetMs = COUNT_IN_BEATS * beatIntervalMs;
     playMetronomeWithClaps(
       { bpm: METRONOME_BPM, beatsPerMeasure: 1, measureCount, startAtMs },
       exercise.onsetsMs.map((ms) => ms + countInOffsetMs)
@@ -156,9 +178,11 @@ export function RhythmEchoExercise({ exercise, answer, onAnswerChange, checked, 
       <Text style={{ fontSize: theme.fontSize.body, fontWeight: "600", color: theme.colors.ink, textAlign: "center" }}>
         {t("lesson.rhythmEchoPrompt", locale)}
       </Text>
-      <Text style={{ fontSize: theme.fontSize.body * 0.8, color: theme.colors.muted, textAlign: "center" }}>
-        {t(showStandaloneMetronome ? "lesson.metronomeDotHint" : "lesson.metronomeBackgroundHint", locale)}
-      </Text>
+      {showStandaloneMetronome && (
+        <Text style={{ fontSize: theme.fontSize.body * 0.8, color: theme.colors.muted, textAlign: "center" }}>
+          {t("lesson.metronomeDotHint", locale)}
+        </Text>
+      )}
       <DarkButton
         label={isPlayingReference ? "⏹" : "🔊"}
         onPress={play}

@@ -104,7 +104,6 @@
   "lesson.rhythmSequencingPrompt": "Posłuchaj rytmu i kliknij wartości w usłyszanej kolejności.",
   "lesson.rhythmDictationPrompt": "Posłuchaj rytmu, a potem zastukaj go tak samo.",
   "lesson.metronomeDotHint": "🔊 odtwarza rytm z metronomem w tle. Fioletowa kropka to osobny metronom — stuknij, żeby go włączyć, stuknij ponownie, żeby wyłączyć.",
-  "lesson.metronomeBackgroundHint": "🔊 odtwarza rytm z metronomem w tle.",
   "lesson.intervalNameChoicePrompt": "Posłuchaj i zobacz te dwa dźwięki. Jak nazywa się ten interwał?",
   "lesson.intervalNameChoiceListenOnlyPrompt": "Posłuchaj uważnie. Jak nazywa się ten interwał?",
   "lesson.intervalNameChoiceListenOnlyLabel": "A teraz samo słuchanie",
