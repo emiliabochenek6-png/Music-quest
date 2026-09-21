@@ -150,6 +150,7 @@ function decodeLoopBuffer(context: AudioContext, source: number): Promise<AudioB
       .then((asset) => fetch(asset.localUri ?? asset.uri))
       .then((response) => response.arrayBuffer())
       .then((arrayBuffer) => context.decodeAudioData(arrayBuffer));
+    cached.catch(() => decodedLoopBuffers.delete(source));
     decodedLoopBuffers.set(source, cached);
   }
   return cached;
@@ -233,6 +234,85 @@ export function playLoopingSample(source: number, velocity: number): SamplePlayb
   activeStops.add(stop);
   player.play();
   return { stop };
+}
+
+interface WebSequenceEvent {
+  source: number;
+  offsetMs: number;
+  velocity: number;
+}
+
+/** A few ms of head-room between "buffers are decoded" and "first note
+ * starts", so every node in a sequence is created and scheduled against
+ * the audio clock BEFORE the first one is due. */
+const WEB_SEQUENCE_LEAD_SECONDS = 0.02;
+
+/** Web-only: plays several samples at fixed offsets from one shared start
+ * time, scheduled on the Web Audio API's own sample-accurate clock
+ * (`node.start(when)`) — no JS timers and no HTMLAudioElement per note.
+ * That's what expo-audio's web backend (and therefore the pooled/
+ * scheduleAt path used everywhere else) is limited by: each note's
+ * `play()` has its own variable start latency, so a two-note interval or
+ * a melody came out with uneven gaps (the same class of problem as the
+ * metronome's — see playLoopingSample's doc). Returns false when there's
+ * no Web Audio context (native iOS/Android, static export), so the caller
+ * runs its normal path; `fallback` runs instead if decoding a sample
+ * fails, so a broken fetch never leaves the exercise silent. */
+function playWebSequence(events: readonly WebSequenceEvent[], fallback: () => void): boolean {
+  const context = getWebAudioLoopContext();
+  if (!context) return false;
+  void context.resume();
+  let settled = false;
+  const voices: { node: AudioBufferSourceNode; gain: GainNode }[] = [];
+
+  function stop(): void {
+    if (settled) return;
+    settled = true;
+    activeStops.delete(stop);
+    voices.forEach(({ node, gain }) => {
+      try {
+        node.stop();
+      } catch {
+        // Already ended — nothing to stop.
+      }
+      node.disconnect();
+      gain.disconnect();
+    });
+  }
+
+  activeStops.add(stop);
+  void Promise.all(events.map((event) => decodeLoopBuffer(context, event.source)))
+    .then((buffers) => {
+      if (settled) return;
+      const startAt = context.currentTime + WEB_SEQUENCE_LEAD_SECONDS;
+      let remaining = events.length;
+      events.forEach((event, index) => {
+        const node = context.createBufferSource();
+        node.buffer = buffers[index];
+        const gain = context.createGain();
+        gain.gain.value = event.velocity;
+        node.connect(gain);
+        gain.connect(context.destination);
+        node.onended = () => {
+          node.disconnect();
+          gain.disconnect();
+          remaining--;
+          if (remaining === 0) {
+            settled = true;
+            activeStops.delete(stop);
+          }
+        };
+        node.start(startAt + event.offsetMs / 1000);
+        voices.push({ node, gain });
+      });
+    })
+    .catch(() => {
+      if (settled) return;
+      settled = true;
+      activeStops.delete(stop);
+      fallback();
+    });
+  return true;
 }
 
 /** Plays back an on-device audio file by URI (a `file://...` path) rather
@@ -554,12 +634,11 @@ function resolveSample(samples: Record<string, number>, note: Note): number {
   return source;
 }
 
-function playSampleFrom(samples: Record<string, number>, note: Note, velocity: number): void {
-  playSample(resolveSample(samples, note), velocity);
-}
-
 export function playNote(note: Note, options: ToneOptions = {}): void {
-  playSampleFrom(NOTE_SAMPLES, note, options.velocity ?? 0.6);
+  const velocity = options.velocity ?? 0.6;
+  const source = resolveSample(NOTE_SAMPLES, note);
+  if (playWebSequence([{ source, offsetMs: 0, velocity }], () => playSample(source, velocity))) return;
+  playSample(source, velocity);
 }
 
 interface MelodyOptions extends ToneOptions {
@@ -590,11 +669,15 @@ export function playMelody(notes: readonly Note[], options: MelodyOptions = {}):
   const gapSeconds = options.gapSeconds ?? 0.05;
   const stepSeconds = MELODY_NOTE_DURATION_SECONDS + gapSeconds;
   const velocity = options.velocity ?? 0.7;
-  const startAtMs = schedulerNow();
-  notes.forEach((note, index) => {
-    const source = resolveSample(MELODY_NOTE_SAMPLES, note);
-    scheduleAt(index * stepSeconds * 1000, () => getPool(source).trigger(velocity), startAtMs);
-  });
+  const sources = notes.map((note) => resolveSample(MELODY_NOTE_SAMPLES, note));
+  const playScheduled = () => {
+    const startAtMs = schedulerNow();
+    sources.forEach((source, index) => {
+      scheduleAt(index * stepSeconds * 1000, () => getPool(source).trigger(velocity), startAtMs);
+    });
+  };
+  const events = sources.map((source, index) => ({ source, offsetMs: index * stepSeconds * 1000, velocity }));
+  if (!playWebSequence(events, playScheduled)) playScheduled();
 }
 
 /** "Pasmo Interwałów"'s two notes-together-in-sequence playback — the web
@@ -621,7 +704,9 @@ export function playInterval(notes: readonly [Note, Note], options: MelodyOption
  * playChordSequence below calls this repeatedly in quick succession. */
 export function playChord(notes: readonly Note[], options: ToneOptions = {}): void {
   const velocity = options.velocity ?? 0.35;
-  notes.forEach((note) => getPool(resolveSample(NOTE_SAMPLES, note)).trigger(velocity));
+  const sources = notes.map((note) => resolveSample(NOTE_SAMPLES, note));
+  const playPooled = () => sources.forEach((source) => getPool(source).trigger(velocity));
+  if (!playWebSequence(sources.map((source) => ({ source, offsetMs: 0, velocity })), playPooled)) playPooled();
 }
 
 /** How long one playChord() call audibly rings, by construction of
@@ -643,8 +728,15 @@ interface ChordSequenceOptions extends ToneOptions {
 export function playChordSequence(chords: readonly (readonly Note[])[], options: ChordSequenceOptions = {}): void {
   const gapSeconds = options.gapSeconds ?? 0.3;
   const stepSeconds = CHORD_DURATION_SECONDS + gapSeconds;
-  const startAtMs = schedulerNow();
-  chords.forEach((chord, index) => {
-    scheduleAt(index * stepSeconds * 1000, () => playChord(chord, options), startAtMs);
-  });
+  const velocity = options.velocity ?? 0.35;
+  const events = chords.flatMap((chord, index) =>
+    chord.map((note) => ({ source: resolveSample(NOTE_SAMPLES, note), offsetMs: index * stepSeconds * 1000, velocity }))
+  );
+  const playScheduled = () => {
+    const startAtMs = schedulerNow();
+    chords.forEach((chord, index) => {
+      scheduleAt(index * stepSeconds * 1000, () => playChord(chord, options), startAtMs);
+    });
+  };
+  if (!playWebSequence(events, playScheduled)) playScheduled();
 }
