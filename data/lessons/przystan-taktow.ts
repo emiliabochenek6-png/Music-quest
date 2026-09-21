@@ -9,6 +9,10 @@ import {
   RHYTHM_DICTATION_PT_L1_RECORDING_SAMPLES,
   RHYTHM_DICTATION_PT_L2_RECORDING_SAMPLES,
   RHYTHM_DICTATION_PT_L3_RECORDING_SAMPLES,
+  RHYTHM_DICTATION_PT_L4_RECORDING_SAMPLES,
+  RHYTHM_DICTATION_PT_L5_RECORDING_SAMPLES,
+  RHYTHM_DICTATION_PT_L6_RECORDING_SAMPLES,
+  RHYTHM_DICTATION_PT_L7_RECORDING_SAMPLES,
 } from "@/lib/audio/samples";
 import type { WorldContent } from "@/types/exercises";
 
@@ -258,6 +262,7 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
             bpm: 100,
             meter: "6/8",
             sequence: ["quarter", "eighth", "quarter", "eighth", "quarter", "eighth", "quarter", "eighth"],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L4_RECORDING_SAMPLES[0],
           },
         },
         {
@@ -272,6 +277,7 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
               "eighth", "eighth", "eighth", "eighth", "eighth", "eighth",
               "eighth", "eighth", "eighth", "eighth", "eighth", "eighth",
             ],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L4_RECORDING_SAMPLES[1],
           },
         },
         {
@@ -283,6 +289,7 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
             bpm: 88,
             meter: "6/8",
             sequence: ["eighth", "eighth", "eighth", "quarter", "eighth", "quarter", "eighth", "eighthRest", "eighth", "eighth"],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L4_RECORDING_SAMPLES[2],
           },
         },
       ],
@@ -327,6 +334,7 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
               "quarter", "eighth", "quarter", "eighth", "quarter", "eighth",
               "quarter", "eighth", "quarter", "eighth", "quarter", "eighth",
             ],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L5_RECORDING_SAMPLES[0],
           },
         },
         {
@@ -341,6 +349,7 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
               "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth",
               "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth",
             ],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L5_RECORDING_SAMPLES[1],
           },
         },
         {
@@ -355,6 +364,7 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
               "quarter", "eighth", "quarter", "eighth", "quarter", "eighth",
               "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth",
             ],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L5_RECORDING_SAMPLES[2],
           },
         },
       ],
@@ -413,6 +423,7 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
               "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth",
               "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth",
             ],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L6_RECORDING_SAMPLES[0],
           },
         },
         {
@@ -427,6 +438,7 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
               "quarter", "eighth", "quarter", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth",
               "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "quarter", "eighth", "quarter", "eighth",
             ],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L6_RECORDING_SAMPLES[1],
           },
         },
       ],
@@ -468,6 +480,7 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
             bpm: 96,
             meter: "6/8",
             sequence: ["eighth", "eighth", "eighth", "eighth", "quarter", "eighthRest", "eighth", "eighth", "quarter", "eighth"],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L7_RECORDING_SAMPLES[0],
           },
         },
         {
@@ -482,6 +495,7 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
               "quarter", "eighth", "eighth", "eighth", "eighth", "eighth", "quarter",
               "eighthRest", "eighth", "eighth", "quarter", "eighth", "eighth", "eighthRest", "eighth",
             ],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L7_RECORDING_SAMPLES[1],
           },
         },
         {
