@@ -167,6 +167,9 @@ export function IntervalTimedTestExercise({ exercise, answer, onAnswerChange, ch
         <Text style={{ fontSize: theme.fontSize.heading, fontWeight: "800", color: theme.colors.primary }}>
           {finalCorrect} / {finalTotal}
         </Text>
+        <Text style={{ color: theme.colors.muted, fontSize: theme.fontSize.body }}>
+          Poprawnych: {finalCorrect} · Błędnych: {finalTotal - finalCorrect}
+        </Text>
       </View>
     );
   }

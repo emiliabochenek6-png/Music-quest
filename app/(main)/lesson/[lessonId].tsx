@@ -23,6 +23,7 @@ import { todayISODate } from "@/lib/gamification/activity";
 import { NUTKI_REWARDS } from "@/lib/gamification/powerups";
 import { didWorldJustUnlock } from "@/lib/progression/resolveNodeState";
 import { computeLessonStars, computeLessonStarsProgress } from "@/lib/gamification/stars";
+import { computeIntervalTimedTestStars } from "@/lib/questions/intervalTimedTest";
 import { generateExercise, getExerciseSignature } from "@/lib/questions/generate";
 import { isAnswerCorrect } from "@/lib/questions/validate";
 import { t } from "@/lib/i18n/translate";
@@ -96,6 +97,12 @@ export default function LessonScreen() {
   const [showSoltek, setShowSoltek] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
   const [mistakeCount, setMistakeCount] = useState(0);
+  // Pasmo Interwałów's timed test is ONE exercise made of many rapid-fire
+  // answers, so counting it as a single right/wrong (see mistakeCount)
+  // can't tell a 65% run from a 100% one. Once checked, its own correct-
+  // vs-wrong tally drives the stars instead — see
+  // computeIntervalTimedTestStars.
+  const [timedTestResult, setTimedTestResult] = useState<{ correctCount: number; totalCount: number } | null>(null);
   // Disabled for the duration of a clef-trace stroke — see
   // ClefTraceBoard's own doc for why capture-phase responder flags alone
   // aren't enough to stop iOS's native ScrollView from hijacking a drag.
@@ -173,10 +180,24 @@ export default function LessonScreen() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => stopAllScheduledAudio, [definition.id]);
 
+  // A timed-test lesson is graded by its own correct/wrong tally (see
+  // timedTestResult's doc); every other lesson by mistakes per exercise.
+  function resolveStars(): 1 | 2 | 3 {
+    return timedTestResult
+      ? computeIntervalTimedTestStars(timedTestResult.correctCount, timedTestResult.totalCount)
+      : computeLessonStars(mistakeCount, exercises.length);
+  }
+  const isPerfectRun = timedTestResult
+    ? timedTestResult.totalCount > 0 && timedTestResult.correctCount === timedTestResult.totalCount
+    : mistakeCount === 0;
+
   function handleCheck() {
     if (!answer) return;
     stopAllScheduledAudio();
     const correct = isAnswerCorrect(exercise, answer);
+    if (answer.type === "interval-timed-test") {
+      setTimedTestResult({ correctCount: answer.correctCount, totalCount: answer.totalCount });
+    }
     setChecked(true);
     setIsCorrect(correct);
     setShowSoltek(Math.random() < SOLTEK_APPEARANCE_CHANCE);
@@ -232,7 +253,7 @@ export default function LessonScreen() {
     } else {
       markLessonCompleted(currentLesson.id);
       const isLastLessonInWorld = currentLesson.order === currentContent.lessons.length;
-      const earnedStars = computeLessonStars(mistakeCount, exercises.length);
+      const earnedStars = resolveStars();
       if (isLastLessonInWorld) {
         markWorldCompleted(currentWorld.id);
         setShowWorldComplete(true);
@@ -265,7 +286,7 @@ export default function LessonScreen() {
           }
         }
       }
-      if (mistakeCount === 0) {
+      if (isPerfectRun) {
         awardXp(XP_PERFECT_LESSON_BONUS);
         addNutki(NUTKI_REWARDS.perfectLesson * nutkiMultiplier);
       }
@@ -281,7 +302,9 @@ export default function LessonScreen() {
         <LessonSummary
           mistakeCount={mistakeCount}
           totalExercises={exercises.length}
-          stars={computeLessonStars(mistakeCount, exercises.length)}
+          stars={resolveStars()}
+          timedTestResult={timedTestResult}
+          isPerfect={isPerfectRun}
           accentHex={world.accentColor}
           onExit={goBackToLevels}
         />
@@ -338,7 +361,11 @@ export default function LessonScreen() {
             ]}
           />
         </View>
-        <LiveStarIndicator correctSoFar={index + (checked ? 1 : 0) - mistakeCount} totalExercises={exercises.length} />
+        <LiveStarIndicator
+          correctSoFar={index + (checked ? 1 : 0) - mistakeCount}
+          totalExercises={exercises.length}
+          starsOverride={timedTestResult ? resolveStars() : exercise.type === "interval-timed-test" ? 0 : undefined}
+        />
       </View>
 
       <ScrollView contentContainerStyle={styles.exerciseArea} keyboardShouldPersistTaps="handled" scrollEnabled={scrollEnabled}>
@@ -441,8 +468,16 @@ function LessonHeader({ title, accentHex, onBack }: { title: string; accentHex: 
  * one-shot, not a looping celebration" restraint as LessonSummary's own
  * AnimatedSummaryStars, since this sits on screen through the whole
  * lesson. */
-function LiveStarIndicator({ correctSoFar, totalExercises }: { correctSoFar: number; totalExercises: number }) {
-  const stars = computeLessonStarsProgress(correctSoFar, totalExercises);
+function LiveStarIndicator({
+  correctSoFar,
+  totalExercises,
+  starsOverride,
+}: {
+  correctSoFar: number;
+  totalExercises: number;
+  starsOverride?: 0 | 1 | 2 | 3;
+}) {
+  const stars = starsOverride ?? computeLessonStarsProgress(correctSoFar, totalExercises);
   const scales = useRef([1, 2, 3].map(() => new Animated.Value(1))).current;
   const previousStarsRef = useRef(stars);
 
@@ -481,17 +516,20 @@ function LessonSummary({
   mistakeCount,
   totalExercises,
   stars,
+  timedTestResult,
+  isPerfect,
   accentHex,
   onExit,
 }: {
   mistakeCount: number;
   totalExercises: number;
   stars: 1 | 2 | 3;
+  timedTestResult: { correctCount: number; totalCount: number } | null;
+  isPerfect: boolean;
   accentHex: string;
   onExit: () => void;
 }) {
   const insets = useSafeAreaInsets();
-  const isPerfect = mistakeCount === 0;
 
   return (
     <View style={[styles.root, styles.summaryWrap, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
@@ -506,7 +544,9 @@ function LessonSummary({
         </View>
       )}
       <Text style={{ color: theme.colors.muted }}>
-        {totalExercises - mistakeCount}/{totalExercises} poprawnie za pierwszym razem
+        {timedTestResult
+          ? `Poprawnych: ${timedTestResult.correctCount}, błędnych: ${timedTestResult.totalCount - timedTestResult.correctCount}`
+          : `${totalExercises - mistakeCount}/${totalExercises} poprawnie za pierwszym razem`}
       </Text>
       <View style={{ marginTop: theme.spacing(2), width: "100%" }}>
         <DarkButton label={t("lesson.backToLevels", "pl")} onPress={onExit} />
