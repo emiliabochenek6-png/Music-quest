@@ -5,7 +5,7 @@ import { DarkButton } from "@/components/exercises/DarkButton";
 import { MetronomeIndicator } from "@/components/exercises/MetronomeIndicator";
 import { playLoopingSample, playSample, schedulerNow, type SamplePlaybackHandle } from "@/lib/audio/player";
 import { STANDALONE_METRONOME_MEASURES, playMetronome, playMetronomeWithClaps, stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
-import { METRONOME_LOOP_BPM, METRONOME_LOOP_SAMPLES_BY_METER } from "@/lib/audio/samples";
+import { METRONOME_LOOP_BPM_BY_METER, METRONOME_LOOP_SAMPLES_BY_METER } from "@/lib/audio/samples";
 import { meterFeltPulseCount, meterFeltPulseQuarterBeats, meterPulseSubdivision } from "@/lib/rhythm/meter";
 import { t } from "@/lib/i18n/translate";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
@@ -51,7 +51,7 @@ interface RhythmDictationExerciseProps {
  * synthesized playMetronome path whenever exercise.meter has one — see
  * lib/audio/samples.ts's own METRONOME_LOOP_SAMPLES_BY_METER doc for why
  * (categorically steadier than any JS-scheduled click track can be) and
- * for why it plays at a fixed METRONOME_LOOP_BPM rather than the
+ * for why it plays at a fixed METRONOME_LOOP_BPM_BY_METER tempo rather than the
  * exercise's own bpm. Falls back to playMetronome unchanged for every
  * meter without a loop recording. */
 export function RhythmDictationExercise({ exercise, answer, onAnswerChange, checked, locale }: RhythmDictationExerciseProps) {
@@ -64,7 +64,7 @@ export function RhythmDictationExercise({ exercise, answer, onAnswerChange, chec
   // bpm/beatsPerMeasure travel with it too (rather than the indicator
   // always reading feltBpm/feltBeatsPerMeasure directly) because the
   // standalone dot's own native-loop path (see toggleStandaloneMetronome)
-  // pulses at METRONOME_LOOP_BPM (scaled to the meter's felt pulse)
+  // pulses at METRONOME_LOOP_BPM_BY_METER (scaled to the meter's felt pulse)
   // instead — a DIFFERENT tempo than the 🔊 button's own feltBpm-based
   // synthesized playback, whenever a loop is available for this meter.
   const [metronomePlay, setMetronomePlay] = useState({ token: 0, totalBeats: 0, startAtMs: 0, bpm: 0, beatsPerMeasure: 0 });
@@ -181,14 +181,14 @@ export function RhythmDictationExercise({ exercise, answer, onAnswerChange, chec
       // the shared lookahead scheduler (MetronomeIndicator's own
       // scheduleAt), flashing on the meter's felt pulses (2 per bar in
       // 2/2, not 4) at the loop's own fixed reference tempo
-      // (METRONOME_LOOP_BPM — see METRONOME_LOOP_SAMPLES_BY_METER's own
+      // (METRONOME_LOOP_BPM_BY_METER — see METRONOME_LOOP_SAMPLES_BY_METER's own
       // doc for why that's not the exercise's own feltBpm).
       loopHandleRef.current = playLoopingSample(loopSource, 0.55);
       setMetronomePlay((prev) => ({
         token: prev.token + 1,
         totalBeats: STANDALONE_METRONOME_MEASURES * feltBeatsPerMeasure,
         startAtMs,
-        bpm: METRONOME_LOOP_BPM / feltPulseQuarterBeats,
+        bpm: (METRONOME_LOOP_BPM_BY_METER[exercise.meter] ?? 120) / feltPulseQuarterBeats,
         beatsPerMeasure: feltBeatsPerMeasure,
       }));
       return;

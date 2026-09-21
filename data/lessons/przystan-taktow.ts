@@ -259,7 +259,7 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
           difficulty: 2,
           spec: {
             type: "rhythm-dictation",
-            bpm: 100,
+            bpm: 80,
             meter: "6/8",
             sequence: ["quarter", "eighth", "quarter", "eighth", "quarter", "eighth", "quarter", "eighth"],
             referenceAudioSource: RHYTHM_DICTATION_PT_L4_RECORDING_SAMPLES[0],
@@ -271,7 +271,7 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
           difficulty: 2,
           spec: {
             type: "rhythm-dictation",
-            bpm: 92,
+            bpm: 80,
             meter: "6/8",
             sequence: [
               "eighth", "eighth", "eighth", "eighth", "eighth", "eighth",
@@ -286,7 +286,7 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
           difficulty: 3,
           spec: {
             type: "rhythm-dictation",
-            bpm: 88,
+            bpm: 80,
             meter: "6/8",
             sequence: ["eighth", "eighth", "eighth", "quarter", "eighth", "quarter", "eighth", "eighthRest", "eighth", "eighth"],
             referenceAudioSource: RHYTHM_DICTATION_PT_L4_RECORDING_SAMPLES[2],
@@ -328,7 +328,7 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
           difficulty: 2,
           spec: {
             type: "rhythm-dictation",
-            bpm: 100,
+            bpm: 80,
             meter: "9/8",
             sequence: [
               "quarter", "eighth", "quarter", "eighth", "quarter", "eighth",
@@ -343,7 +343,7 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
           difficulty: 2,
           spec: {
             type: "rhythm-dictation",
-            bpm: 92,
+            bpm: 80,
             meter: "9/8",
             sequence: [
               "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth",
@@ -358,7 +358,7 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
           difficulty: 3,
           spec: {
             type: "rhythm-dictation",
-            bpm: 88,
+            bpm: 80,
             meter: "9/8",
             sequence: [
               "quarter", "eighth", "quarter", "eighth", "quarter", "eighth",
@@ -403,7 +403,7 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
           difficulty: 2,
           spec: {
             type: "rhythm-dictation",
-            bpm: 100,
+            bpm: 80,
             meter: "12/8",
             sequence: [
               "quarter", "eighth", "quarter", "eighth", "quarter", "eighth", "quarter", "eighth",
@@ -418,7 +418,7 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
           difficulty: 2,
           spec: {
             type: "rhythm-dictation",
-            bpm: 92,
+            bpm: 80,
             meter: "12/8",
             sequence: [
               "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth",
@@ -433,7 +433,7 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
           difficulty: 3,
           spec: {
             type: "rhythm-dictation",
-            bpm: 88,
+            bpm: 80,
             meter: "12/8",
             sequence: [
               "quarter", "eighth", "quarter", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth",
@@ -478,7 +478,7 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
           difficulty: 3,
           spec: {
             type: "rhythm-dictation",
-            bpm: 96,
+            bpm: 80,
             meter: "6/8",
             sequence: ["eighth", "eighth", "eighth", "eighth", "quarter", "eighthRest", "eighth", "eighth", "quarter", "eighth"],
             referenceAudioSource: RHYTHM_DICTATION_PT_L7_RECORDING_SAMPLES[0],
@@ -490,7 +490,7 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
           difficulty: 3,
           spec: {
             type: "rhythm-dictation",
-            bpm: 92,
+            bpm: 80,
             meter: "9/8",
             sequence: [
               "quarter", "eighth", "eighth", "eighth", "eighth", "eighth", "quarter",
@@ -505,7 +505,7 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
           difficulty: 3,
           spec: {
             type: "rhythm-dictation",
-            bpm: 88,
+            bpm: 80,
             meter: "12/8",
             sequence: [
               "quarter", "eighth", "eighth", "eighth", "eighth", "eighth", "quarter", "eighthRest", "eighth", "eighth",

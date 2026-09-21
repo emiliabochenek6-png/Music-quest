@@ -272,8 +272,8 @@ export const RHYTHM_NOTATION_TAP_L5_RECORDING_SAMPLES: readonly number[] = [
 ];
 
 /** One seamless, sample-accurate loop per meter — built (not recorded)
- * from this app's own click-accent.wav/click-weak.wav at a fixed 120bpm
- * reference tempo (a generic script, not MuseScore: hand-trimming a real
+ * from this app's own click-accent.wav/click-weak.wav at a fixed reference
+ * tempo (METRONOME_LOOP_BPM_BY_METER) (a generic script, not MuseScore: hand-trimming a real
  * recording to loop with zero gap/click at the seam is hard to get
  * exactly right, and this app's own existing click samples already sound
  * consistent with everything else in it). Built from the exact same felt-
@@ -296,9 +296,9 @@ export const METRONOME_LOOP_4_4_120BPM_SAMPLE: number = require("@/assets/audio/
 export const METRONOME_LOOP_3_4_120BPM_SAMPLE: number = require("@/assets/audio/reference/metronome-loop-3-4-120bpm.wav");
 export const METRONOME_LOOP_2_4_120BPM_SAMPLE: number = require("@/assets/audio/reference/metronome-loop-2-4-120bpm.wav");
 export const METRONOME_LOOP_2_2_120BPM_SAMPLE: number = require("@/assets/audio/reference/metronome-loop-2-2-120bpm.wav");
-export const METRONOME_LOOP_6_8_120BPM_SAMPLE: number = require("@/assets/audio/reference/metronome-loop-6-8-120bpm.wav");
-export const METRONOME_LOOP_9_8_120BPM_SAMPLE: number = require("@/assets/audio/reference/metronome-loop-9-8-120bpm.wav");
-export const METRONOME_LOOP_12_8_120BPM_SAMPLE: number = require("@/assets/audio/reference/metronome-loop-12-8-120bpm.wav");
+export const METRONOME_LOOP_6_8_80BPM_SAMPLE: number = require("@/assets/audio/reference/metronome-loop-6-8-80bpm.wav");
+export const METRONOME_LOOP_9_8_80BPM_SAMPLE: number = require("@/assets/audio/reference/metronome-loop-9-8-80bpm.wav");
+export const METRONOME_LOOP_12_8_80BPM_SAMPLE: number = require("@/assets/audio/reference/metronome-loop-12-8-80bpm.wav");
 
 /** Looked up by exercise.meter in RhythmDictationExercise/
  * RhythmNotationTapExercise's own toggleStandaloneMetronome — an entry
@@ -311,15 +311,25 @@ export const METRONOME_LOOP_SAMPLES_BY_METER: Partial<Record<Meter, number>> = {
   "3/4": METRONOME_LOOP_3_4_120BPM_SAMPLE,
   "2/4": METRONOME_LOOP_2_4_120BPM_SAMPLE,
   "2/2": METRONOME_LOOP_2_2_120BPM_SAMPLE,
-  "6/8": METRONOME_LOOP_6_8_120BPM_SAMPLE,
-  "9/8": METRONOME_LOOP_9_8_120BPM_SAMPLE,
-  "12/8": METRONOME_LOOP_12_8_120BPM_SAMPLE,
+  "6/8": METRONOME_LOOP_6_8_80BPM_SAMPLE,
+  "9/8": METRONOME_LOOP_9_8_80BPM_SAMPLE,
+  "12/8": METRONOME_LOOP_12_8_80BPM_SAMPLE,
 };
 
-/** The fixed reference tempo every METRONOME_LOOP_*_SAMPLE was built at —
- * see that constant's own doc for why the dot intentionally doesn't
- * match each exercise's own authored bpm. */
-export const METRONOME_LOOP_BPM = 120;
+/** The reference quarter-note tempo each METRONOME_LOOP_*_SAMPLE was built
+ * at — 120 for the simple meters, 80 for the compound eighth meters (6/8,
+ * 9/8, 12/8), where 80 is the tempo Przystań Taktów's own real recordings
+ * of those meters were measured to play at, so the dot's loop and the
+ * recording it sits next to share one tempo. */
+export const METRONOME_LOOP_BPM_BY_METER: Partial<Record<Meter, number>> = {
+  "4/4": 120,
+  "3/4": 120,
+  "2/4": 120,
+  "2/2": 120,
+  "6/8": 80,
+  "9/8": 80,
+  "12/8": 80,
+};
 
 /** Same purely-illustrative referenceAudioSource treatment as
  * RHYTHM_DICTATION_L4_RECORDING_SAMPLES above, for Przystań Taktów's own

@@ -5,7 +5,7 @@ import { DarkButton } from "@/components/exercises/DarkButton";
 import { MetronomeIndicator } from "@/components/exercises/MetronomeIndicator";
 import { playLoopingSample, playSample, schedulerNow, type SamplePlaybackHandle } from "@/lib/audio/player";
 import { STANDALONE_METRONOME_MEASURES, playMetronome, playMetronomeWithClaps, stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
-import { METRONOME_LOOP_BPM, METRONOME_LOOP_SAMPLES_BY_METER } from "@/lib/audio/samples";
+import { METRONOME_LOOP_BPM_BY_METER, METRONOME_LOOP_SAMPLES_BY_METER } from "@/lib/audio/samples";
 import { meterFeltPulseCount, meterFeltPulseQuarterBeats, meterPulseSubdivision } from "@/lib/rhythm/meter";
 import { t } from "@/lib/i18n/translate";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
@@ -48,7 +48,7 @@ export function RhythmNotationTapExercise({ exercise, answer, onAnswerChange, ch
   // stays in sync with the click track rather than drifting against it.
   // bpm/beatsPerMeasure travel with it too — see RhythmDictationExercise's
   // own doc for why (the standalone dot's native-loop path pulses at
-  // METRONOME_LOOP_BPM, not feltBpm, whenever a loop is available for
+  // METRONOME_LOOP_BPM_BY_METER, not feltBpm, whenever a loop is available for
   // this meter).
   const [metronomePlay, setMetronomePlay] = useState({ token: 0, totalBeats: 0, startAtMs: 0, bpm: 0, beatsPerMeasure: 0 });
   // Whether the dot's OWN standalone metronome (as opposed to the 🔊
@@ -149,7 +149,7 @@ export function RhythmNotationTapExercise({ exercise, answer, onAnswerChange, ch
         token: prev.token + 1,
         totalBeats: STANDALONE_METRONOME_MEASURES * feltBeatsPerMeasure,
         startAtMs,
-        bpm: METRONOME_LOOP_BPM / feltPulseQuarterBeats,
+        bpm: (METRONOME_LOOP_BPM_BY_METER[exercise.meter] ?? 120) / feltPulseQuarterBeats,
         beatsPerMeasure: feltBeatsPerMeasure,
       }));
       return;
