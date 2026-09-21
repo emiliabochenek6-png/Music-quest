@@ -354,8 +354,8 @@ export const RHYTHM_DICTATION_PT_L3_RECORDING_SAMPLES: readonly number[] = [
 
 /** Przystań Taktów lekcje 4-7 (compound meters), same purely-illustrative
  * referenceAudioSource treatment as the arrays above. L4 = pt-l4-e4..e6
- * (6/8), L5 = pt-l5-e4..e6 (9/8), L6 = pt-l6-e4..e6 (12/8). L7 holds
- * only pt-l7-e4 (6/8) and pt-l7-e5 (9/8) — pt-l7-e6 (12/8) has none yet. */
+ * (6/8), L5 = pt-l5-e4..e6 (9/8), L6 = pt-l6-e4..e6 (12/8), L7 =
+ * pt-l7-e4..e6 (6/8, 9/8, 12/8). */
 export const RHYTHM_DICTATION_PT_L4_RECORDING_SAMPLES: readonly number[] = [
   require("@/assets/audio/reference/rhythm-dictation-pt-l4-1.wav"),
   require("@/assets/audio/reference/rhythm-dictation-pt-l4-2.wav"),
@@ -374,4 +374,5 @@ export const RHYTHM_DICTATION_PT_L6_RECORDING_SAMPLES: readonly number[] = [
 export const RHYTHM_DICTATION_PT_L7_RECORDING_SAMPLES: readonly number[] = [
   require("@/assets/audio/reference/rhythm-dictation-pt-l7-1.wav"),
   require("@/assets/audio/reference/rhythm-dictation-pt-l7-2.wav"),
+  require("@/assets/audio/reference/rhythm-dictation-pt-l7-3.wav"),
 ];

@@ -511,6 +511,7 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
               "quarter", "eighth", "eighth", "eighth", "eighth", "eighth", "quarter", "eighthRest", "eighth", "eighth",
               "eighth", "eighth", "eighth", "quarter", "eighth", "eighthRest", "eighth", "eighth", "eighth", "quarter",
             ],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L7_RECORDING_SAMPLES[2],
           },
         },
       ],
