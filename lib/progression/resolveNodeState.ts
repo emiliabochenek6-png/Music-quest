@@ -3,6 +3,11 @@ import { getPreviousWorld } from "@/data/worlds";
 import { MIN_STARS_TO_ADVANCE_WORLD } from "@/types/gamification";
 import type { ProgressState, SubscriptionStatus, WorldDefinition, WorldNodeState } from "@/types/content";
 
+/** Temporarily off: premium worlds unlock by progression alone (previous
+ * world done, every lesson at MIN_STARS_TO_ADVANCE_WORLD) with no
+ * subscription check. Flip to true to bring the paywall gate back. */
+const ENFORCE_SUBSCRIPTION_GATE = false;
+
 /** Whether EVERY lesson in `world` has earned at least
  * MIN_STARS_TO_ADVANCE_WORLD stars — see that constant's own doc. A
  * world with no ported content yet (`getWorldContent` returns undefined
@@ -57,7 +62,7 @@ export function resolveNodeState(
   if (!previousDone) {
     return "locked-progression";
   }
-  if (world.isPremium && !subscription.isActive) {
+  if (ENFORCE_SUBSCRIPTION_GATE && world.isPremium && !subscription.isActive) {
     return "locked-subscription";
   }
   return "available";

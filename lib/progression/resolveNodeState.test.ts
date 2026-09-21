@@ -70,14 +70,17 @@ describe("resolveNodeState", () => {
     expect(resolveNodeState(second, progress([]), ACTIVE, fullStars())).toBe("locked-progression");
   });
 
-  it("locks a free world's successor by subscription only once progression itself would unlock it", () => {
-    // Worlds 1-3 are free — finishing world 3 makes world 4 (premium)
-    // reachable by progression, so subscription becomes the deciding
-    // factor for the first time here.
+  it("ignores subscription (gate temporarily off): a premium world unlocks by progression alone", () => {
     const completedFreeWorlds = WORLDS.filter((w) => !w.isPremium).map((w) => w.id);
     const firstPremium = WORLDS.find((w) => w.isPremium)!;
-    expect(resolveNodeState(firstPremium, progress(completedFreeWorlds), INACTIVE, fullStars())).toBe("locked-subscription");
+    expect(resolveNodeState(firstPremium, progress(completedFreeWorlds), INACTIVE, fullStars())).toBe("available");
     expect(resolveNodeState(firstPremium, progress(completedFreeWorlds), ACTIVE, fullStars())).toBe("available");
+  });
+
+  it("still locks a premium world by progression without a subscription check, when stars are missing", () => {
+    const completedFreeWorlds = WORLDS.filter((w) => !w.isPremium).map((w) => w.id);
+    const firstPremium = WORLDS.find((w) => w.isPremium)!;
+    expect(resolveNodeState(firstPremium, progress(completedFreeWorlds), INACTIVE, {})).toBe("locked-progression");
   });
 
   it("never lets an active subscription skip an unfinished PREVIOUS premium world", () => {
@@ -142,17 +145,14 @@ describe("didWorldJustUnlock", () => {
     expect(didWorldJustUnlock(second, progress([]), progress([first.id]), ACTIVE, oneStarOnly, oneStarOnly)).toBe(false);
   });
 
-  it("reports nothing when the newly-reachable world still needs a subscription", () => {
+  it("announces a newly-reachable premium world even without a subscription (gate temporarily off)", () => {
     const completedFreeWorlds = WORLDS.filter((w) => !w.isPremium).map((w) => w.id);
     const worldsBeforeLastFree = completedFreeWorlds.slice(0, -1);
     const lastFreeWorld = WORLDS.find((w) => w.id === completedFreeWorlds[completedFreeWorlds.length - 1])!;
     const firstPremium = WORLDS.find((w) => w.isPremium)!;
     const stars = fullStars();
-    // Progression-wise this is a real transition (locked-progression ->
-    // reachable), but reachable here means locked-subscription, not
-    // available — no announcement without an active subscription.
     expect(
       didWorldJustUnlock(firstPremium, progress(worldsBeforeLastFree), progress(completedFreeWorlds), INACTIVE, stars, stars)
-    ).toBe(false);
+    ).toBe(true);
   });
 });
