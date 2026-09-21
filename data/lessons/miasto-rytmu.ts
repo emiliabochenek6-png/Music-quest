@@ -164,24 +164,24 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
         },
       ],
       exercises: [
-        { id: "mr-l3-e2", type: "rhythm-echo", difficulty: 2, spec: { type: "rhythm-echo", onsetsMs: [0, 400], showStandaloneMetronome: false } },
+        { id: "mr-l3-e2", type: "rhythm-echo", difficulty: 2, spec: { type: "rhythm-echo", onsetsMs: [0, 500, 750], showStandaloneMetronome: false } },
         {
           id: "mr-l3-e3",
           type: "rhythm-echo",
           difficulty: 2,
-          spec: { type: "rhythm-echo", onsetsMs: [0, 350, 700], showStandaloneMetronome: false },
+          spec: { type: "rhythm-echo", onsetsMs: [0, 250, 500, 1000], showStandaloneMetronome: false },
         },
         {
           id: "mr-l3-e4",
           type: "rhythm-echo",
           difficulty: 3,
-          spec: { type: "rhythm-echo", onsetsMs: [0, 250, 650], showStandaloneMetronome: false },
+          spec: { type: "rhythm-echo", onsetsMs: [0, 500, 750, 1000, 1500], showStandaloneMetronome: false },
         },
         {
           id: "mr-l3-e5",
           type: "rhythm-echo",
           difficulty: 3,
-          spec: { type: "rhythm-echo", onsetsMs: [0, 250, 650, 900], showStandaloneMetronome: false },
+          spec: { type: "rhythm-echo", onsetsMs: [0, 500, 625, 750, 1000, 1500], showStandaloneMetronome: false },
         },
         {
           id: "mr-l3-e6",
