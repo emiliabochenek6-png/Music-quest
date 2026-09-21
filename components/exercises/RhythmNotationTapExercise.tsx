@@ -48,8 +48,8 @@ export function RhythmNotationTapExercise({ exercise, answer, onAnswerChange, ch
   // stays in sync with the click track rather than drifting against it.
   // bpm/beatsPerMeasure travel with it too — see RhythmDictationExercise's
   // own doc for why (the standalone dot's native-loop path pulses at
-  // METRONOME_LOOP_BPM/exercise.beatsPerMeasure, not feltBpm/
-  // feltBeatsPerMeasure, whenever a loop is available for this meter).
+  // METRONOME_LOOP_BPM, not feltBpm, whenever a loop is available for
+  // this meter).
   const [metronomePlay, setMetronomePlay] = useState({ token: 0, totalBeats: 0, startAtMs: 0, bpm: 0, beatsPerMeasure: 0 });
   // Whether the dot's OWN standalone metronome (as opposed to the 🔊
   // button's rhythm-with-metronome playback) is the one currently running.
@@ -147,10 +147,10 @@ export function RhythmNotationTapExercise({ exercise, answer, onAnswerChange, ch
       loopHandleRef.current = playLoopingSample(loopSource, 0.55);
       setMetronomePlay((prev) => ({
         token: prev.token + 1,
-        totalBeats: STANDALONE_METRONOME_MEASURES * exercise.beatsPerMeasure,
+        totalBeats: STANDALONE_METRONOME_MEASURES * feltBeatsPerMeasure,
         startAtMs,
-        bpm: METRONOME_LOOP_BPM,
-        beatsPerMeasure: exercise.beatsPerMeasure,
+        bpm: METRONOME_LOOP_BPM / feltPulseQuarterBeats,
+        beatsPerMeasure: feltBeatsPerMeasure,
       }));
       return;
     }

@@ -64,8 +64,8 @@ export function RhythmDictationExercise({ exercise, answer, onAnswerChange, chec
   // bpm/beatsPerMeasure travel with it too (rather than the indicator
   // always reading feltBpm/feltBeatsPerMeasure directly) because the
   // standalone dot's own native-loop path (see toggleStandaloneMetronome)
-  // pulses at METRONOME_LOOP_BPM/exercise.beatsPerMeasure instead — a
-  // DIFFERENT tempo/meter than the 🔊 button's own feltBpm-based
+  // pulses at METRONOME_LOOP_BPM (scaled to the meter's felt pulse)
+  // instead — a DIFFERENT tempo than the 🔊 button's own feltBpm-based
   // synthesized playback, whenever a loop is available for this meter.
   const [metronomePlay, setMetronomePlay] = useState({ token: 0, totalBeats: 0, startAtMs: 0, bpm: 0, beatsPerMeasure: 0 });
   // Whether the dot's OWN standalone metronome (as opposed to the 🔊
@@ -179,17 +179,17 @@ export function RhythmDictationExercise({ exercise, answer, onAnswerChange, chec
       // A real native loop (see playLoopingSample's own doc) — no
       // scheduling of its own, just start it. The visual dot still uses
       // the shared lookahead scheduler (MetronomeIndicator's own
-      // scheduleAt), at the loop's own fixed reference tempo/meter
-      // (METRONOME_LOOP_BPM, exercise.beatsPerMeasure — see
-      // METRONOME_LOOP_SAMPLES_BY_METER's own doc for why that's not
-      // feltBpm/feltBeatsPerMeasure here).
+      // scheduleAt), flashing on the meter's felt pulses (2 per bar in
+      // 2/2, not 4) at the loop's own fixed reference tempo
+      // (METRONOME_LOOP_BPM — see METRONOME_LOOP_SAMPLES_BY_METER's own
+      // doc for why that's not the exercise's own feltBpm).
       loopHandleRef.current = playLoopingSample(loopSource, 0.55);
       setMetronomePlay((prev) => ({
         token: prev.token + 1,
-        totalBeats: STANDALONE_METRONOME_MEASURES * exercise.beatsPerMeasure,
+        totalBeats: STANDALONE_METRONOME_MEASURES * feltBeatsPerMeasure,
         startAtMs,
-        bpm: METRONOME_LOOP_BPM,
-        beatsPerMeasure: exercise.beatsPerMeasure,
+        bpm: METRONOME_LOOP_BPM / feltPulseQuarterBeats,
+        beatsPerMeasure: feltBeatsPerMeasure,
       }));
       return;
     }
