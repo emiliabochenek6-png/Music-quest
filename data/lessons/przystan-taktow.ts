@@ -409,6 +409,7 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
               "quarter", "eighth", "quarter", "eighth", "quarter", "eighth", "quarter", "eighth",
               "quarter", "eighth", "quarter", "eighth", "quarter", "eighth", "quarter", "eighth",
             ],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L6_RECORDING_SAMPLES[0],
           },
         },
         {
@@ -423,7 +424,7 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
               "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth",
               "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth",
             ],
-            referenceAudioSource: RHYTHM_DICTATION_PT_L6_RECORDING_SAMPLES[0],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L6_RECORDING_SAMPLES[1],
           },
         },
         {
@@ -438,7 +439,7 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
               "quarter", "eighth", "quarter", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth",
               "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "quarter", "eighth", "quarter", "eighth",
             ],
-            referenceAudioSource: RHYTHM_DICTATION_PT_L6_RECORDING_SAMPLES[1],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L6_RECORDING_SAMPLES[2],
           },
         },
       ],
