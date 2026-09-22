@@ -279,12 +279,20 @@ export function computeDictationLayout(
 
     const firstIndex = group[0];
     const lastIndex = group[group.length - 1];
-    primaryBeams.push({
-      fromX: stemTipX(firstIndex, direction),
-      fromY: stemTipY(firstIndex, direction),
-      toX: stemTipX(lastIndex, direction),
-      toY: stemTipY(lastIndex, direction),
-    });
+    const groupFromX = stemTipX(firstIndex, direction);
+    const groupFromY = stemTipY(firstIndex, direction);
+    const groupToX = stemTipX(lastIndex, direction);
+    const groupToY = stemTipY(lastIndex, direction);
+    primaryBeams.push({ fromX: groupFromX, fromY: groupFromY, toX: groupToX, toY: groupToY });
+    // The group's own overall slope (first note's stem tip to last note's)
+    // — unlike lib/rhythm/beamLayout.ts's pitch-less version, notes here
+    // sit at real, possibly different staff heights, so a beam between
+    // two of them is generally NOT flat (see MelodicBeamSegment's own
+    // doc). Every beam LEVEL in a group (primary, secondary, and a lone
+    // sixteenth's own partial hook below) stays parallel to this same
+    // slope, exactly like real engraving — only their vertical offset
+    // differs.
+    const groupSlope = (groupToY - groupFromY) / (groupToX - groupFromX);
 
     for (let i = 0; i < group.length - 1; i++) {
       const a = group[i];
@@ -307,12 +315,23 @@ export function computeDictationLayout(
       const leftIsSixteenth = leftIdx !== undefined && notes[leftIdx].value === "sixteenth";
       const rightIsSixteenth = rightIdx !== undefined && notes[rightIdx].value === "sixteenth";
       if (leftIsSixteenth || rightIsSixteenth) continue;
+      // The hook's REAL end anchors at this sixteenth's own stem tip
+      // (tipX, tipY) — its OTHER end is synthetic (there's no neighbor
+      // note to anchor to), extended by PARTIAL_BEAM_LENGTH along the
+      // group's own slope rather than flat, so it reads as a short
+      // continuation of the primary beam's own angle instead of visibly
+      // kinking away from it (the original bug this fixes — a flat hook
+      // under a sloped primary beam looked like it didn't quite connect,
+      // "niedociągnięte" per the live report this was fixed from).
       const tipX = stemTipX(idx, direction);
       const tipY = stemTipY(idx, direction) + secondaryOffset;
+      const hookDx = leftIdx !== undefined ? -PARTIAL_BEAM_LENGTH : PARTIAL_BEAM_LENGTH;
+      const hookOtherX = tipX + hookDx;
+      const hookOtherY = tipY + groupSlope * hookDx;
       partialBeams.push(
         leftIdx !== undefined
-          ? { fromX: tipX - PARTIAL_BEAM_LENGTH, fromY: tipY, toX: tipX, toY: tipY }
-          : { fromX: tipX, fromY: tipY, toX: tipX + PARTIAL_BEAM_LENGTH, toY: tipY }
+          ? { fromX: hookOtherX, fromY: hookOtherY, toX: tipX, toY: tipY }
+          : { fromX: tipX, fromY: tipY, toX: hookOtherX, toY: hookOtherY }
       );
     }
   }
