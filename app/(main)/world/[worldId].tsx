@@ -13,29 +13,31 @@ import type { TranslationKey } from "@/lib/i18n/translate";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import type { LessonDefinition } from "@/types/exercises";
 
-// Same mapIconId -> icon/emoji table as components/map/WorldNode.tsx's
-// own WORLD_ICON — kept as a separate copy here rather than a shared
-// import since this screen's card renders it at a different size inside
-// a differently-shaped container, not because the mapping itself differs.
-const WORLD_ICON: Record<string, { icon: IconName } | { emoji: string }> = {
+// Same mapIconId -> icon table as components/map/WorldNode.tsx's own
+// WORLD_ICON — kept as a separate copy here rather than a shared import
+// since this screen's card renders it at a different size inside a
+// differently-shaped container, not because the mapping itself differs.
+// Every world has a matching hand-drawn "kraina_" icon now, so this never
+// falls back to a plain Unicode emoji.
+const WORLD_ICON: Record<string, { icon: IconName }> = {
   note: { icon: "kraina_wioska_nut" },
   metronome: { icon: "kraina_miasto_rytmu" },
   "bar-line": { icon: "kraina_przystan_taktow" },
   interval: { icon: "kraina_pasmo_interwalow" },
-  chord: { emoji: "🎹" },
-  inversion: { emoji: "🦇" },
-  citadel: { emoji: "🏰" },
-  "key-signature": { emoji: "🗝️" },
-  build: { emoji: "🏗️" },
-  beam: { emoji: "🎼" },
-  dictation: { emoji: "🎧" },
-  microphone: { emoji: "🎤" },
+  chord: { icon: "kraina_zatoka_trojdzwiekow" },
+  inversion: { icon: "kraina_jaskinia_akordow" },
+  citadel: { icon: "kraina_cytadela_dominant" },
+  "key-signature": { icon: "kraina_labirynt_tonacji" },
+  build: { icon: "kraina_fabryka_budowania" },
+  beam: { icon: "kraina_gaj_grupowania" },
+  dictation: { icon: "kraina_szczyt_dyktand" },
+  microphone: { icon: "kraina_zaczarowany_solfez" },
 };
 
 function WorldCardIcon({ mapIconId }: { mapIconId: string }) {
   const entry = WORLD_ICON[mapIconId];
-  if (entry && "icon" in entry) return <AppIcon name={entry.icon} size={32} />;
-  return <Text style={{ fontSize: 26 }}>{entry?.emoji ?? "🎵"}</Text>;
+  if (!entry) return <Text style={{ fontSize: 26 }}>🎵</Text>;
+  return <AppIcon name={entry.icon} size={32} />;
 }
 
 /**

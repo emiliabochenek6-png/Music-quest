@@ -18,23 +18,23 @@ interface WorldNodeProps {
   onPress: (world: WorldDefinition) => void;
 }
 
-/** mapIconId -> either an emoji fallback or the name of one of the app's
- * own illustrated icons (components/icons/icons.ts) — only the first 4
- * worlds have a matching hand-drawn "kraina_" icon so far; the rest keep
- * their emoji placeholder until the same illustration set is extended. */
-const WORLD_ICON: Record<string, { icon: IconName } | { emoji: string }> = {
+/** mapIconId -> the name of one of the app's own hand-drawn illustrated
+ * icons (components/icons/icons.ts) — every world now has a matching
+ * "kraina_" icon, so a map node never falls back to a plain Unicode
+ * emoji anymore. */
+const WORLD_ICON: Record<string, { icon: IconName }> = {
   note: { icon: "kraina_wioska_nut" },
   metronome: { icon: "kraina_miasto_rytmu" },
   "bar-line": { icon: "kraina_przystan_taktow" },
   interval: { icon: "kraina_pasmo_interwalow" },
-  chord: { emoji: "🎹" },
-  inversion: { emoji: "🦇" },
-  citadel: { emoji: "🏰" },
-  "key-signature": { emoji: "🗝️" },
-  build: { emoji: "🏗️" },
-  beam: { emoji: "🎼" },
-  dictation: { emoji: "🎧" },
-  microphone: { emoji: "🎤" },
+  chord: { icon: "kraina_zatoka_trojdzwiekow" },
+  inversion: { icon: "kraina_jaskinia_akordow" },
+  citadel: { icon: "kraina_cytadela_dominant" },
+  "key-signature": { icon: "kraina_labirynt_tonacji" },
+  build: { icon: "kraina_fabryka_budowania" },
+  beam: { icon: "kraina_gaj_grupowania" },
+  dictation: { icon: "kraina_szczyt_dyktand" },
+  microphone: { icon: "kraina_zaczarowany_solfez" },
 };
 
 const LOCKED_COLOR = "#E9DFCE";
@@ -43,7 +43,7 @@ const PREMIUM_COLOR = "#FF9600";
 function WorldMapIcon({ mapIconId, size }: { mapIconId: string; size: number }) {
   const entry = WORLD_ICON[mapIconId];
   if (!entry) return <Text style={styles.icon}>🎵</Text>;
-  return "icon" in entry ? <AppIcon name={entry.icon} size={size} /> : <Text style={styles.icon}>{entry.emoji}</Text>;
+  return <AppIcon name={entry.icon} size={size} />;
 }
 
 /**
