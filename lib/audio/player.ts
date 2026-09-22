@@ -236,34 +236,66 @@ export function playLoopingSample(source: number, velocity: number): SamplePlayb
   return { stop };
 }
 
-interface WebSequenceEvent {
+export interface WebAudioTrackEvent {
   source: number;
-  offsetMs: number;
+  /** When this one-shot starts, in ms from the shared `anchorMs` this
+   * event's own track is scheduled against — NOT from "now" (see
+   * playWebAudioTrack's own doc). */
+  delayMs: number;
   velocity: number;
+  /** When set, the node is cut off this many ms after its own start —
+   * lib/audio/rhythmPlayer.ts's playMelodicRhythm uses this for a note's
+   * written hold time (a half note actually sustains twice as long as a
+   * quarter note), same idea as playSample+handle.stop() on the native
+   * path, but sample-accurate since Web Audio schedules the stop
+   * directly on the audio clock instead of a JS timer racing it. */
+  durationMs?: number;
 }
 
 /** A few ms of head-room between "buffers are decoded" and "first note
- * starts", so every node in a sequence is created and scheduled against
- * the audio clock BEFORE the first one is due. */
-const WEB_SEQUENCE_LEAD_SECONDS = 0.02;
+ * starts", so every node in a track is created and scheduled against the
+ * audio clock BEFORE the first one is due. */
+const WEB_AUDIO_TRACK_LEAD_SECONDS = 0.02;
 
-/** Web-only: plays several samples at fixed offsets from one shared start
- * time, scheduled on the Web Audio API's own sample-accurate clock
- * (`node.start(when)`) — no JS timers and no HTMLAudioElement per note.
- * That's what expo-audio's web backend (and therefore the pooled/
- * scheduleAt path used everywhere else) is limited by: each note's
- * `play()` has its own variable start latency, so a two-note interval or
- * a melody came out with uneven gaps (the same class of problem as the
- * metronome's — see playLoopingSample's doc). Returns false when there's
- * no Web Audio context (native iOS/Android, static export), so the caller
- * runs its normal path; `fallback` runs instead if decoding a sample
- * fails, so a broken fetch never leaves the exercise silent. */
-function playWebSequence(events: readonly WebSequenceEvent[], fallback: () => void): boolean {
+/** THE single web-audio playback primitive every multi-note/multi-click
+ * sound in this app schedules through — one metronome click track, one
+ * clap pattern, one melody, one interval, one chord (sequence or
+ * simultaneous), one dance-fragment oom-pah accompaniment, all go through
+ * this exact same function, never a mix of this and the pooled/scheduleAt
+ * path on the same platform. Every event's own start time is computed
+ * from ONE shared `anchorMs` (a schedulerNow()-space timestamp, usually
+ * "now" but sometimes a slightly earlier anchor two simultaneous tracks —
+ * e.g. playMetronomeWithClaps' click grid and clap pattern — both share,
+ * so they land on the exact same audio-clock origin instead of two
+ * independent calls drifting apart by however many JS steps separate
+ * them), converted to Web Audio's own `AudioContext.currentTime` clock
+ * once, here, rather than by every caller.
+ *
+ * This exists because expo-audio's web backend is a plain HTMLAudioElement
+ * per sound (`new Audio(uri)`), and constructing/`play()`ing one has its
+ * own variable latency — paying that cost at the moment each note is due,
+ * once per note, is exactly what made a click track, a clap pattern, a
+ * melody or an interval sound uneven/"zacinające się" on web (the same
+ * class of problem playLoopingSample's own doc describes for the
+ * metronome dot's loop). The Web Audio API doesn't have this problem:
+ * every node here is built from an already-decoded, cached AudioBuffer
+ * (see decodeLoopBuffer) and started via `node.start(when)` on the audio
+ * hardware's own sample-accurate clock — no JS timer, no per-note
+ * construction latency, however many notes are in the track.
+ *
+ * Returns false when there's no Web Audio context (native iOS/Android,
+ * or this module evaluating during static web export) — the caller runs
+ * its normal pooled/scheduleAt path instead, which native platforms
+ * don't share this problem on (AVAudioPlayer/ExoPlayer, not
+ * HTMLAudioElement). `fallback` runs instead if decoding a sample fails,
+ * so a broken fetch never leaves the exercise silently mute. */
+export function playWebAudioTrack(events: readonly WebAudioTrackEvent[], anchorMs: number, fallback: () => void): boolean {
   const context = getWebAudioLoopContext();
   if (!context) return false;
   void context.resume();
   let settled = false;
   const voices: { node: AudioBufferSourceNode; gain: GainNode }[] = [];
+  const nowMs = schedulerNow();
 
   function stop(): void {
     if (settled) return;
@@ -284,7 +316,7 @@ function playWebSequence(events: readonly WebSequenceEvent[], fallback: () => vo
   void Promise.all(events.map((event) => decodeLoopBuffer(context, event.source)))
     .then((buffers) => {
       if (settled) return;
-      const startAt = context.currentTime + WEB_SEQUENCE_LEAD_SECONDS;
+      const baseContextTime = context.currentTime + WEB_AUDIO_TRACK_LEAD_SECONDS;
       let remaining = events.length;
       events.forEach((event, index) => {
         const node = context.createBufferSource();
@@ -302,7 +334,17 @@ function playWebSequence(events: readonly WebSequenceEvent[], fallback: () => vo
             activeStops.delete(stop);
           }
         };
-        node.start(startAt + event.offsetMs / 1000);
+        // anchorMs + delayMs is this event's due time in schedulerNow()-
+        // space; nowMs (captured once, above, before the async decode)
+        // is this call's own origin in that same space — the difference
+        // between them is how far in the future (or, if a slow decode
+        // ate into it, already-past — clamped to 0, i.e. "as soon as
+        // possible") this event's start is from right now.
+        const startAtSec = baseContextTime + Math.max(0, anchorMs + event.delayMs - nowMs) / 1000;
+        node.start(startAtSec);
+        if (event.durationMs !== undefined) {
+          node.stop(startAtSec + event.durationMs / 1000);
+        }
         voices.push({ node, gain });
       });
     })
@@ -637,7 +679,7 @@ function resolveSample(samples: Record<string, number>, note: Note): number {
 export function playNote(note: Note, options: ToneOptions = {}): void {
   const velocity = options.velocity ?? 0.6;
   const source = resolveSample(NOTE_SAMPLES, note);
-  if (playWebSequence([{ source, offsetMs: 0, velocity }], () => playSample(source, velocity))) return;
+  if (playWebAudioTrack([{ source, delayMs: 0, velocity }], schedulerNow(), () => playSample(source, velocity))) return;
   playSample(source, velocity);
 }
 
@@ -670,14 +712,14 @@ export function playMelody(notes: readonly Note[], options: MelodyOptions = {}):
   const stepSeconds = MELODY_NOTE_DURATION_SECONDS + gapSeconds;
   const velocity = options.velocity ?? 0.7;
   const sources = notes.map((note) => resolveSample(MELODY_NOTE_SAMPLES, note));
+  const anchorMs = schedulerNow();
   const playScheduled = () => {
-    const startAtMs = schedulerNow();
     sources.forEach((source, index) => {
-      scheduleAt(index * stepSeconds * 1000, () => getPool(source).trigger(velocity), startAtMs);
+      scheduleAt(index * stepSeconds * 1000, () => getPool(source).trigger(velocity), anchorMs);
     });
   };
-  const events = sources.map((source, index) => ({ source, offsetMs: index * stepSeconds * 1000, velocity }));
-  if (!playWebSequence(events, playScheduled)) playScheduled();
+  const events = sources.map((source, index) => ({ source, delayMs: index * stepSeconds * 1000, velocity }));
+  if (!playWebAudioTrack(events, anchorMs, playScheduled)) playScheduled();
 }
 
 /** "Pasmo Interwałów"'s two notes-together-in-sequence playback — the web
@@ -706,7 +748,7 @@ export function playChord(notes: readonly Note[], options: ToneOptions = {}): vo
   const velocity = options.velocity ?? 0.35;
   const sources = notes.map((note) => resolveSample(NOTE_SAMPLES, note));
   const playPooled = () => sources.forEach((source) => getPool(source).trigger(velocity));
-  if (!playWebSequence(sources.map((source) => ({ source, offsetMs: 0, velocity })), playPooled)) playPooled();
+  if (!playWebAudioTrack(sources.map((source) => ({ source, delayMs: 0, velocity })), schedulerNow(), playPooled)) playPooled();
 }
 
 /** How long one playChord() call audibly rings, by construction of
@@ -729,14 +771,14 @@ export function playChordSequence(chords: readonly (readonly Note[])[], options:
   const gapSeconds = options.gapSeconds ?? 0.3;
   const stepSeconds = CHORD_DURATION_SECONDS + gapSeconds;
   const velocity = options.velocity ?? 0.35;
+  const anchorMs = schedulerNow();
   const events = chords.flatMap((chord, index) =>
-    chord.map((note) => ({ source: resolveSample(NOTE_SAMPLES, note), offsetMs: index * stepSeconds * 1000, velocity }))
+    chord.map((note) => ({ source: resolveSample(NOTE_SAMPLES, note), delayMs: index * stepSeconds * 1000, velocity }))
   );
   const playScheduled = () => {
-    const startAtMs = schedulerNow();
     chords.forEach((chord, index) => {
-      scheduleAt(index * stepSeconds * 1000, () => playChord(chord, options), startAtMs);
+      scheduleAt(index * stepSeconds * 1000, () => playChord(chord, options), anchorMs);
     });
   };
-  if (!playWebSequence(events, playScheduled)) playScheduled();
+  if (!playWebAudioTrack(events, anchorMs, playScheduled)) playScheduled();
 }

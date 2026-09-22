@@ -3,11 +3,13 @@ import {
   createSamplePool,
   getPool,
   playSample,
+  playWebAudioTrack,
   scheduleAt,
   schedulerNow,
   stopAllActiveSamples,
   stopAllPooledSamples,
   type SamplePlaybackHandle,
+  type WebAudioTrackEvent,
 } from "@/lib/audio/player";
 import {
   CLAP_SAMPLE,
@@ -169,15 +171,24 @@ export interface MetronomeOptions {
  * why this app trades live synthesis for pre-rendered samples throughout). */
 export function playMetronome(options: MetronomeOptions): void {
   const { bpm, beatsPerMeasure, measureCount, accentVelocity = 0.55, weakVelocity = 0.3, pulseSubdivision = 1, startAtMs = schedulerNow() } = options;
-  // Forces both pools' native players to exist right now, before the
-  // FIRST beat is even scheduled — see createSamplePool's own warmUp()
-  // doc for why that first beat used to be the one most likely to sound
-  // late/uneven.
-  accentClickPool.warmUp();
-  weakClickPool.warmUp();
-  buildClickGrid(bpm, beatsPerMeasure, measureCount, pulseSubdivision).forEach(({ timeMs, isAccent }) => {
-    schedulePooled(isAccent ? accentClickPool : weakClickPool, isAccent ? accentVelocity : weakVelocity, timeMs, startAtMs);
-  });
+  const grid = buildClickGrid(bpm, beatsPerMeasure, measureCount, pulseSubdivision);
+  const playPooled = () => {
+    // Forces both pools' native players to exist right now, before the
+    // FIRST beat is even scheduled — see createSamplePool's own warmUp()
+    // doc for why that first beat used to be the one most likely to
+    // sound late/uneven.
+    accentClickPool.warmUp();
+    weakClickPool.warmUp();
+    grid.forEach(({ timeMs, isAccent }) => {
+      schedulePooled(isAccent ? accentClickPool : weakClickPool, isAccent ? accentVelocity : weakVelocity, timeMs, startAtMs);
+    });
+  };
+  const events: WebAudioTrackEvent[] = grid.map(({ timeMs, isAccent }) => ({
+    source: isAccent ? CLICK_ACCENT_SAMPLE : CLICK_WEAK_SAMPLE,
+    delayMs: timeMs,
+    velocity: isAccent ? accentVelocity : weakVelocity,
+  }));
+  if (!playWebAudioTrack(events, startAtMs, playPooled)) playPooled();
 }
 
 interface ClickGridEntry {
@@ -231,10 +242,14 @@ const COINCIDENCE_EPSILON_MS = 8;
  * createSamplePool's own doc) so the claps themselves land evenly instead
  * of drifting from one-shot player construction overhead. */
 export function playRhythm(onsetsMs: readonly number[], velocity = 0.8, startAtMs: number = schedulerNow()): void {
-  clapPool.warmUp();
-  onsetsMs.forEach((timeMs) => {
-    schedulePooled(clapPool, velocity, timeMs, startAtMs);
-  });
+  const playPooled = () => {
+    clapPool.warmUp();
+    onsetsMs.forEach((timeMs) => {
+      schedulePooled(clapPool, velocity, timeMs, startAtMs);
+    });
+  };
+  const events: WebAudioTrackEvent[] = onsetsMs.map((timeMs) => ({ source: CLAP_SAMPLE, delayMs: timeMs, velocity }));
+  if (!playWebAudioTrack(events, startAtMs, playPooled)) playPooled();
 }
 
 /** The actual "🔊 recording" shape every rhythm exercise (dictation,
@@ -265,30 +280,58 @@ export function playRhythm(onsetsMs: readonly number[], velocity = 0.8, startAtM
  * plausibly match the same single click position. */
 export function playMetronomeWithClaps(metronomeOptions: MetronomeOptions, onsetsMs: readonly number[], clapVelocity = 0.8): void {
   const { bpm, beatsPerMeasure, measureCount, accentVelocity = 0.55, weakVelocity = 0.3, pulseSubdivision = 1, startAtMs = schedulerNow() } = metronomeOptions;
-  accentClickPool.warmUp();
-  weakClickPool.warmUp();
-  clapPool.warmUp();
-  accentClapPool.warmUp();
-  weakClapPool.warmUp();
-
   const grid = buildClickGrid(bpm, beatsPerMeasure, measureCount, pulseSubdivision);
   const consumedOnsetIndexes = new Set<number>();
-
-  grid.forEach(({ timeMs, isAccent }) => {
+  // Which grid position (if any) each onset coincided with — computed
+  // ONCE here so both the web-audio event list below and its native
+  // playPooled fallback agree on exactly the same click/clap pairing,
+  // instead of each re-deriving it (and, for the fallback, re-deriving
+  // it against an ALREADY-consumed set from the first pass, which would
+  // silently find no matches at all the second time around).
+  const gridMatchesOnset = grid.map(({ timeMs }) => {
     const onsetIndex = onsetsMs.findIndex((onsetMs, index) => !consumedOnsetIndexes.has(index) && Math.abs(onsetMs - timeMs) <= COINCIDENCE_EPSILON_MS);
-    if (onsetIndex === -1) {
-      schedulePooled(isAccent ? accentClickPool : weakClickPool, isAccent ? accentVelocity : weakVelocity, timeMs, startAtMs);
-      return;
-    }
-    consumedOnsetIndexes.add(onsetIndex);
-    schedulePooled(isAccent ? accentClapPool : weakClapPool, isAccent ? accentVelocity : weakVelocity, timeMs, startAtMs);
+    if (onsetIndex !== -1) consumedOnsetIndexes.add(onsetIndex);
+    return onsetIndex !== -1;
   });
 
+  const events: WebAudioTrackEvent[] = grid.map(({ timeMs, isAccent }, index) => ({
+    source: gridMatchesOnset[index]
+      ? isAccent
+        ? CLICK_ACCENT_CLAP_SAMPLE
+        : CLICK_WEAK_CLAP_SAMPLE
+      : isAccent
+        ? CLICK_ACCENT_SAMPLE
+        : CLICK_WEAK_SAMPLE,
+    delayMs: timeMs,
+    velocity: isAccent ? accentVelocity : weakVelocity,
+  }));
   onsetsMs.forEach((onsetMs, index) => {
     if (!consumedOnsetIndexes.has(index)) {
-      schedulePooled(clapPool, clapVelocity, onsetMs, startAtMs);
+      events.push({ source: CLAP_SAMPLE, delayMs: onsetMs, velocity: clapVelocity });
     }
   });
+
+  const playPooled = () => {
+    accentClickPool.warmUp();
+    weakClickPool.warmUp();
+    clapPool.warmUp();
+    accentClapPool.warmUp();
+    weakClapPool.warmUp();
+    grid.forEach(({ timeMs, isAccent }, index) => {
+      if (gridMatchesOnset[index]) {
+        schedulePooled(isAccent ? accentClapPool : weakClapPool, isAccent ? accentVelocity : weakVelocity, timeMs, startAtMs);
+      } else {
+        schedulePooled(isAccent ? accentClickPool : weakClickPool, isAccent ? accentVelocity : weakVelocity, timeMs, startAtMs);
+      }
+    });
+    onsetsMs.forEach((onsetMs, index) => {
+      if (!consumedOnsetIndexes.has(index)) {
+        schedulePooled(clapPool, clapVelocity, onsetMs, startAtMs);
+      }
+    });
+  };
+
+  if (!playWebAudioTrack(events, startAtMs, playPooled)) playPooled();
 }
 
 export interface MelodicRhythmNote {
@@ -328,21 +371,32 @@ const MIN_HOLD_MS = 60;
  * "play a long-ring sample, then stop it early" gets the same audible
  * result without needing live synthesis). */
 export function playMelodicRhythm(notes: readonly MelodicRhythmNote[], velocity = 0.55, startAtMs: number = schedulerNow()): void {
-  notes.forEach(({ note, onsetMs, durationMs }) => {
+  const resolved = notes.map(({ note, onsetMs, durationMs }) => {
     const key = formatScientific(midiToNote(noteToMidi(note)));
     const source = NOTE_SAMPLES[key];
     if (source === undefined) {
       throw new Error(`No note sample for note "${key}" — add one to lib/audio/samples.ts`);
     }
-    let handle: SamplePlaybackHandle | null = null;
-    scheduleAt(onsetMs, () => {
-      handle = playSample(source, velocity);
-    }, startAtMs);
-    const holdMs = Math.max(MIN_HOLD_MS, durationMs - NOTE_RELEASE_GAP_MS);
-    scheduleAt(onsetMs + holdMs, () => {
-      handle?.stop();
-    }, startAtMs);
+    return { source, onsetMs, holdMs: Math.max(MIN_HOLD_MS, durationMs - NOTE_RELEASE_GAP_MS) };
   });
+  const playScheduled = () => {
+    resolved.forEach(({ source, onsetMs, holdMs }) => {
+      let handle: SamplePlaybackHandle | null = null;
+      scheduleAt(onsetMs, () => {
+        handle = playSample(source, velocity);
+      }, startAtMs);
+      scheduleAt(onsetMs + holdMs, () => {
+        handle?.stop();
+      }, startAtMs);
+    });
+  };
+  const events: WebAudioTrackEvent[] = resolved.map(({ source, onsetMs, holdMs }) => ({
+    source,
+    delayMs: onsetMs,
+    velocity,
+    durationMs: holdMs,
+  }));
+  if (!playWebAudioTrack(events, startAtMs, playScheduled)) playScheduled();
 }
 
 export interface DanceFragmentOptions {
@@ -391,10 +445,15 @@ const OFFBEAT_CHORD_TONES = [MELODY_NOTE_SAMPLES.C4, MELODY_NOTE_SAMPLES.E4, MEL
  * construction jitter became audible here too. */
 export function playDanceFragment(options: DanceFragmentOptions): void {
   const { bpm, beatsPerMeasure, measureCount = 4, pulseSubdivision = 1 } = options;
-  // Same reasoning as playMetronome/playRhythm's own warmUp() calls —
-  // every distinct sample source this fragment ever plays, warmed up
-  // before the downbeat is even scheduled.
-  [MELODY_NOTE_SAMPLES.C3, MELODY_NOTE_SAMPLES.G4, ...OFFBEAT_CHORD_TONES].forEach((source) => getPool(source).warmUp());
+  const anchorMs = schedulerNow();
+  const events: WebAudioTrackEvent[] = [];
+  const playPooled = () => {
+    // Same reasoning as playMetronome/playRhythm's own warmUp() calls —
+    // every distinct sample source this fragment ever plays, warmed up
+    // before the downbeat is even scheduled.
+    [MELODY_NOTE_SAMPLES.C3, MELODY_NOTE_SAMPLES.G4, ...OFFBEAT_CHORD_TONES].forEach((source) => getPool(source).warmUp());
+    events.forEach(({ source, delayMs, velocity }) => scheduleSample(source, velocity, delayMs, anchorMs));
+  };
   const beatIntervalMs = (60 / bpm) * 1000;
   const subdivisionIntervalMs = beatIntervalMs / pulseSubdivision;
   const totalBeats = beatsPerMeasure * measureCount;
@@ -402,15 +461,16 @@ export function playDanceFragment(options: DanceFragmentOptions): void {
     const isDownbeat = beat % beatsPerMeasure === 0;
     const startMs = beat * beatIntervalMs;
     if (isDownbeat) {
-      scheduleSample(MELODY_NOTE_SAMPLES.C3, 0.75, startMs);
+      events.push({ source: MELODY_NOTE_SAMPLES.C3, delayMs: startMs, velocity: 0.75 });
     } else {
       // Slightly lower per-note velocity than the single-note downbeat —
       // three notes summed together already reads as louder/fuller, so
       // this keeps the "PAH" from overpowering the "oom".
-      OFFBEAT_CHORD_TONES.forEach((source) => scheduleSample(source, 0.26, startMs));
+      OFFBEAT_CHORD_TONES.forEach((source) => events.push({ source, delayMs: startMs, velocity: 0.26 }));
     }
     for (let sub = 1; sub < pulseSubdivision; sub++) {
-      scheduleSample(MELODY_NOTE_SAMPLES.G4, 0.14, startMs + sub * subdivisionIntervalMs);
+      events.push({ source: MELODY_NOTE_SAMPLES.G4, delayMs: startMs + sub * subdivisionIntervalMs, velocity: 0.14 });
     }
   }
+  if (!playWebAudioTrack(events, anchorMs, playPooled)) playPooled();
 }
