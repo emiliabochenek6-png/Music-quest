@@ -827,3 +827,16 @@ export function playChordSequence(chords: readonly (readonly Note[])[], options:
   };
   if (!playWebAudioTrack(events, anchorMs, playScheduled)) playScheduled();
 }
+
+// Every note/interval/melody/chord across Wioska Nut, Pasmo Interwałów,
+// Fabryka Budowania, Zatoka Trójdźwięków and every other pitched exercise
+// ultimately resolves to one of these ~76 samples — decoding them all in
+// the background right after the app itself loads (rather than only ever
+// starting a given one's decode the first time it's actually needed)
+// means the exact same "cold fetch+decode makes the very first press of
+// a NEW note silent/late" gap closed for the click/clap set (see
+// rhythmPlayer.ts's own module-load prefetch call) is closed here too. A
+// few MB of background fetching, never blocking anything, and safe to
+// call this early — prefetchWebAudioSamples itself no-ops on native and
+// during static web export (see its own doc).
+prefetchWebAudioSamples([...Object.values(NOTE_SAMPLES), ...Object.values(MELODY_NOTE_SAMPLES)]);
