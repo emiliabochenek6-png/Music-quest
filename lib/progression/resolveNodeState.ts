@@ -8,6 +8,14 @@ import type { ProgressState, SubscriptionStatus, WorldDefinition, WorldNodeState
  * subscription check. Flip to true to bring the paywall gate back. */
 const ENFORCE_SUBSCRIPTION_GATE = false;
 
+/** Temporarily off: every world is "available" regardless of whether the
+ * previous one is finished/starred — see resolveNodeState's own "completed"
+ * check above this, which still applies (a world already in
+ * completedWorldIds still resolves to "completed", not "available", so
+ * its own map node keeps showing as done rather than reverting). Flip to
+ * true to bring the normal one-world-at-a-time progression gate back. */
+const ENFORCE_PROGRESSION_GATE = false;
+
 /** Whether EVERY lesson in `world` has earned at least
  * MIN_STARS_TO_ADVANCE_WORLD stars — see that constant's own doc. A
  * world with no ported content yet (`getWorldContent` returns undefined
@@ -59,7 +67,7 @@ export function resolveNodeState(
   }
   const previous = getPreviousWorld(world);
   const previousDone = !previous || (progress.completedWorldIds.has(previous.id) && meetsStarRequirement(previous, lessonStars));
-  if (!previousDone) {
+  if (ENFORCE_PROGRESSION_GATE && !previousDone) {
     return "locked-progression";
   }
   if (ENFORCE_SUBSCRIPTION_GATE && world.isPremium && !subscription.isActive) {
