@@ -205,7 +205,7 @@
   "lesson.restValueQuarter": "Ćwierćpauza",
   "lesson.restValueEighth": "Pauza ósemkowa",
   "lesson.restValueSixteenth": "Pauza szesnastkowa",
-  "lesson.rhythmValueDictationPrompt": "Odsłuchaj rytm (możesz powtórzyć dowolną liczbę razy) i zapisz go samodzielnie, klikając kolejne wartości rytmiczne. Podane tempo (BPM) zawsze odnosi się do ćwierćnuty.",
+  "lesson.rhythmValueDictationPrompt": "Odsłuchaj rytm (możesz powtórzyć dowolną liczbę razy) i zapisz go samodzielnie, klikając kolejne wartości rytmiczne. Podane tempo (BPM) odnosi się tutaj do {beatUnit}.",
   "lesson.rhythmValueDictationGroupHint": "Kliknij dwie sąsiednie nuty (ósemki/szesnastki), żeby połączyć je belką — kliknij tę samą parę ponownie, żeby je rozdzielić.",
   "lesson.rhythmValueDictationGroupToggle": "Grupuj",
   "lesson.rhythmValueDictationSolution": "Poprawna odpowiedź:",

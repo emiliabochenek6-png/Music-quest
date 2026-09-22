@@ -11,7 +11,7 @@ import { beatsOf, measureIndexAt, REST_VALUES } from "@/lib/rhythm/valueBeats";
 import { t, type TranslationKey } from "@/lib/i18n/translate";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import type { Locale } from "@/types/locale";
-import type { GeneratedExercise, RhythmNoteValue, RhythmRestValue } from "@/types/exercises";
+import type { GeneratedExercise, Meter, RhythmNoteValue, RhythmRestValue } from "@/types/exercises";
 
 type SequenceValue = RhythmNoteValue | RhythmRestValue;
 
@@ -61,6 +61,23 @@ function byDurationThenRestsLast(a: SequenceValue, b: SequenceValue): number {
 
 const COUNT_IN_BEATS = 2;
 const TRAILING_METRONOME_BEATS = 2;
+
+/** Polish name for whatever note value exercise.bpm's felt pulse actually
+ * beats in — a plain quarter for every simple meter (4/4, 3/4, ...), but
+ * a DOTTED quarter for the compound eighth meters (6/8, 9/8, 12/8), whose
+ * natural felt pulse groups three eighths, not one quarter (see
+ * meterFeltPulseQuarterBeats' own doc — same 1.5-quarter-beats value the
+ * metronome/count-in this exercise plays is already built from). The
+ * prompt used to claim the tempo "always" means a plain quarter note,
+ * which was flatly wrong for every 6/8 exercise in this world — a player
+ * tapping along to what they actually hear was tapping dotted quarters,
+ * not quarters, at that stated bpm. */
+function beatUnitLabel(meter: Meter): string {
+  const quarterBeats = meterFeltPulseQuarterBeats(meter);
+  if (quarterBeats === 1.5) return "ćwierćnuty z kropką";
+  if (quarterBeats === 2) return "półnuty";
+  return "ćwierćnuty";
+}
 
 /**
  * "Szczyt Dyktand" levels 1-5 — the true ear-training counterpart of
@@ -131,7 +148,7 @@ export function RhythmValueDictationExercise({ exercise, sequence, groups, onAdd
   return (
     <View style={{ alignItems: "center", gap: theme.spacing(2.5), width: "100%" }}>
       <Text style={{ fontSize: theme.fontSize.body, fontWeight: "600", color: theme.colors.ink, textAlign: "center" }}>
-        {t("lesson.rhythmValueDictationPrompt", locale)}
+        {t("lesson.rhythmValueDictationPrompt", locale, { beatUnit: beatUnitLabel(exercise.meter) })}
       </Text>
 
       <DarkButton label="🔊" onPress={playTarget} variant="secondary" size={84} fontSize={42} />
