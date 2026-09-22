@@ -4,7 +4,7 @@ import { File } from "expo-file-system";
 import { getRecordingPermissionsAsync, requestRecordingPermissionsAsync, useAudioRecorder } from "expo-audio";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { StaffNotation } from "@/components/exercises/StaffNotation";
-import { playNote, playRecordedUri } from "@/lib/audio/player";
+import { decodeAudioFileToPcm, playNote, playRecordedUri } from "@/lib/audio/player";
 import { analyzeSungPitch } from "@/lib/audio/pitchDetection";
 import { SOLFEGE_RECORDING_OPTIONS, SOLFEGE_RECORD_SAMPLE_RATE } from "@/lib/audio/solfegeRecording";
 import { decodeWavPcm } from "@/lib/audio/wavDecoder";
@@ -144,11 +144,19 @@ export function SolfegeNoteSingingExercise({ exercise, answer, onAnswerChange, c
 
     try {
       const bytes = new Uint8Array(await new File(uri).arrayBuffer());
-      const decoded = decodeWavPcm(bytes);
+      // decodeWavPcm reads the take directly on platforms that actually
+      // record WAV (iOS — see SOLFEGE_RECORDING_OPTIONS's own doc); web's
+      // MediaRecorder-based take (audio/webm) isn't a WAV at all, so this
+      // returns null there — decodeAudioFileToPcm is web's own fallback
+      // (Web Audio API's decodeAudioData, which DOES understand webm —
+      // see its own doc for the full "why"). Still null after that on
+      // Android, whose compressed AAC/M4A fallback neither path can
+      // read — a real, deliberate gap (see SOLFEGE_RECORDING_OPTIONS),
+      // not an error.
+      const decoded = decodeWavPcm(bytes) ?? (await decodeAudioFileToPcm(uri));
       if (decoded === null) {
-        // Not a PCM WAV (e.g. Android's compressed fallback — see
-        // SOLFEGE_RECORDING_OPTIONS's own doc) — nothing to analyze, but
-        // the file itself is still perfectly playable.
+        // Nothing to analyze — the file itself is still perfectly
+        // playable either way.
         setIssue(null);
         setPhase("recorded");
         onAnswerChange({ type: "solfege-note-singing", detectedFrequencyHz: null });

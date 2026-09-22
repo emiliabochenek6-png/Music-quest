@@ -156,6 +156,40 @@ function decodeLoopBuffer(context: AudioContext, source: number): Promise<AudioB
   return cached;
 }
 
+/** Decodes a RECORDED file (a `file://...`/blob URI from expo-audio's own
+ * useAudioRecorder, not a bundled require()'d sample) to mono Float32 PCM
+ * — "Zaczarowany Solfeż"'s own web-specific fallback for reading back a
+ * student's take. That world's recording options (see
+ * lib/audio/solfegeRecording.ts) ask iOS for uncompressed WAV, which
+ * lib/audio/wavDecoder.ts's own decodeWavPcm reads directly — but on web,
+ * MediaRecorder (what expo-audio's web recorder is actually built on)
+ * cannot produce raw WAV at all; SOLFEGE_RECORDING_OPTIONS.web asks for
+ * `audio/webm` instead, which decodeWavPcm correctly (if unhelpfully)
+ * treats as "not a WAV, nothing to analyze" — reported as silently
+ * ALWAYS having no detected pitch on web (no error shown, since Android's
+ * own compressed-format gap is a deliberate, documented case that also
+ * returns null from decodeWavPcm — see that function's own doc), which is
+ * exactly the "recording isn't detected" bug this exists to fix. Reuses
+ * the same Web Audio API this module already leans on for scheduled
+ * playback (see playWebAudioTrack's own doc) — `decodeAudioData` handles
+ * whatever codec/container the browser's own MediaRecorder produced,
+ * unlike this app's hand-rolled WAV-only parser. Returns null on native
+ * (no Web Audio context there — the caller's own decodeWavPcm call
+ * already handles that platform correctly) or if decoding genuinely
+ * fails (a zero-length/corrupt take). */
+export async function decodeAudioFileToPcm(uri: string): Promise<{ samples: Float32Array; sampleRate: number } | null> {
+  const context = getWebAudioLoopContext();
+  if (!context) return null;
+  try {
+    const response = await fetch(uri);
+    const arrayBuffer = await response.arrayBuffer();
+    const audioBuffer = await context.decodeAudioData(arrayBuffer);
+    return { samples: audioBuffer.getChannelData(0), sampleRate: audioBuffer.sampleRate };
+  } catch {
+    return null;
+  }
+}
+
 /** Plays one pre-rendered sample on a seamless loop — for a "steady click
  * track running indefinitely" need (the standalone-metronome dot's own
  * MetronomeIndicator toggle — see RhythmDictationExercise/

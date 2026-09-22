@@ -6,7 +6,7 @@ import { DarkButton } from "@/components/exercises/DarkButton";
 import { LessonIntroStaff } from "@/components/exercises/LessonIntro";
 import { MelodicDictationStaff } from "@/components/exercises/MelodicDictationStaff";
 import { MetronomeIndicator } from "@/components/exercises/MetronomeIndicator";
-import { playMelody } from "@/lib/audio/player";
+import { decodeAudioFileToPcm, playMelody } from "@/lib/audio/player";
 import {
   analyzeFreeRhythmicPhrase,
   analyzeFreeSungPhrase,
@@ -397,7 +397,16 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
     if (uri) {
       try {
         const bytes = new Uint8Array(await new File(uri).arrayBuffer());
-        const decoded = decodeWavPcm(bytes);
+        // See SolfegeNoteSingingExercise's own identical fallback doc —
+        // decodeWavPcm alone only ever reads a take on platforms that
+        // actually record WAV (iOS); web's MediaRecorder-based take
+        // (audio/webm) needs decodeAudioFileToPcm's Web Audio API path
+        // instead. The LIVE mid-recording highlight above this function
+        // stays WAV-only (decodeAudioData can't incrementally decode a
+        // still-growing file the way decodeWavPcmFrames does) — this
+        // fixes the FINAL analysis, which is what actually grades the
+        // take and is what was silently never detecting anything on web.
+        const decoded = decodeWavPcm(bytes) ?? (await decodeAudioFileToPcm(uri));
         if (decoded) {
           // No excludeTrailingSegment here — the take is finished, so a
           // note that ends right at the recording's own end is still
