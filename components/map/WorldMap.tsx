@@ -46,7 +46,13 @@ export function WorldMap({ progress, subscription, lessonStars, onSelectWorld }:
   return (
     <ScrollView
       style={styles.scroll}
-      contentContainerStyle={{ paddingTop: insets.top + 64, paddingBottom: insets.bottom + 40, alignItems: "center" }}
+      // insets.top + 64 used to be just past GamificationHeaderBar's own
+      // top (insets.top + 56 in map.tsx) but not past its own height —
+      // the RankPill inside it (the tallest of its pills, two text lines
+      // plus a progress bar) reaches roughly insets.top + 110, overlapping
+      // the FIRST world node right under it. +128 clears that with a
+      // little room to spare.
+      contentContainerStyle={{ paddingTop: insets.top + 128, paddingBottom: insets.bottom + 40, alignItems: "center" }}
       showsVerticalScrollIndicator={false}
     >
       {/* Fixed PATH_WIDTH (not "100%") so this column — the SVG path
