@@ -704,6 +704,7 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
           meter={exercise.meter ?? "4/4"}
           highlightedIndex={isRecording ? highlightedIndex : undefined}
           locale={locale}
+          solfegeLabels={exercise.solfegeSyllables}
         />
       ) : (
         <LessonIntroStaff

@@ -50,7 +50,7 @@ const DEFAULT_OPTION_COUNT = 3;
  * doesn't tighten it. Generous enough for an untrained singing voice's
  * natural wobble, strict enough to still distinguish neighboring notes a
  * whole tone apart. */
-const DEFAULT_SOLFEGE_TOLERANCE_CENTS = 50;
+const DEFAULT_SOLFEGE_TOLERANCE_CENTS = 60;
 // Pacing-only default — see ExerciseSpec's own bpm doc; never consulted by
 // analyzeFreeRhythmicPhrase's own (self-calibrating) grading.
 const DEFAULT_SOLFEGE_RHYTHM_BPM = 66;

@@ -126,6 +126,15 @@ interface MelodicDictationStaffProps {
    * usual ink — undefined (the default) draws every note the normal way.
    * Same idea as LessonIntroStaff's own highlightedIndex prop. */
   highlightedIndex?: number;
+  /** One solfège syllable per entry in `notes` (e.g. "do", "re", "mi"),
+   * drawn under each notehead the same way LessonIntroStaff's own
+   * `labels` prop does — Zaczarowany Solfeż's own "fragmenty utworów"
+   * exercise (the only caller so far) passes this so a fragment's real
+   * rhythmic notation still names each note's syllable, matching level
+   * 1's plain-scale staff. Omit for Szczyt Dyktand's own melodic-
+   * rhythmic dictation, which has nothing to label notes with (the
+   * player is choosing pitches, not reading a printed syllable). */
+  solfegeLabels?: string[];
 }
 
 /** A free-form, growing multi-note staff — Szczyt Dyktand's melodic-
@@ -158,6 +167,7 @@ export function MelodicDictationStaff({
   disabled = false,
   locale = "pl",
   highlightedIndex,
+  solfegeLabels,
 }: MelodicDictationStaffProps) {
   const resolvedGroups = groups ?? deriveBeamGroups(notes.map((note) => note.value), meter);
   const manualBarLineSet = manualBarLines ? new Set(manualBarLines) : undefined;
@@ -289,6 +299,12 @@ export function MelodicDictationStaff({
                   />
                 )}
                 {note.hasDot && <Circle cx={note.x + DOT_X_OFFSET} cy={note.y} r={DOT_RADIUS} fill={noteColor} />}
+
+                {solfegeLabels && (
+                  <SvgText x={note.x} y={VIEW_HEIGHT - 6} fontSize={15} fontWeight="bold" fill={noteColor} textAnchor="middle">
+                    {solfegeLabels[note.index]}
+                  </SvgText>
+                )}
               </Fragment>
             );
           })}

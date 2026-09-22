@@ -21,12 +21,22 @@ const MIN_FREQUENCY_HZ = 100;
 const MAX_FREQUENCY_HZ = 900;
 /** RMS below this (on a -1..1 float32 buffer) is treated as silence —
  * skipped rather than fed to autocorrelation, which would otherwise
- * happily "detect a pitch" in pure noise. */
-const MIN_RMS = 0.01;
+ * happily "detect a pitch" in pure noise. Lowered slightly from an
+ * earlier, stricter 0.01 — a quieter singer (a shy kid, a phone mic
+ * further from their mouth) was landing right at that edge and getting
+ * "nie usłyszałam wyraźnego dźwięku" even while genuinely singing. */
+const MIN_RMS = 0.006;
 /** Normalized autocorrelation peak (peak lag's correlation ÷ the buffer's
  * own zero-lag energy) below this isn't a clear enough single pitch to
- * trust — breath noise, consonants, or a still-forming vowel onset. */
-const MIN_CLARITY = 0.85;
+ * trust — breath noise, consonants, or a still-forming vowel onset.
+ * Lowered slightly from an earlier, stricter 0.85 — this ratio is
+ * structurally lower for a LOWER sung note at a given sample rate (a
+ * longer period means fewer full cycles overlap within one analysis
+ * window), so the lowest note in this world's range ("do"/C4) was
+ * landing right at that stricter edge and going undetected more often
+ * than higher notes, reported as the live highlight "sometimes not
+ * reacting to do". */
+const MIN_CLARITY = 0.8;
 
 /** Estimates the fundamental frequency of one short buffer via normalized
  * autocorrelation, or null if the buffer is too quiet or too unpitched to

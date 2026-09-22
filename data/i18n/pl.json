@@ -138,7 +138,7 @@
   "lesson.solfegeStopButton": "⏹ Zatrzymaj",
   "lesson.solfegePhraseSingPrompt": "Zaśpiewaj kolejno całą gamę: {syllables}",
   "lesson.solfegePhraseSingFragmentPrompt": "Odsłuchaj nagrania. Kliknij przycisk nagraj i zaśpiewaj po kolei zaznaczone nuty.",
-  "lesson.solfegePhraseRecording": "Nagrywam… śpiewaj całą gamę we własnym tempie.",
+  "lesson.solfegePhraseRecording": "Nagrywam… śpiewaj nutę zaznaczoną na zielono.",
   "lesson.solfegePhraseRhythmRecording": "Nagrywam… śpiewaj razem z metronomem — jedno uderzenie to ćwierćnuta.",
   "lesson.solfegePhraseResult": "Trafiono {correct}/{total} dźwięków",
   "lesson.solfegeMetronomeDotHint": "Kropka to metronom — stuknij, żeby posłuchać tempa przed nagraniem (jeszcze raz, żeby wyłączyć). Podczas nagrywania gra sam.",
