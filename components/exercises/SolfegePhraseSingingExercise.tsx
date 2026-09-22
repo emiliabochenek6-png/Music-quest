@@ -21,6 +21,7 @@ import { STANDALONE_METRONOME_MEASURES, metronomeBeatTimesMs, playMetronome, sto
 import { hasConfirmedMicrophonePermission, markMicrophonePermissionConfirmed, SOLFEGE_RECORDING_OPTIONS } from "@/lib/audio/solfegeRecording";
 import { decodeWavPcm, decodeWavPcmFrames, parseWavHeader, type WavHeader } from "@/lib/audio/wavDecoder";
 import { isWebLiveRecordingAvailable, startWebLiveRecording, type WebLiveRecording } from "@/lib/audio/webLiveRecorder";
+import { getIntervalDisplayName, intervalSemitones } from "@/lib/music/intervals";
 import { describeStaffPosition } from "@/lib/music/staff";
 import { classifyPitchMatch, noteToFrequency, octaveFoldedCentsDifference, parseScientific } from "@/lib/music/notes";
 import { nearestSolfegeReading, type SolfegeTunerReading } from "@/lib/music/solfege";
@@ -674,6 +675,17 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
   const promptText = exercise.isFragment
     ? t("lesson.solfegePhraseSingFragmentPrompt", locale)
     : t("lesson.solfegePhraseSingPrompt", locale, { syllables: exercise.solfegeSyllables.join(" - ") });
+  // Exactly two notes means this exercise genuinely IS one interval (level
+  // 4's own whole level, plus zs-l7-e1's own first "krok" of building a
+  // dominant seventh) — names it via the SAME interval-naming convention
+  // Pasmo Interwałów already uses, rather than leaving the player to work
+  // it out purely from what they hear/read on the staff. Three notes and
+  // up (a real short melody, a triad, ...) has no single "the interval"
+  // to name, so this stays undefined there.
+  const intervalLabel =
+    exercise.notes.length === 2
+      ? getIntervalDisplayName(intervalSemitones(parseScientific(exercise.notes[0]), parseScientific(exercise.notes[1])), locale)
+      : null;
   // "po kolei" ("in order") is the one word this prompt most needs to
   // land — the instinct is to just sing the right notes, not necessarily
   // in the sequence the live highlight actually checks them in. Only the
@@ -695,6 +707,12 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
           promptText
         )}
       </Text>
+
+      {intervalLabel && (
+        <Text style={{ fontSize: theme.fontSize.body * 0.85, fontWeight: "700", color: theme.colors.primary, textAlign: "center" }}>
+          {t("lesson.solfegeIntervalLabel", locale, { interval: intervalLabel })}
+        </Text>
+      )}
 
       {rhythmNotes ? (
         <MelodicDictationStaff

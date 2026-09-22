@@ -216,7 +216,7 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
           spec: {
             type: "solfege-phrase-singing",
             notes: ["C4", "D4", "E4", "F4", "G4", "F4", "E4", "D4", "C4"],
-            rhythm: ["quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "half"],
+            rhythm: ["quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "whole"],
             meter: "4/4",
             isFragment: true,
             toleranceCents: 70,
@@ -229,7 +229,7 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
           spec: {
             type: "solfege-phrase-singing",
             notes: ["G4", "E4", "F4", "D4", "E4", "C4"],
-            rhythm: ["quarter", "quarter", "quarter", "quarter", "quarter", "half"],
+            rhythm: ["quarter", "quarter", "quarter", "quarter", "quarter", "dottedHalf"],
             meter: "4/4",
             isFragment: true,
             toleranceCents: 70,
@@ -256,7 +256,7 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
           spec: {
             type: "solfege-phrase-singing",
             notes: ["C4", "D4", "E4", "F4", "G4", "A4"],
-            rhythm: ["quarter", "quarter", "quarter", "quarter", "quarter", "half"],
+            rhythm: ["quarter", "quarter", "quarter", "quarter", "quarter", "dottedHalf"],
             meter: "4/4",
             isFragment: true,
             toleranceCents: 65,
@@ -269,7 +269,7 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
           spec: {
             type: "solfege-phrase-singing",
             notes: ["G4", "A4", "B4", "C5"],
-            rhythm: ["quarter", "quarter", "quarter", "half"],
+            rhythm: ["quarter", "quarter", "quarter", "quarter"],
             meter: "4/4",
             isFragment: true,
             toleranceCents: 65,
@@ -282,7 +282,7 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
           spec: {
             type: "solfege-phrase-singing",
             notes: ["C4", "E4", "G4", "E4", "C4"],
-            rhythm: ["quarter", "quarter", "quarter", "quarter", "half"],
+            rhythm: ["quarter", "quarter", "quarter", "quarter", "whole"],
             meter: "4/4",
             isFragment: true,
             toleranceCents: 65,
@@ -295,7 +295,7 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
           spec: {
             type: "solfege-phrase-singing",
             notes: ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"],
-            rhythm: ["eighth", "eighth", "eighth", "eighth", "quarter", "quarter", "quarter", "half"],
+            rhythm: ["eighth", "eighth", "eighth", "eighth", "quarter", "quarter", "quarter", "dottedHalf"],
             meter: "4/4",
             isFragment: true,
             toleranceCents: 65,
@@ -308,7 +308,7 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
           spec: {
             type: "solfege-phrase-singing",
             notes: ["C5", "B4", "A4", "G4", "F4", "E4", "D4", "C4"],
-            rhythm: ["eighth", "eighth", "eighth", "eighth", "quarter", "quarter", "quarter", "half"],
+            rhythm: ["eighth", "eighth", "eighth", "eighth", "quarter", "quarter", "quarter", "dottedHalf"],
             meter: "4/4",
             isFragment: true,
             toleranceCents: 65,

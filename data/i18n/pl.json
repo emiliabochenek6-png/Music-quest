@@ -138,6 +138,7 @@
   "lesson.solfegeStopButton": "⏹ Zatrzymaj",
   "lesson.solfegePhraseSingPrompt": "Zaśpiewaj kolejno całą gamę: {syllables}",
   "lesson.solfegePhraseSingFragmentPrompt": "Odsłuchaj nagrania. Kliknij przycisk nagraj i zaśpiewaj po kolei zaznaczone nuty.",
+  "lesson.solfegeIntervalLabel": "To interwał: {interval}",
   "lesson.solfegePhraseRecording": "Nagrywam… śpiewaj nutę zaznaczoną na zielono.",
   "lesson.solfegePhraseRhythmRecording": "Nagrywam… śpiewaj razem z metronomem — jedno uderzenie to ćwierćnuta.",
   "lesson.solfegePhraseResult": "Trafiono {correct}/{total} dźwięków",
