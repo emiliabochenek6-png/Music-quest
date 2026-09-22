@@ -4,7 +4,7 @@ import { File } from "expo-file-system";
 import { getRecordingPermissionsAsync, requestRecordingPermissionsAsync, useAudioRecorder } from "expo-audio";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { StaffNotation } from "@/components/exercises/StaffNotation";
-import { decodeAudioFileToPcm, playNote, playRecordedUri } from "@/lib/audio/player";
+import { decodeAudioFileToPcm, playNote } from "@/lib/audio/player";
 import { analyzeSungPitch } from "@/lib/audio/pitchDetection";
 import { SOLFEGE_RECORDING_OPTIONS, SOLFEGE_RECORD_SAMPLE_RATE } from "@/lib/audio/solfegeRecording";
 import { decodeWavPcm } from "@/lib/audio/wavDecoder";
@@ -45,10 +45,12 @@ type Phase = "idle" | "requesting-permission" | "permission-denied" | "recording
  * lib/audio/solfegeRecording.ts's own doc for why this world switched to
  * it from an earlier useAudioStream-based design). Stopping (manually or
  * via MAX_RECORD_MS) reads the recorded file back, decodes its raw PCM
- * (lib/audio/wavDecoder.ts) and runs lib/audio/pitchDetection.ts's
- * autocorrelation-based analyzeSungPitch on it. The same file is what the
- * student plays back via "odsłuchaj siebie" before checking. Grading
- * itself (comparing the detected frequency to the target, octave-folded
+ * (lib/audio/wavDecoder.ts, or lib/audio/player.ts's own
+ * decodeAudioFileToPcm on web — see that function's own doc) and runs
+ * lib/audio/pitchDetection.ts's autocorrelation-based analyzeSungPitch on
+ * it. No "listen back to your own take" playback — the player only ever
+ * hears the reference tone and their own live singing, never a replay.
+ * Grading itself (comparing the detected frequency to the target, octave-folded
  * — see lib/music/notes.ts's octaveFoldedCentsDifference) happens in
  * lib/questions/validate.ts, same separation every other exercise type
  * already keeps between "what the player did" (this component, via
@@ -61,8 +63,7 @@ type Phase = "idle" | "requesting-permission" | "permission-denied" | "recording
  */
 export function SolfegeNoteSingingExercise({ exercise, answer, onAnswerChange, checked, locale }: SolfegeNoteSingingExerciseProps) {
   const [phase, setPhase] = useState<Phase>("idle");
-  const [recordedUri, setRecordedUri] = useState<string | null>(null);
-  // Set only when something in the record/save/play pipeline genuinely
+  // Set only when something in the record/save pipeline genuinely
   // failed — a plain-language reason shown in place of the usual result,
   // not a permanent debug log.
   const [issue, setIssue] = useState<string | null>(null);
@@ -134,13 +135,11 @@ export function SolfegeNoteSingingExercise({ exercise, answer, onAnswerChange, c
 
     const uri = recorder.uri;
     if (!uri) {
-      setRecordedUri(null);
       setIssue(t("lesson.solfegeSaveFailed", locale));
       setPhase("recorded");
       onAnswerChange({ type: "solfege-note-singing", detectedFrequencyHz: null });
       return;
     }
-    setRecordedUri(uri);
 
     try {
       // expo-file-system's own File class is a non-functional stub on
@@ -209,7 +208,6 @@ export function SolfegeNoteSingingExercise({ exercise, answer, onAnswerChange, c
         return;
       }
     }
-    setRecordedUri(null);
     setIssue(null);
     try {
       await recorder.prepareToRecordAsync();
@@ -221,11 +219,6 @@ export function SolfegeNoteSingingExercise({ exercise, answer, onAnswerChange, c
     }
     setPhase("recording");
     stopTimerRef.current = setTimeout(finishTake, MAX_RECORD_MS);
-  }
-
-  function playback() {
-    if (!recordedUri) return;
-    playRecordedUri(recordedUri, undefined, () => setIssue(t("lesson.solfegePlaybackFailed", locale)));
   }
 
   const isRecording = phase === "recording";
@@ -294,9 +287,6 @@ export function SolfegeNoteSingingExercise({ exercise, answer, onAnswerChange, c
           />
         )}
         {isRecording && <DarkButton label={t("lesson.solfegeStopButton", locale)} onPress={finishTake} variant="secondary" />}
-        {hasResult && recordedUri && (
-          <DarkButton label={t("lesson.solfegePlaybackButton", locale)} onPress={playback} variant="secondary" />
-        )}
       </View>
     </View>
   );

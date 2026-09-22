@@ -32,12 +32,6 @@ export interface SamplePlaybackHandle {
   stop(): void;
 }
 
-/** How long playRecordedUri waits for the native side to report a source
- * loaded before giving up and reporting a real error instead of staying
- * silently stuck forever — generous ceiling for a slow device, not an
- * expected wait. */
-const LOAD_TIMEOUT_MS = 4000;
-
 /** Plays one pre-rendered sample and releases the underlying native player
  * once it finishes — expo-audio players are native resources
  * (SharedObject), not garbage-collected JS objects, so leaving them
@@ -491,87 +485,6 @@ export function playWebAudioTrack(events: readonly WebAudioTrackEvent[], anchorM
       fallback();
     });
   return true;
-}
-
-/** Plays back an on-device audio file by URI (a `file://...` path) rather
- * than a bundled require()'d sample — "Zaczarowany Solfeż"'s own
- * "odsłuchaj swoją nagrywkę" button, the one place in this app that plays
- * audio it didn't ship with (the student's own recorded take — a real
- * file expo-audio's own useAudioRecorder wrote, see lib/audio/
- * solfegeRecording.ts's own doc). Same simple play()-immediately shape as
- * playSample (see its own doc for why calling play() once and waiting
- * turned out to be the wrong fix) — this version additionally reports
- * real failures through `onError` (a native load error, a recording with
- * zero duration, or simply never confirming
- * loaded within LOAD_TIMEOUT_MS) rather than playSample's silent "it'll
- * probably work" stance, since a silently-broken recording is more useful
- * surfaced to the player than papered over. */
-export function playRecordedUri(uri: string, onFinish?: () => void, onError?: (message: string) => void): SamplePlaybackHandle {
-  const player = createAudioPlayer(uri);
-  player.volume = 1;
-  let settled = false;
-
-  function cleanup() {
-    subscription.remove();
-    clearTimeout(loadTimeout);
-    activeStops.delete(stop);
-  }
-
-  function stop(): void {
-    if (settled) return;
-    settled = true;
-    cleanup();
-    try {
-      player.pause();
-      player.remove();
-    } catch {
-      // Already finished/removed — nothing left to stop.
-    }
-  }
-
-  activeStops.add(stop);
-
-  function fail(message: string) {
-    if (settled) return;
-    settled = true;
-    cleanup();
-    try {
-      player.remove();
-    } catch {
-      // Already gone.
-    }
-    onError?.(message);
-  }
-
-  // Same simple play()-immediately shape as playSample (see its own doc
-  // on why the isLoaded-wait/nudge detour was reverted) — this function
-  // still listens for isLoaded, but ONLY to validate the recording
-  // (error / zero duration) and clear loadTimeout, never to gate or repeat
-  // play() itself.
-  const loadTimeout = setTimeout(() => fail(`nie załadowało się w ${LOAD_TIMEOUT_MS}ms`), LOAD_TIMEOUT_MS);
-
-  const subscription = player.addListener("playbackStatusUpdate", (status) => {
-    if (settled) return;
-    if (status.error) {
-      fail(status.error);
-      return;
-    }
-    if (status.isLoaded) {
-      clearTimeout(loadTimeout);
-      if (status.duration <= 0) {
-        fail("nagranie ma zerową długość");
-        return;
-      }
-    }
-    if (status.didJustFinish) {
-      settled = true;
-      cleanup();
-      player.remove();
-      onFinish?.();
-    }
-  });
-  player.play();
-  return { stop };
 }
 
 /** Immediately silences every sample currently sounding (or still loading)
