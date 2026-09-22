@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Text, View } from "react-native";
+import { Platform, Text, View } from "react-native";
 import { File } from "expo-file-system";
 import { getRecordingPermissionsAsync, requestRecordingPermissionsAsync, useAudioRecorder } from "expo-audio";
 import { DarkButton } from "@/components/exercises/DarkButton";
@@ -20,6 +20,7 @@ import {
 import { STANDALONE_METRONOME_MEASURES, metronomeBeatTimesMs, playMetronome, stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
 import { hasConfirmedMicrophonePermission, markMicrophonePermissionConfirmed, SOLFEGE_RECORDING_OPTIONS } from "@/lib/audio/solfegeRecording";
 import { decodeWavPcm, decodeWavPcmFrames, parseWavHeader, type WavHeader } from "@/lib/audio/wavDecoder";
+import { isWebLiveRecordingAvailable, startWebLiveRecording, type WebLiveRecording } from "@/lib/audio/webLiveRecorder";
 import { describeStaffPosition } from "@/lib/music/staff";
 import { classifyPitchMatch, noteToFrequency, octaveFoldedCentsDifference, parseScientific } from "@/lib/music/notes";
 import { nearestSolfegeReading, type SolfegeTunerReading } from "@/lib/music/solfege";
@@ -104,9 +105,15 @@ type Phase = "idle" | "requesting-permission" | "permission-denied" | "recording
  * sung duration against — see analyzeFreeRhythmicPhrase's own doc.
  *
  * While recording, this ALSO checks the player's progress live: every
- * LIVE_CHECK_POLL_MS it re-reads the STILL-RECORDING file, decodes it
- * (lib/audio/wavDecoder.ts), and re-runs lib/audio/pitchDetection.ts's
- * own analyzeFreeSungPhrase over everything sung so far (with
+ * LIVE_CHECK_POLL_MS it re-reads whatever's been captured of the STILL-
+ * RECORDING take so far — on native, incremental WAV frame reads off
+ * expo-audio's own recorder file (lib/audio/wavDecoder.ts); on web,
+ * expo-audio's own web recorder never exposes any audio before stop(),
+ * so webLiveRecordingRef instead routes the whole take through
+ * lib/audio/webLiveRecorder.ts's own raw-MediaRecorder-based recording,
+ * which CAN hand over periodic snapshots — and re-runs
+ * lib/audio/pitchDetection.ts's own analyzeFreeSungPhrase over everything
+ * sung so far (with
  * `excludeTrailingSegment: true` — see that option's own doc — so a note
  * the player hasn't actually finished singing yet, which just happens to
  * be where the recording-so-far ends, is never mistaken for a completed
@@ -201,6 +208,15 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
   // frames (from samplesRef.current.length onward) and appends them here,
   // rather than re-decoding the whole file from frame 0 every time.
   const samplesRef = useRef<Float32Array>(new Float32Array(0));
+  // Non-null only on web, only while phase === "recording" — see
+  // webLiveRecorder.ts's own doc for the full "why": expo-audio's web
+  // recorder never exposes ANY audio while still recording (its own .uri
+  // stays null until stop()), so live highlighting is impossible through
+  // it on web. When set, startRecording/finishTake/the live-poll effect
+  // below all route through THIS raw-MediaRecorder-based recording
+  // instead of expo-audio's own `recorder` — native is completely
+  // unaffected (this ref simply stays null there).
+  const webLiveRecordingRef = useRef<WebLiveRecording | null>(null);
   // Hop-level pitch/voiced analysis, extended incrementally — see
   // extendLiveVoicedAnalysis's own doc for why this is the actual fix for
   // this effect's previously documented O(whole-take-so-far) per-poll
@@ -272,21 +288,43 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
     let busy = false;
     const intervalId = setInterval(async () => {
       if (cancelled || busy || finishedRef.current) return;
-      const uri = recorder.uri;
-      if (!uri) return;
       busy = true;
       try {
-        const bytes = new Uint8Array(await new File(uri).arrayBuffer());
-        if (cancelled || !isMountedRef.current) return;
-        if (!wavHeaderRef.current) {
-          wavHeaderRef.current = parseWavHeader(bytes);
+        let samples: Float32Array;
+        let sampleRate: number;
+        const webLiveRecording = webLiveRecordingRef.current;
+        if (webLiveRecording) {
+          // Web path — see webLiveRecorder.ts's own doc: a FULL re-decode
+          // of everything captured so far, not an incremental read (Web
+          // Audio's decodeAudioData has no streaming mode to build an
+          // incremental path on top of). extendLiveVoicedAnalysis below
+          // still only does the expensive per-hop work for hops beyond
+          // what it's already seen, since this keeps handing it the same
+          // kind of monotonically-growing full-take array either way.
+          const decoded = await webLiveRecording.getSamplesSoFar();
+          if (cancelled || !isMountedRef.current || !decoded) return;
+          if (decoded.samples.length <= samplesRef.current.length) return; // nothing new landed since the last poll
+          samples = decoded.samples;
+          sampleRate = decoded.sampleRate;
+        } else {
+          // Native path — unchanged: incremental WAV frame reads off the
+          // still-recording file (see wavHeaderRef/samplesRef's own docs).
+          const uri = recorder.uri;
+          if (!uri) return;
+          const bytes = new Uint8Array(await new File(uri).arrayBuffer());
+          if (cancelled || !isMountedRef.current) return;
+          if (!wavHeaderRef.current) {
+            wavHeaderRef.current = parseWavHeader(bytes);
+          }
+          const header = wavHeaderRef.current;
+          if (!header) return;
+          const newFrames = decodeWavPcmFrames(bytes, header, samplesRef.current.length);
+          if (newFrames.length === 0) return; // nothing new landed since the last poll
+          samples = concatFloat32([samplesRef.current, newFrames]);
+          sampleRate = header.sampleRate;
         }
-        const header = wavHeaderRef.current;
-        if (!header) return;
-        const newFrames = decodeWavPcmFrames(bytes, header, samplesRef.current.length);
-        if (newFrames.length === 0) return; // nothing new landed since the last poll
-        samplesRef.current = concatFloat32([samplesRef.current, newFrames]);
-        extendLiveVoicedAnalysis(voicedStateRef.current, samplesRef.current, header.sampleRate, clickExclusionSecondsRef.current);
+        samplesRef.current = samples;
+        extendLiveVoicedAnalysis(voicedStateRef.current, samplesRef.current, sampleRate, clickExclusionSecondsRef.current);
         if (isRhythmGraded) {
           // recentVoicedPitch medians the last few hops of the CURRENT
           // voiced run (see its own doc) rather than trusting a single
@@ -297,7 +335,7 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
           const recentPitch = recentVoicedPitch(voicedStateRef.current);
           setTunerReading(recentPitch !== null ? nearestSolfegeReading(recentPitch, locale) : null);
         }
-        const liveResults = segmentsFromLiveVoicedAnalysis(voicedStateRef.current, header.sampleRate, {
+        const liveResults = segmentsFromLiveVoicedAnalysis(voicedStateRef.current, sampleRate, {
           noteCount: exercise.notes.length + 8, // headroom for a few wrong-note retries
           excludeTrailingSegment: true, // don't grade a note the player is still mid-singing
         });
@@ -355,6 +393,14 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
       } catch {
         // Native recorder already released — nothing left to stop.
       }
+      // Web path — releases the raw MediaRecorder's own mic stream if the
+      // player navigates away mid-recording, same as the native branch
+      // above does for expo-audio's own recorder.
+      if (webLiveRecordingRef.current) {
+        webLiveRecordingRef.current.stop().catch(() => {
+          // Already stopped/released — nothing left to do.
+        });
+      }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recorder]);
@@ -384,14 +430,25 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
     stopAllScheduledAudio();
     setPhase("analyzing");
 
-    try {
-      await recorder.stop();
-    } catch {
-      // Already stopped — the take may still be usable via recorder.uri.
+    // Web path — see webLiveRecordingRef's own doc: startRecording routed
+    // this whole take through the raw MediaRecorder instead of expo-
+    // audio's own `recorder`, so that's what needs stopping (and what
+    // has this take's real uri) here too.
+    const webLiveRecording = webLiveRecordingRef.current;
+    webLiveRecordingRef.current = null;
+    let uri: string | null;
+    if (webLiveRecording) {
+      uri = await webLiveRecording.stop().catch(() => null);
+    } else {
+      try {
+        await recorder.stop();
+      } catch {
+        // Already stopped — the take may still be usable via recorder.uri.
+      }
+      uri = recorder.uri;
     }
     if (!isMountedRef.current) return;
 
-    const uri = recorder.uri;
     let detectedFrequenciesHz: (number | null)[] = exercise.notes.map(() => null);
     let rhythmCorrect: (boolean | null)[] | undefined = isRhythmGraded ? exercise.notes.map(() => null) : undefined;
     if (uri) {
@@ -473,13 +530,27 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
         }
       }
     }
-    try {
-      await recorder.prepareToRecordAsync();
-      if (!isMountedRef.current) return;
-      recorder.record();
-    } catch {
-      return;
+    // Web routes the whole take through a raw MediaRecorder instead of
+    // expo-audio's own `recorder` — see webLiveRecordingRef's own doc for
+    // why (expo-audio's web recorder can't expose any audio before
+    // stop(), which live highlighting needs). Native is untouched.
+    if (Platform.OS === "web" && isWebLiveRecordingAvailable()) {
+      try {
+        webLiveRecordingRef.current = await startWebLiveRecording();
+      } catch {
+        return;
+      }
+    } else {
+      webLiveRecordingRef.current = null;
+      try {
+        await recorder.prepareToRecordAsync();
+        if (!isMountedRef.current) return;
+        recorder.record();
+      } catch {
+        return;
+      }
     }
+    if (!isMountedRef.current) return;
     markMicrophonePermissionConfirmed();
     highlightedIndexRef.current = 0;
     consumedSegmentsRef.current = 0;
