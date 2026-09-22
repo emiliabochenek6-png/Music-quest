@@ -178,9 +178,21 @@ function decodeLoopBuffer(context: AudioContext, source: number): Promise<AudioB
  * already handles that platform correctly) or if decoding genuinely
  * fails (a zero-length/corrupt take). */
 export async function decodeAudioFileToPcm(uri: string): Promise<{ samples: Float32Array; sampleRate: number } | null> {
-  const context = getWebAudioLoopContext();
-  if (!context) return null;
+  // Every step here — including constructing the AudioContext itself —
+  // is wrapped, not just the fetch/decode calls: iOS Safari in particular
+  // can throw when it's asked to create/use an AudioContext while a
+  // getUserMedia-backed recording session has just ended (an audio-
+  // session-category conflict, not a decode failure at all), and this
+  // function's whole contract is "never throws, null means unreadable"
+  // — a caller (see SolfegeNoteSingingExercise/SolfegePhraseSingingExercise's
+  // own finishTake) treats an uncaught throw here as "the take itself
+  // failed to save" (a scary, wrong message), when the real, correct
+  // outcome for any of these platform-specific failures is the same as
+  // an ordinary "couldn't determine a pitch" — the recording itself is
+  // still fine and still playable either way.
   try {
+    const context = getWebAudioLoopContext();
+    if (!context) return null;
     const response = await fetch(uri);
     const arrayBuffer = await response.arrayBuffer();
     const audioBuffer = await context.decodeAudioData(arrayBuffer);
