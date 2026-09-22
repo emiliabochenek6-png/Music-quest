@@ -314,10 +314,55 @@ const DECODE_FALLBACK_TIMEOUT_MS = 700;
  * (getWebAudioLoopContext returns null there) and safe to call
  * repeatedly — decodeLoopBuffer's own cache means every call after the
  * first for a given source is free. */
+// Firing every prefetch source's fetch at once (the original shape here)
+// is exactly right on a fast connection — but on a slow/mobile one, a few
+// dozen background fetches all competing for the SAME limited bandwidth
+// means whichever one a real tap actually needs (if the player taps
+// before that one's own turn in the queue happened to come up) waits
+// behind every other one too, which is a WORSE "opóźnienie" than the
+// cold-decode delay this was meant to fix in the first place — reported
+// specifically on a phone, where that bandwidth ceiling is real in a way
+// it isn't on a desktop/wifi test. PREFETCH_CONCURRENCY caps how many of
+// these background decodes are ever in flight at once, so there's always
+// headroom left over for whatever the player actually taps next; the
+// rest simply queue up one at a time behind it instead of piling on.
+const PREFETCH_CONCURRENCY = 2;
+
+/** requestIdleCallback when available (every real browser this ships to
+ * except Safari) — runs `run` once the browser has genuinely finished
+ * whatever it was doing (the initial route's own render/layout most
+ * notably), rather than racing it. Safari has no requestIdleCallback at
+ * all, so it falls back to a short setTimeout instead — later than "as
+ * soon as possible" on purpose, same reasoning as the delay itself. */
+function runWhenIdle(run: () => void): void {
+  const ric = (globalThis as { requestIdleCallback?: (cb: () => void) => void }).requestIdleCallback;
+  if (ric) {
+    ric(run);
+  } else {
+    setTimeout(run, 1200);
+  }
+}
+
+async function prefetchSequentially(context: AudioContext, sources: readonly number[]): Promise<void> {
+  let nextIndex = 0;
+  async function worker(): Promise<void> {
+    while (nextIndex < sources.length) {
+      const source = sources[nextIndex++];
+      await decodeLoopBuffer(context, source).catch(() => {
+        // A single sample failing to prefetch isn't fatal — the real
+        // playWebAudioTrack call for it later just re-attempts its own
+        // decode (and has its own DECODE_FALLBACK_TIMEOUT_MS backstop),
+        // so this queue only needs to move on to the rest.
+      });
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(PREFETCH_CONCURRENCY, sources.length) }, worker));
+}
+
 export function prefetchWebAudioSamples(sources: readonly number[]): void {
   const context = getWebAudioLoopContext();
   if (!context) return;
-  sources.forEach((source) => void decodeLoopBuffer(context, source));
+  runWhenIdle(() => void prefetchSequentially(context, sources));
 }
 
 export function playWebAudioTrack(events: readonly WebAudioTrackEvent[], anchorMs: number, fallback: () => void): boolean {
