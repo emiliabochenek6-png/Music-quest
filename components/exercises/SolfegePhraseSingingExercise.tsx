@@ -396,17 +396,26 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
     let rhythmCorrect: (boolean | null)[] | undefined = isRhythmGraded ? exercise.notes.map(() => null) : undefined;
     if (uri) {
       try {
-        const bytes = new Uint8Array(await new File(uri).arrayBuffer());
-        // See SolfegeNoteSingingExercise's own identical fallback doc —
-        // decodeWavPcm alone only ever reads a take on platforms that
-        // actually record WAV (iOS); web's MediaRecorder-based take
-        // (audio/webm) needs decodeAudioFileToPcm's Web Audio API path
-        // instead. The LIVE mid-recording highlight above this function
-        // stays WAV-only (decodeAudioData can't incrementally decode a
-        // still-growing file the way decodeWavPcmFrames does) — this
-        // fixes the FINAL analysis, which is what actually grades the
-        // take and is what was silently never detecting anything on web.
-        const decoded = decodeWavPcm(bytes) ?? (await decodeAudioFileToPcm(uri));
+        // See SolfegeNoteSingingExercise's own identical fallback doc for
+        // the full "why" — expo-file-system's File class is a
+        // non-functional stub on web (throws on .arrayBuffer()), which is
+        // what was actually breaking this on web, one layer before
+        // decodeWavPcm's own WAV-only parsing ever ran. Caught
+        // separately so web falls straight through to
+        // decodeAudioFileToPcm's own fetch(uri)-based read. The LIVE
+        // mid-recording highlight above this function stays WAV-only
+        // (decodeAudioData can't incrementally decode a still-growing
+        // file the way decodeWavPcmFrames does) — this fixes the FINAL
+        // analysis, which is what actually grades the take.
+        let decoded: { samples: Float32Array; sampleRate: number } | null = null;
+        try {
+          const bytes = new Uint8Array(await new File(uri).arrayBuffer());
+          decoded = decodeWavPcm(bytes);
+        } catch {
+          // expo-file-system unavailable (web) — decodeAudioFileToPcm
+          // below reads the same uri its own way instead.
+        }
+        decoded = decoded ?? (await decodeAudioFileToPcm(uri));
         if (decoded) {
           // No excludeTrailingSegment here — the take is finished, so a
           // note that ends right at the recording's own end is still

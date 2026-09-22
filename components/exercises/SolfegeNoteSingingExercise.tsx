@@ -143,17 +143,34 @@ export function SolfegeNoteSingingExercise({ exercise, answer, onAnswerChange, c
     setRecordedUri(uri);
 
     try {
-      const bytes = new Uint8Array(await new File(uri).arrayBuffer());
-      // decodeWavPcm reads the take directly on platforms that actually
-      // record WAV (iOS — see SOLFEGE_RECORDING_OPTIONS's own doc); web's
-      // MediaRecorder-based take (audio/webm) isn't a WAV at all, so this
-      // returns null there — decodeAudioFileToPcm is web's own fallback
-      // (Web Audio API's decodeAudioData, which DOES understand webm —
-      // see its own doc for the full "why"). Still null after that on
-      // Android, whose compressed AAC/M4A fallback neither path can
-      // read — a real, deliberate gap (see SOLFEGE_RECORDING_OPTIONS),
-      // not an error.
-      const decoded = decodeWavPcm(bytes) ?? (await decodeAudioFileToPcm(uri));
+      // expo-file-system's own File class is a non-functional stub on
+      // web ("expo-file-system is not supported on web" — its
+      // constructor silently drops the uri it's given, and .arrayBuffer()
+      // then throws) — so THIS read, not just decodeWavPcm's own WAV-only
+      // parsing, is what was actually breaking recording detection on web
+      // before it ever reached the decode step. Caught separately so a
+      // web platform (where this always throws) falls straight through to
+      // decodeAudioFileToPcm's own fetch(uri)-based read below, instead of
+      // the whole try/catch's outer catch reporting a false "couldn't
+      // save" — the file itself saved just fine, only this specific way
+      // of reading it back doesn't work on web.
+      let decoded: { samples: Float32Array; sampleRate: number } | null = null;
+      try {
+        const bytes = new Uint8Array(await new File(uri).arrayBuffer());
+        decoded = decodeWavPcm(bytes);
+      } catch {
+        // expo-file-system unavailable (web) — decodeAudioFileToPcm below
+        // reads the same uri its own way instead.
+      }
+      // Still null here either because the above never produced WAV bytes
+      // to try (web), or decodeWavPcm ran but the bytes genuinely weren't
+      // a WAV (Android's compressed fallback — see
+      // SOLFEGE_RECORDING_OPTIONS's own doc). decodeAudioFileToPcm's own
+      // Web Audio API path (which DOES understand the web recorder's
+      // webm output — see its own doc for the full "why") is a no-op on
+      // native, so this stays null on Android exactly as before — a
+      // real, deliberate gap there, not an error.
+      decoded = decoded ?? (await decodeAudioFileToPcm(uri));
       if (decoded === null) {
         // Nothing to analyze — the file itself is still perfectly
         // playable either way.
