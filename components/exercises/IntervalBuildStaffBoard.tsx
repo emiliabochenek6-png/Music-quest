@@ -38,7 +38,10 @@ const ACCIDENTAL_SYMBOL: Record<Accidental, string> = { [-2]: "♭♭", [-1]: "�
 // line should have its center on that line, not sitting below it).
 const ACCIDENTAL_FONT_SIZE: Record<Accidental, number> = { [-2]: 22, [-1]: 22, [0]: 0, [1]: 27, [2]: 18 };
 const ACCIDENTAL_LETTER_SPACING: Record<Accidental, number> = { [-2]: -15, [-1]: 0, [0]: 0, [1]: 0, [2]: 0 };
-const ACCIDENTAL_DY: Record<Accidental, number> = { [-2]: 7, [-1]: 7, [0]: 0, [1]: 11, [2]: 5 };
+// [-1]/[1] (plain flat/sharp) nudged up again per a later round of live
+// feedback (Fabryka Budowania) — they still sat a bit low relative to
+// the note/line they mark.
+const ACCIDENTAL_DY: Record<Accidental, number> = { [-2]: 7, [-1]: 4, [0]: 0, [1]: 8, [2]: 5 };
 const ACCIDENTAL_X_OFFSET: Record<Accidental, number> = { [-2]: -7, [-1]: 0, [0]: 0, [1]: 0, [2]: 0 };
 const BOARD_WIDTH = 220;
 /** Extra room on both sides of the 0-VIEW_WIDTH viewBox so every note and

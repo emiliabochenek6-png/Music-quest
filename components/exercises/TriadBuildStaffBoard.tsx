@@ -36,11 +36,13 @@ const EDGE_MARGIN = NOTE_RADIUS + 4;
 /** Same symbols/sizing reasoning as IntervalBuildStaffBoard's own — see
  * that component's docstring. ACCIDENTAL_DY nudged down slightly per live
  * feedback on level 9 (both flats and sharps sat a touch too high), same
- * -1/1 values that component's own level-4 feedback already landed on. */
+ * -1/1 values that component's own level-4 feedback already landed on —
+ * then nudged back up again per a later round of live feedback (Fabryka
+ * Budowania), same -1/1 values that component's own doc landed on. */
 const ACCIDENTAL_SYMBOL: Record<Accidental, string> = { [-2]: "♭♭", [-1]: "♭", [0]: "", [1]: "♯", [2]: "x" };
 const ACCIDENTAL_FONT_SIZE: Record<Accidental, number> = { [-2]: 22, [-1]: 22, [0]: 0, [1]: 27, [2]: 18 };
 const ACCIDENTAL_LETTER_SPACING: Record<Accidental, number> = { [-2]: -15, [-1]: 0, [0]: 0, [1]: 0, [2]: 0 };
-const ACCIDENTAL_DY: Record<Accidental, number> = { [-2]: 7, [-1]: 7, [0]: 0, [1]: 11, [2]: 7 };
+const ACCIDENTAL_DY: Record<Accidental, number> = { [-2]: 7, [-1]: 4, [0]: 0, [1]: 8, [2]: 7 };
 const ACCIDENTAL_X_OFFSET: Record<Accidental, number> = { [-2]: -7, [-1]: 0, [0]: 0, [1]: 0, [2]: 0 };
 const BOARD_WIDTH = 280;
 const COLUMN_WIDTH_PERCENT = 26;
