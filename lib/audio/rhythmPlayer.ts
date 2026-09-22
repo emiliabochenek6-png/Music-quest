@@ -4,6 +4,7 @@ import {
   getPool,
   playSample,
   playWebAudioTrack,
+  prefetchWebAudioSamples,
   scheduleAt,
   schedulerNow,
   stopAllActiveSamples,
@@ -76,6 +77,15 @@ const clapPool = createSamplePool(CLAP_SAMPLE, 10);
 // meter) can lean on these just as hard as the plain click pools do.
 const accentClapPool = createSamplePool(CLICK_ACCENT_CLAP_SAMPLE, 8);
 const weakClapPool = createSamplePool(CLICK_WEAK_CLAP_SAMPLE, 12);
+
+// Every rhythm exercise in the app reuses this exact same handful of
+// click/clap samples (see playMetronome/playRhythm/playMetronomeWithClaps
+// below) — decoding them once, right away at module load, means the
+// FIRST 🔊 press in a session never pays a cold fetch+decode itself (see
+// prefetchWebAudioSamples' own doc for why that matters: a slow decode
+// on a real network is exactly what read as "dźwięk nie działa/się
+// opóźnia" before DECODE_FALLBACK_TIMEOUT_MS existed as a backstop).
+prefetchWebAudioSamples([CLICK_ACCENT_SAMPLE, CLICK_WEAK_SAMPLE, CLAP_SAMPLE, CLICK_ACCENT_CLAP_SAMPLE, CLICK_WEAK_CLAP_SAMPLE]);
 
 // playDanceFragment's own notes (bass/chord/pickup/lilt) use the generic
 // getPool() (imported from lib/audio/player.ts) rather than a named pool

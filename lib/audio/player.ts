@@ -289,6 +289,37 @@ const WEB_AUDIO_TRACK_LEAD_SECONDS = 0.02;
  * don't share this problem on (AVAudioPlayer/ExoPlayer, not
  * HTMLAudioElement). `fallback` runs instead if decoding a sample fails,
  * so a broken fetch never leaves the exercise silently mute. */
+// A cold decode (a sample no earlier call already warmed decodedLoopBuffers
+// with) is a real network fetch + decodeAudioData, not instant — normally
+// well under this on a reasonable connection, but a slow/flaky one could
+// leave a tap SILENT for however long that fetch takes if nothing bounded
+// the wait. Rather than let a click ever hang indefinitely waiting on the
+// network, a decode that hasn't resolved within this long gives up and
+// falls back to the pooled/native path instead (see the race against
+// decodeTimeoutId below) — "starts a little late on a bad connection,
+// through the always-available fallback" beats "silent until a slow
+// fetch eventually finishes, or never does." Generous relative to how
+// fast a cached/warm decode actually resolves (single-digit ms) so this
+// essentially never fires on a normal connection. */
+const DECODE_FALLBACK_TIMEOUT_MS = 700;
+
+/** Kicks off decodeLoopBuffer for each source right now, without waiting
+ * on or blocking anything — call this as early as possible (module load
+ * for a small fixed sample set, or a screen's own mount effect) so that
+ * by the time a real playWebAudioTrack call actually needs one of these
+ * buffers, it's already decoded (or decoding) instead of starting a cold
+ * fetch at the exact moment a tap is waiting on it (see
+ * DECODE_FALLBACK_TIMEOUT_MS's own doc for what happens on a genuinely
+ * slow connection even with this). A no-op on native/static-export
+ * (getWebAudioLoopContext returns null there) and safe to call
+ * repeatedly — decodeLoopBuffer's own cache means every call after the
+ * first for a given source is free. */
+export function prefetchWebAudioSamples(sources: readonly number[]): void {
+  const context = getWebAudioLoopContext();
+  if (!context) return;
+  sources.forEach((source) => void decodeLoopBuffer(context, source));
+}
+
 export function playWebAudioTrack(events: readonly WebAudioTrackEvent[], anchorMs: number, fallback: () => void): boolean {
   const context = getWebAudioLoopContext();
   if (!context) return false;
@@ -300,6 +331,7 @@ export function playWebAudioTrack(events: readonly WebAudioTrackEvent[], anchorM
   function stop(): void {
     if (settled) return;
     settled = true;
+    clearTimeout(decodeTimeoutId);
     activeStops.delete(stop);
     voices.forEach(({ node, gain }) => {
       try {
@@ -313,8 +345,20 @@ export function playWebAudioTrack(events: readonly WebAudioTrackEvent[], anchorM
   }
 
   activeStops.add(stop);
+  // See DECODE_FALLBACK_TIMEOUT_MS's own doc — races the decode below,
+  // not a "this call failed" signal on its own. Whichever settles first
+  // (a fast decode vs. this) wins; the loser's branch is a no-op via the
+  // shared `settled` guard, so the two never both actually play.
+  const decodeTimeoutId = setTimeout(() => {
+    if (settled) return;
+    settled = true;
+    activeStops.delete(stop);
+    fallback();
+  }, DECODE_FALLBACK_TIMEOUT_MS);
+
   void Promise.all(events.map((event) => decodeLoopBuffer(context, event.source)))
     .then((buffers) => {
+      clearTimeout(decodeTimeoutId);
       if (settled) return;
       const baseContextTime = context.currentTime + WEB_AUDIO_TRACK_LEAD_SECONDS;
       let remaining = events.length;
@@ -349,6 +393,7 @@ export function playWebAudioTrack(events: readonly WebAudioTrackEvent[], anchorM
       });
     })
     .catch(() => {
+      clearTimeout(decodeTimeoutId);
       if (settled) return;
       settled = true;
       activeStops.delete(stop);
