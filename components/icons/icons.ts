@@ -137,13 +137,13 @@ export const ICONS = {
 </svg>`,
 
   kraina_labirynt_tonacji: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-<circle cx="20" cy="20" r="13" fill="#8338EC" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="20" cy="20" r="5.5" fill="#FFF4E6" stroke="#4A2C1D" stroke-width="2.4"/>
-<path d="M29 29 L52 52" stroke="#4A2C1D" stroke-width="7.5" stroke-linecap="round"/>
-<path d="M29 29 L52 52" stroke="#8338EC" stroke-width="3.4" stroke-linecap="round"/>
-<path d="M43.5 43.5 L50 37 M47.5 47.5 L54 41" stroke="#4A2C1D" stroke-width="5" stroke-linecap="round"/>
-<path d="M43.5 43.5 L50 37 M47.5 47.5 L54 41" stroke="#8338EC" stroke-width="2.2" stroke-linecap="round"/>
-<ellipse cx="15" cy="15" rx="2.6" ry="4.4" transform="rotate(-30 15 15)" fill="#FFFFFF" fill-opacity="0.5"/>
+<path d="M23 6 V42" stroke="#4A2C1D" stroke-width="5.5" stroke-linecap="round"/>
+<path d="M23 6 V42" stroke="#8338EC" stroke-width="2.6" stroke-linecap="round"/>
+<path d="M23 23 C33.5 23 37.5 29.5 33.5 35.5 C30.5 39.5 24.5 39.5 23 35.5 Z" fill="#8338EC" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M41 13 V44" stroke="#4A2C1D" stroke-width="4.5" stroke-linecap="round"/>
+<path d="M41 13 V44" stroke="#8338EC" stroke-width="2" stroke-linecap="round"/>
+<path d="M41 27 C48.5 27 51.5 32 48.5 37 C46 40 41.5 40 41 37 Z" fill="#8338EC" stroke="#4A2C1D" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+<ellipse cx="26.5" cy="27" rx="2" ry="3.2" transform="rotate(-25 26.5 27)" fill="#FFFFFF" fill-opacity="0.5"/>
 </svg>`,
 
   kraina_fabryka_budowania: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
@@ -159,27 +159,21 @@ export const ICONS = {
 </svg>`,
 
   kraina_gaj_grupowania: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-<rect x="16" y="36" width="5.5" height="19" rx="2.2" fill="#4A2C1D"/>
-<rect x="34" y="30" width="5.5" height="19" rx="2.2" fill="#4A2C1D"/>
-<rect x="46" y="24" width="5.5" height="19" rx="2.2" fill="#4A2C1D"/>
-<path d="M16 36 L51.5 24 V29.5 L16 41.5 Z" fill="#4A2C1D"/>
-<path d="M16 44 L51.5 32 V36.5 L16 48.5 Z" fill="#4A2C1D"/>
-<ellipse cx="16.8" cy="55.5" rx="6.8" ry="5" transform="rotate(-18 16.8 55.5)" fill="#588157" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round"/>
-<ellipse cx="34.8" cy="49.5" rx="6.8" ry="5" transform="rotate(-18 34.8 49.5)" fill="#588157" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round"/>
-<ellipse cx="46.8" cy="43.5" rx="6.8" ry="5" transform="rotate(-18 46.8 43.5)" fill="#588157" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round"/>
-<path d="M8 14 C14 8 22 8 26 14 C20 15 16 19 15 25 C9 23 6 19 8 14 Z" fill="#588157" stroke="#4A2C1D" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M26 14 C22 15 17 18 15 24" fill="none" stroke="#3E6B3E" stroke-width="1.6" stroke-linecap="round"/>
+<rect x="23" y="16" width="5.5" height="35" rx="2.4" fill="#4A2C1D"/>
+<rect x="43" y="9" width="5.5" height="36" rx="2.4" fill="#4A2C1D"/>
+<path d="M23 16 L48.5 9 V15.5 L23 22.5 Z" fill="#4A2C1D"/>
+<ellipse cx="17.5" cy="52.5" rx="9.5" ry="7" transform="rotate(-15 17.5 52.5)" fill="#588157" stroke="#4A2C1D" stroke-width="3.4" stroke-linejoin="round" stroke-linecap="round"/>
+<ellipse cx="37.5" cy="45.5" rx="9.5" ry="7" transform="rotate(-15 37.5 45.5)" fill="#588157" stroke="#4A2C1D" stroke-width="3.4" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M48.5 9 C53 4 59 5.5 60.5 10.5 C56.5 10.5 53.5 13.5 52.5 17.5 C49.5 15.5 47.5 12.5 48.5 9 Z" fill="#588157" stroke="#4A2C1D" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+<ellipse cx="15" cy="49.5" rx="2" ry="1.3" transform="rotate(-15 15 49.5)" fill="#FFFFFF" fill-opacity="0.5"/>
 </svg>`,
 
   kraina_szczyt_dyktand: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-<path d="M4 52 L22 18 L32 34 L40 22 L60 52 Z" fill="#B9A0DD" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M40 22 L60 52 H46 L36 32 Z" fill="#9D4EDD"/>
-<path d="M18 26 L22 18 L26.5 25 L23 27.5 Z" fill="#FFFFFF" stroke="#4A2C1D" stroke-width="2" stroke-linejoin="round"/>
-<path d="M36 26 L40 22 L44.5 27 L41 29.5 Z" fill="#FFFFFF" stroke="#4A2C1D" stroke-width="2" stroke-linejoin="round"/>
-<path d="M4 52 L22 18 L32 34 L40 22 L60 52 Z" fill="none" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M14 46 A18 18 0 0 1 50 46" fill="none" stroke="#4A2C1D" stroke-width="4.5" stroke-linecap="round"/>
-<rect x="9" y="44" width="9" height="13" rx="4" fill="#FFC94A" stroke="#4A2C1D" stroke-width="2.6" stroke-linejoin="round"/>
-<rect x="46" y="44" width="9" height="13" rx="4" fill="#FFC94A" stroke="#4A2C1D" stroke-width="2.6" stroke-linejoin="round"/>
+<path d="M4 54 L22 16 L32 34 L40 20 L60 54 Z" fill="#B9A0DD" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M40 20 L60 54 H46 L36 32 Z" fill="#9D4EDD"/>
+<path d="M18 25 L22 16 L27 24 L23 27 Z" fill="#FFFFFF" stroke="#4A2C1D" stroke-width="2" stroke-linejoin="round"/>
+<path d="M36 25 L40 20 L45 26 L41 29 Z" fill="#FFFFFF" stroke="#4A2C1D" stroke-width="2" stroke-linejoin="round"/>
+<path d="M4 54 L22 16 L32 34 L40 20 L60 54 Z" fill="none" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
 </svg>`,
 
   kraina_zaczarowany_solfez: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
