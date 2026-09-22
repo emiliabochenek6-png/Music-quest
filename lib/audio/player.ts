@@ -120,7 +120,18 @@ export function playSample(source: number, velocity: number, onFinish?: () => vo
 let webAudioLoopContext: AudioContext | null | undefined;
 
 function getWebAudioLoopContext(): AudioContext | null {
-  if (webAudioLoopContext !== undefined) return webAudioLoopContext;
+  // A "closed" context (as opposed to merely "suspended", which resume()
+  // can recover from) can NEVER be reused — once closed it stays closed
+  // forever. "Zaczarowany Solfeż" repeatedly acquiring/releasing a
+  // getUserMedia mic stream for each recording is exactly the kind of
+  // audio-session churn that can take this SHARED singleton down with it
+  // on some browsers (reported live: the first couple of takes in a
+  // lesson decode fine, later ones in the same session stop working) —
+  // so a closed context here is discarded and rebuilt fresh instead of
+  // being cached forever as a permanently-broken null-returning trap.
+  if (webAudioLoopContext !== undefined && webAudioLoopContext?.state !== "closed") {
+    return webAudioLoopContext;
+  }
   if (typeof window === "undefined") {
     webAudioLoopContext = null;
     return webAudioLoopContext;
@@ -187,6 +198,11 @@ export async function decodeAudioFileToPcm(uri: string): Promise<{ samples: Floa
   try {
     const context = getWebAudioLoopContext();
     if (!context) return null;
+    // A merely-suspended (not closed) context resume()s back to usable —
+    // recording just finished, and releasing the mic stream is exactly
+    // the kind of audio-session handoff that can leave a SHARED context
+    // suspended on some browsers even though it's still perfectly alive.
+    await context.resume();
     const response = await fetch(uri);
     const arrayBuffer = await response.arrayBuffer();
     const audioBuffer = await context.decodeAudioData(arrayBuffer);
