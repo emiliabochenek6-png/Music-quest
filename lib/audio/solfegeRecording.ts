@@ -64,3 +64,41 @@ export const SOLFEGE_RECORDING_OPTIONS: RecordingOptions = {
     bitsPerSecond: 128000,
   },
 };
+
+// Module-level (not per-exercise-component) — a browser mic grant lasts the
+// whole page session once given, so there's no reason to re-confirm it
+// before every single take. Set true the first time a recording actually
+// starts successfully; both SolfegeNoteSingingExercise and
+// SolfegePhraseSingingExercise check this before their own
+// getRecordingPermissionsAsync/requestRecordingPermissionsAsync calls —
+// see hasConfirmedMicrophonePermission's own doc for why skipping those
+// on every later take matters specifically on web.
+let microphonePermissionConfirmed = false;
+
+/** Whether a take has already recorded successfully once this session —
+ * when true, a caller can skip straight to recorder.prepareToRecordAsync()
+ * instead of first calling getRecordingPermissionsAsync()/
+ * requestRecordingPermissionsAsync(). Those two are a SEPARATE
+ * getUserMedia() acquire-then-immediately-stop() cycle of their own (see
+ * expo-audio's own AudioModule.web.ts) — needed the FIRST time, to know
+ * whether to show a request/denied UI state before ever touching the mic
+ * for real, but pure overhead on every take after that. On browsers where
+ * the Permissions API doesn't support querying 'microphone' at all (a
+ * real, documented gap — Firefox throws there, and Safari support has
+ * historically been unreliable the same way), getRecordingPermissionsAsync
+ * can't just confirm "already granted" from the query alone either, so it
+ * silently falls through to requestRecordingPermissionsAsync EVERY single
+ * time — meaning every "Nagraj" press was doing TWO full mic acquire/
+ * release cycles back to back (this redundant check, then the real
+ * recording's own), not just one. That's exactly the kind of repeated
+ * audio-session churn most likely to leave a LATER take unable to
+ * acquire the mic at all on a real device, even though the very first
+ * take (before any prior churn) works fine — reported live as "works
+ * once, breaks on the very next attempt." */
+export function hasConfirmedMicrophonePermission(): boolean {
+  return microphonePermissionConfirmed;
+}
+
+export function markMicrophonePermissionConfirmed(): void {
+  microphonePermissionConfirmed = true;
+}

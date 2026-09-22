@@ -6,7 +6,12 @@ import { DarkButton } from "@/components/exercises/DarkButton";
 import { StaffNotation } from "@/components/exercises/StaffNotation";
 import { decodeAudioFileToPcm, playNote } from "@/lib/audio/player";
 import { analyzeSungPitch } from "@/lib/audio/pitchDetection";
-import { SOLFEGE_RECORDING_OPTIONS, SOLFEGE_RECORD_SAMPLE_RATE } from "@/lib/audio/solfegeRecording";
+import {
+  hasConfirmedMicrophonePermission,
+  markMicrophonePermissionConfirmed,
+  SOLFEGE_RECORDING_OPTIONS,
+  SOLFEGE_RECORD_SAMPLE_RATE,
+} from "@/lib/audio/solfegeRecording";
 import { decodeWavPcm } from "@/lib/audio/wavDecoder";
 import { classifyPitchMatch, noteToFrequency, parseScientific } from "@/lib/music/notes";
 import { t } from "@/lib/i18n/translate";
@@ -197,15 +202,23 @@ export function SolfegeNoteSingingExercise({ exercise, answer, onAnswerChange, c
 
   async function startRecording() {
     if (checked) return;
-    const current = await getRecordingPermissionsAsync();
-    if (!isMountedRef.current) return;
-    if (current.status !== "granted") {
-      setPhase("requesting-permission");
-      const requested = await requestRecordingPermissionsAsync();
+    // See hasConfirmedMicrophonePermission's own doc — once a take has
+    // already recorded successfully this session, skip straight past this
+    // whole check (a SEPARATE getUserMedia acquire/release cycle of its
+    // own on browsers whose Permissions API can't just answer "granted?"
+    // directly) instead of paying its cost again before every single
+    // "Nagraj" press.
+    if (!hasConfirmedMicrophonePermission()) {
+      const current = await getRecordingPermissionsAsync();
       if (!isMountedRef.current) return;
-      if (!requested.granted) {
-        setPhase("permission-denied");
-        return;
+      if (current.status !== "granted") {
+        setPhase("requesting-permission");
+        const requested = await requestRecordingPermissionsAsync();
+        if (!isMountedRef.current) return;
+        if (!requested.granted) {
+          setPhase("permission-denied");
+          return;
+        }
       }
     }
     setIssue(null);
@@ -217,6 +230,7 @@ export function SolfegeNoteSingingExercise({ exercise, answer, onAnswerChange, c
       setIssue(t("lesson.solfegeSaveFailed", locale));
       return;
     }
+    markMicrophonePermissionConfirmed();
     setPhase("recording");
     stopTimerRef.current = setTimeout(finishTake, MAX_RECORD_MS);
   }

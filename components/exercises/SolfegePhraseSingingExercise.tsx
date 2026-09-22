@@ -18,7 +18,7 @@ import {
   type LiveVoicedAnalysisState,
 } from "@/lib/audio/pitchDetection";
 import { STANDALONE_METRONOME_MEASURES, metronomeBeatTimesMs, playMetronome, stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
-import { SOLFEGE_RECORDING_OPTIONS } from "@/lib/audio/solfegeRecording";
+import { hasConfirmedMicrophonePermission, markMicrophonePermissionConfirmed, SOLFEGE_RECORDING_OPTIONS } from "@/lib/audio/solfegeRecording";
 import { decodeWavPcm, decodeWavPcmFrames, parseWavHeader, type WavHeader } from "@/lib/audio/wavDecoder";
 import { describeStaffPosition } from "@/lib/music/staff";
 import { classifyPitchMatch, noteToFrequency, octaveFoldedCentsDifference, parseScientific } from "@/lib/music/notes";
@@ -455,15 +455,22 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
 
   async function startRecording() {
     if (checked) return;
-    const current = await getRecordingPermissionsAsync();
-    if (!isMountedRef.current) return;
-    if (current.status !== "granted") {
-      setPhase("requesting-permission");
-      const requested = await requestRecordingPermissionsAsync();
+    // See SolfegeNoteSingingExercise's own identical doc — skip this
+    // whole check (a separate getUserMedia acquire/release cycle on its
+    // own on browsers whose Permissions API can't just answer "granted?"
+    // directly) once a take has already recorded successfully this
+    // session, instead of paying its cost again before every take.
+    if (!hasConfirmedMicrophonePermission()) {
+      const current = await getRecordingPermissionsAsync();
       if (!isMountedRef.current) return;
-      if (!requested.granted) {
-        setPhase("permission-denied");
-        return;
+      if (current.status !== "granted") {
+        setPhase("requesting-permission");
+        const requested = await requestRecordingPermissionsAsync();
+        if (!isMountedRef.current) return;
+        if (!requested.granted) {
+          setPhase("permission-denied");
+          return;
+        }
       }
     }
     try {
@@ -473,6 +480,7 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
     } catch {
       return;
     }
+    markMicrophonePermissionConfirmed();
     highlightedIndexRef.current = 0;
     consumedSegmentsRef.current = 0;
     finishedRef.current = false;
