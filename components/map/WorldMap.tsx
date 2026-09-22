@@ -46,10 +46,21 @@ export function WorldMap({ progress, subscription, lessonStars, onSelectWorld }:
   return (
     <ScrollView
       style={styles.scroll}
-      contentContainerStyle={{ paddingTop: insets.top + 64, paddingBottom: insets.bottom + 40 }}
+      contentContainerStyle={{ paddingTop: insets.top + 64, paddingBottom: insets.bottom + 40, alignItems: "center" }}
       showsVerticalScrollIndicator={false}
     >
-      <View style={{ width: "100%", height: totalHeight, alignItems: "center" }}>
+      {/* Fixed PATH_WIDTH (not "100%") so this column — the SVG path
+          plus every absolutely-positioned WorldNode, both laid out in
+          raw pixel coordinates against ITS OWN left edge — stays exactly
+          as wide as those coordinates actually span, regardless of the
+          real viewport. On a phone that's close enough to the screen
+          width that the difference barely showed; on a tablet/laptop, a
+          "100%"-wide box here meant every node's own `left` (computed
+          from nodeX/WORLD_NODE_ROW_WIDTH, values in the 0-320 range) was
+          measured against the FAR-off screen edge instead, pinning the
+          whole map into the top-left corner. The ScrollView's own
+          contentContainerStyle centers this fixed column instead. */}
+      <View style={{ width: PATH_WIDTH, height: totalHeight }}>
         <Svg width={PATH_WIDTH} height={totalHeight} style={StyleSheet.absoluteFill}>
           <Defs>
             <LinearGradient id="worldPathGlow" x1="0" y1="0" x2="0" y2="1">

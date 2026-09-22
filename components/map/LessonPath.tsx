@@ -62,10 +62,16 @@ export function LessonPath({ lessons, completedLessonIds, lessonStars, accentHex
   return (
     <ScrollView
       style={styles.scroll}
-      contentContainerStyle={{ paddingBottom: insets.bottom + 40 }}
+      contentContainerStyle={{ paddingBottom: insets.bottom + 40, alignItems: "center" }}
       showsVerticalScrollIndicator={false}
     >
-      <View style={{ width: "100%", height: totalHeight, alignItems: "center" }}>
+      {/* Fixed PATH_WIDTH (not "100%") — see WorldMap.tsx's own identical
+          fix for why: everything below is positioned in raw pixel
+          coordinates against THIS View's own left edge, so a "100%"-wide
+          box here (matching the full, much-wider-than-320 viewport on a
+          tablet/laptop) pinned the whole path into the top-left corner
+          instead of centering it. */}
+      <View style={{ width: PATH_WIDTH, height: totalHeight }}>
         <Svg width={PATH_WIDTH} height={totalHeight} style={StyleSheet.absoluteFill}>
           <Defs>
             <LinearGradient id="pathGlow" x1="0" y1="0" x2="0" y2="1">
