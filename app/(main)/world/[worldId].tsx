@@ -4,6 +4,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { AppIcon } from "@/components/icons/AppIcon";
 import type { IconName } from "@/components/icons/icons";
 import { LessonPath } from "@/components/map/LessonPath";
+import type { VillageDecorationKind } from "@/components/map/VillageDecoration";
 import { getWorldContent } from "@/data/lessons";
 import { getWorldById } from "@/data/worlds";
 import { useGamification } from "@/context/GamificationContext";
@@ -32,6 +33,16 @@ const WORLD_ICON: Record<string, { icon: IconName }> = {
   beam: { icon: "kraina_gaj_grupowania" },
   dictation: { icon: "kraina_szczyt_dyktand" },
   microphone: { icon: "kraina_zaczarowany_solfez" },
+};
+
+// Which worlds get LessonPath's own scattered background illustrations
+// (see VillageDecoration.tsx) and which set — keyed the same way as
+// WORLD_ICON above. Only Wioska Nut ("note") has its own set drawn so
+// far; every other `mapIconId` falls through to `undefined`, which
+// LessonPath treats as "no decorations" rather than defaulting to
+// mismatched scenery.
+const WORLD_DECORATIONS: Partial<Record<string, readonly VillageDecorationKind[]>> = {
+  note: ["cottage", "tree", "fence"],
 };
 
 function WorldCardIcon({ mapIconId }: { mapIconId: string }) {
@@ -133,6 +144,7 @@ export default function WorldLevelsScreen() {
           completedLessonIds={progress.completedLessonIds}
           lessonStars={gamification.lessonStars}
           accentHex={world.accentColor}
+          decorationKinds={WORLD_DECORATIONS[world.mapIconId]}
           onSelectLesson={handleSelectLesson}
         />
       ) : (

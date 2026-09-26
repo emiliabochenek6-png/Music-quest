@@ -3,6 +3,7 @@ import { ScrollView, View, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Defs, LinearGradient, Path, Stop } from "react-native-svg";
 import { LessonNode } from "@/components/map/LessonNode";
+import { VillageDecoration, type VillageDecorationKind } from "@/components/map/VillageDecoration";
 import { resolveLessonNodeState } from "@/lib/progression/resolveLessonNodeState";
 import type { LessonDefinition } from "@/types/exercises";
 
@@ -13,6 +14,14 @@ interface LessonPathProps {
    * lessonStars) — passed straight through to each LessonNode. */
   lessonStars: Readonly<Record<string, 1 | 2 | 3>>;
   accentHex: string;
+  /** A small set of background illustrations to scatter along the trail,
+   * cycling through in order — a world's own way to make its path feel
+   * like its own place instead of a bare line (see VillageDecoration.tsx
+   * — Wioska Nut's own use, from app/(main)/world/[worldId].tsx, is the
+   * first). Omitted entirely (not a generic default set) for every other
+   * world until each gets its own fitting illustrations — an empty path
+   * reads as "not decorated yet", not as a wrong theme. */
+  decorationKinds?: readonly VillageDecorationKind[];
   onSelectLesson: (lesson: LessonDefinition) => void;
 }
 
@@ -40,9 +49,19 @@ function nodeY(index: number): number {
  * sine-wave node-position formula this mirrors). The line itself is
  * drawn once as a smooth path through every node's center; nodes render
  * on top as real Pressables (components/map/LessonNode), not SVG
- * hit-regions. No scattered background decoration — dropped along with
- * WorldMap's own for the light "educational" pass. */
-export function LessonPath({ lessons, completedLessonIds, lessonStars, accentHex, onSelectLesson }: LessonPathProps) {
+ * hit-regions. `decorationKinds` (optional — see its own doc) scatters a
+ * small illustrated set behind the nodes, alternating sides so nothing
+ * sits on top of a node; omitted, the path stays a bare line rather than
+ * defaulting to generic scenery that wouldn't match every world's own
+ * theme. */
+export function LessonPath({
+  lessons,
+  completedLessonIds,
+  lessonStars,
+  accentHex,
+  decorationKinds,
+  onSelectLesson,
+}: LessonPathProps) {
   const insets = useSafeAreaInsets();
   const totalHeight = TOP_PADDING + (lessons.length - 1) * NODE_SPACING_Y + 80;
 
@@ -111,6 +130,27 @@ export function LessonPath({ lessons, completedLessonIds, lessonStars, accentHex
           <Path d={pathD} stroke={accentHex} strokeWidth={10} strokeOpacity={0.18} fill="none" strokeLinecap="round" />
           <Path d={pathD} stroke="url(#pathGlow)" strokeWidth={3} strokeDasharray="1 14" fill="none" strokeLinecap="round" />
         </Svg>
+
+        {decorationKinds &&
+          decorationKinds.length > 0 &&
+          lessons.map((lesson, index) => {
+            if (index === 0 || index === lessons.length - 1) return null;
+            const kind = decorationKinds[(index - 1) % decorationKinds.length];
+            const side = Math.sin(index * 1.15) >= 0 ? -1 : 1;
+            return (
+              <View
+                key={`decoration-${lesson.id}`}
+                style={{
+                  position: "absolute",
+                  left: nodeX(index) + side * 70,
+                  top: nodeY(index) - 20,
+                  opacity: 0.85,
+                }}
+              >
+                <VillageDecoration kind={kind} size={40} />
+              </View>
+            );
+          })}
 
         {lessons.map((lesson, index) => {
           const state = resolveLessonNodeState(lesson, lessons, completedLessonIds);
