@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { ScrollView, View, Text, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Defs, LinearGradient, Path, Stop } from "react-native-svg";
@@ -19,6 +20,12 @@ const NODE_SPACING_Y = 148;
 const PATH_WIDTH = 320;
 const AMPLITUDE = 88;
 const TOP_PADDING = 60;
+/** How far below the top of the (unmeasured — see the mount effect's own
+ * doc) scrollable area the "jump to next lesson" scroll aims to land the
+ * target node — not exact centering, just comfortably past the header
+ * content most world screens open with, on both phone and desktop
+ * viewports this app actually ships to. */
+const SCROLL_TARGET_OFFSET = 220;
 
 /** A handful of purely decorative "landmark" emoji scattered near the
  * path — evokes the reference art's illustrated waypoints (mountain,
@@ -47,6 +54,33 @@ export function LessonPath({ lessons, completedLessonIds, lessonStars, accentHex
   const insets = useSafeAreaInsets();
   const totalHeight = TOP_PADDING + (lessons.length - 1) * NODE_SPACING_Y + 80;
 
+  // Jumps straight to the next thing to do — the first lesson that
+  // ISN'T completed yet (falls back to the very last node, the boss,
+  // once everything else is) — the instant this screen mounts. Without
+  // this, returning here after finishing a lesson dumped the player back
+  // at the TOP of a path that can run to 20+ nodes, forcing a manual
+  // scroll past everything already done just to find where to continue.
+  // Not animated — this is where the screen should already be, not a
+  // moment to draw attention to. Offsets by a fixed estimate of "how far
+  // down the screen feels comfortable", not this ScrollView's own
+  // measured height (react-native-web's ScrollView never actually fires
+  // `onLayout` — confirmed empirically, not just undocumented — so a
+  // measured approach silently never runs at all; a fixed guess that
+  // ALWAYS fires beats an exact one that doesn't fire).
+  const scrollRef = useRef<ScrollView>(null);
+  const nextLessonIndex = lessons.findIndex(
+    (lesson) => resolveLessonNodeState(lesson, lessons, completedLessonIds) !== "completed"
+  );
+  const targetIndex = nextLessonIndex === -1 ? lessons.length - 1 : nextLessonIndex;
+  useEffect(() => {
+    const targetY = nodeY(targetIndex) - SCROLL_TARGET_OFFSET;
+    scrollRef.current?.scrollTo({ y: Math.max(0, targetY), animated: false });
+    // Only ever needs to run once, on mount — re-centering on every
+    // unrelated re-render (e.g. a star rating updating) would fight the
+    // player's own later scrolling.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const pathD = lessons
     .map((_, index) => {
       const x = nodeX(index);
@@ -61,6 +95,7 @@ export function LessonPath({ lessons, completedLessonIds, lessonStars, accentHex
 
   return (
     <ScrollView
+      ref={scrollRef}
       style={styles.scroll}
       contentContainerStyle={{ paddingBottom: insets.bottom + 40, alignItems: "center" }}
       showsVerticalScrollIndicator={false}
