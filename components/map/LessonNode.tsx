@@ -138,6 +138,7 @@ const styles = StyleSheet.create({
   pillText: {
     fontSize: 11,
     fontWeight: "700",
+    textAlign: "center",
   },
   node: {
     width: NODE_SIZE,
