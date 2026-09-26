@@ -84,7 +84,7 @@
   "lesson.lineOrSpacePrompt": "Ta nuta jest na linii czy w polu?",
   "lesson.lineLabel": "Na linii",
   "lesson.spaceLabel": "W polu",
-  "lesson.noteWordPrompt": "Odczytaj nuty i wpisz odgadnięte słowo.",
+  "lesson.noteWordPrompt": "Odczytaj nuty i wpisz odgadnięte słowo (klucz wiolinowy).",
   "lesson.noteWordPromptBass": "Odczytaj nuty i wpisz odgadnięte słowo (klucz basowy).",
   "lesson.wordInputPlaceholder": "Twoja odpowiedź",
   "lesson.correctAnswerWas": "Poprawna odpowiedź: {answer}",
