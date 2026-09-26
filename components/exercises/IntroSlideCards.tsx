@@ -4,6 +4,7 @@ import { BeamedNotation } from "@/components/exercises/BeamedNotation";
 import { ChromaticKeyboardReference } from "@/components/exercises/ChromaticKeyboardReference";
 import { CircleOfFifthsWheel } from "@/components/exercises/CircleOfFifthsWheel";
 import { DarkButton } from "@/components/exercises/DarkButton";
+import { FalszomirPortrait } from "@/components/map/FalszomirPortrait";
 import { IntervalStaffNotation } from "@/components/exercises/IntervalStaffNotation";
 import { LessonIntroStaff } from "@/components/exercises/LessonIntro";
 import { NoteValueIcon } from "@/components/exercises/NoteValueIcon";
@@ -169,6 +170,12 @@ export function IntroSlideCards({ slides, locale }: IntroSlideCardsProps) {
 
           {slide.staffSequence && (
             <LessonIntroStaff notes={slide.staffSequence.notes} locale={locale} clef={slide.staffSequence.clef} />
+          )}
+
+          {slide.bossPortrait && (
+            <View style={{ alignItems: "center" }}>
+              <FalszomirPortrait size={140} />
+            </View>
           )}
 
           {slide.circleHighlight && (

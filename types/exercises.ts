@@ -400,6 +400,13 @@ export interface LessonTheorySlide {
     barBeforeIndex?: number;
     label: string;
   }[];
+  /** Wioska Nut's own boss lesson ("Pokonaj króla Fałszomira") — shows
+   * FalszomirPortrait.tsx's illustration inside the "Zapoznaj się" intro
+   * itself, not just next to the lesson's node on the map, so the player
+   * actually SEES who they're about to face before starting. A plain
+   * boolean (not e.g. a character id) since there's only the one boss
+   * character so far — see IntroSlideCards.tsx's own render branch. */
+  bossPortrait?: boolean;
 }
 
 /** One lesson within a world — Wioska Nut's own content additionally
