@@ -72,7 +72,7 @@ export function StaffNotation({ note, clef = "treble", width = 120 }: StaffNotat
         {parsed.accidental !== 0 && (
           <SvgText
             x={noteX - NOTE_RADIUS - 12}
-            y={noteY + 9}
+            y={parsed.accidental === 1 ? noteY + 9 : noteY + 6}
             fontSize={20}
             fill={theme.colors.ink}
             textAnchor="middle"
