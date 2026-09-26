@@ -65,7 +65,10 @@ const NUTKI_MULTIPLIER_WHEN_INTRO_DISABLED = 2;
  * requeued onto the end of the session (Duolingo-style "makeup round" —
  * see the `exercises` state's own doc), so the lesson's authored list is
  * a STARTING point, not the full session length; a "🔁 Powtórka" banner
- * marks the makeup round once the player reaches it. Finishing the last
+ * marks the makeup round once the player reaches it. Three wrong answers
+ * in a row also inserts a one-off full-screen encouragement moment
+ * (big Soltek, "Dasz radę!") between that exercise and the next — see
+ * showEncouragementInterstitial's own doc. Finishing the last
  * exercise shows a small summary card, then marks the lesson (and, if it
  * was the world's last lesson, the whole world) done before returning —
  * completing a world for the first time additionally layers a celebratory
@@ -99,19 +102,24 @@ export default function LessonScreen() {
   // rather than every single one — a lesson can have many exercises in a
   // row, and a companion commenting on every single answer would read as
   // clutter rather than the occasional encouraging cameo he's meant to be.
-  // The one exception is a genuine losing streak — see
-  // consecutiveMistakes'/showEncouragement's own doc — where he shows up
-  // for certain, not just on the usual random roll.
   // Re-rolled fresh each time handleCheck runs, reset on handleContinue so
   // the next question gets its own independent roll.
   const [showSoltek, setShowSoltek] = useState(false);
   // Wrong answers IN A ROW (resets to 0 on any correct answer) — once
-  // this hits STRUGGLE_THRESHOLD, handleCheck forces Soltek on screen
-  // with an encouraging "Dasz radę!" instead of the usual random cameo,
-  // so a kid stuck on the same kind of mistake gets a morale boost right
-  // when it's actually needed, not just at random.
+  // this hits STRUGGLE_THRESHOLD, the NEXT "Dalej" press shows a full
+  // interstitial screen (big Soltek, see showEncouragementInterstitial)
+  // BETWEEN this exercise and the next one, instead of just going
+  // straight on — set by handleCheck (true = "owed, not shown yet"),
+  // consumed by handleContinue the moment the player presses on past the
+  // exercise that crossed the threshold.
   const [consecutiveMistakes, setConsecutiveMistakes] = useState(0);
   const [showEncouragement, setShowEncouragement] = useState(false);
+  // The interstitial screen itself, currently on/off — separate from
+  // showEncouragement (the "owed" flag above) so the two "Dalej" presses
+  // involved (one to leave the missed exercise, one to leave the
+  // interstitial) are unambiguous: the first flips this on instead of
+  // advancing, the second flips it off AND advances.
+  const [showEncouragementInterstitial, setShowEncouragementInterstitial] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
   const [mistakeCount, setMistakeCount] = useState(0);
   // Distinct ORIGINAL exercises answered correctly so far (once per
@@ -244,9 +252,8 @@ export default function LessonScreen() {
     if (!correct) {
       const streak = consecutiveMistakes + 1;
       setConsecutiveMistakes(streak);
-      const struggling = streak >= STRUGGLE_THRESHOLD;
-      setShowEncouragement(struggling);
-      setShowSoltek(struggling || Math.random() < SOLTEK_APPEARANCE_CHANCE);
+      setShowEncouragement(streak >= STRUGGLE_THRESHOLD);
+      setShowSoltek(Math.random() < SOLTEK_APPEARANCE_CHANCE);
       setMistakeCount((n) => n + 1);
       loseHeart();
       setExercises((current) => [...current, definition]);
@@ -280,8 +287,14 @@ export default function LessonScreen() {
     setIntroDismissed(true);
   }
 
-  function handleContinue() {
-    stopAllScheduledAudio();
+  // The actual "move past the current exercise" logic — either the next
+  // exercise or, at the end of the queue, the summary screen. Called
+  // directly by handleContinue for an ordinary "Dalej", and again (via
+  // handleEncouragementContinue) once the player has also clicked past
+  // the encouragement interstitial, so that screen genuinely sits
+  // BETWEEN two exercises rather than replacing either one's own
+  // advance.
+  function advanceOrFinish() {
     if (index + 1 < exercises.length) {
       // A heart could have run out on THIS question (a wrong answer) or
       // an earlier one in the same attempt — either way, no further
@@ -347,6 +360,28 @@ export default function LessonScreen() {
     }
   }
 
+  // The ordinary "Dalej" on an answered exercise — detours through the
+  // encouragement interstitial exactly once (see showEncouragement's own
+  // doc) instead of advancing straight away, whenever the answer just
+  // given crossed STRUGGLE_THRESHOLD.
+  function handleContinue() {
+    stopAllScheduledAudio();
+    if (showEncouragement) {
+      setShowEncouragement(false);
+      setShowEncouragementInterstitial(true);
+      return;
+    }
+    advanceOrFinish();
+  }
+
+  // The interstitial screen's own "Dalej" — dismiss it, then run the
+  // SAME advance this exercise's own "Dalej" would have run directly.
+  function handleEncouragementContinue() {
+    stopAllScheduledAudio();
+    setShowEncouragementInterstitial(false);
+    advanceOrFinish();
+  }
+
   if (isFinished) {
     return (
       <>
@@ -368,6 +403,25 @@ export default function LessonScreen() {
           onClose={() => setShowWorldComplete(false)}
         />
       </>
+    );
+  }
+
+  // A one-off full screen BETWEEN two exercises (see
+  // showEncouragementInterstitial's own doc) — a genuine losing streak
+  // gets Soltek's full "lg" portrait-and-bubble treatment (the same size
+  // SoltekWelcomeModal gives him), not squeezed into the small inline
+  // feedback row every other check/miss uses, since this moment is
+  // meant to actually land, not blend into the usual flow.
+  if (showEncouragementInterstitial) {
+    return (
+      <View style={styles.root}>
+        <LessonHeader title={`${t(world.nameKey as TranslationKey)} · ${lesson.order}`} accentHex={world.accentColor} onBack={goBackToLevels} />
+        <View style={styles.centerFill}>
+          <SoltekMascot size="lg" expression="zachecajacy" message={t("lesson.encouragement", "pl")} />
+          <View style={{ height: theme.spacing(3) }} />
+          <DarkButton label={t("lesson.continue", "pl")} onPress={handleEncouragementContinue} />
+        </View>
+      </View>
     );
   }
 
@@ -467,7 +521,7 @@ export default function LessonScreen() {
               <SoltekMascot
                 size="sm"
                 expression={isCorrect ? "radosny" : "zachecajacy"}
-                message={showEncouragement ? t("lesson.encouragement", "pl") : isCorrect ? t("lesson.correct", "pl") : t("lesson.incorrect", "pl")}
+                message={isCorrect ? t("lesson.correct", "pl") : t("lesson.incorrect", "pl")}
               />
             ) : (
               <Text
