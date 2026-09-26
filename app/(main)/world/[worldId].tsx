@@ -34,16 +34,6 @@ const WORLD_ICON: Record<string, { icon: IconName }> = {
   microphone: { icon: "kraina_zaczarowany_solfez" },
 };
 
-// Which worlds get LessonPath's own full-height background illustration
-// (see LessonPath.tsx's own backgroundImageSource doc) — keyed the same
-// way as WORLD_ICON above. Only Wioska Nut ("note") has its own
-// commissioned background so far; every other `mapIconId` falls through
-// to `undefined`, which LessonPath treats as "no background image"
-// rather than defaulting to a mismatched illustration.
-const WORLD_BACKGROUNDS: Partial<Record<string, number>> = {
-  note: require("@/assets/backgrounds/wioska-nut-tlo.png"),
-};
-
 function WorldCardIcon({ mapIconId }: { mapIconId: string }) {
   const entry = WORLD_ICON[mapIconId];
   if (!entry) return <Text style={{ fontSize: 26 }}>🎵</Text>;
@@ -143,7 +133,6 @@ export default function WorldLevelsScreen() {
           completedLessonIds={progress.completedLessonIds}
           lessonStars={gamification.lessonStars}
           accentHex={world.accentColor}
-          backgroundImageSource={WORLD_BACKGROUNDS[world.mapIconId]}
           onSelectLesson={handleSelectLesson}
         />
       ) : (

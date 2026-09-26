@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { Image, ScrollView, View, StyleSheet } from "react-native";
+import { ScrollView, View, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Defs, LinearGradient, Path, Stop } from "react-native-svg";
 import { LessonNode } from "@/components/map/LessonNode";
@@ -13,15 +13,6 @@ interface LessonPathProps {
    * lessonStars) — passed straight through to each LessonNode. */
   lessonStars: Readonly<Record<string, 1 | 2 | 3>>;
   accentHex: string;
-  /** A world's own full-height background illustration (a `require()`'d
-   * image module id), stretched to fill the whole scrollable content
-   * area behind the path/nodes — see app/(main)/world/[worldId].tsx's
-   * own WORLD_BACKGROUNDS. Non-uniform stretch (not "cover"/"contain")
-   * is deliberate: the illustration is authored at a fixed aspect ratio
-   * meant to fill whatever height a world's own lesson count produces,
-   * per the source art's own README. Omitted for every world without
-   * one yet — falls back to the plain surface color underneath. */
-  backgroundImageSource?: number;
   onSelectLesson: (lesson: LessonDefinition) => void;
 }
 
@@ -51,14 +42,7 @@ function nodeY(index: number): number {
  * on top as real Pressables (components/map/LessonNode), not SVG
  * hit-regions. No scattered background decoration — dropped along with
  * WorldMap's own for the light "educational" pass. */
-export function LessonPath({
-  lessons,
-  completedLessonIds,
-  lessonStars,
-  accentHex,
-  backgroundImageSource,
-  onSelectLesson,
-}: LessonPathProps) {
+export function LessonPath({ lessons, completedLessonIds, lessonStars, accentHex, onSelectLesson }: LessonPathProps) {
   const insets = useSafeAreaInsets();
   const totalHeight = TOP_PADDING + (lessons.length - 1) * NODE_SPACING_Y + 80;
 
@@ -115,13 +99,6 @@ export function LessonPath({
           tablet/laptop) pinned the whole path into the top-left corner
           instead of centering it. */}
       <View style={{ width: PATH_WIDTH, height: totalHeight }}>
-        {backgroundImageSource && (
-          <Image
-            source={backgroundImageSource}
-            resizeMode="stretch"
-            style={{ position: "absolute", top: 0, left: 0, width: PATH_WIDTH, height: totalHeight }}
-          />
-        )}
         <Svg width={PATH_WIDTH} height={totalHeight} style={StyleSheet.absoluteFill}>
           <Defs>
             <LinearGradient id="pathGlow" x1="0" y1="0" x2="0" y2="1">
