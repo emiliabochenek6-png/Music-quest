@@ -13,7 +13,7 @@ export const WORLDS: WorldDefinition[] = [
     nameKey: "world.wioskaNut.name",
     descriptionKey: "world.wioskaNut.description",
     isPremium: false,
-    accentColor: "#F4A261",
+    accentColor: "#7B4BC0",
     mapIllustrationId: "wioska-nut",
     mapIconId: "note",
   },

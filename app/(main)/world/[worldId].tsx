@@ -1,4 +1,4 @@
-import { Pressable, Switch, Text, View, StyleSheet } from "react-native";
+import { Image, Pressable, Switch, Text, View, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
 import { AppIcon } from "@/components/icons/AppIcon";
@@ -40,6 +40,19 @@ function WorldCardIcon({ mapIconId }: { mapIconId: string }) {
   return <AppIcon name={entry.icon} size={32} />;
 }
 
+// Full-screen backdrop art, keyed the same way as WORLD_ICON above — only
+// Wioska Nut has one commissioned so far. Rendered as this screen's very
+// first child (see the root View below) so it sits behind the header/card
+// AND the scrollable path alike, covering the whole screen rather than
+// just LessonPath's own narrow content column (an earlier version drew it
+// there instead — confined to that column, not what "tło na całej stronie"
+// asked for). "cover" both avoids the distortion a stretched fit caused
+// and the repetition a tiled fit caused — a single image, cropped instead
+// of squished or repeated.
+const WORLD_BACKGROUNDS: Partial<Record<string, number>> = {
+  note: require("@/assets/backgrounds/wioska-nut-tlo.png"),
+};
+
 /**
  * A world's own "poziomy" (levels) screen — same theme every other
  * screen in the app now uses (see theme/tokens.ts's own doc).
@@ -79,8 +92,11 @@ export default function WorldLevelsScreen() {
     router.replace("/(main)/map");
   }
 
+  const backgroundSource = WORLD_BACKGROUNDS[world.mapIconId];
+
   return (
     <View style={styles.root}>
+      {backgroundSource && <Image source={backgroundSource} resizeMode="cover" style={StyleSheet.absoluteFill} />}
       <View style={[styles.glowBlob, { backgroundColor: world.accentColor }]} />
 
       <View style={[styles.headerRow, { paddingTop: insets.top + 12 }]}>
