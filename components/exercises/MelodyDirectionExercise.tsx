@@ -36,6 +36,14 @@ const DIRECTIONS: { value: MelodyDirection; labelKey: "lesson.melodyDirectionUp"
 export function MelodyDirectionExercise({ exercise, selectedDirection, onSelect, checked, locale }: MelodyDirectionExerciseProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const handleRef = useRef<SamplePlaybackHandle | null>(null);
+  // Picked once per mount (not per press, via lazy useState init so
+  // Math.random() only runs once) so repeated 🔊 taps within the same
+  // exercise stay consistent — the variety is between exercises/attempts,
+  // not between presses of the same one.
+  const [sample] = useState(() => {
+    const pool = MELODY_DIRECTION_SAMPLES[exercise.correctDirection];
+    return pool[Math.floor(Math.random() * pool.length)];
+  });
 
   useEffect(() => {
     return () => {
@@ -63,7 +71,7 @@ export function MelodyDirectionExercise({ exercise, selectedDirection, onSelect,
       return;
     }
     setIsPlaying(true);
-    handleRef.current = playSample(MELODY_DIRECTION_SAMPLES[exercise.correctDirection], 0.9, () => {
+    handleRef.current = playSample(sample, 0.9, () => {
       setIsPlaying(false);
       handleRef.current = null;
     });

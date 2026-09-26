@@ -177,20 +177,22 @@ export const DRUMMER_12_8_SAMPLE: number = require("@/assets/audio/reference/dru
 
 /** Real piano recordings (exported from MuseScore, converted to this
  * app's usual mono 16-bit PCM and peak-normalized to match — see this
- * commit's own history for the exact conversion) — one per
+ * commit's own history for the exact conversion) — one or more per
  * MelodyDirection, played by MelodyDirectionExercise's own "Dokąd leci
  * melodia?" 🔊 button in place of the single-note-by-single-note
  * playMelody() synthesis it used before. Fixed per DIRECTION rather than
- * per exercise: every "up" exercise anywhere in the app shares this same
- * recording (there's no per-exercise pitch info left to vary it by, and
- * that's the point — a real musical phrase moving up/down/staying level,
- * not a generated one). More directions' worth of content across other
- * worlds/lessons still reuses these same three — MelodyDirection only
- * ever has 3 values. */
-export const MELODY_DIRECTION_SAMPLES: Record<MelodyDirection, number> = {
-  up: require("@/assets/audio/reference/melody-direction-up.wav"),
-  down: require("@/assets/audio/reference/melody-direction-down.wav"),
-  same: require("@/assets/audio/reference/melody-direction-same.wav"),
+ * per exercise: every "up" exercise anywhere in the app draws from this
+ * same small pool (there's no per-exercise pitch info left to vary it by,
+ * and that's the point — a real musical phrase moving up/down/staying
+ * level, not a generated one). A pool of 2+ per direction (rather than
+ * just 1) means the same exercise doesn't always play the identical
+ * recording — MelodyDirectionExercise picks one at random per mount. More
+ * directions' worth of content across other worlds/lessons still reuses
+ * this same pool — MelodyDirection only ever has 3 values. */
+export const MELODY_DIRECTION_SAMPLES: Record<MelodyDirection, number[]> = {
+  up: [require("@/assets/audio/reference/melody-direction-up.wav"), require("@/assets/audio/reference/melody-direction-up-2.wav")],
+  down: [require("@/assets/audio/reference/melody-direction-down.wav"), require("@/assets/audio/reference/melody-direction-down-2.wav")],
+  same: [require("@/assets/audio/reference/melody-direction-same.wav"), require("@/assets/audio/reference/melody-direction-same-2.wav")],
 };
 
 /** Real recorded rhythms (same MuseScore-export/mono-16-bit/peak-0.9
