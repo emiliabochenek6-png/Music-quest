@@ -267,14 +267,14 @@ export const WIOSKA_NUT_CONTENT: WorldContent = {
       order: 14,
       difficulty: 3,
       introSlides: [
-        { body: "Ten sam zapis nutowy wygląda inaczej w zależności od klucza — teraz poćwiczysz oba na przemian, bez podpowiedzi który to klucz." },
+        { body: "Ten sam zapis nutowy wygląda inaczej w zależności od klucza — teraz poćwiczysz oba na przemian." },
         {
           body: "1. Najpierw cała gama w kluczu wiolinowym:",
-          staffSequence: { notes: ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"] },
+          staffSequence: { notes: ["G3", "A3", "B3", "C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"] },
         },
         {
           body: "2. Ta sama gama w kluczu basowym — zobacz, że wygląda inaczej:",
-          staffSequence: { notes: ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"], clef: "bass" },
+          staffSequence: { notes: ["G3", "A3", "B3", "C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"], clef: "bass" },
         },
       ],
       exercises: [
