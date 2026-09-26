@@ -415,7 +415,7 @@ export const WIOSKA_NUT_CONTENT: WorldContent = {
       isBoss: true,
       introSlides: [
         {
-          body: "Król Fałszomir strzeże ostatniej tajemnicy Wioski Nut! Żeby go pokonać, pokaż wszystko, czego się nauczyłaś/eś — oba klucze, linie dodane, kroki i skoki, krzyżyki i bemole, bez podpowiedzi który to rejestr.",
+          body: "Król Fałszomir strzeże ostatniej tajemnicy Wioski Nut! Żeby go pokonać, pokaż wszystko, czego się nauczyłeś — oba klucze, linie dodane, kroki i skoki, krzyżyki i bemole, bez podpowiedzi który to rejestr.",
         },
       ],
       exercises: [

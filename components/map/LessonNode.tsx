@@ -40,8 +40,10 @@ export function LessonNode({ lesson, state, accentHex, stars, onPress }: LessonN
   return (
     <View style={[styles.wrap, isBoss && styles.wrapBoss]}>
       {isCurrent && (
-        <View style={[styles.pill, { borderColor: accentHex }]}>
-          <Text style={[styles.pillText, { color: accentHex }]}>{isBoss ? "Pokonaj bossa!" : "Start"}</Text>
+        <View style={styles.pillWrap}>
+          <View style={[styles.pill, { borderColor: accentHex }]}>
+            <Text style={[styles.pillText, { color: accentHex }]}>{isBoss ? "Pokonaj bossa!" : "Start"}</Text>
+          </View>
         </View>
       )}
       <Pressable
@@ -72,7 +74,7 @@ export function LessonNode({ lesson, state, accentHex, stars, onPress }: LessonN
         )}
       </Pressable>
       <Text style={[styles.orderLabel, { color: isLocked ? theme.colors.muted : theme.colors.ink }]}>
-        {isBoss ? "Boss" : lesson.order}
+        {isBoss ? "Fałszomir" : lesson.order}
       </Text>
       {state === "completed" && <StarRating stars={stars} />}
     </View>
@@ -111,15 +113,27 @@ const styles = StyleSheet.create({
   wrapBoss: {
     width: BOSS_NODE_SIZE + 8,
   },
-  pill: {
+  // Wraps `pill` in a band that spans the WHOLE node width (left/right:0,
+  // not just top) so a longer label (the boss pill's "Pokonaj bossa!" vs.
+  // the usual "Start") still centers on the node itself — an absolutely
+  // positioned child with no explicit width can't be reliably centered by
+  // the parent's own alignItems alone on every platform this app targets
+  // (RN Web included), so this band centers ITS content via ordinary
+  // flexbox instead of relying on that.
+  pillWrap: {
     position: "absolute",
     top: -30,
+    left: 0,
+    right: 0,
+    alignItems: "center",
+    zIndex: 5,
+  },
+  pill: {
     borderWidth: theme.borderWidth,
     borderRadius: 999,
     paddingHorizontal: 12,
     paddingVertical: 4,
     backgroundColor: theme.colors.surface,
-    zIndex: 5,
   },
   pillText: {
     fontSize: 11,
