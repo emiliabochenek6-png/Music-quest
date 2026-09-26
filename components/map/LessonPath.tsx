@@ -13,14 +13,16 @@ interface LessonPathProps {
    * lessonStars) — passed straight through to each LessonNode. */
   lessonStars: Readonly<Record<string, 1 | 2 | 3>>;
   accentHex: string;
-  /** A world's own full-height background illustration (a `require()`'d
-   * image module id), stretched to fill the whole scrollable content
+  /** A world's own background illustration (a `require()`'d image module
+   * id), tiled vertically at its OWN aspect ratio (see
+   * BACKGROUND_TILE_ASPECT_RATIO) to cover the whole scrollable content
    * area behind the path/nodes — see app/(main)/world/[worldId].tsx's
-   * own WORLD_BACKGROUNDS. Non-uniform stretch (not "cover"/"contain")
-   * is deliberate: the illustration is authored at a fixed aspect ratio
-   * meant to fill whatever height a world's own lesson count produces,
-   * per the source art's own README. Omitted for every world without
-   * one yet — falls back to the plain surface color underneath. */
+   * own WORLD_BACKGROUNDS. Repeated copies, not one stretched image: the
+   * source art is a fixed-proportion illustration and a world's total
+   * path height depends on how many lessons it has, so stretching ONE
+   * copy to match would distort it (squeezed hard on a 20+-lesson path).
+   * Omitted for every world without one yet — falls back to the plain
+   * surface color underneath. */
   backgroundImageSource?: number;
   onSelectLesson: (lesson: LessonDefinition) => void;
 }
@@ -35,6 +37,11 @@ const TOP_PADDING = 60;
  * content most world screens open with, on both phone and desktop
  * viewports this app actually ships to. */
 const SCROLL_TARGET_OFFSET = 220;
+/** The source art's own native proportions (720×1510 — see the README in
+ * its assets/backgrounds subfolder), used to size each tile at
+ * PATH_WIDTH without distorting it — see backgroundImageSource's own
+ * doc. */
+const BACKGROUND_TILE_ASPECT_RATIO = 1510 / 720;
 
 function nodeX(index: number): number {
   return PATH_WIDTH / 2 + AMPLITUDE * Math.sin(index * 1.15);
@@ -101,6 +108,9 @@ export function LessonPath({
     })
     .join(" ");
 
+  const backgroundTileHeight = PATH_WIDTH * BACKGROUND_TILE_ASPECT_RATIO;
+  const backgroundTileCount = Math.ceil(totalHeight / backgroundTileHeight);
+
   return (
     <ScrollView
       ref={scrollRef}
@@ -115,13 +125,21 @@ export function LessonPath({
           tablet/laptop) pinned the whole path into the top-left corner
           instead of centering it. */}
       <View style={{ width: PATH_WIDTH, height: totalHeight }}>
-        {backgroundImageSource && (
-          <Image
-            source={backgroundImageSource}
-            resizeMode="stretch"
-            style={{ position: "absolute", top: 0, left: 0, width: PATH_WIDTH, height: totalHeight }}
-          />
-        )}
+        {backgroundImageSource &&
+          Array.from({ length: backgroundTileCount }, (_, tileIndex) => (
+            <Image
+              key={`bg-tile-${tileIndex}`}
+              source={backgroundImageSource}
+              resizeMode="stretch"
+              style={{
+                position: "absolute",
+                top: tileIndex * backgroundTileHeight,
+                left: 0,
+                width: PATH_WIDTH,
+                height: backgroundTileHeight,
+              }}
+            />
+          ))}
         <Svg width={PATH_WIDTH} height={totalHeight} style={StyleSheet.absoluteFill}>
           <Defs>
             <LinearGradient id="pathGlow" x1="0" y1="0" x2="0" y2="1">
