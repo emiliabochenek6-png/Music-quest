@@ -238,7 +238,9 @@ export const WIOSKA_NUT_CONTENT: WorldContent = {
       id: "lekcja-12-basowy-gora-nazywanie",
       order: 12,
       difficulty: 3,
-      introSlides: [{ body: "Teraz odwrotnie — dźwięki WYŻEJ niż pięciolinia, w kluczu basowym." }],
+      introNotes: ["A3", "B3", "C4", "D4"],
+      introSubtitle: "Teraz odwrotnie — dźwięki WYŻEJ niż pięciolinia, w kluczu basowym",
+      introClef: "bass",
       exercises: [
         { id: "l12-e1", type: "multiple-choice-notation", difficulty: 3, spec: { type: "multiple-choice-notation", targetNote: "B3", distractorPool: ["A3", "C4", "D4"], clef: "bass" } },
         { id: "l12-e2", type: "multiple-choice-notation", difficulty: 3, spec: { type: "multiple-choice-notation", targetNote: "C4", distractorPool: ["B3", "D4", "A3"], clef: "bass" } },
