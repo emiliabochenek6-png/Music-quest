@@ -408,5 +408,27 @@ export const WIOSKA_NUT_CONTENT: WorldContent = {
         { id: "l21-e7", type: "clef-trace", difficulty: 2, spec: { type: "clef-trace", clef: "bass" } },
       ],
     },
+    {
+      id: "lekcja-22-boss-krol-falszomir",
+      order: 22,
+      difficulty: 3,
+      isBoss: true,
+      introSlides: [
+        {
+          body: "Król Fałszomir strzeże ostatniej tajemnicy Wioski Nut! Żeby go pokonać, pokaż wszystko, czego się nauczyłaś/eś — oba klucze, linie dodane, kroki i skoki, krzyżyki i bemole, bez podpowiedzi który to rejestr.",
+        },
+      ],
+      exercises: [
+        { id: "l22-e1", type: "multiple-choice-notation", difficulty: 3, spec: { type: "multiple-choice-notation", targetNote: "G5", distractorPool: ["F5", "E5", "D5"] } },
+        { id: "l22-e2", type: "multiple-choice-notation", difficulty: 3, spec: { type: "multiple-choice-notation", targetNote: "C2", distractorPool: ["D2", "E2", "F2"], clef: "bass" } },
+        { id: "l22-e3", type: "multiple-choice-notation", difficulty: 3, spec: { type: "multiple-choice-notation", targetNote: "F#3", distractorPool: ["F3", "G3", "E3"], clef: "bass" } },
+        { id: "l22-e4", type: "multiple-choice-notation", difficulty: 3, spec: { type: "multiple-choice-notation", targetNote: "G#5", distractorPool: ["G5", "A5", "F5"] } },
+        { id: "l22-e5", type: "interval-distance-choice", difficulty: 3, spec: { type: "interval-distance-choice", notes: ["D4", "A4"] } },
+        { id: "l22-e6", type: "note-sequencing", difficulty: 3, spec: { type: "note-sequencing", notes: ["D4", "A3", "B3", "C4"], clef: "bass" } },
+        { id: "l22-e7", type: "note-word-spelling", difficulty: 3, spec: { type: "note-word-spelling", notes: ["F5", "A4", "C5", "E5"] } },
+        { id: "l22-e8", type: "pitch-height-choice", difficulty: 2, spec: { type: "pitch-height-choice", targetNote: "C2", correctSide: "low" } },
+        { id: "l22-e9", type: "clef-trace", difficulty: 2, spec: { type: "clef-trace", clef: "bass" } },
+      ],
+    },
   ],
 };

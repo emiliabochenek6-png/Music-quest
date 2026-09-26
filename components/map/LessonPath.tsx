@@ -107,8 +107,20 @@ export function LessonPath({ lessons, completedLessonIds, lessonStars, accentHex
 
         {lessons.map((lesson, index) => {
           const state = resolveLessonNodeState(lesson, lessons, completedLessonIds);
+          // The boss node renders noticeably bigger than every ordinary
+          // node (see LessonNode's own doc) — centering it on the path
+          // needs a wider offset than the fixed one every regular node
+          // shares (half its own circle for top, half its slightly-wider
+          // wrap for left — same "wrap is 8px wider than the circle"
+          // shape LessonNode.tsx's own styles use), or it'd sit visibly
+          // off-center from where the trail actually passes through.
+          const nodeRadius = (lesson.isBoss ? 92 : 64) / 2;
+          const wrapHalfWidth = nodeRadius + 4;
           return (
-            <View key={lesson.id} style={{ position: "absolute", left: nodeX(index) - 36, top: nodeY(index) - 32 }}>
+            <View
+              key={lesson.id}
+              style={{ position: "absolute", left: nodeX(index) - wrapHalfWidth, top: nodeY(index) - nodeRadius }}
+            >
               <LessonNode lesson={lesson} state={state} accentHex={accentHex} stars={lessonStars[lesson.id]} onPress={onSelectLesson} />
             </View>
           );

@@ -429,6 +429,17 @@ export interface LessonDefinition {
    * specific target pitch, so a quick reference keyboard is useful at
    * every single one, not just once before the lesson starts. */
   pianoKeyboardReference?: { range: [string, string] };
+  /** Marks this lesson as a world's optional bonus/"boss" level — sits
+   * past the world's regular curriculum (highest `order`, only reachable
+   * once every regular lesson is done, via the same strictly-sequential
+   * unlock lib/progression/resolveLessonNodeState.ts already applies to
+   * every other lesson — no separate gating needed). Purely a display
+   * flag: LessonNode.tsx renders a bigger node with the boss's own
+   * portrait instead of the usual number/star/lock icon; the exercises
+   * themselves are ordinary ExerciseDefinition entries, deliberately
+   * reusing types already proven elsewhere in the world rather than
+   * inventing boss-only mechanics. */
+  isBoss?: boolean;
   exercises: ExerciseDefinition[];
 }
 

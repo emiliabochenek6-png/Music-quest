@@ -1,5 +1,6 @@
 import { Pressable, Text, View, StyleSheet } from "react-native";
 import { AppIcon } from "@/components/icons/AppIcon";
+import { FalszomirPortrait } from "@/components/map/FalszomirPortrait";
 import type { LessonNodeState } from "@/lib/progression/resolveLessonNodeState";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import type { LessonDefinition } from "@/types/exercises";
@@ -32,23 +33,27 @@ const LOCKED_COLOR = "#E9DFCE";
 export function LessonNode({ lesson, state, accentHex, stars, onPress }: LessonNodeProps) {
   const isLocked = state === "locked";
   const isCurrent = state === "available";
+  const isBoss = lesson.isBoss ?? false;
   const faceColor = isLocked ? LOCKED_COLOR : accentHex;
+  const nodeSize = isBoss ? BOSS_NODE_SIZE : NODE_SIZE;
 
   return (
-    <View style={styles.wrap}>
+    <View style={[styles.wrap, isBoss && styles.wrapBoss]}>
       {isCurrent && (
         <View style={[styles.pill, { borderColor: accentHex }]}>
-          <Text style={[styles.pillText, { color: accentHex }]}>Start</Text>
+          <Text style={[styles.pillText, { color: accentHex }]}>{isBoss ? "Pokonaj bossa!" : "Start"}</Text>
         </View>
       )}
       <Pressable
         onPress={() => onPress(lesson)}
         disabled={isLocked}
         accessibilityRole="button"
-        accessibilityLabel={`Poziom ${lesson.order}`}
+        accessibilityLabel={isBoss ? "Poziom bonusowy — pokonaj bossa" : `Poziom ${lesson.order}`}
         accessibilityState={{ disabled: isLocked }}
         style={({ pressed }) => [
           styles.node,
+          { width: nodeSize, height: nodeSize, borderRadius: nodeSize / 2 },
+          isBoss && styles.nodeBoss,
           {
             backgroundColor: faceColor,
             borderColor: isLocked ? theme.colors.border : accentHex,
@@ -57,14 +62,18 @@ export function LessonNode({ lesson, state, accentHex, stars, onPress }: LessonN
         ]}
       >
         {isLocked ? (
-          <AppIcon name="kraina_klodka" size={24} />
+          <AppIcon name="kraina_klodka" size={isBoss ? 32 : 24} />
+        ) : isBoss ? (
+          <FalszomirPortrait size={nodeSize - 14} />
         ) : state === "completed" ? (
           <AppIcon name="hud_ranga_gwiazda" size={24} />
         ) : (
           <Text style={styles.icon}>▶</Text>
         )}
       </Pressable>
-      <Text style={[styles.orderLabel, { color: isLocked ? theme.colors.muted : theme.colors.ink }]}>{lesson.order}</Text>
+      <Text style={[styles.orderLabel, { color: isLocked ? theme.colors.muted : theme.colors.ink }]}>
+        {isBoss ? "Boss" : lesson.order}
+      </Text>
       {state === "completed" && <StarRating stars={stars} />}
     </View>
   );
@@ -89,11 +98,18 @@ function StarRating({ stars }: { stars?: 1 | 2 | 3 }) {
 }
 
 const NODE_SIZE = 64;
+/** Bigger than every ordinary node (see LessonNode's own doc) — the
+ * bonus/boss level is meant to visually announce itself on the path,
+ * not blend in as "one more circle". */
+const BOSS_NODE_SIZE = 92;
 
 const styles = StyleSheet.create({
   wrap: {
     width: NODE_SIZE + 8,
     alignItems: "center",
+  },
+  wrapBoss: {
+    width: BOSS_NODE_SIZE + 8,
   },
   pill: {
     position: "absolute",
@@ -116,6 +132,10 @@ const styles = StyleSheet.create({
     borderWidth: theme.borderWidth,
     alignItems: "center",
     justifyContent: "center",
+    overflow: "hidden",
+  },
+  nodeBoss: {
+    borderWidth: theme.borderWidth * 1.75,
   },
   icon: {
     fontSize: 24,
