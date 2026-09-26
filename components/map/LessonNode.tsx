@@ -63,10 +63,17 @@ export function LessonNode({ lesson, state, accentHex, stars, onPress }: LessonN
           },
         ]}
       >
-        {isLocked ? (
-          <AppIcon name="kraina_klodka" size={isBoss ? 32 : 24} />
-        ) : isBoss ? (
-          <FalszomirPortrait size={nodeSize - 14} />
+        {isBoss ? (
+          // The boss stays visible even locked — seeing WHO is waiting at
+          // the end of the path is the point (builds anticipation), only
+          // the level itself (Pressable's disabled/faceColor/borderColor
+          // above) stays locked. Dimmed rather than full opacity while
+          // locked is the only "not yet" cue on the portrait itself.
+          <View style={{ opacity: isLocked ? 0.45 : 1 }}>
+            <FalszomirPortrait size={nodeSize - 14} />
+          </View>
+        ) : isLocked ? (
+          <AppIcon name="kraina_klodka" size={24} />
         ) : state === "completed" ? (
           <AppIcon name="hud_ranga_gwiazda" size={24} />
         ) : (
