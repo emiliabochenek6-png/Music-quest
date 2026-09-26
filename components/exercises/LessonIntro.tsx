@@ -25,6 +25,16 @@ const NOTE_SPACING = 30;
 const RIGHT_PAD = 20;
 const NOTE_RADIUS = 6;
 const LEDGER_WIDTH = 22;
+/** Extra room below the staff's own VIEW_HEIGHT, reserved purely for the
+ * letter-name row — a low note (ledger lines BELOW the staff, e.g. G3 in
+ * treble clef) sits close enough to VIEW_HEIGHT's own bottom edge that the
+ * label, drawn right at that edge, could overlap its notehead. Pushing the
+ * label row into its own dedicated strip below VIEW_HEIGHT (rather than
+ * cramming it inside the same 150 units the staff/ledger lines already
+ * use) fixes that regardless of how low a lesson's own notes go, without
+ * moving the staff itself or any note's real pitch position. */
+const LABEL_ROW_HEIGHT = 30;
+const TOTAL_HEIGHT = VIEW_HEIGHT + LABEL_ROW_HEIGHT;
 
 // Same viewBox HEIGHT (150) as staffGeometry's other consumers — vertical
 // scale is what makes a clef glyph read as correctly sized against the
@@ -66,12 +76,12 @@ export function LessonIntroStaff({ notes, locale, clef = "treble", labels, highl
   const noteX = (index: number) => FIRST_NOTE_X + index * NOTE_SPACING;
   const contentWidth = noteX(Math.max(0, notes.length - 1)) + RIGHT_PAD;
   const renderWidth = Math.min(contentWidth, 340);
-  const renderHeight = (renderWidth / contentWidth) * VIEW_HEIGHT;
+  const renderHeight = (renderWidth / contentWidth) * TOTAL_HEIGHT;
 
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}>
       <View style={{ width: renderWidth, height: renderHeight, backgroundColor: theme.colors.surfaceMuted, borderRadius: theme.radius.md }}>
-        <Svg viewBox={`0 0 ${contentWidth} ${VIEW_HEIGHT}`} width={renderWidth} height={renderHeight}>
+        <Svg viewBox={`0 0 ${contentWidth} ${TOTAL_HEIGHT}`} width={renderWidth} height={renderHeight}>
           {STAFF_LINE_STEPS.map((lineStep) => (
             <Line
               key={lineStep}
@@ -117,7 +127,7 @@ export function LessonIntroStaff({ notes, locale, clef = "treble", labels, highl
                 />
                 <SvgText
                   x={x}
-                  y={VIEW_HEIGHT - 6}
+                  y={TOTAL_HEIGHT - 6}
                   fontSize={15}
                   fontWeight="bold"
                   fill={isHighlighted ? theme.colors.success : theme.colors.ink}

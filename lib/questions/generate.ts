@@ -463,7 +463,14 @@ export function generateExercise(definition: ExerciseDefinition, locale: Locale,
     }
     case "note-word-spelling": {
       const { notes, clef } = definition.spec;
-      const targetWord = notes.map((note) => parseScientific(note).letter).join("");
+      // getNoteDisplayName, not the raw internal `.letter` — this app
+      // teaches Polish/German note names (H for B natural, see
+      // lib/music/names.ts's own doc), and the player types what they'd
+      // actually call the note, not its internal scientific-pitch letter.
+      // A word built from "B" (e.g. authored as C4-A3-B3 to spell "CAB")
+      // reads to the player as C-A-H ("CAH"), not "CAB" — comparing
+      // against the raw letter marked a correctly-typed answer wrong.
+      const targetWord = notes.map((note) => getNoteDisplayName(parseScientific(note), locale)).join("");
       return { id: definition.id, type: "note-word-spelling", notes, targetWord, clef: clef ?? "treble" };
     }
     case "pitch-height-choice": {
