@@ -39,6 +39,9 @@ const XP_PERFECT_LESSON_BONUS = 20;
 /** Roughly 1 in 3 checks — see showSoltek's own doc for why this isn't
  * every check. */
 const SOLTEK_APPEARANCE_CHANCE = 0.35;
+/** Consecutive wrong answers before Soltek steps in with an encouraging
+ * "Dasz radę!" — see consecutiveMistakes' own doc. */
+const STRUGGLE_THRESHOLD = 3;
 /** A correct answer also rewards hearts, not just XP — lets a player who's
  * doing well claw back toward MAX_HEARTS (see types/gamification.ts) well
  * before the slow passive regen would, instead of hearts being a purely
@@ -96,9 +99,19 @@ export default function LessonScreen() {
   // rather than every single one — a lesson can have many exercises in a
   // row, and a companion commenting on every single answer would read as
   // clutter rather than the occasional encouraging cameo he's meant to be.
+  // The one exception is a genuine losing streak — see
+  // consecutiveMistakes'/showEncouragement's own doc — where he shows up
+  // for certain, not just on the usual random roll.
   // Re-rolled fresh each time handleCheck runs, reset on handleContinue so
   // the next question gets its own independent roll.
   const [showSoltek, setShowSoltek] = useState(false);
+  // Wrong answers IN A ROW (resets to 0 on any correct answer) — once
+  // this hits STRUGGLE_THRESHOLD, handleCheck forces Soltek on screen
+  // with an encouraging "Dasz radę!" instead of the usual random cameo,
+  // so a kid stuck on the same kind of mistake gets a morale boost right
+  // when it's actually needed, not just at random.
+  const [consecutiveMistakes, setConsecutiveMistakes] = useState(0);
+  const [showEncouragement, setShowEncouragement] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
   const [mistakeCount, setMistakeCount] = useState(0);
   // Distinct ORIGINAL exercises answered correctly so far (once per
@@ -228,12 +241,19 @@ export default function LessonScreen() {
     }
     setChecked(true);
     setIsCorrect(correct);
-    setShowSoltek(Math.random() < SOLTEK_APPEARANCE_CHANCE);
     if (!correct) {
+      const streak = consecutiveMistakes + 1;
+      setConsecutiveMistakes(streak);
+      const struggling = streak >= STRUGGLE_THRESHOLD;
+      setShowEncouragement(struggling);
+      setShowSoltek(struggling || Math.random() < SOLTEK_APPEARANCE_CHANCE);
       setMistakeCount((n) => n + 1);
       loseHeart();
       setExercises((current) => [...current, definition]);
     } else {
+      setConsecutiveMistakes(0);
+      setShowEncouragement(false);
+      setShowSoltek(Math.random() < SOLTEK_APPEARANCE_CHANCE);
       awardXp(XP_PER_CORRECT_ANSWER);
       gainHearts(HEARTS_PER_CORRECT_ANSWER);
       setCorrectCount((n) => n + 1);
@@ -280,6 +300,7 @@ export default function LessonScreen() {
       setChecked(false);
       setIsCorrect(null);
       setShowSoltek(false);
+      setShowEncouragement(false);
     } else {
       markLessonCompleted(currentLesson.id);
       const isLastLessonInWorld = currentLesson.order === currentContent.lessons.length;
@@ -446,7 +467,7 @@ export default function LessonScreen() {
               <SoltekMascot
                 size="sm"
                 expression={isCorrect ? "radosny" : "zachecajacy"}
-                message={isCorrect ? t("lesson.correct", "pl") : t("lesson.incorrect", "pl")}
+                message={showEncouragement ? t("lesson.encouragement", "pl") : isCorrect ? t("lesson.correct", "pl") : t("lesson.incorrect", "pl")}
               />
             ) : (
               <Text
