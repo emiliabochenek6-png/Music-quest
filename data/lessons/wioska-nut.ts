@@ -314,5 +314,38 @@ export const WIOSKA_NUT_CONTENT: WorldContent = {
         { id: "l16-e5", type: "clef-trace", difficulty: 2, spec: { type: "clef-trace", clef: "bass" } },
       ],
     },
+    {
+      id: "lekcja-17-caly-zakres-nazywanie",
+      order: 17,
+      difficulty: 3,
+      introSlides: [
+        {
+          body: "Cały zakres na raz: linie dodane nad i pod pięciolinią, w kluczu wiolinowym i basowym — pomieszane, bez podpowiedzi który to rejestr.",
+        },
+      ],
+      exercises: [
+        { id: "l17-e1", type: "multiple-choice-notation", difficulty: 3, spec: { type: "multiple-choice-notation", targetNote: "G5", distractorPool: ["F5", "E5", "D5"] } },
+        { id: "l17-e2", type: "multiple-choice-notation", difficulty: 3, spec: { type: "multiple-choice-notation", targetNote: "C2", distractorPool: ["D2", "E2", "F2"], clef: "bass" } },
+        { id: "l17-e3", type: "multiple-choice-notation", difficulty: 3, spec: { type: "multiple-choice-notation", targetNote: "B3", distractorPool: ["A3", "C4", "D4"], clef: "bass" } },
+        { id: "l17-e4", type: "multiple-choice-notation", difficulty: 3, spec: { type: "multiple-choice-notation", targetNote: "A3", distractorPool: ["B3", "C4", "G3"] } },
+        { id: "l17-e5", type: "multiple-choice-notation", difficulty: 3, spec: { type: "multiple-choice-notation", targetNote: "D4", distractorPool: ["C4", "B3", "E4"], clef: "bass" } },
+        { id: "l17-e6", type: "pitch-height-choice", difficulty: 2, spec: { type: "pitch-height-choice", targetNote: "G2", correctSide: "low" } },
+      ],
+    },
+    {
+      id: "lekcja-18-caly-zakres-cwiczenia",
+      order: 18,
+      difficulty: 3,
+      introSlides: [{ body: "Te same rejestry co przed chwilą — teraz w ruchu: kierunek melodii, kolejność i pisownia." }],
+      exercises: [
+        { id: "l18-e1", type: "pitch-height-choice", difficulty: 2, spec: { type: "pitch-height-choice", targetNote: "F5", correctSide: "high" } },
+        { id: "l18-e2", type: "pitch-height-choice", difficulty: 2, spec: { type: "pitch-height-choice", targetNote: "D2", correctSide: "low" } },
+        { id: "l18-e3", type: "melody-direction-choice", difficulty: 2, spec: { type: "melody-direction-choice", notes: ["C2", "E2", "G2"], correctDirection: "up" } },
+        { id: "l18-e4", type: "melody-direction-choice", difficulty: 2, spec: { type: "melody-direction-choice", notes: ["G5", "D5", "C5"], correctDirection: "down" } },
+        { id: "l18-e5", type: "note-sequencing", difficulty: 3, spec: { type: "note-sequencing", notes: ["F2", "D2", "G2", "C2"], clef: "bass" } },
+        { id: "l18-e6", type: "note-word-spelling", difficulty: 3, spec: { type: "note-word-spelling", notes: ["C5", "A4", "F5", "E5"] } },
+        { id: "l18-e7", type: "clef-trace", difficulty: 2, spec: { type: "clef-trace", clef: "bass" } },
+      ],
+    },
   ],
 };
