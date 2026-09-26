@@ -14,6 +14,7 @@ import { OutOfHeartsModal } from "@/components/OutOfHeartsModal";
 import { SoltekMascot } from "@/components/SoltekMascot";
 import { getWorldContent } from "@/data/lessons";
 import { getNextWorld, getWorldById } from "@/data/worlds";
+import { ExerciseAccentProvider } from "@/context/ExerciseAccentContext";
 import { useGamification } from "@/context/GamificationContext";
 import { useProgress } from "@/context/ProgressContext";
 import { useSubscription } from "@/context/SubscriptionContext";
@@ -89,7 +90,24 @@ const NUTKI_MULTIPLIER_WHEN_INTRO_DISABLED = 2;
  * completing a world for the first time additionally layers a celebratory
  * WorldCompleteModal over that summary.
  */
+/** Thin wrapper around the real screen purely to set up
+ * ExerciseAccentProvider — every DarkButton/OptionButton the actual
+ * lesson body renders (however many different early-return branches
+ * below end up firing) sits somewhere inside this Provider's tree, so
+ * this one place is the only thing that needs to know about the Wioska
+ * Nut purple override; nothing further down does. */
 export default function LessonScreen() {
+  const { worldId } = useLocalSearchParams<{ worldId: string }>();
+  const world = getWorldById(worldId);
+  const accentOverride = world?.mapIconId === "note" ? world.accentColor : null;
+  return (
+    <ExerciseAccentProvider color={accentOverride}>
+      <LessonScreenBody />
+    </ExerciseAccentProvider>
+  );
+}
+
+function LessonScreenBody() {
   const { lessonId, worldId } = useLocalSearchParams<{ lessonId: string; worldId: string }>();
   const insets = useSafeAreaInsets();
   const { progress, markLessonCompleted, markWorldCompleted } = useProgress();

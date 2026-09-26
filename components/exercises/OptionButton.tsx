@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Pressable, Text } from "react-native";
+import { useExerciseAccentColor } from "@/context/ExerciseAccentContext";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 
 interface OptionButtonProps {
@@ -21,6 +22,7 @@ interface OptionButtonProps {
  * colors sourced from this app's own dual-mode theme tokens rather than
  * the web app's Tailwind emerald/rose classes. */
 export function OptionButton({ label, children, selected, correct, incorrect, disabled, onPress }: OptionButtonProps) {
+  const accentOverride = useExerciseAccentColor();
 
   let borderColor = theme.colors.border;
   let backgroundColor = theme.colors.surface;
@@ -34,7 +36,7 @@ export function OptionButton({ label, children, selected, correct, incorrect, di
     backgroundColor = theme.colors.surfaceMuted;
     textColor = theme.colors.warning;
   } else if (selected) {
-    borderColor = theme.colors.primary;
+    borderColor = accentOverride ?? theme.colors.primary;
     backgroundColor = theme.colors.surfaceMuted;
   }
 

@@ -1,5 +1,6 @@
 import { Pressable, Text, StyleSheet } from "react-native";
 import type { GestureResponderEvent } from "react-native";
+import { useExerciseAccentColor } from "@/context/ExerciseAccentContext";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 
 interface DarkButtonProps {
@@ -26,6 +27,7 @@ interface DarkButtonProps {
 export function DarkButton({ label, onPress, variant = "primary", disabled = false, fontSize, size }: DarkButtonProps) {
   const isPrimary = variant === "primary";
   const textColor = isPrimary ? "#FFFFFF" : theme.colors.accent;
+  const accentOverride = useExerciseAccentColor();
 
   return (
     <Pressable
@@ -36,7 +38,7 @@ export function DarkButton({ label, onPress, variant = "primary", disabled = fal
       style={({ pressed }) => [
         styles.base,
         {
-          backgroundColor: isPrimary ? theme.colors.primary : "transparent",
+          backgroundColor: isPrimary ? accentOverride ?? theme.colors.primary : "transparent",
           borderRadius: size ? size / 2 : theme.radius.md,
           borderWidth: isPrimary ? 0 : theme.borderWidth,
           borderColor: theme.colors.border,
