@@ -347,5 +347,47 @@ export const WIOSKA_NUT_CONTENT: WorldContent = {
         { id: "l18-e7", type: "clef-trace", difficulty: 2, spec: { type: "clef-trace", clef: "bass" } },
       ],
     },
+    {
+      id: "lekcja-19-krzyzyk-i-bemol-nazywanie",
+      order: 19,
+      difficulty: 3,
+      introSlides: [
+        {
+          body: "Krzyżyk (♯) podnosi dźwięk o pół tonu, bemol (♭) obniża go o pół tonu. To wciąż te same nuty co znasz — tylko trochę wyżej albo niżej.",
+        },
+        {
+          body: "Posłuchaj różnicy:",
+          noteExamples: [
+            { note: "F4", label: "F" },
+            { note: "F#4", label: "Fis (♯)" },
+            { note: "B3", label: "H" },
+            { note: "Bb3", label: "B (♭)" },
+          ],
+        },
+      ],
+      exercises: [
+        { id: "l19-e1", type: "multiple-choice-notation", difficulty: 3, spec: { type: "multiple-choice-notation", targetNote: "F#4", distractorPool: ["F4", "G4", "E4"] } },
+        { id: "l19-e2", type: "multiple-choice-notation", difficulty: 3, spec: { type: "multiple-choice-notation", targetNote: "C#5", distractorPool: ["C5", "D5", "B4"] } },
+        { id: "l19-e3", type: "multiple-choice-notation", difficulty: 3, spec: { type: "multiple-choice-notation", targetNote: "Bb3", distractorPool: ["B3", "A3", "C4"] } },
+        { id: "l19-e4", type: "multiple-choice-notation", difficulty: 3, spec: { type: "multiple-choice-notation", targetNote: "G#4", distractorPool: ["G4", "A4", "F4"] } },
+        { id: "l19-e5", type: "multiple-choice-notation", difficulty: 3, spec: { type: "multiple-choice-notation", targetNote: "F#3", distractorPool: ["F3", "G3", "E3"], clef: "bass" } },
+        { id: "l19-e6", type: "pitch-height-choice", difficulty: 2, spec: { type: "pitch-height-choice", targetNote: "C#5", correctSide: "high" } },
+      ],
+    },
+    {
+      id: "lekcja-20-krzyzyk-i-bemol-cwiczenia",
+      order: 20,
+      difficulty: 3,
+      introSlides: [{ body: "Te same krzyżyki i bemole — teraz w ruchu i w kolejności." }],
+      exercises: [
+        { id: "l20-e1", type: "melody-direction-choice", difficulty: 2, spec: { type: "melody-direction-choice", notes: ["F4", "F#4", "G4"], correctDirection: "up" } },
+        { id: "l20-e2", type: "melody-direction-choice", difficulty: 2, spec: { type: "melody-direction-choice", notes: ["C5", "B4", "Bb4"], correctDirection: "down" } },
+        { id: "l20-e3", type: "note-sequencing", difficulty: 3, spec: { type: "note-sequencing", notes: ["G4", "F#4", "A4", "F4"] } },
+        { id: "l20-e4", type: "multiple-choice-notation", difficulty: 3, spec: { type: "multiple-choice-notation", targetNote: "Bb4", distractorPool: ["B4", "A4", "C5"] } },
+        { id: "l20-e5", type: "multiple-choice-notation", difficulty: 3, spec: { type: "multiple-choice-notation", targetNote: "G#5", distractorPool: ["G5", "A5", "F5"] } },
+        { id: "l20-e6", type: "clef-trace", difficulty: 2, spec: { type: "clef-trace", clef: "treble" } },
+        { id: "l20-e7", type: "pitch-height-choice", difficulty: 2, spec: { type: "pitch-height-choice", targetNote: "Db3", correctSide: "low" } },
+      ],
+    },
   ],
 };
