@@ -150,7 +150,7 @@ export function IntroSlideCards({ slides, locale }: IntroSlideCardsProps) {
             <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center", gap: theme.spacing(1.5) }}>
               {slide.noteExamples.map((example, exampleIndex) => (
                 <View key={exampleIndex} style={{ alignItems: "center", gap: theme.spacing(0.75), width: 76 }}>
-                  <StaffNotation note={example.note} width={76} />
+                  <StaffNotation note={example.note} clef={example.clef} width={76} />
                   <DarkButton
                     label="🔊"
                     onPress={() => playNote(parseScientific(example.note))}

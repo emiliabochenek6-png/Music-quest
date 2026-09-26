@@ -367,8 +367,11 @@ export interface LessonTheorySlide {
    * a lesson's intro slide offer every note of a phrase (e.g. the whole
    * do-re-mi-fa-sol-la-si-do scale) individually playable before the
    * player is asked to sing any of it — see IntroSlideCards.tsx's own
-   * noteExamples render branch. */
-  noteExamples?: { note: string; label: string }[];
+   * noteExamples render branch. `clef` defaults to treble (every existing
+   * caller's own content is treble-only) — Wioska Nut's own "mieszanka
+   * kluczy" lesson is the first to pass "bass" explicitly, one slide of
+   * examples per clef, so the exact same note can be shown once each way. */
+  noteExamples?: { note: string; label: string; clef?: Clef }[];
   /** Labirynt Tonacji's own intro-slide illustration: a disabled, non-
    * interactive circle-of-fifths wheel with one sector highlighted — see
    * LessonTheoryIntro's own circleHighlight render branch. */
