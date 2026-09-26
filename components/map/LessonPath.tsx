@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { ScrollView, View, Text, StyleSheet } from "react-native";
+import { ScrollView, View, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Defs, LinearGradient, Path, Stop } from "react-native-svg";
 import { LessonNode } from "@/components/map/LessonNode";
@@ -26,14 +26,6 @@ const TOP_PADDING = 60;
  * content most world screens open with, on both phone and desktop
  * viewports this app actually ships to. */
 const SCROLL_TARGET_OFFSET = 220;
-
-/** A handful of purely decorative "landmark" emoji scattered near the
- * path — evokes the reference art's illustrated waypoints (mountain,
- * cave, river, chest) without needing actual painted illustrations,
- * which this pass has no way to produce. Positioned relative to node
- * index, offset to the side the path ISN'T swinging toward so they never
- * sit on top of a node. */
-const LANDMARKS = ["🏔️", "💎", "🌊", "🕳️"];
 
 function nodeX(index: number): number {
   return PATH_WIDTH / 2 + AMPLITUDE * Math.sin(index * 1.15);
@@ -119,26 +111,6 @@ export function LessonPath({ lessons, completedLessonIds, lessonStars, accentHex
           <Path d={pathD} stroke={accentHex} strokeWidth={10} strokeOpacity={0.18} fill="none" strokeLinecap="round" />
           <Path d={pathD} stroke="url(#pathGlow)" strokeWidth={3} strokeDasharray="1 14" fill="none" strokeLinecap="round" />
         </Svg>
-
-        {lessons.map((lesson, index) => {
-          if (index === 0 || index === lessons.length - 1) return null;
-          const landmark = LANDMARKS[(index - 1) % LANDMARKS.length];
-          const side = Math.sin(index * 1.15) >= 0 ? -1 : 1;
-          return (
-            <Text
-              key={`landmark-${lesson.id}`}
-              style={{
-                position: "absolute",
-                left: nodeX(index) + side * 74,
-                top: nodeY(index) - 16,
-                fontSize: 26,
-                opacity: 0.8,
-              }}
-            >
-              {landmark}
-            </Text>
-          );
-        })}
 
         {lessons.map((lesson, index) => {
           const state = resolveLessonNodeState(lesson, lessons, completedLessonIds);
