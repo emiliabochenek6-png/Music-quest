@@ -39,9 +39,14 @@ const XP_PERFECT_LESSON_BONUS = 20;
 /** Roughly 1 in 3 checks — see showSoltek's own doc for why this isn't
  * every check. */
 const SOLTEK_APPEARANCE_CHANCE = 0.35;
-/** Consecutive wrong answers before Soltek steps in with an encouraging
- * "Dasz radę!" — see consecutiveMistakes' own doc. */
-const STRUGGLE_THRESHOLD = 3;
+/** Every Nth wrong answer TOTAL this attempt (not necessarily in a row —
+ * correct answers in between don't reset the count, see mistakeCount's
+ * own doc) gets an encouraging Soltek checkpoint. */
+const ENCOURAGEMENT_INTERVAL = 3;
+/** How many distinct encouragement lines exist (lesson.encouragement1..N
+ * in pl.json) — handleCheck picks one at random each time the
+ * interstitial fires, so the same message doesn't repeat every time. */
+const ENCOURAGEMENT_MESSAGE_COUNT = 6;
 /** A correct answer also rewards hearts, not just XP — lets a player who's
  * doing well claw back toward MAX_HEARTS (see types/gamification.ts) well
  * before the slow passive regen would, instead of hearts being a purely
@@ -65,10 +70,13 @@ const NUTKI_MULTIPLIER_WHEN_INTRO_DISABLED = 2;
  * requeued onto the end of the session (Duolingo-style "makeup round" —
  * see the `exercises` state's own doc), so the lesson's authored list is
  * a STARTING point, not the full session length; a "🔁 Powtórka" banner
- * marks the makeup round once the player reaches it. Three wrong answers
- * in a row also inserts a one-off full-screen encouragement moment
- * (big Soltek, "Dasz radę!") between that exercise and the next — see
- * showEncouragementInterstitial's own doc. Finishing the last
+ * marks the makeup round once the player reaches it. Every third wrong
+ * answer TOTAL this attempt (mistakes don't need to be back to back —
+ * correct answers in between still count toward the next checkpoint)
+ * also inserts a one-off full-screen encouragement moment (big Soltek,
+ * one of several "Dasz radę!"-style lines) between that exercise and the
+ * next — see showEncouragementInterstitial's own doc.
+ * Finishing the last
  * exercise shows a small summary card, then marks the lesson (and, if it
  * was the world's last lesson, the whole world) done before returning —
  * completing a world for the first time additionally layers a celebratory
@@ -105,15 +113,18 @@ export default function LessonScreen() {
   // Re-rolled fresh each time handleCheck runs, reset on handleContinue so
   // the next question gets its own independent roll.
   const [showSoltek, setShowSoltek] = useState(false);
-  // Wrong answers IN A ROW (resets to 0 on any correct answer) — once
-  // this hits STRUGGLE_THRESHOLD, the NEXT "Dalej" press shows a full
-  // interstitial screen (big Soltek, see showEncouragementInterstitial)
-  // BETWEEN this exercise and the next one, instead of just going
-  // straight on — set by handleCheck (true = "owed, not shown yet"),
-  // consumed by handleContinue the moment the player presses on past the
-  // exercise that crossed the threshold.
-  const [consecutiveMistakes, setConsecutiveMistakes] = useState(0);
+  // "Owed, not shown yet" — set true by handleCheck the moment
+  // mistakeCount crosses an ENCOURAGEMENT_INTERVAL multiple (see that
+  // constant's own doc — total wrong answers this attempt, correct ones
+  // in between don't reset it), consumed by handleContinue the moment
+  // the player presses on past THAT exercise. Shows a full interstitial
+  // screen (big Soltek, see showEncouragementInterstitial) BETWEEN that
+  // exercise and the next one, instead of just going straight on.
   const [showEncouragement, setShowEncouragement] = useState(false);
+  // Which of the ENCOURAGEMENT_MESSAGE_COUNT lines to show — rolled once
+  // per interstitial (in handleCheck, alongside showEncouragement) so it
+  // stays fixed while the screen is up, not re-rolled on every render.
+  const [encouragementMessageIndex, setEncouragementMessageIndex] = useState(1);
   // The interstitial screen itself, currently on/off — separate from
   // showEncouragement (the "owed" flag above) so the two "Dalej" presses
   // involved (one to leave the missed exercise, one to leave the
@@ -249,18 +260,17 @@ export default function LessonScreen() {
     }
     setChecked(true);
     setIsCorrect(correct);
+    setShowSoltek(Math.random() < SOLTEK_APPEARANCE_CHANCE);
     if (!correct) {
-      const streak = consecutiveMistakes + 1;
-      setConsecutiveMistakes(streak);
-      setShowEncouragement(streak >= STRUGGLE_THRESHOLD);
-      setShowSoltek(Math.random() < SOLTEK_APPEARANCE_CHANCE);
-      setMistakeCount((n) => n + 1);
+      const nextMistakeCount = mistakeCount + 1;
+      setMistakeCount(nextMistakeCount);
+      if (nextMistakeCount % ENCOURAGEMENT_INTERVAL === 0) {
+        setShowEncouragement(true);
+        setEncouragementMessageIndex(1 + Math.floor(Math.random() * ENCOURAGEMENT_MESSAGE_COUNT));
+      }
       loseHeart();
       setExercises((current) => [...current, definition]);
     } else {
-      setConsecutiveMistakes(0);
-      setShowEncouragement(false);
-      setShowSoltek(Math.random() < SOLTEK_APPEARANCE_CHANCE);
       awardXp(XP_PER_CORRECT_ANSWER);
       gainHearts(HEARTS_PER_CORRECT_ANSWER);
       setCorrectCount((n) => n + 1);
@@ -363,7 +373,7 @@ export default function LessonScreen() {
   // The ordinary "Dalej" on an answered exercise — detours through the
   // encouragement interstitial exactly once (see showEncouragement's own
   // doc) instead of advancing straight away, whenever the answer just
-  // given crossed STRUGGLE_THRESHOLD.
+  // given landed on an ENCOURAGEMENT_INTERVAL checkpoint.
   function handleContinue() {
     stopAllScheduledAudio();
     if (showEncouragement) {
@@ -407,17 +417,20 @@ export default function LessonScreen() {
   }
 
   // A one-off full screen BETWEEN two exercises (see
-  // showEncouragementInterstitial's own doc) — a genuine losing streak
-  // gets Soltek's full "lg" portrait-and-bubble treatment (the same size
-  // SoltekWelcomeModal gives him), not squeezed into the small inline
-  // feedback row every other check/miss uses, since this moment is
-  // meant to actually land, not blend into the usual flow.
+  // showEncouragementInterstitial's own doc) — every ENCOURAGEMENT_INTERVAL
+  // checkpoint gets Soltek's full "lg" portrait-and-bubble treatment (the
+  // same size SoltekWelcomeModal gives him), not squeezed into the small
+  // inline feedback row every check/miss uses, since this moment is meant
+  // to actually land, not blend into the usual flow. The message itself
+  // is one of ENCOURAGEMENT_MESSAGE_COUNT lines (lesson.encouragement1..N
+  // in pl.json), rolled once in handleCheck and stored in
+  // encouragementMessageIndex so it stays put while this screen is up.
   if (showEncouragementInterstitial) {
     return (
       <View style={styles.root}>
         <LessonHeader title={`${t(world.nameKey as TranslationKey)} · ${lesson.order}`} accentHex={world.accentColor} onBack={goBackToLevels} />
         <View style={styles.centerFill}>
-          <SoltekMascot size="lg" expression="zachecajacy" message={t("lesson.encouragement", "pl")} />
+          <SoltekMascot size="lg" expression="zachecajacy" message={t(`lesson.encouragement${encouragementMessageIndex}` as TranslationKey, "pl")} />
           <View style={{ height: theme.spacing(3) }} />
           <DarkButton label={t("lesson.continue", "pl")} onPress={handleEncouragementContinue} />
         </View>
