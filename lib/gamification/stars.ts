@@ -21,10 +21,17 @@ function starsForCorrectFraction(correctFraction: number): 0 | 1 | 2 | 3 {
   return 0;
 }
 
-/** 1-3 star rating for a FINISHED lesson attempt, from how many of its
- * exercises were answered correctly on the first (and only — this app's
- * own lesson flow never offers a retry on the same question, see
- * app/(main)/lesson/[lessonId].tsx's own handleCheck) attempt: at least a
+/** 1-3 star rating for a FINISHED lesson attempt. `mistakeCount` counts
+ * every wrong ATTEMPT across the whole session, not just once per
+ * exercise — app/(main)/lesson/[lessonId].tsx's own handleCheck requeues
+ * a missed exercise onto the end of the session (Duolingo-style "makeup
+ * round"), so the same question can be missed, and counted here, more
+ * than once before it's finally answered right. `exerciseCount` stays
+ * the lesson's fixed AUTHORED length regardless of how many makeup
+ * rounds that produces — every original exercise always ends up answered
+ * correctly eventually (the lesson can't finish otherwise), so grading
+ * against a count that included repeats would make a perfect score
+ * unavoidable; this keeps mistakes genuinely costly. At least a
  * third correct earns 1 star, at least two-thirds earns 2, a perfect run
  * earns 3 — completing a lesson always earns AT LEAST 1 star even below
  * that first third, since finishing itself is already the achievement

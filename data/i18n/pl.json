@@ -87,6 +87,7 @@
   "lesson.noteWordPrompt": "Odczytaj nuty i wpisz odgadnięte słowo (klucz wiolinowy).",
   "lesson.noteWordPromptBass": "Odczytaj nuty i wpisz odgadnięte słowo (klucz basowy).",
   "lesson.wordInputPlaceholder": "Twoja odpowiedź",
+  "lesson.reviewRoundBanner": "Powtórka — wracamy do tego, co sprawiło trudność",
   "lesson.correctAnswerWas": "Poprawna odpowiedź: {answer}",
   "lesson.intervalDistancePrompt": "Jaki to rodzaj ruchu między nutami?",
   "lesson.stepMotionLabel": "Krok po kroku",

@@ -29,7 +29,7 @@ import { isAnswerCorrect } from "@/lib/questions/validate";
 import { t } from "@/lib/i18n/translate";
 import type { TranslationKey } from "@/lib/i18n/translate";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
-import type { AnswerInput } from "@/types/exercises";
+import type { AnswerInput, ExerciseDefinition } from "@/types/exercises";
 
 /** +10 XP per exercise answered correctly on the first (and only —
  * see handleCheck's own doc) attempt, +20 on top for a lesson finished
@@ -58,7 +58,11 @@ const NUTKI_MULTIPLIER_WHEN_INTRO_DISABLED = 2;
  * theme/darkExerciseTheme.ts's own doc) rather than this app's light
  * dual-mode system. "Back" always returns to that levels screen (via
  * `worldId`, not a bare router.back(), so mid-lesson navigation state
- * never strands the player somewhere unexpected). Finishing the last
+ * never strands the player somewhere unexpected). A wrong answer gets
+ * requeued onto the end of the session (Duolingo-style "makeup round" —
+ * see the `exercises` state's own doc), so the lesson's authored list is
+ * a STARTING point, not the full session length; a "🔁 Powtórka" banner
+ * marks the makeup round once the player reaches it. Finishing the last
  * exercise shows a small summary card, then marks the lesson (and, if it
  * was the world's last lesson, the whole world) done before returning —
  * completing a world for the first time additionally layers a celebratory
@@ -97,6 +101,17 @@ export default function LessonScreen() {
   const [showSoltek, setShowSoltek] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
   const [mistakeCount, setMistakeCount] = useState(0);
+  // Distinct ORIGINAL exercises answered correctly so far (once per
+  // exercise — a repeat that finally succeeds counts here too, a repeat
+  // that fails again does not double-count) — feeds LiveStarIndicator's
+  // "climbs one star at a time, never drops" progress preview below.
+  // Deliberately separate from mistakeCount: the FINAL grade
+  // (resolveStars) penalizes every wrong attempt, including repeats of
+  // the same question, so a lesson finished only after several repeats
+  // can still land on fewer stars even though — by definition, since the
+  // lesson can't end otherwise — every original exercise eventually gets
+  // answered correctly and this counter always reaches originalExerciseCount.
+  const [correctCount, setCorrectCount] = useState(0);
   // Pasmo Interwałów's timed test is ONE exercise made of many rapid-fire
   // answers, so counting it as a single right/wrong (see mistakeCount)
   // can't tell a 65% run from a 100% one. Once checked, its own correct-
@@ -149,8 +164,21 @@ export default function LessonScreen() {
     );
   }
 
-  const exercises = lesson.exercises;
+  // The lesson's own authored list PLUS, appended at the end as they
+  // happen, a copy of every exercise answered wrong — Duolingo-style
+  // "makeup round": a mistake doesn't just cost a heart, the same
+  // question comes back later in this same attempt so the lesson can't
+  // finish without eventually getting it right. originalExerciseCount
+  // (the fixed authored length, never grows) is what stars/summary grade
+  // against — repeats change how long the session takes, not how hard
+  // the lesson "counts" as being.
+  const originalExerciseCount = lesson.exercises.length;
+  const [exercises, setExercises] = useState<ExerciseDefinition[]>(lesson.exercises);
+  useEffect(() => {
+    setExercises(lesson.exercises);
+  }, [lessonId]);
   const definition = exercises[index];
+  const isReviewRound = index >= originalExerciseCount;
   // Signatures (see getExerciseSignature's own doc) of every randomized-
   // content exercise shown so far in THIS lesson attempt — passed to
   // generateExercise as its exclude set so a later exercise of the same
@@ -185,7 +213,7 @@ export default function LessonScreen() {
   function resolveStars(): 1 | 2 | 3 {
     return timedTestResult
       ? computeIntervalTimedTestStars(timedTestResult.correctCount, timedTestResult.totalCount)
-      : computeLessonStars(mistakeCount, exercises.length);
+      : computeLessonStars(mistakeCount, originalExerciseCount);
   }
   const isPerfectRun = timedTestResult
     ? timedTestResult.totalCount > 0 && timedTestResult.correctCount === timedTestResult.totalCount
@@ -204,9 +232,11 @@ export default function LessonScreen() {
     if (!correct) {
       setMistakeCount((n) => n + 1);
       loseHeart();
+      setExercises((current) => [...current, definition]);
     } else {
       awardXp(XP_PER_CORRECT_ANSWER);
       gainHearts(HEARTS_PER_CORRECT_ANSWER);
+      setCorrectCount((n) => n + 1);
     }
   }
 
@@ -301,7 +331,7 @@ export default function LessonScreen() {
       <>
         <LessonSummary
           mistakeCount={mistakeCount}
-          totalExercises={exercises.length}
+          totalExercises={originalExerciseCount}
           stars={resolveStars()}
           timedTestResult={timedTestResult}
           isPerfect={isPerfectRun}
@@ -362,11 +392,17 @@ export default function LessonScreen() {
           />
         </View>
         <LiveStarIndicator
-          correctSoFar={index + (checked ? 1 : 0) - mistakeCount}
-          totalExercises={exercises.length}
+          correctSoFar={correctCount}
+          totalExercises={originalExerciseCount}
           starsOverride={timedTestResult ? resolveStars() : exercise.type === "interval-timed-test" ? 0 : undefined}
         />
       </View>
+
+      {isReviewRound && (
+        <View style={[styles.reviewBanner, { borderColor: world.accentColor }]}>
+          <Text style={[styles.reviewBannerText, { color: world.accentColor }]}>🔁 {t("lesson.reviewRoundBanner", "pl")}</Text>
+        </View>
+      )}
 
       <ScrollView contentContainerStyle={styles.exerciseArea} keyboardShouldPersistTaps="handled" scrollEnabled={scrollEnabled}>
         {/* Consecutive exercises of the SAME type (e.g. two
@@ -652,6 +688,19 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: "100%",
+  },
+  reviewBanner: {
+    marginHorizontal: 24,
+    marginBottom: 8,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: theme.radius.md,
+    borderWidth: 1.5,
+    alignSelf: "flex-start",
+  },
+  reviewBannerText: {
+    fontSize: 13,
+    fontWeight: "700",
   },
   liveStarRow: {
     flexDirection: "row",
