@@ -28,18 +28,6 @@ import type { WorldDefinition } from "@/types/content";
  * or a locally require()'d image renders at its own native pixel size). */
 const MAP_BACKGROUND_PORTRAIT = require("@/assets/backgrounds/soltek-tlo-telefon.png");
 const MAP_BACKGROUND_LANDSCAPE = require("@/assets/backgrounds/soltek-tlo-laptop.png");
-/** Soltek only fits beside the centered PATH_WIDTH (320, see WorldMap.tsx)
- * column when there's enough margin left over on either side to actually
- * read as "well visible" rather than a sliver — comfortably true on a
- * tablet/laptop, essentially never true on a phone (375-430 wide, maybe
- * 30-55px of margin), where the background's own portrait version already
- * carries its own decoration instead. Skipped rather than shrunk/clipped
- * on a narrow screen, so "nie nachodzi na żadną krainę" holds by
- * construction — there's no width this could ever overlap a world node
- * at, since a world node only ever renders inside that centered column. */
-const SOLTEK_ICON_SIZE = 132;
-const SOLTEK_MIN_MARGIN = SOLTEK_ICON_SIZE + 32;
-const MAP_PATH_WIDTH = 320;
 
 /**
  * World map screen — the app's home base once login is done. The one
@@ -59,8 +47,6 @@ export default function MapScreen() {
   const insets = useSafeAreaInsets();
   const { width, height } = useWindowDimensions();
   const backgroundSource = width < height ? MAP_BACKGROUND_PORTRAIT : MAP_BACKGROUND_LANDSCAPE;
-  const sideMargin = (width - MAP_PATH_WIDTH) / 2;
-  const showSoltekIcon = sideMargin >= SOLTEK_MIN_MARGIN;
   const { progress } = useProgress();
   const { status } = useSubscription();
   const { state: gamification } = useGamification();
@@ -91,14 +77,6 @@ export default function MapScreen() {
         style={[StyleSheet.absoluteFill, { width: "100%", height: "100%" }]}
       />
       <View style={styles.glowBlob} />
-      {showSoltekIcon && (
-        <Image
-          source={require("@/assets/soltek/glowny.png")}
-          resizeMode="contain"
-          style={[styles.soltekIcon, { top: "50%", marginTop: -SOLTEK_ICON_SIZE / 2 }]}
-          accessibilityLabel="Soltek"
-        />
-      )}
       <Pressable
         onPress={() => setSideMenuOpen(true)}
         accessibilityRole="button"
@@ -141,13 +119,6 @@ const styles = StyleSheet.create({
     borderRadius: 220,
     backgroundColor: theme.colors.primary,
     opacity: 0.22,
-  },
-  soltekIcon: {
-    position: "absolute",
-    left: 16,
-    width: SOLTEK_ICON_SIZE,
-    height: SOLTEK_ICON_SIZE,
-    zIndex: 5,
   },
   title: {
     position: "absolute",
