@@ -46,7 +46,12 @@ const ENCOURAGEMENT_INTERVAL = 3;
 /** How many distinct encouragement lines exist (lesson.encouragement1..N
  * in pl.json) — handleCheck picks one at random each time the
  * interstitial fires, so the same message doesn't repeat every time. */
-const ENCOURAGEMENT_MESSAGE_COUNT = 6;
+const ENCOURAGEMENT_MESSAGE_COUNT = 4;
+/** Correct answers IN A ROW (breaks on any wrong answer, unlike
+ * ENCOURAGEMENT_INTERVAL — see consecutiveCorrect's own doc) before a
+ * "Świetnie Ci idzie!" streak celebration, same interstitial mechanism
+ * as the struggle-side encouragement but for the opposite moment. */
+const STREAK_CELEBRATION_INTERVAL = 5;
 /** A correct answer also rewards hearts, not just XP — lets a player who's
  * doing well claw back toward MAX_HEARTS (see types/gamification.ts) well
  * before the slow passive regen would, instead of hearts being a purely
@@ -75,7 +80,9 @@ const NUTKI_MULTIPLIER_WHEN_INTRO_DISABLED = 2;
  * correct answers in between still count toward the next checkpoint)
  * also inserts a one-off full-screen encouragement moment (big Soltek,
  * one of several "Dasz radę!"-style lines) between that exercise and the
- * next — see showEncouragementInterstitial's own doc.
+ * next — see showEncouragementInterstitial's own doc. A genuine streak
+ * (STREAK_CELEBRATION_INTERVAL correct answers IN A ROW) gets the same
+ * treatment the other way — see showStreakInterstitial's own doc.
  * Finishing the last
  * exercise shows a small summary card, then marks the lesson (and, if it
  * was the world's last lesson, the whole world) done before returning —
@@ -131,6 +138,14 @@ export default function LessonScreen() {
   // interstitial) are unambiguous: the first flips this on instead of
   // advancing, the second flips it off AND advances.
   const [showEncouragementInterstitial, setShowEncouragementInterstitial] = useState(false);
+  // Correct answers IN A ROW — resets to 0 on any wrong answer (unlike
+  // mistakeCount, which never resets). Mirrors showEncouragement/
+  // showEncouragementInterstitial exactly, one interval below, for the
+  // opposite moment: a genuine streak gets its own "Świetnie Ci idzie!"
+  // celebration instead of the struggle-side encouragement.
+  const [consecutiveCorrect, setConsecutiveCorrect] = useState(0);
+  const [showStreakCelebration, setShowStreakCelebration] = useState(false);
+  const [showStreakInterstitial, setShowStreakInterstitial] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
   const [mistakeCount, setMistakeCount] = useState(0);
   // Distinct ORIGINAL exercises answered correctly so far (once per
@@ -268,12 +283,18 @@ export default function LessonScreen() {
         setShowEncouragement(true);
         setEncouragementMessageIndex(1 + Math.floor(Math.random() * ENCOURAGEMENT_MESSAGE_COUNT));
       }
+      setConsecutiveCorrect(0);
       loseHeart();
       setExercises((current) => [...current, definition]);
     } else {
       awardXp(XP_PER_CORRECT_ANSWER);
       gainHearts(HEARTS_PER_CORRECT_ANSWER);
       setCorrectCount((n) => n + 1);
+      const nextStreak = consecutiveCorrect + 1;
+      setConsecutiveCorrect(nextStreak);
+      if (nextStreak % STREAK_CELEBRATION_INTERVAL === 0) {
+        setShowStreakCelebration(true);
+      }
     }
   }
 
@@ -381,6 +402,11 @@ export default function LessonScreen() {
       setShowEncouragementInterstitial(true);
       return;
     }
+    if (showStreakCelebration) {
+      setShowStreakCelebration(false);
+      setShowStreakInterstitial(true);
+      return;
+    }
     advanceOrFinish();
   }
 
@@ -389,6 +415,13 @@ export default function LessonScreen() {
   function handleEncouragementContinue() {
     stopAllScheduledAudio();
     setShowEncouragementInterstitial(false);
+    advanceOrFinish();
+  }
+
+  // Same shape as handleEncouragementContinue, for the streak screen.
+  function handleStreakContinue() {
+    stopAllScheduledAudio();
+    setShowStreakInterstitial(false);
     advanceOrFinish();
   }
 
@@ -430,9 +463,26 @@ export default function LessonScreen() {
       <View style={styles.root}>
         <LessonHeader title={`${t(world.nameKey as TranslationKey)} · ${lesson.order}`} accentHex={world.accentColor} onBack={goBackToLevels} />
         <View style={styles.centerFill}>
-          <SoltekMascot size="lg" expression="zachecajacy" message={t(`lesson.encouragement${encouragementMessageIndex}` as TranslationKey, "pl")} />
+          <SoltekMascot size="lg" frameless expression="zachecajacy" message={t(`lesson.encouragement${encouragementMessageIndex}` as TranslationKey, "pl")} />
           <View style={{ height: theme.spacing(3) }} />
           <DarkButton label={t("lesson.continue", "pl")} onPress={handleEncouragementContinue} />
+        </View>
+      </View>
+    );
+  }
+
+  // Same shape as the encouragement interstitial above, for a genuine
+  // STREAK_CELEBRATION_INTERVAL-long run of correct answers instead of a
+  // struggle — "radosny" (happy), not "zachecajacy" (encouraging), since
+  // this moment is a reward, not a boost.
+  if (showStreakInterstitial) {
+    return (
+      <View style={styles.root}>
+        <LessonHeader title={`${t(world.nameKey as TranslationKey)} · ${lesson.order}`} accentHex={world.accentColor} onBack={goBackToLevels} />
+        <View style={styles.centerFill}>
+          <SoltekMascot size="lg" frameless expression="radosny" message={t("lesson.streakCelebration", "pl")} />
+          <View style={{ height: theme.spacing(3) }} />
+          <DarkButton label={t("lesson.continue", "pl")} onPress={handleStreakContinue} />
         </View>
       </View>
     );

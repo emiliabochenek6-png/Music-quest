@@ -26,6 +26,13 @@ interface SoltekMascotProps {
    * portrait (no speech bubble beside it — see SoltekWelcomeModal's own
    * use) where Soltek himself is the focus. */
   size?: "sm" | "md" | "lg";
+  /** Drops the avatar's border/background frame — for a "lg" portrait
+   * that's already the sole focus of a full screen (this app's lesson
+   * encouragement/streak interstitials), where a frame around him reads
+   * as redundant chrome rather than adding anything. Default false keeps
+   * every other "lg" usage (e.g. SoltekWelcomeModal, a card inside a
+   * modal rather than the whole screen) framed as before. */
+  frameless?: boolean;
 }
 
 /**
@@ -36,12 +43,19 @@ interface SoltekMascotProps {
  * outstretched hand), so a circular crop would clip him at some
  * expressions but not others; a square frame never does.
  */
-export function SoltekMascot({ expression = "radosny", message, size = "md" }: SoltekMascotProps) {
+export function SoltekMascot({ expression = "radosny", message, size = "md", frameless = false }: SoltekMascotProps) {
   const isSmall = size === "sm";
   const isLarge = size === "lg";
 
   const avatar = (
-    <View style={[styles.avatarWrap, isSmall && styles.avatarWrapSmall, isLarge && styles.avatarWrapLarge]}>
+    <View
+      style={[
+        styles.avatarWrap,
+        isSmall && styles.avatarWrapSmall,
+        isLarge && styles.avatarWrapLarge,
+        frameless && styles.avatarWrapFrameless,
+      ]}
+    >
       <Image source={EXPRESSION_IMAGES[expression]} style={styles.avatarImage} resizeMode="contain" />
     </View>
   );
@@ -99,10 +113,14 @@ const styles = StyleSheet.create({
     padding: 2,
   },
   avatarWrapLarge: {
-    width: 132,
-    height: 132,
+    width: 160,
+    height: 160,
     borderRadius: theme.radius.lg,
     padding: 8,
+  },
+  avatarWrapFrameless: {
+    backgroundColor: "transparent",
+    borderWidth: 0,
   },
   avatarImage: {
     width: "100%",

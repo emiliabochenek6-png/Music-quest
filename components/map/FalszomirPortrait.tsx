@@ -1,3 +1,4 @@
+import { useId } from "react";
 import { SvgXml } from "react-native-svg";
 
 /** Hand-illustrated portrait for Wioska Nut's bonus/"boss" lesson
@@ -5,11 +6,27 @@ import { SvgXml } from "react-native-svg";
  * same way components/icons/icons.ts inlines the app's other hand-drawn
  * art (no svg-to-component Metro transform configured in this project).
  * A single 1024×1024 viewBox illustration, not a small monochrome glyph,
- * so it gets its own file rather than joining ICONS' shared lookup. */
-const FALSZOMIR_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+ * so it gets its own file rather than joining ICONS' shared lookup.
+ *
+ * A function of the two eye clip-path ids, not a plain string constant —
+ * this portrait renders in more than one place at once (the map's own
+ * boss node AND the lesson's "Zapoznaj się" intro slide), and SvgXml
+ * inlines its markup directly into the page's real DOM rather than an
+ * isolated shadow tree. Two instances sharing the same hard-coded
+ * `id="eL"`/`id="eR"` would violate SVG's "ids are unique per document"
+ * rule — the browser resolves every `url(#eL)` reference to whichever
+ * element got that id FIRST, so the second instance's own eye group ends
+ * up clipped against the WRONG (or, if that first element is later
+ * unmounted, a dangling/missing) clip path instead of its own, which is
+ * exactly what made one eye silently disappear on the intro slide. Each
+ * render now gets its own ids (see FalszomirPortrait's own useId call)
+ * so no two instances can ever collide, regardless of how many render at
+ * once either now or in some future screen. */
+function buildFalszomirSvg(eyeLeftId: string, eyeRightId: string): string {
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
 <defs>
-<clipPath id="eL"><path d="M398 540 L482 566 C 488 604 470 628 442 628 C 410 628 392 598 398 540 Z"></path></clipPath>
-<clipPath id="eR"><path d="M626 540 L542 566 C 536 604 554 628 582 628 C 614 628 632 598 626 540 Z"></path></clipPath>
+<clipPath id="${eyeLeftId}"><path d="M398 540 L482 566 C 488 604 470 628 442 628 C 410 628 392 598 398 540 Z"></path></clipPath>
+<clipPath id="${eyeRightId}"><path d="M626 540 L542 566 C 536 604 554 628 582 628 C 614 628 632 598 626 540 Z"></path></clipPath>
 </defs>
 <path d="M318 470 C 210 600 150 780 176 902 C 240 872 300 906 360 884 C 420 904 470 890 512 900 C 554 890 604 904 664 884 C 724 906 784 872 848 902 C 874 780 814 600 706 470 Z" fill="#4A2378" stroke="#3A1A68" stroke-width="10" stroke-linejoin="round"></path>
 <path d="M340 520 C 260 640 220 780 236 870 C 280 858 320 874 360 862 L 664 862 C 704 874 744 858 788 870 C 804 780 764 640 684 520 Z" fill="#C2334F" opacity=".9"></path>
@@ -50,8 +67,8 @@ const FALSZOMIR_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024
 <path d="M14 -70 C 34 -58 44 -44 36 -26" stroke="#3A1A68" stroke-width="7" fill="none" stroke-linecap="round"></path>
 <ellipse cx="0" cy="4" rx="19" ry="14" transform="rotate(-22)" fill="#F7B733" stroke="#3A1A68" stroke-width="6"></ellipse>
 <path d="M-6 -2 L2 6 L-2 12" stroke="#3A1A68" stroke-width="3" fill="none"></path></g>
-<g clip-path="url(#eL)"><rect x="380" y="520" width="270" height="120" fill="#FFFBEA"></rect><circle cx="452" cy="598" r="22" fill="#2A0F4A"></circle><circle cx="446" cy="590" r="7" fill="#fff"></circle><circle cx="460" cy="606" r="3" fill="#fff"></circle></g>
-<g clip-path="url(#eR)"><rect x="380" y="520" width="270" height="120" fill="#FFFBEA"></rect><circle cx="572" cy="598" r="22" fill="#2A0F4A"></circle><circle cx="566" cy="590" r="7" fill="#fff"></circle><circle cx="580" cy="606" r="3" fill="#fff"></circle></g>
+<g clip-path="url(#${eyeLeftId})"><rect x="380" y="520" width="270" height="120" fill="#FFFBEA"></rect><circle cx="452" cy="598" r="22" fill="#2A0F4A"></circle><circle cx="446" cy="590" r="7" fill="#fff"></circle><circle cx="460" cy="606" r="3" fill="#fff"></circle></g>
+<g clip-path="url(#${eyeRightId})"><rect x="380" y="520" width="270" height="120" fill="#FFFBEA"></rect><circle cx="572" cy="598" r="22" fill="#2A0F4A"></circle><circle cx="566" cy="590" r="7" fill="#fff"></circle><circle cx="580" cy="606" r="3" fill="#fff"></circle></g>
 <path d="M398 540 L482 566 C 488 604 470 628 442 628 C 410 628 392 598 398 540 Z" fill="none" stroke="#2A0F4A" stroke-width="7" stroke-linejoin="round"></path>
 <path d="M626 540 L542 566 C 536 604 554 628 582 628 C 614 628 632 598 626 540 Z" fill="none" stroke="#2A0F4A" stroke-width="7" stroke-linejoin="round"></path>
 <path d="M384 518 L490 552" stroke="#2A0F4A" stroke-width="14" stroke-linecap="round"></path><path d="M640 518 L534 552" stroke="#2A0F4A" stroke-width="14" stroke-linecap="round"></path>
@@ -80,11 +97,13 @@ const FALSZOMIR_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024
 <ellipse cx="0" cy="4" rx="19" ry="14" transform="rotate(-22)" fill="#EE5F93" stroke="#3A1A68" stroke-width="6"></ellipse>
 <path d="M-6 -2 L2 6 L-2 12" stroke="#3A1A68" stroke-width="3" fill="none"></path></g>
 </svg>`;
+}
 
 interface FalszomirPortraitProps {
   size?: number;
 }
 
 export function FalszomirPortrait({ size = 48 }: FalszomirPortraitProps) {
-  return <SvgXml xml={FALSZOMIR_SVG} width={size} height={size} />;
+  const uid = useId().replace(/:/g, "-");
+  return <SvgXml xml={buildFalszomirSvg(`falszomir-eye-l-${uid}`, `falszomir-eye-r-${uid}`)} width={size} height={size} />;
 }
