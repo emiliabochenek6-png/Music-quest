@@ -389,5 +389,24 @@ export const WIOSKA_NUT_CONTENT: WorldContent = {
         { id: "l20-e7", type: "pitch-height-choice", difficulty: 2, spec: { type: "pitch-height-choice", targetNote: "Db3", correctSide: "low" } },
       ],
     },
+    {
+      id: "lekcja-21-wielkie-podsumowanie",
+      order: 21,
+      difficulty: 3,
+      introSlides: [
+        {
+          body: "Wielkie podsumowanie Wioski Nut: wszystko na raz — oba klucze, linie dodane, kroki i skoki, krzyżyki i bemole. Powodzenia!",
+        },
+      ],
+      exercises: [
+        { id: "l21-e1", type: "multiple-choice-notation", difficulty: 3, spec: { type: "multiple-choice-notation", targetNote: "D5", distractorPool: ["C5", "E5", "B4"] } },
+        { id: "l21-e2", type: "multiple-choice-notation", difficulty: 3, spec: { type: "multiple-choice-notation", targetNote: "D2", distractorPool: ["C2", "E2", "F2"], clef: "bass" } },
+        { id: "l21-e3", type: "multiple-choice-notation", difficulty: 3, spec: { type: "multiple-choice-notation", targetNote: "G#4", distractorPool: ["G4", "A4", "F4"] } },
+        { id: "l21-e4", type: "interval-distance-choice", difficulty: 2, spec: { type: "interval-distance-choice", notes: ["D4", "G4"] } },
+        { id: "l21-e5", type: "note-sequencing", difficulty: 3, spec: { type: "note-sequencing", notes: ["B3", "F4", "D4", "G3"] } },
+        { id: "l21-e6", type: "note-word-spelling", difficulty: 3, spec: { type: "note-word-spelling", notes: ["G3", "A3", "D4"] } },
+        { id: "l21-e7", type: "clef-trace", difficulty: 2, spec: { type: "clef-trace", clef: "bass" } },
+      ],
+    },
   ],
 };
