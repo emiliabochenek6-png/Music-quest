@@ -64,9 +64,19 @@ export interface SamplePlaybackHandle {
  * play/stop UI needs to know "it finished naturally" separately from "I
  * stopped it myself" so it can reset its own button state without an
  * extra stop() call fighting the listener it's reacting to. */
-export function playSample(source: number, velocity: number, onFinish?: () => void): SamplePlaybackHandle {
+export function playSample(source: number, velocity: number, onFinish?: () => void, playbackRate: number = 1): SamplePlaybackHandle {
   const player = createAudioPlayer(source);
   player.volume = velocity;
+  // Only touch this when actually shifting — see resolveSample's own doc
+  // for why a rate other than 1 ever happens (an out-of-range note reusing
+  // the nearest recorded octave). setPlaybackRate (not the bare
+  // `.playbackRate =` property) also turns OFF this player's own pitch
+  // correction, so the rate change actually shifts the pitch instead of
+  // just the speed — that's the whole point here, unlike e.g. a "slow
+  // playback" feature that WANTS the original pitch preserved.
+  if (playbackRate !== 1) {
+    player.setPlaybackRate(playbackRate);
+  }
   let settled = false;
 
   function cleanup() {
@@ -299,6 +309,15 @@ export interface WebAudioTrackEvent {
    * playWebAudioTrack's own doc). */
   delayMs: number;
   velocity: number;
+  /** Defaults to 1 (the recording's own pitch). See resolveSample's own
+   * doc — an out-of-range note reuses the nearest recorded octave's
+   * sample, played at half/double rate (etc.) so it still sounds like
+   * the REQUESTED pitch rather than the sample's own recorded one.
+   * AudioBufferSourceNode's own playbackRate always shifts pitch together
+   * with speed (no separate "preserve pitch" mode the way HTMLMediaElement/
+   * native players have), which is exactly what an octave transposition
+   * wants here. */
+  playbackRate?: number;
   /** When set, the node is cut off this many ms after its own start —
    * lib/audio/rhythmPlayer.ts's playMelodicRhythm uses this for a note's
    * written hold time (a half note actually sustains twice as long as a
@@ -466,6 +485,9 @@ export function playWebAudioTrack(events: readonly WebAudioTrackEvent[], anchorM
       events.forEach((event, index) => {
         const node = context.createBufferSource();
         node.buffer = buffers[index];
+        if (event.playbackRate !== undefined) {
+          node.playbackRate.value = event.playbackRate;
+        }
         const gain = context.createGain();
         gain.gain.value = event.velocity;
         node.connect(gain);
@@ -618,7 +640,7 @@ export function clearScheduledAudio(): void {
 }
 
 export interface SamplePool {
-  trigger(velocity: number): void;
+  trigger(velocity: number, playbackRate?: number): void;
   stop(): void;
   /** Forces the pool's native players to exist right now, if they don't
    * already — see the pool's own doc for why a caller about to schedule a
@@ -678,11 +700,19 @@ export function createSamplePool(source: number, size: number): SamplePool {
     warmUp(): void {
       ensurePlayers();
     },
-    trigger(velocity: number): void {
+    trigger(velocity: number, playbackRate: number = 1): void {
       const pool = ensurePlayers();
       const player = pool[nextIndex];
       nextIndex = (nextIndex + 1) % size;
       player.volume = velocity;
+      // Reset every trigger, not just when shifted — a pool is keyed by
+      // `source` alone (see getPool's own doc), so the SAME players can
+      // be reused one call at rate 1, the next at some octave-shifted
+      // rate for a different requested pitch reusing this same sample;
+      // leaving a previous call's rate on a reused player would leak into
+      // this one. See playSample's own doc for why setPlaybackRate, not
+      // the bare property.
+      player.setPlaybackRate(playbackRate);
       player.play();
     },
     stop(): void {
@@ -719,7 +749,22 @@ export function stopAllPooledSamples(): void {
   pooledSamples.forEach((pool) => pool.stop());
 }
 
-function resolveSample(samples: Record<string, number>, note: Note): number {
+interface ResolvedSample {
+  source: number;
+  /** 1 for an exact recording. Anything else means `source` is actually a
+   * NEARBY octave's recording, played faster/slower so it still sounds
+   * like the originally requested pitch — see this function's own doc. */
+  playbackRate: number;
+}
+
+/** Beyond this many octaves of stretch, a pitch-shifted recording stops
+ * sounding like a real piano note (audibly "chipmunked" sped up, or
+ * flabby/indistinct slowed down) — past this, missing content is still a
+ * real content-authoring bug worth failing loudly on, same as before this
+ * fallback existed, rather than quietly playing something unconvincing. */
+const MAX_SAMPLE_OCTAVE_SHIFT = 3;
+
+function resolveSample(samples: Record<string, number>, note: Note): ResolvedSample {
   // Sample maps are only ever keyed by each pitch's canonical spelling
   // (midiToNote's fixed sharp/natural table — see samples.ts's own doc),
   // but a note arriving here can be spelled either way (e.g.
@@ -729,23 +774,45 @@ function resolveSample(samples: Record<string, number>, note: Note): number {
   // its own spelling means playback only ever cares about the actual
   // pitch, never which of two equally valid spellings a caller happened
   // to produce.
-  const key = formatScientific(midiToNote(noteToMidi(note)));
-  const source = samples[key];
-  if (source === undefined) {
-    // A content-authoring bug, same philosophy as the rest of this app's
-    // "fail loudly on unsupported content" convention — not a case to
-    // silently swallow, since a missing sample means the lesson content
-    // references a note nobody pre-rendered audio for yet.
-    throw new Error(`No audio sample for note "${key}" — add one to lib/audio/samples.ts`);
+  const midi = noteToMidi(note);
+  const exactKey = formatScientific(midiToNote(midi));
+  const exactSource = samples[exactKey];
+  if (exactSource !== undefined) {
+    return { source: exactSource, playbackRate: 1 };
   }
-  return source;
+  // lib/audio/samples.ts only covers C3-C6 — content that (deliberately,
+  // e.g. Wioska Nut's own below-the-bass-staff ledger-line notes) needs a
+  // lower or higher pitch than that has no recording of its OWN, but the
+  // SAME pitch class (letter + accidental) one or more octaves away very
+  // likely does. Reusing that recording at double/half (etc.) speed via
+  // playbackRate is a genuine octave transposition, not just a "close
+  // enough" substitute — a recorded C3 played at exactly half speed IS a
+  // C2, the same trick a real sampler/synthesizer uses to cover a wider
+  // range than it has individual recordings for.
+  for (let shift = 1; shift <= MAX_SAMPLE_OCTAVE_SHIFT; shift++) {
+    const higherKey = formatScientific(midiToNote(midi + shift * 12));
+    const higherSource = samples[higherKey];
+    if (higherSource !== undefined) {
+      return { source: higherSource, playbackRate: 2 ** -shift };
+    }
+    const lowerKey = formatScientific(midiToNote(midi - shift * 12));
+    const lowerSource = samples[lowerKey];
+    if (lowerSource !== undefined) {
+      return { source: lowerSource, playbackRate: 2 ** shift };
+    }
+  }
+  // A content-authoring bug, same philosophy as the rest of this app's
+  // "fail loudly on unsupported content" convention — not a case to
+  // silently swallow, since this means the lesson content references a
+  // pitch class nobody pre-rendered audio for at ANY octave yet.
+  throw new Error(`No audio sample for note "${exactKey}" (or a nearby octave of it) — add one to lib/audio/samples.ts`);
 }
 
 export function playNote(note: Note, options: ToneOptions = {}): void {
   const velocity = options.velocity ?? 0.6;
-  const source = resolveSample(NOTE_SAMPLES, note);
-  if (playWebAudioTrack([{ source, delayMs: 0, velocity }], schedulerNow(), () => playSample(source, velocity))) return;
-  playSample(source, velocity);
+  const { source, playbackRate } = resolveSample(NOTE_SAMPLES, note);
+  if (playWebAudioTrack([{ source, delayMs: 0, velocity, playbackRate }], schedulerNow(), () => playSample(source, velocity, undefined, playbackRate))) return;
+  playSample(source, velocity, undefined, playbackRate);
 }
 
 interface MelodyOptions extends ToneOptions {
@@ -776,14 +843,14 @@ export function playMelody(notes: readonly Note[], options: MelodyOptions = {}):
   const gapSeconds = options.gapSeconds ?? 0.05;
   const stepSeconds = MELODY_NOTE_DURATION_SECONDS + gapSeconds;
   const velocity = options.velocity ?? 0.7;
-  const sources = notes.map((note) => resolveSample(MELODY_NOTE_SAMPLES, note));
+  const resolved = notes.map((note) => resolveSample(MELODY_NOTE_SAMPLES, note));
   const anchorMs = schedulerNow();
   const playScheduled = () => {
-    sources.forEach((source, index) => {
-      scheduleAt(index * stepSeconds * 1000, () => getPool(source).trigger(velocity), anchorMs);
+    resolved.forEach(({ source, playbackRate }, index) => {
+      scheduleAt(index * stepSeconds * 1000, () => getPool(source).trigger(velocity, playbackRate), anchorMs);
     });
   };
-  const events = sources.map((source, index) => ({ source, delayMs: index * stepSeconds * 1000, velocity }));
+  const events = resolved.map(({ source, playbackRate }, index) => ({ source, delayMs: index * stepSeconds * 1000, velocity, playbackRate }));
   if (!playWebAudioTrack(events, anchorMs, playScheduled)) playScheduled();
 }
 
@@ -811,9 +878,10 @@ export function playInterval(notes: readonly [Note, Note], options: MelodyOption
  * playChordSequence below calls this repeatedly in quick succession. */
 export function playChord(notes: readonly Note[], options: ToneOptions = {}): void {
   const velocity = options.velocity ?? 0.35;
-  const sources = notes.map((note) => resolveSample(NOTE_SAMPLES, note));
-  const playPooled = () => sources.forEach((source) => getPool(source).trigger(velocity));
-  if (!playWebAudioTrack(sources.map((source) => ({ source, delayMs: 0, velocity })), schedulerNow(), playPooled)) playPooled();
+  const resolved = notes.map((note) => resolveSample(NOTE_SAMPLES, note));
+  const playPooled = () => resolved.forEach(({ source, playbackRate }) => getPool(source).trigger(velocity, playbackRate));
+  const events = resolved.map(({ source, playbackRate }) => ({ source, delayMs: 0, velocity, playbackRate }));
+  if (!playWebAudioTrack(events, schedulerNow(), playPooled)) playPooled();
 }
 
 /** How long one playChord() call audibly rings, by construction of
@@ -838,7 +906,10 @@ export function playChordSequence(chords: readonly (readonly Note[])[], options:
   const velocity = options.velocity ?? 0.35;
   const anchorMs = schedulerNow();
   const events = chords.flatMap((chord, index) =>
-    chord.map((note) => ({ source: resolveSample(NOTE_SAMPLES, note), delayMs: index * stepSeconds * 1000, velocity }))
+    chord.map((note) => {
+      const { source, playbackRate } = resolveSample(NOTE_SAMPLES, note);
+      return { source, delayMs: index * stepSeconds * 1000, velocity, playbackRate };
+    })
   );
   const playScheduled = () => {
     chords.forEach((chord, index) => {
