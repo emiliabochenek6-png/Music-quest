@@ -5,6 +5,7 @@ import { ChromaticKeyboardReference } from "@/components/exercises/ChromaticKeyb
 import { CircleOfFifthsWheel } from "@/components/exercises/CircleOfFifthsWheel";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { IntervalStaffNotation } from "@/components/exercises/IntervalStaffNotation";
+import { LessonIntroStaff } from "@/components/exercises/LessonIntro";
 import { NoteValueIcon } from "@/components/exercises/NoteValueIcon";
 import { RestValueIcon } from "@/components/exercises/RestValueIcon";
 import { StaffNotation } from "@/components/exercises/StaffNotation";
@@ -164,6 +165,10 @@ export function IntroSlideCards({ slides, locale }: IntroSlideCardsProps) {
                 </View>
               ))}
             </View>
+          )}
+
+          {slide.staffSequence && (
+            <LessonIntroStaff notes={slide.staffSequence.notes} locale={locale} clef={slide.staffSequence.clef} />
           )}
 
           {slide.circleHighlight && (

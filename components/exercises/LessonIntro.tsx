@@ -25,16 +25,13 @@ const NOTE_SPACING = 30;
 const RIGHT_PAD = 20;
 const NOTE_RADIUS = 6;
 const LEDGER_WIDTH = 22;
-/** Extra room below the staff's own VIEW_HEIGHT, reserved purely for the
- * letter-name row — a low note (ledger lines BELOW the staff, e.g. G3 in
- * treble clef) sits close enough to VIEW_HEIGHT's own bottom edge that the
- * label, drawn right at that edge, could overlap its notehead. Pushing the
- * label row into its own dedicated strip below VIEW_HEIGHT (rather than
- * cramming it inside the same 150 units the staff/ledger lines already
- * use) fixes that regardless of how low a lesson's own notes go, without
- * moving the staff itself or any note's real pitch position. */
+const EDGE_MARGIN = NOTE_RADIUS + 4;
+/** Extra room reserved purely for the letter-name row, below whatever the
+ * lowest note itself needs (see the dynamic viewMinY/viewMaxY math in
+ * LessonIntroStaff below) — a low note's own ledger lines already get
+ * their own headroom there; this is ADDITIONAL space so the label row
+ * never overlaps the lowest notehead either. */
 const LABEL_ROW_HEIGHT = 30;
-const TOTAL_HEIGHT = VIEW_HEIGHT + LABEL_ROW_HEIGHT;
 
 // Same viewBox HEIGHT (150) as staffGeometry's other consumers — vertical
 // scale is what makes a clef glyph read as correctly sized against the
@@ -76,12 +73,24 @@ export function LessonIntroStaff({ notes, locale, clef = "treble", labels, highl
   const noteX = (index: number) => FIRST_NOTE_X + index * NOTE_SPACING;
   const contentWidth = noteX(Math.max(0, notes.length - 1)) + RIGHT_PAD;
   const renderWidth = Math.min(contentWidth, 340);
-  const renderHeight = (renderWidth / contentWidth) * TOTAL_HEIGHT;
+
+  // Expands to fit every note (same trick IntervalStaffNotation/
+  // StaffNotation use) rather than staying pinned to VIEW_HEIGHT's own
+  // fixed 0-150 — a note far below/above the staff would otherwise render
+  // past the SVG's own edge and simply not appear. LABEL_ROW_HEIGHT is
+  // extra room ON TOP of whatever the lowest note itself already needs,
+  // so the label row never overlaps that note either.
+  const noteYs = notes.map((note) => stepToY(describeStaffPosition(parseScientific(note), clef).step));
+  const viewMinY = Math.min(0, ...noteYs.map((y) => y - EDGE_MARGIN));
+  const viewMaxYForNotes = Math.max(VIEW_HEIGHT, ...noteYs.map((y) => y + EDGE_MARGIN));
+  const viewMaxY = viewMaxYForNotes + LABEL_ROW_HEIGHT;
+  const viewHeight = viewMaxY - viewMinY;
+  const renderHeight = (renderWidth / contentWidth) * viewHeight;
 
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}>
       <View style={{ width: renderWidth, height: renderHeight, backgroundColor: theme.colors.surfaceMuted, borderRadius: theme.radius.md }}>
-        <Svg viewBox={`0 0 ${contentWidth} ${TOTAL_HEIGHT}`} width={renderWidth} height={renderHeight}>
+        <Svg viewBox={`0 ${viewMinY} ${contentWidth} ${viewHeight}`} width={renderWidth} height={renderHeight}>
           {STAFF_LINE_STEPS.map((lineStep) => (
             <Line
               key={lineStep}
@@ -127,7 +136,7 @@ export function LessonIntroStaff({ notes, locale, clef = "treble", labels, highl
                 />
                 <SvgText
                   x={x}
-                  y={TOTAL_HEIGHT - 6}
+                  y={viewMaxYForNotes + LABEL_ROW_HEIGHT - 6}
                   fontSize={15}
                   fontWeight="bold"
                   fill={isHighlighted ? theme.colors.success : theme.colors.ink}

@@ -258,7 +258,7 @@ export const WIOSKA_NUT_CONTENT: WorldContent = {
         { id: "l13-e1", type: "melody-direction-choice", difficulty: 2, spec: { type: "melody-direction-choice", notes: ["A3", "C4", "D4"], correctDirection: "up" } },
         { id: "l13-e2", type: "melody-direction-choice", difficulty: 2, spec: { type: "melody-direction-choice", notes: ["D4", "B3", "A3"], correctDirection: "down" } },
         { id: "l13-e3", type: "melody-direction-choice", difficulty: 1, spec: { type: "melody-direction-choice", notes: ["C4", "C4", "C4"], correctDirection: "same" } },
-        { id: "l13-e4", type: "note-word-spelling", difficulty: 3, spec: { type: "note-word-spelling", notes: ["F4", "A3", "C4", "B3"], clef: "bass" } },
+        { id: "l13-e4", type: "note-word-spelling", difficulty: 3, spec: { type: "note-word-spelling", notes: ["F3", "A3", "C4", "B3"], clef: "bass" } },
         { id: "l13-e5", type: "clef-trace", difficulty: 2, spec: { type: "clef-trace", clef: "bass" } },
       ],
     },
@@ -269,18 +269,12 @@ export const WIOSKA_NUT_CONTENT: WorldContent = {
       introSlides: [
         { body: "Ten sam zapis nutowy wygląda inaczej w zależności od klucza — teraz poćwiczysz oba na przemian, bez podpowiedzi który to klucz." },
         {
-          body: "1. Najpierw w kluczu wiolinowym:",
-          noteExamples: [
-            { note: "C4", label: "C" },
-            { note: "G3", label: "G" },
-          ],
+          body: "1. Najpierw cała gama w kluczu wiolinowym:",
+          staffSequence: { notes: ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"] },
         },
         {
-          body: "2. Te same dźwięki w kluczu basowym — zobacz, że wyglądają inaczej:",
-          noteExamples: [
-            { note: "C4", label: "C", clef: "bass" },
-            { note: "G3", label: "G", clef: "bass" },
-          ],
+          body: "2. Ta sama gama w kluczu basowym — zobacz, że wygląda inaczej:",
+          staffSequence: { notes: ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"], clef: "bass" },
         },
       ],
       exercises: [

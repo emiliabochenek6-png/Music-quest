@@ -372,6 +372,14 @@ export interface LessonTheorySlide {
    * kluczy" lesson is the first to pass "bass" explicitly, one slide of
    * examples per clef, so the exact same note can be shown once each way. */
   noteExamples?: { note: string; label: string; clef?: Clef }[];
+  /** A connected multi-note staff (the SAME visual LessonIntroStaff already
+   * draws for a whole lesson's own introNotes) embedded inside one slide —
+   * for a lesson that needs this more than once (Wioska Nut's own
+   * "mieszanka kluczy": the same scale shown once per clef), since a
+   * lesson only ever gets ONE top-level introNotes/introClef pair. Reads
+   * as one continuous run of notes ("cała gama po kolei"), unlike
+   * noteExamples' own separate individually-playable cards. */
+  staffSequence?: { notes: string[]; clef?: Clef };
   /** Labirynt Tonacji's own intro-slide illustration: a disabled, non-
    * interactive circle-of-fifths wheel with one sector highlighted — see
    * LessonTheoryIntro's own circleHighlight render branch. */
