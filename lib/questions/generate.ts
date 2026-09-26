@@ -453,13 +453,13 @@ export function generateExercise(definition: ExerciseDefinition, locale: Locale,
       };
     }
     case "note-sequencing": {
-      const { notes } = definition.spec;
+      const { notes, clef } = definition.spec;
       const correctOrder = [...notes].sort((a, b) => noteToMidi(parseScientific(a)) - noteToMidi(parseScientific(b)));
       let shuffledNotes = shuffled(notes);
       for (let attempt = 0; attempt < 10 && shuffledNotes.join() === correctOrder.join(); attempt++) {
         shuffledNotes = shuffled(notes);
       }
-      return { id: definition.id, type: "note-sequencing", shuffledNotes, correctOrder };
+      return { id: definition.id, type: "note-sequencing", shuffledNotes, correctOrder, clef: clef ?? "treble" };
     }
     case "note-word-spelling": {
       const { notes, clef } = definition.spec;

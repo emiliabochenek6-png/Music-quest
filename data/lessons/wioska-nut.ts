@@ -246,7 +246,7 @@ export const WIOSKA_NUT_CONTENT: WorldContent = {
         { id: "l12-e2", type: "multiple-choice-notation", difficulty: 3, spec: { type: "multiple-choice-notation", targetNote: "C4", distractorPool: ["B3", "D4", "A3"], clef: "bass" } },
         { id: "l12-e3", type: "multiple-choice-notation", difficulty: 3, spec: { type: "multiple-choice-notation", targetNote: "D4", distractorPool: ["C4", "B3", "A3"], clef: "bass" } },
         { id: "l12-e4", type: "multiple-choice-notation", difficulty: 2, spec: { type: "multiple-choice-notation", targetNote: "A3", distractorPool: ["B3", "G2", "C4"], clef: "bass" } },
-        { id: "l12-e5", type: "note-sequencing", difficulty: 3, spec: { type: "note-sequencing", notes: ["D4", "B3", "A3", "C4"] } },
+        { id: "l12-e5", type: "note-sequencing", difficulty: 3, spec: { type: "note-sequencing", notes: ["D4", "B3", "A3", "C4"], clef: "bass" } },
       ],
     },
     {
@@ -258,7 +258,7 @@ export const WIOSKA_NUT_CONTENT: WorldContent = {
         { id: "l13-e1", type: "melody-direction-choice", difficulty: 2, spec: { type: "melody-direction-choice", notes: ["A3", "C4", "D4"], correctDirection: "up" } },
         { id: "l13-e2", type: "melody-direction-choice", difficulty: 2, spec: { type: "melody-direction-choice", notes: ["D4", "B3", "A3"], correctDirection: "down" } },
         { id: "l13-e3", type: "melody-direction-choice", difficulty: 1, spec: { type: "melody-direction-choice", notes: ["C4", "C4", "C4"], correctDirection: "same" } },
-        { id: "l13-e4", type: "note-word-spelling", difficulty: 3, spec: { type: "note-word-spelling", notes: ["F4", "A3", "C4", "B3"] } },
+        { id: "l13-e4", type: "note-word-spelling", difficulty: 3, spec: { type: "note-word-spelling", notes: ["F4", "A3", "C4", "B3"], clef: "bass" } },
         { id: "l13-e5", type: "clef-trace", difficulty: 2, spec: { type: "clef-trace", clef: "bass" } },
       ],
     },
@@ -315,8 +315,8 @@ export const WIOSKA_NUT_CONTENT: WorldContent = {
       exercises: [
         { id: "l16-e1", type: "melody-direction-choice", difficulty: 2, spec: { type: "melody-direction-choice", notes: ["G2", "D2", "C2"], correctDirection: "down" } },
         { id: "l16-e2", type: "melody-direction-choice", difficulty: 2, spec: { type: "melody-direction-choice", notes: ["C2", "D2", "G2"], correctDirection: "up" } },
-        { id: "l16-e3", type: "note-sequencing", difficulty: 3, spec: { type: "note-sequencing", notes: ["F2", "C2", "E2", "D2"] } },
-        { id: "l16-e4", type: "note-word-spelling", difficulty: 3, spec: { type: "note-word-spelling", notes: ["F2", "E2", "D2"] } },
+        { id: "l16-e3", type: "note-sequencing", difficulty: 3, spec: { type: "note-sequencing", notes: ["F2", "C2", "E2", "D2"], clef: "bass" } },
+        { id: "l16-e4", type: "note-word-spelling", difficulty: 3, spec: { type: "note-word-spelling", notes: ["F2", "E2", "D2"], clef: "bass" } },
         { id: "l16-e5", type: "clef-trace", difficulty: 2, spec: { type: "clef-trace", clef: "bass" } },
       ],
     },

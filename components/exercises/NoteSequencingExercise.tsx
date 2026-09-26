@@ -69,7 +69,7 @@ export function NoteSequencingExercise({ exercise, selectedOrder, onSelect, chec
                   <Text style={{ color: "#fff", fontSize: 11, fontWeight: "700" }}>{position + 1}</Text>
                 </View>
               )}
-              <StaffNotation note={note} width={72} />
+              <StaffNotation note={note} clef={exercise.clef} width={72} />
             </Pressable>
           );
         })}

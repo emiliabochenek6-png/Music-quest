@@ -21,6 +21,7 @@ describe("isAnswerCorrect", () => {
       type: "note-sequencing",
       shuffledNotes: ["G4", "C4", "E4"],
       correctOrder: ["C4", "E4", "G4"],
+      clef: "treble",
     };
     expect(isAnswerCorrect(exercise, { type: "note-sequencing", selectedOrder: ["C4", "E4", "G4"] })).toBe(true);
     // Right notes, wrong order.

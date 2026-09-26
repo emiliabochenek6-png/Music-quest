@@ -70,7 +70,7 @@ export type ExerciseSpec =
       optionCount?: number;
       clef?: Clef;
     }
-  | { type: "note-sequencing"; notes: string[] }
+  | { type: "note-sequencing"; notes: string[]; clef?: Clef }
   | { type: "note-word-spelling"; notes: string[]; clef?: Clef }
   | { type: "pitch-height-choice"; targetNote: string; correctSide: "high" | "low" }
   | { type: "staff-placement"; targetStep: number }
@@ -447,7 +447,7 @@ export type GeneratedExercise =
       correctOptionId: string;
       clef: Clef;
     }
-  | { id: string; type: "note-sequencing"; shuffledNotes: string[]; correctOrder: string[] }
+  | { id: string; type: "note-sequencing"; shuffledNotes: string[]; correctOrder: string[]; clef: Clef }
   | { id: string; type: "note-word-spelling"; notes: string[]; targetWord: string; clef: Clef }
   | { id: string; type: "pitch-height-choice"; targetNote: string; correctSide: "high" | "low" }
   | { id: string; type: "staff-placement"; targetStep: number }
