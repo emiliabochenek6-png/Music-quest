@@ -108,6 +108,13 @@ export default function LessonScreen() {
   const world = getWorldById(worldId);
   const content = getWorldContent(worldId);
   const lesson = content?.lessons.find((l) => l.id === lessonId);
+  // Wioska Nut's own screens (world/[worldId].tsx's WORLD_BACKGROUNDS, the
+  // map node) went purple to match its new background art — this screen
+  // still opened every lesson on the app-wide neutral cream, which read as
+  // an orange-tinted page next to Wioska Nut's own orange-free branding
+  // and its purple map node. Only Wioska Nut gets a tint so far; every
+  // other world keeps the plain cream until it gets its own treatment.
+  const screenBackgroundColor = world?.mapIconId === "note" ? "#F3ECFC" : theme.colors.cream;
 
   const [index, setIndex] = useState(0);
   const [answer, setAnswer] = useState<AnswerInput | null>(null);
@@ -202,7 +209,7 @@ export default function LessonScreen() {
 
   if (!world || !content || !lesson) {
     return (
-      <View style={styles.root}>
+      <View style={[styles.root, { backgroundColor: screenBackgroundColor }]}>
         <LessonHeader title="Lekcja" accentHex={theme.colors.primary} onBack={goBackToLevels} />
         <View style={styles.centerFill}>
           <Text style={{ color: theme.colors.muted }}>Nie znaleziono tej lekcji.</Text>
@@ -435,6 +442,7 @@ export default function LessonScreen() {
           timedTestResult={timedTestResult}
           isPerfect={isPerfectRun}
           accentHex={world.accentColor}
+          backgroundColor={screenBackgroundColor}
           onExit={goBackToLevels}
         />
         <WorldCompleteModal
@@ -460,7 +468,7 @@ export default function LessonScreen() {
   // encouragementMessageIndex so it stays put while this screen is up.
   if (showEncouragementInterstitial) {
     return (
-      <View style={styles.root}>
+      <View style={[styles.root, { backgroundColor: screenBackgroundColor }]}>
         <LessonHeader title={`${t(world.nameKey as TranslationKey)} · ${lesson.order}`} accentHex={world.accentColor} onBack={goBackToLevels} />
         <View style={styles.centerFill}>
           <SoltekMascot size="lg" frameless expression="zachecajacy" message={t(`lesson.encouragement${encouragementMessageIndex}` as TranslationKey, "pl")} />
@@ -477,7 +485,7 @@ export default function LessonScreen() {
   // this moment is a reward, not a boost.
   if (showStreakInterstitial) {
     return (
-      <View style={styles.root}>
+      <View style={[styles.root, { backgroundColor: screenBackgroundColor }]}>
         <LessonHeader title={`${t(world.nameKey as TranslationKey)} · ${lesson.order}`} accentHex={world.accentColor} onBack={goBackToLevels} />
         <View style={styles.centerFill}>
           <SoltekMascot size="lg" frameless expression="radosny" message={t("lesson.streakCelebration", "pl")} />
@@ -490,7 +498,7 @@ export default function LessonScreen() {
 
   if (currentLesson.introSlides && currentLesson.introSlides.length > 0 && !introDismissed) {
     return (
-      <View style={styles.root}>
+      <View style={[styles.root, { backgroundColor: screenBackgroundColor }]}>
         <LessonHeader title={`${t(world.nameKey as TranslationKey)} · ${lesson.order}`} accentHex={world.accentColor} onBack={goBackToLevels} />
         <View style={{ flex: 1, paddingHorizontal: 24, paddingTop: 16 }}>
           <LessonTheoryIntro slides={currentLesson.introSlides} locale="pl" onContinue={handleIntroContinue} />
@@ -501,7 +509,7 @@ export default function LessonScreen() {
 
   if (currentLesson.introNotes && currentLesson.introNotes.length > 0 && !introDismissed) {
     return (
-      <View style={styles.root}>
+      <View style={[styles.root, { backgroundColor: screenBackgroundColor }]}>
         <LessonHeader title={`${t(world.nameKey as TranslationKey)} · ${lesson.order}`} accentHex={world.accentColor} onBack={goBackToLevels} />
         <ScrollView contentContainerStyle={styles.exerciseArea}>
           <LessonIntro
@@ -517,7 +525,7 @@ export default function LessonScreen() {
   }
 
   return (
-    <View style={styles.root}>
+    <View style={[styles.root, { backgroundColor: screenBackgroundColor }]}>
       <LessonHeader title={`${t(world.nameKey as TranslationKey)} · ${lesson.order}`} accentHex={world.accentColor} onBack={goBackToLevels} />
 
       <View style={styles.progressWrap}>
@@ -693,6 +701,7 @@ function LessonSummary({
   timedTestResult,
   isPerfect,
   accentHex,
+  backgroundColor,
   onExit,
 }: {
   mistakeCount: number;
@@ -701,12 +710,19 @@ function LessonSummary({
   timedTestResult: { correctCount: number; totalCount: number } | null;
   isPerfect: boolean;
   accentHex: string;
+  backgroundColor: string;
   onExit: () => void;
 }) {
   const insets = useSafeAreaInsets();
 
   return (
-    <View style={[styles.root, styles.summaryWrap, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
+    <View
+      style={[
+        styles.root,
+        styles.summaryWrap,
+        { backgroundColor, paddingTop: insets.top, paddingBottom: insets.bottom },
+      ]}
+    >
       <Text style={{ fontSize: 56 }}>{isPerfect ? "🎉" : "✅"}</Text>
       <Text style={{ fontSize: theme.fontSize.heading, fontWeight: "800", color: theme.colors.ink }}>
         {t("lesson.lessonComplete", "pl")}

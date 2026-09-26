@@ -96,7 +96,22 @@ export default function WorldLevelsScreen() {
 
   return (
     <View style={styles.root}>
-      {backgroundSource && <Image source={backgroundSource} resizeMode="cover" style={StyleSheet.absoluteFill} />}
+      {backgroundSource && (
+        <Image
+          source={backgroundSource}
+          resizeMode="cover"
+          // A local require()'d image carries its own native pixel size
+          // (720x1510), which react-native-web renders the <img> at by
+          // default whenever the style doesn't explicitly claim a size —
+          // StyleSheet.absoluteFill alone (position + inset 0) wasn't
+          // enough on a wide viewport, where that native width is far
+          // narrower than the screen: the image sat pinned to the
+          // left edge at its own 720px width instead of covering the
+          // rest. Explicit 100%/100% overrides that default so "cover"
+          // actually has the full box to scale against.
+          style={[StyleSheet.absoluteFill, { width: "100%", height: "100%" }]}
+        />
+      )}
       <View style={[styles.glowBlob, { backgroundColor: world.accentColor }]} />
 
       <View style={[styles.headerRow, { paddingTop: insets.top + 12 }]}>
