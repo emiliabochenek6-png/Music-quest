@@ -5,6 +5,7 @@ import {
   RHYTHM_DICTATION_L7_RECORDING_SAMPLES,
   RHYTHM_DICTATION_L9_RECORDING_SAMPLES,
   RHYTHM_DICTATION_L12_RECORDING_SAMPLES,
+  RHYTHM_DICTATION_L15_RECORDING_SAMPLES,
   RHYTHM_NOTATION_TAP_L5_RECORDING_SAMPLES,
   RHYTHM_NOTATION_TAP_L7_RECORDING_SAMPLES,
   RHYTHM_NOTATION_TAP_L9_RECORDING_SAMPLES,
@@ -1229,6 +1230,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
             bpm: 104,
             meter: "4/4",
             sequence: ["eighth", "eighth", "quarter", "quarter", "quarter", "sixteenth", "sixteenth", "eighth", "quarter", "half"],
+            referenceAudioSource: RHYTHM_DICTATION_L15_RECORDING_SAMPLES[0],
           },
         },
         {
@@ -1246,6 +1248,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
             bpm: 96,
             meter: "3/4",
             sequence: ["quarterRest", "eighth", "eighth", "quarter", "eighth", "eighth", "eighth", "eighth", "quarter"],
+            referenceAudioSource: RHYTHM_DICTATION_L15_RECORDING_SAMPLES[1],
           },
         },
       ],

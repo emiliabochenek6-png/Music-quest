@@ -341,6 +341,17 @@ export const RHYTHM_NOTATION_TAP_L13_RECORDING_SAMPLES: readonly number[] = [
   require("@/assets/audio/reference/rhythm-notation-tap-l13-6.wav"),
 ];
 
+/** Same treatment, for lekcja 15's own two rhythm-dictation exercises
+ * (mr-l15-e5, mr-l15-e7 — the "posłuchaj rytmu, a potem zastukaj go tak
+ * samo" ones; the lesson's other two "stukanie" exercises, mr-l15-e2/e6,
+ * are pulse-tap, which has no referenceAudioSource slot at all) — same
+ * purely-illustrative pattern and MuseScore-export conversion as
+ * RHYTHM_DICTATION_L7_RECORDING_SAMPLES's own doc. */
+export const RHYTHM_DICTATION_L15_RECORDING_SAMPLES: readonly number[] = [
+  require("@/assets/audio/reference/rhythm-dictation-l15-1.wav"),
+  require("@/assets/audio/reference/rhythm-dictation-l15-2.wav"),
+];
+
 /** One seamless, sample-accurate loop per meter — built (not recorded)
  * from this app's own click-accent.wav/click-weak.wav at a fixed reference
  * tempo (METRONOME_LOOP_BPM_BY_METER) (a generic script, not MuseScore: hand-trimming a real
