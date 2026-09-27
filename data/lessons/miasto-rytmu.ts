@@ -1305,20 +1305,6 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
           },
         },
         {
-          id: "mr-l16-e6",
-          type: "rhythm-notation-tap",
-          difficulty: 3,
-          spec: {
-            type: "rhythm-notation-tap",
-            bpm: 144,
-            meter: "4/4",
-            sequence: [
-              "eighthRest", "eighth", "quarter", "quarter", "quarter",
-              "sixteenth", "sixteenth", "sixteenth", "sixteenth", "eighth", "eighth", "quarter", "quarter",
-            ],
-          },
-        },
-        {
           id: "mr-l16-e7",
           type: "pulse-tap",
           difficulty: 3,
