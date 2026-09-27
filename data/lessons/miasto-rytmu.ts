@@ -4,6 +4,7 @@ import {
   RHYTHM_DICTATION_L4_RECORDING_SAMPLES,
   RHYTHM_DICTATION_L7_RECORDING_SAMPLES,
   RHYTHM_DICTATION_L9_RECORDING_SAMPLES,
+  RHYTHM_DICTATION_L12_RECORDING_SAMPLES,
   RHYTHM_NOTATION_TAP_L5_RECORDING_SAMPLES,
   RHYTHM_NOTATION_TAP_L7_RECORDING_SAMPLES,
   RHYTHM_NOTATION_TAP_L9_RECORDING_SAMPLES,
@@ -919,6 +920,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
             bpm: 100,
             meter: "4/4",
             sequence: ["whole", "half", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter"],
+            referenceAudioSource: RHYTHM_DICTATION_L12_RECORDING_SAMPLES[0],
           },
         },
         {
@@ -934,6 +936,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
               "eighth", "eighth", "eighth", "eighth", "quarter", "quarter",
               "half", "quarter", "quarter",
             ],
+            referenceAudioSource: RHYTHM_DICTATION_L12_RECORDING_SAMPLES[1],
           },
         },
         {
@@ -949,6 +952,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
               "sixteenth", "sixteenth", "eighth", "quarter", "half",
               "eighth", "eighth", "eighth", "eighth", "quarter", "quarter",
             ],
+            referenceAudioSource: RHYTHM_DICTATION_L12_RECORDING_SAMPLES[2],
           },
         },
         {
@@ -964,6 +968,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
               "quarterRest", "eighth", "eighth", "quarter", "quarter",
               "sixteenth", "sixteenth", "sixteenth", "sixteenth", "half", "quarter",
             ],
+            referenceAudioSource: RHYTHM_DICTATION_L12_RECORDING_SAMPLES[3],
           },
         },
         {
@@ -975,6 +980,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
             bpm: 92,
             meter: "3/4",
             sequence: ["half", "quarter", "quarter", "quarter", "quarter", "eighth", "eighth", "eighth", "eighth", "quarter"],
+            referenceAudioSource: RHYTHM_DICTATION_L12_RECORDING_SAMPLES[4],
           },
         },
         {
@@ -990,6 +996,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
               "sixteenth", "sixteenth", "eighth", "quarter", "quarter",
               "eighth", "eighth", "eighth", "eighth", "quarter",
             ],
+            referenceAudioSource: RHYTHM_DICTATION_L12_RECORDING_SAMPLES[5],
           },
         },
       ],
