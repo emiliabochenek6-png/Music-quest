@@ -519,7 +519,7 @@ function LessonScreenBody() {
       <View style={[styles.root, { backgroundColor: screenBackgroundColor }]}>
         <LessonHeader title={`${t(world.nameKey as TranslationKey)} · ${lesson.order}`} accentHex={world.accentColor} onBack={goBackToLevels} />
         <View style={{ flex: 1, paddingHorizontal: 24, paddingTop: 16 }}>
-          <LessonTheoryIntro slides={currentLesson.introSlides} locale="pl" onContinue={handleIntroContinue} />
+          <LessonTheoryIntro slides={currentLesson.introSlides} locale="pl" onContinue={handleIntroContinue} bossName={currentLesson.bossName} />
         </View>
       </View>
     );
@@ -578,7 +578,7 @@ function LessonScreenBody() {
             instead of starting fresh. Keying by the exercise's own id
             forces a full remount on every exercise change. */}
         {introModeEnabled && currentLesson.introSlides && currentLesson.introSlides.length > 0 && (
-          <ExerciseIntroRecap key={`${definition.id}-recap`} slides={currentLesson.introSlides} locale="pl" />
+          <ExerciseIntroRecap key={`${definition.id}-recap`} slides={currentLesson.introSlides} locale="pl" bossName={currentLesson.bossName} />
         )}
         {introModeEnabled && currentLesson.pianoKeyboardReference && (
           <PianoKeyboardRecap key={`${definition.id}-piano-recap`} range={currentLesson.pianoKeyboardReference.range} />

@@ -463,6 +463,13 @@ export interface LessonDefinition {
    * reusing types already proven elsewhere in the world rather than
    * inventing boss-only mechanics. */
   isBoss?: boolean;
+  /** Which boss this is — looked up in components/map/bossPortraits.ts's
+   * own registry by both LessonNode.tsx (the map node's portrait/label)
+   * and IntroSlideCards.tsx (a `bossPortrait: true` theory slide's own
+   * portrait). Only meaningful alongside `isBoss: true`. Falls back to
+   * Wioska Nut's own Fałszomir when omitted, so existing boss content
+   * predating this field keeps working unchanged. */
+  bossName?: string;
   exercises: ExerciseDefinition[];
 }
 

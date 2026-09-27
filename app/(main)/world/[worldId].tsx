@@ -1,4 +1,4 @@
-import { Image, Pressable, Switch, Text, View, StyleSheet } from "react-native";
+import { Image, Pressable, Switch, Text, View, StyleSheet, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
 import { AppIcon } from "@/components/icons/AppIcon";
@@ -40,17 +40,26 @@ function WorldCardIcon({ mapIconId }: { mapIconId: string }) {
   return <AppIcon name={entry.icon} size={32} />;
 }
 
-// Full-screen backdrop art, keyed the same way as WORLD_ICON above — only
-// Wioska Nut has one commissioned so far. Rendered as this screen's very
-// first child (see the root View below) so it sits behind the header/card
-// AND the scrollable path alike, covering the whole screen rather than
-// just LessonPath's own narrow content column (an earlier version drew it
-// there instead — confined to that column, not what "tło na całej stronie"
-// asked for). "cover" both avoids the distortion a stretched fit caused
-// and the repetition a tiled fit caused — a single image, cropped instead
-// of squished or repeated.
-const WORLD_BACKGROUNDS: Partial<Record<string, number>> = {
+// Full-screen backdrop art, keyed the same way as WORLD_ICON above.
+// Rendered as this screen's very first child (see the root View below) so
+// it sits behind the header/card AND the scrollable path alike, covering
+// the whole screen rather than just LessonPath's own narrow content
+// column (an earlier version drew it there instead — confined to that
+// column, not what "tło na całej stronie" asked for). "cover" both avoids
+// the distortion a stretched fit caused and the repetition a tiled fit
+// caused — a single image, cropped instead of squished or repeated.
+//
+// A world can supply either one image (Wioska Nut's own — resizeMode
+// "cover" crops whatever the viewport's own aspect ratio needs) or a
+// {portrait, landscape} pair (Miasto Rytmu's own — two genuinely
+// different compositions, not just one stretched/cropped source, picked
+// by orientation the same way app/(main)/map.tsx's own background does).
+const WORLD_BACKGROUNDS: Partial<Record<string, number | { portrait: number; landscape: number }>> = {
   note: require("@/assets/backgrounds/wioska-nut-tlo.png"),
+  metronome: {
+    portrait: require("@/assets/backgrounds/miasto-rytmu-tlo-telefon.png"),
+    landscape: require("@/assets/backgrounds/miasto-rytmu-tlo-laptop.png"),
+  },
 };
 
 /**
@@ -60,6 +69,7 @@ const WORLD_BACKGROUNDS: Partial<Record<string, number>> = {
 export default function WorldLevelsScreen() {
   const { worldId } = useLocalSearchParams<{ worldId: string }>();
   const insets = useSafeAreaInsets();
+  const { width, height } = useWindowDimensions();
   const { progress } = useProgress();
   const { state: gamification, setIntroModeEnabled } = useGamification();
   const world = getWorldById(worldId);
@@ -92,7 +102,9 @@ export default function WorldLevelsScreen() {
     router.replace("/(main)/map");
   }
 
-  const backgroundSource = WORLD_BACKGROUNDS[world.mapIconId];
+  const backgroundEntry = WORLD_BACKGROUNDS[world.mapIconId];
+  const backgroundSource =
+    backgroundEntry && typeof backgroundEntry === "object" ? (width < height ? backgroundEntry.portrait : backgroundEntry.landscape) : backgroundEntry;
 
   return (
     <View style={styles.root}>

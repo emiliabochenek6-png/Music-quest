@@ -1253,5 +1253,112 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
         },
       ],
     },
+    {
+      // Miasto Rytmu's own bonus/boss level, same pattern as Wioska
+      // Nut's "Pokonaj króla Fałszomira" (see LessonNode.tsx/
+      // IntroSlideCards.tsx's own bossName-registry doc,
+      // components/map/bossPortraits.ts) — portrait always visible on
+      // the map even locked, only the level itself stays gated behind
+      // finishing every lesson before it. Draws from all six of this
+      // world's own exercise types at their hardest settings seen so
+      // far (fastest tempos, longest patterns, sharpest syncopation)
+      // rather than inventing boss-only mechanics.
+      id: "mr-lekcja-16-boss-arytmik",
+      order: 16,
+      difficulty: 3,
+      isBoss: true,
+      bossName: "Arytmik",
+      introSlides: [
+        {
+          body: "Arytmik miesza rytmy, jak chce — przyspiesza, zwalnia, gubi uderzenia. Żeby go pokonać, pokaż, że Twój zmysł rytmu jest silniejszy niż jego chaos: puls, metrum, echo, układanki i dyktanda, wszystko naraz.",
+          bossPortrait: true,
+        },
+      ],
+      exercises: [
+        {
+          id: "mr-l16-e1",
+          type: "pulse-tap",
+          difficulty: 3,
+          spec: { type: "pulse-tap", bpm: 150, beatsPerMeasure: 4, measureCount: 4, leadInBeats: 3, accentOnly: true },
+        },
+        {
+          id: "mr-l16-e2",
+          type: "meter-choice",
+          difficulty: 3,
+          spec: { type: "meter-choice", correctMeter: "3/4", bpm: 160, optionPool: ["3/4", "4/4"] },
+        },
+        {
+          id: "mr-l16-e3",
+          type: "rhythm-echo",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-echo",
+            onsetsMs: [0, 200, 350, 600, 800, 950, 1200, 1400, 1550, 1800, 2000, 2250, 2500],
+            showStandaloneMetronome: false,
+          },
+        },
+        {
+          id: "mr-l16-e4",
+          type: "rhythm-sequencing",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-sequencing",
+            motif: ["sixteenth", "sixteenth", "eighth", "quarter", "eighth", "half"],
+            bpm: 100,
+            showStandaloneMetronome: false,
+          },
+        },
+        {
+          id: "mr-l16-e5",
+          type: "rhythm-dictation",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 116,
+            meter: "4/4",
+            sequence: [
+              "sixteenthRest", "sixteenth", "sixteenth", "sixteenth", "quarter", "quarter", "quarter",
+              "eighthRest", "eighth", "quarter", "quarter", "quarter",
+              "quarterRest", "eighth", "eighth", "eighth", "eighth", "quarter",
+            ],
+          },
+        },
+        {
+          id: "mr-l16-e6",
+          type: "rhythm-notation-tap",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-notation-tap",
+            bpm: 144,
+            meter: "4/4",
+            sequence: [
+              "eighthRest", "eighth", "quarter", "quarter", "quarter",
+              "sixteenth", "sixteenth", "sixteenth", "sixteenth", "eighth", "eighth", "quarter", "quarter",
+            ],
+          },
+        },
+        {
+          id: "mr-l16-e7",
+          type: "pulse-tap",
+          difficulty: 3,
+          spec: { type: "pulse-tap", bpm: 140, beatsPerMeasure: 3, measureCount: 4, leadInBeats: 3 },
+        },
+        {
+          id: "mr-l16-e8",
+          type: "rhythm-dictation",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 100,
+            meter: "3/4",
+            sequence: [
+              "sixteenthRest", "sixteenth", "eighth", "quarter", "quarter",
+              "eighthRest", "eighth", "eighth", "eighth", "eighth", "eighth",
+              "quarterRest", "eighth", "eighth", "quarter",
+            ],
+          },
+        },
+      ],
+    },
   ],
 };

@@ -1,6 +1,6 @@
 import { Pressable, Text, View, StyleSheet } from "react-native";
 import { AppIcon } from "@/components/icons/AppIcon";
-import { FalszomirPortrait } from "@/components/map/FalszomirPortrait";
+import { DEFAULT_BOSS_NAME, resolveBossPortrait } from "@/components/map/bossPortraits";
 import type { LessonNodeState } from "@/lib/progression/resolveLessonNodeState";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import type { LessonDefinition } from "@/types/exercises";
@@ -34,6 +34,8 @@ export function LessonNode({ lesson, state, accentHex, stars, onPress }: LessonN
   const isLocked = state === "locked";
   const isCurrent = state === "available";
   const isBoss = lesson.isBoss ?? false;
+  const bossName = lesson.bossName ?? DEFAULT_BOSS_NAME;
+  const BossPortrait = resolveBossPortrait(lesson.bossName);
   const faceColor = isLocked ? LOCKED_COLOR : accentHex;
   const nodeSize = isBoss ? BOSS_NODE_SIZE : NODE_SIZE;
 
@@ -70,7 +72,7 @@ export function LessonNode({ lesson, state, accentHex, stars, onPress }: LessonN
           // above) stays locked. Dimmed rather than full opacity while
           // locked is the only "not yet" cue on the portrait itself.
           <View style={{ opacity: isLocked ? 0.45 : 1 }}>
-            <FalszomirPortrait size={nodeSize - 14} />
+            <BossPortrait size={nodeSize - 14} />
           </View>
         ) : isLocked ? (
           <AppIcon name="kraina_klodka" size={24} />
@@ -81,7 +83,7 @@ export function LessonNode({ lesson, state, accentHex, stars, onPress }: LessonN
         )}
       </Pressable>
       <Text style={[styles.orderLabel, { color: isLocked ? theme.colors.muted : theme.colors.ink }]}>
-        {isBoss ? "Fałszomir" : lesson.order}
+        {isBoss ? bossName : lesson.order}
       </Text>
       {state === "completed" && <StarRating stars={stars} />}
     </View>

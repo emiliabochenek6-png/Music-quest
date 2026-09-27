@@ -10,6 +10,9 @@ interface LessonTheoryIntroProps {
   slides: LessonTheorySlide[];
   onContinue: () => void;
   locale: Locale;
+  /** See IntroSlideCards's own doc — only matters when one of `slides`
+   * sets `bossPortrait: true`. */
+  bossName?: string;
 }
 
 /** A short multi-card rule explanation shown before a lesson's exercises —
@@ -18,7 +21,7 @@ interface LessonTheoryIntroProps {
  * rendering lives in IntroSlideCards.tsx (shared with ExerciseIntroRecap's
  * collapsible in-exercise recap of the same content) — this component is
  * just that list's full-screen frame (title, scroll, continue button). */
-export function LessonTheoryIntro({ slides, onContinue, locale }: LessonTheoryIntroProps) {
+export function LessonTheoryIntro({ slides, onContinue, locale, bossName }: LessonTheoryIntroProps) {
   return (
     <ScrollView
       style={{ flex: 1, width: "100%" }}
@@ -29,7 +32,7 @@ export function LessonTheoryIntro({ slides, onContinue, locale }: LessonTheoryIn
         {t("lesson.introTitle", locale)}
       </Text>
 
-      <IntroSlideCards slides={slides} locale={locale} />
+      <IntroSlideCards slides={slides} locale={locale} bossName={bossName} />
 
       <DarkButton label={t("lesson.introContinue", locale)} onPress={onContinue} />
     </ScrollView>

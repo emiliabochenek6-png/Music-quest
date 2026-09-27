@@ -4,7 +4,7 @@ import { BeamedNotation } from "@/components/exercises/BeamedNotation";
 import { ChromaticKeyboardReference } from "@/components/exercises/ChromaticKeyboardReference";
 import { CircleOfFifthsWheel } from "@/components/exercises/CircleOfFifthsWheel";
 import { DarkButton } from "@/components/exercises/DarkButton";
-import { FalszomirPortrait } from "@/components/map/FalszomirPortrait";
+import { resolveBossPortrait } from "@/components/map/bossPortraits";
 import { IntervalStaffNotation } from "@/components/exercises/IntervalStaffNotation";
 import { LessonIntroStaff } from "@/components/exercises/LessonIntro";
 import { NoteValueIcon } from "@/components/exercises/NoteValueIcon";
@@ -23,6 +23,10 @@ const REST_VALUES: ReadonlySet<string> = new Set<RhythmRestValue>(["quarterRest"
 interface IntroSlideCardsProps {
   slides: LessonTheorySlide[];
   locale: Locale;
+  /** Which boss's portrait a `bossPortrait: true` slide renders — see
+   * components/map/bossPortraits.ts's own doc. Omit for a lesson with no
+   * such slide; falls back to Wioska Nut's own Fałszomir otherwise. */
+  bossName?: string;
 }
 
 /** The actual per-slide "rule card" list — everything a lesson's theory
@@ -34,7 +38,8 @@ interface IntroSlideCardsProps {
  * its own — callers that need those (LessonTheoryIntro) supply them;
  * callers that don't (ExerciseIntroRecap, already inside another
  * ScrollView) just drop this straight in. */
-export function IntroSlideCards({ slides, locale }: IntroSlideCardsProps) {
+export function IntroSlideCards({ slides, locale, bossName }: IntroSlideCardsProps) {
+  const BossPortrait = resolveBossPortrait(bossName);
   // Which referenceAudio row (by "slideIndex-referenceIndex" key) is
   // currently playing, if any — a real play/stop player rather than a
   // fire-and-forget button: pressing the playing row's own button stops
@@ -174,7 +179,7 @@ export function IntroSlideCards({ slides, locale }: IntroSlideCardsProps) {
 
           {slide.bossPortrait && (
             <View style={{ alignItems: "center" }}>
-              <FalszomirPortrait size={140} />
+              <BossPortrait size={140} />
             </View>
           )}
 

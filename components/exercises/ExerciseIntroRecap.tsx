@@ -9,6 +9,9 @@ import type { LessonTheorySlide } from "@/types/exercises";
 interface ExerciseIntroRecapProps {
   slides: LessonTheorySlide[];
   locale: Locale;
+  /** See IntroSlideCards's own doc — only matters when one of `slides`
+   * sets `bossPortrait: true`. */
+  bossName?: string;
 }
 
 /** A collapsed-by-default "Zapoznaj się" toggle shown above every exercise
@@ -20,7 +23,7 @@ interface ExerciseIntroRecapProps {
  * ExerciseRenderer), so it always starts collapsed on a fresh exercise and
  * any audio a still-expanded recap had playing stops with it rather than
  * leaking into the next exercise. */
-export function ExerciseIntroRecap({ slides, locale }: ExerciseIntroRecapProps) {
+export function ExerciseIntroRecap({ slides, locale, bossName }: ExerciseIntroRecapProps) {
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -28,7 +31,7 @@ export function ExerciseIntroRecap({ slides, locale }: ExerciseIntroRecapProps) 
       <DarkButton label={expanded ? "Zwiń zapoznaj się ▲" : "Zapoznaj się ▼"} onPress={() => setExpanded((value) => !value)} variant="secondary" />
       {expanded && (
         <View style={{ marginTop: theme.spacing(1.5) }}>
-          <IntroSlideCards slides={slides} locale={locale} />
+          <IntroSlideCards slides={slides} locale={locale} bossName={bossName} />
         </View>
       )}
     </View>
