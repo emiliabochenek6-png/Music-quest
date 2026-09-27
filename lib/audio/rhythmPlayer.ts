@@ -139,10 +139,21 @@ export function stopAllScheduledAudio(): void {
  * then is the expected use, not letting it run out on its own. */
 export const STANDALONE_METRONOME_MEASURES = 200;
 
-export function metronomeBeatTimesMs(bpm: number, beatsPerMeasure: number, measureCount: number): number[] {
+/** `leadInBeats` (default 0) prepends that many extra clicks BEFORE beat
+ * 0, at the same interval, and pushes every other time later by exactly
+ * that many beats — same math as lib/questions/generate.ts's own
+ * pulse-tap case, which is what actually determines PulseTapExercise's
+ * beatTimesMs/requiredTapTimesMs split. Passing the same leadInBeats here
+ * as was used there is what keeps this audio click track lined up with
+ * that visual pulse; every OTHER caller (rhythm-echo/dictation/notation-
+ * tap's own click tracks, none of which have a lead-in concept) omits it
+ * and gets the exact previous behavior. */
+export function metronomeBeatTimesMs(bpm: number, beatsPerMeasure: number, measureCount: number, leadInBeats = 0): number[] {
   const beatIntervalMs = (60 / bpm) * 1000;
   const totalBeats = beatsPerMeasure * measureCount;
-  return Array.from({ length: totalBeats }, (_, index) => index * beatIntervalMs);
+  const leadIn = Array.from({ length: leadInBeats }, (_, index) => index * beatIntervalMs);
+  const graded = Array.from({ length: totalBeats }, (_, index) => (leadInBeats + index) * beatIntervalMs);
+  return [...leadIn, ...graded];
 }
 
 export interface MetronomeOptions {
@@ -171,6 +182,12 @@ export interface MetronomeOptions {
    * JS-execution-steps apart. Defaults to schedulerNow() for a track played
    * on its own (e.g. the standalone-metronome dot toggle). */
   startAtMs?: number;
+  /** See metronomeBeatTimesMs's own doc — only PulseTapExercise passes
+   * this (its own exercise.beatTimesMs already has the lead-in baked in
+   * from generate.ts; this is what makes the AUDIO click track cover the
+   * same extra beats instead of running out before the graded ones the
+   * visual pulse is still showing). Every other caller omits it. */
+  leadInBeats?: number;
 }
 
 /** Schedules a metronome click track via the lookahead scheduler above.
@@ -180,8 +197,17 @@ export interface MetronomeOptions {
  * oscillator code — unavailable in Expo Go (see NOTE_SAMPLES's own doc for
  * why this app trades live synthesis for pre-rendered samples throughout). */
 export function playMetronome(options: MetronomeOptions): void {
-  const { bpm, beatsPerMeasure, measureCount, accentVelocity = 0.55, weakVelocity = 0.3, pulseSubdivision = 1, startAtMs = schedulerNow() } = options;
-  const grid = buildClickGrid(bpm, beatsPerMeasure, measureCount, pulseSubdivision);
+  const {
+    bpm,
+    beatsPerMeasure,
+    measureCount,
+    accentVelocity = 0.55,
+    weakVelocity = 0.3,
+    pulseSubdivision = 1,
+    startAtMs = schedulerNow(),
+    leadInBeats = 0,
+  } = options;
+  const grid = buildClickGrid(bpm, beatsPerMeasure, measureCount, pulseSubdivision, leadInBeats);
   const playPooled = () => {
     // Forces both pools' native players to exist right now, before the
     // FIRST beat is even scheduled — see createSamplePool's own warmUp()
@@ -215,12 +241,23 @@ interface ClickGridEntry {
  * fires at — factored out so playMetronomeWithClaps can build the exact
  * same grid to check onsets against, without duplicating the beat/
  * subdivision math. */
-function buildClickGrid(bpm: number, beatsPerMeasure: number, measureCount: number, pulseSubdivision: number): ClickGridEntry[] {
+function buildClickGrid(
+  bpm: number,
+  beatsPerMeasure: number,
+  measureCount: number,
+  pulseSubdivision: number,
+  leadInBeats = 0
+): ClickGridEntry[] {
   const beatIntervalMs = (60 / bpm) * 1000;
   const subdivisionIntervalMs = beatIntervalMs / pulseSubdivision;
   const grid: ClickGridEntry[] = [];
-  metronomeBeatTimesMs(bpm, beatsPerMeasure, measureCount).forEach((timeMs, index) => {
-    grid.push({ timeMs, isAccent: index % beatsPerMeasure === 0 });
+  metronomeBeatTimesMs(bpm, beatsPerMeasure, measureCount, leadInBeats).forEach((timeMs, index) => {
+    // A lead-in click is never a "downbeat" of the graded content — accent
+    // is computed against the graded section's OWN index (index shifted
+    // back by leadInBeats), same as before this param existed, so a
+    // graded exercise's accent pattern is unchanged by adding a lead-in.
+    const gradedIndex = index - leadInBeats;
+    grid.push({ timeMs, isAccent: gradedIndex >= 0 && gradedIndex % beatsPerMeasure === 0 });
     // Quiet in-between ticks — a subtle "-ta(-ta)" filling out each pulse
     // rather than a second competing accent, same reasoning as
     // playMetronome's own pulseSubdivision doc.

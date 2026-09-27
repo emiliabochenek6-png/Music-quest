@@ -55,13 +55,31 @@ export function PulseTapExercise({ exercise, answer, onAnswerChange, checked, lo
   // instead of two separate clock reads a few JS steps apart.
   function scheduleMetronomeAndPulse(startAtMs: number = schedulerNow()) {
     stopAllScheduledAudio();
-    playMetronome({ bpm: exercise.bpm, beatsPerMeasure: exercise.beatsPerMeasure, measureCount: exercise.measureCount, startAtMs });
+    // leadInBeats here is what makes this audio track actually cover the
+    // same extra beats exercise.beatTimesMs already does — see
+    // MetronomeOptions's own doc. Without it, the click track fell silent
+    // after just the GRADED beat count while the visual pulse (below,
+    // already driven off the longer beatTimesMs) kept going, so by the
+    // time the graded phase was even reached there was nothing left to
+    // hear at all.
+    playMetronome({
+      bpm: exercise.bpm,
+      beatsPerMeasure: exercise.beatsPerMeasure,
+      measureCount: exercise.measureCount,
+      startAtMs,
+      leadInBeats: leadInCount,
+    });
     exercise.beatTimesMs.forEach((timeMs, index) => {
       scheduleAt(
         timeMs,
         () => {
           setBeatIndex(index);
-          const isAccent = index % exercise.beatsPerMeasure === 0;
+          // Same "accent only on the graded section's own downbeat" rule
+          // as MetronomeOptions's click track (see buildClickGrid's own
+          // doc) — a lead-in beat's index doesn't line up with a real
+          // downbeat, so it never gets the bigger pulse.
+          const gradedIndex = index - leadInCount;
+          const isAccent = gradedIndex >= 0 && gradedIndex % exercise.beatsPerMeasure === 0;
           Animated.sequence([
             Animated.timing(pulseScale, { toValue: isAccent ? 1.35 : 1.15, duration: 35, useNativeDriver: true }),
             Animated.timing(pulseScale, { toValue: 1, duration: 140, useNativeDriver: true }),
