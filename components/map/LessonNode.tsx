@@ -82,9 +82,9 @@ export function LessonNode({ lesson, state, accentHex, stars, onPress }: LessonN
           <Text style={styles.icon}>▶</Text>
         )}
       </Pressable>
-      <Text style={[styles.orderLabel, { color: isLocked ? theme.colors.muted : theme.colors.ink }]}>
-        {isBoss ? bossName : lesson.order}
-      </Text>
+      <View style={[styles.pill, styles.orderPill, { borderColor: isLocked ? theme.colors.border : accentHex }]}>
+        <Text style={[styles.pillText, { color: isLocked ? theme.colors.muted : accentHex }]}>{isBoss ? bossName : lesson.order}</Text>
+      </View>
       {state === "completed" && <StarRating stars={stars} />}
     </View>
   );
@@ -164,10 +164,13 @@ const styles = StyleSheet.create({
   icon: {
     fontSize: 24,
   },
-  orderLabel: {
+  // Same pill (border + pale surface fill) as the "Start"/"Pokonaj
+  // bossa!" one above the node — just sitting below it instead, with its
+  // own top margin rather than pillWrap's absolute positioning (this one
+  // is always shown, not only while `isCurrent`, so it can stay in the
+  // normal flow next to the node).
+  orderPill: {
     marginTop: 6,
-    fontSize: 12,
-    fontWeight: "700",
   },
   starRow: {
     flexDirection: "row",
