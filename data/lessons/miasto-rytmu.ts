@@ -657,21 +657,6 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
       ],
       exercises: [
         {
-          id: "mr-l9-e1",
-          type: "rhythm-dictation",
-          difficulty: 2,
-          spec: {
-            type: "rhythm-dictation",
-            bpm: 104,
-            meter: "4/4",
-            sequence: [
-              "eighthRest", "eighth", "quarter", "quarter", "quarter",
-              "quarter", "eighthRest", "eighth", "quarter", "quarter",
-            ],
-            referenceAudioSource: RHYTHM_DICTATION_L9_RECORDING_SAMPLES[0],
-          },
-        },
-        {
           id: "mr-l9-e2",
           type: "rhythm-dictation",
           difficulty: 3,
@@ -1286,16 +1271,6 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
           type: "meter-choice",
           difficulty: 3,
           spec: { type: "meter-choice", correctMeter: "3/4", bpm: 160, optionPool: ["3/4", "4/4"] },
-        },
-        {
-          id: "mr-l16-e3",
-          type: "rhythm-echo",
-          difficulty: 3,
-          spec: {
-            type: "rhythm-echo",
-            onsetsMs: [0, 200, 350, 600, 800, 950, 1200, 1400, 1550, 1800, 2000, 2250, 2500],
-            showStandaloneMetronome: false,
-          },
         },
         {
           id: "mr-l16-e4",
