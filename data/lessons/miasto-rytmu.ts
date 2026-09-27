@@ -1309,18 +1309,24 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
           },
         },
         {
+          // Reuses lekcja 12's own hardest 4/4 dictation content (and its
+          // real recording) rather than authoring a new one that would
+          // need a fresh .wav — see this file's own "Posłuchaj rytmu"
+          // exercises elsewhere for the established pattern of only
+          // adding referenceAudioSource once a real recording exists.
           id: "mr-l16-e5",
           type: "rhythm-dictation",
           difficulty: 3,
           spec: {
             type: "rhythm-dictation",
-            bpm: 116,
+            bpm: 100,
             meter: "4/4",
             sequence: [
-              "sixteenthRest", "sixteenth", "sixteenth", "sixteenth", "quarter", "quarter", "quarter",
-              "eighthRest", "eighth", "quarter", "quarter", "quarter",
-              "quarterRest", "eighth", "eighth", "eighth", "eighth", "quarter",
+              "eighth", "eighth", "quarter", "quarter", "quarter",
+              "quarterRest", "eighth", "eighth", "quarter", "quarter",
+              "sixteenth", "sixteenth", "sixteenth", "sixteenth", "half", "quarter",
             ],
+            referenceAudioSource: RHYTHM_DICTATION_L12_RECORDING_SAMPLES[3],
           },
         },
         {
@@ -1344,18 +1350,21 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
           spec: { type: "pulse-tap", bpm: 140, beatsPerMeasure: 3, measureCount: 4, leadInBeats: 3 },
         },
         {
+          // Same reasoning as mr-l16-e5 above — lekcja 12's own hardest
+          // 3/4 dictation, real recording included.
           id: "mr-l16-e8",
           type: "rhythm-dictation",
           difficulty: 3,
           spec: {
             type: "rhythm-dictation",
-            bpm: 100,
+            bpm: 92,
             meter: "3/4",
             sequence: [
-              "sixteenthRest", "sixteenth", "eighth", "quarter", "quarter",
-              "eighthRest", "eighth", "eighth", "eighth", "eighth", "eighth",
               "quarterRest", "eighth", "eighth", "quarter",
+              "sixteenth", "sixteenth", "eighth", "quarter", "quarter",
+              "eighth", "eighth", "eighth", "eighth", "quarter",
             ],
+            referenceAudioSource: RHYTHM_DICTATION_L12_RECORDING_SAMPLES[5],
           },
         },
       ],
