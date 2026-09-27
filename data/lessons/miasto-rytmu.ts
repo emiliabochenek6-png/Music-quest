@@ -895,5 +895,200 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
         },
       ],
     },
+    {
+      // Every rhythm-dictation exercise so far (lekcje 4, 7, 9) ran 2
+      // measures. Same familiar note values (quarter/eighth/sixteenth/
+      // half/whole + rests, still no dotted values) — length itself is
+      // the new axis: 3 measures means more to hold in memory and write
+      // down correctly, not a harder rhythm figure.
+      id: "mr-lekcja-12-dluzsze-dyktanda",
+      order: 12,
+      difficulty: 2,
+      introSlides: [
+        {
+          body: "Te dyktanda są dłuższe niż wcześniej — trzy takty zamiast dwóch. Wartości nut znasz już wszystkie, ale musisz zapamiętać więcej naraz, zanim zaczniesz wystukiwać.",
+        },
+      ],
+      exercises: [
+        {
+          id: "mr-l12-e1",
+          type: "rhythm-dictation",
+          difficulty: 2,
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 100,
+            meter: "4/4",
+            sequence: ["whole", "half", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter"],
+          },
+        },
+        {
+          id: "mr-l12-e2",
+          type: "rhythm-dictation",
+          difficulty: 2,
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 100,
+            meter: "4/4",
+            sequence: [
+              "quarter", "quarter", "half",
+              "eighth", "eighth", "eighth", "eighth", "quarter", "quarter",
+              "half", "quarter", "quarter",
+            ],
+          },
+        },
+        {
+          id: "mr-l12-e3",
+          type: "rhythm-dictation",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 100,
+            meter: "4/4",
+            sequence: [
+              "quarterRest", "quarter", "eighth", "eighth", "quarter",
+              "sixteenth", "sixteenth", "eighth", "quarter", "half",
+              "eighth", "eighth", "eighth", "eighth", "quarter", "quarter",
+            ],
+          },
+        },
+        {
+          id: "mr-l12-e4",
+          type: "rhythm-dictation",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 100,
+            meter: "4/4",
+            sequence: [
+              "eighth", "eighth", "quarter", "quarter", "quarter",
+              "quarterRest", "eighth", "eighth", "quarter", "quarter",
+              "sixteenth", "sixteenth", "sixteenth", "sixteenth", "half", "quarter",
+            ],
+          },
+        },
+        {
+          id: "mr-l12-e5",
+          type: "rhythm-dictation",
+          difficulty: 2,
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 92,
+            meter: "3/4",
+            sequence: ["half", "quarter", "quarter", "quarter", "quarter", "eighth", "eighth", "eighth", "eighth", "quarter"],
+          },
+        },
+        {
+          id: "mr-l12-e6",
+          type: "rhythm-dictation",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 92,
+            meter: "3/4",
+            sequence: [
+              "quarterRest", "eighth", "eighth", "quarter",
+              "sixteenth", "sixteenth", "eighth", "quarter", "quarter",
+              "eighth", "eighth", "eighth", "eighth", "quarter",
+            ],
+          },
+        },
+      ],
+    },
+    {
+      // Every rhythm-notation-tap exercise so far (lekcje 5, 7, 9) played
+      // at 96-120 bpm. Same 2-measure length, same familiar values — the
+      // new axis here is pure speed (120-140), same idea lekcja 6 already
+      // used for pulse-tap: tapping the SAME kind of rhythm accurately
+      // gets harder as the tempo climbs, independent of how complex the
+      // rhythm itself is.
+      id: "mr-lekcja-13-szybkie-odczytanie",
+      order: 13,
+      difficulty: 2,
+      introSlides: [
+        {
+          body: "Te same rodzaje rytmów, które już znasz — tylko szybciej. Im wyższe tempo, tym mniej czasu na zastanowienie się między uderzeniami.",
+        },
+      ],
+      exercises: [
+        {
+          id: "mr-l13-e1",
+          type: "rhythm-notation-tap",
+          difficulty: 2,
+          spec: {
+            type: "rhythm-notation-tap",
+            bpm: 128,
+            meter: "4/4",
+            sequence: [
+              "quarter", "quarter", "quarter", "quarter",
+              "eighth", "eighth", "eighth", "eighth", "quarter", "quarter",
+            ],
+          },
+        },
+        {
+          id: "mr-l13-e2",
+          type: "rhythm-notation-tap",
+          difficulty: 2,
+          spec: {
+            type: "rhythm-notation-tap",
+            bpm: 132,
+            meter: "4/4",
+            sequence: [
+              "eighth", "eighth", "quarter", "quarter", "quarter",
+              "quarter", "eighth", "eighth", "quarter", "quarter",
+            ],
+          },
+        },
+        {
+          id: "mr-l13-e3",
+          type: "rhythm-notation-tap",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-notation-tap",
+            bpm: 136,
+            meter: "4/4",
+            sequence: [
+              "sixteenth", "sixteenth", "sixteenth", "sixteenth", "quarter", "quarter", "quarter",
+              "eighth", "eighth", "eighth", "eighth", "half",
+            ],
+          },
+        },
+        {
+          id: "mr-l13-e4",
+          type: "rhythm-notation-tap",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-notation-tap",
+            bpm: 140,
+            meter: "4/4",
+            sequence: [
+              "quarterRest", "eighth", "eighth", "quarter", "quarter",
+              "eighth", "eighth", "quarterRest", "eighth", "eighth", "quarter",
+            ],
+          },
+        },
+        {
+          id: "mr-l13-e5",
+          type: "rhythm-notation-tap",
+          difficulty: 2,
+          spec: {
+            type: "rhythm-notation-tap",
+            bpm: 124,
+            meter: "3/4",
+            sequence: ["quarter", "quarter", "quarter", "eighth", "eighth", "eighth", "eighth", "quarter"],
+          },
+        },
+        {
+          id: "mr-l13-e6",
+          type: "rhythm-notation-tap",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-notation-tap",
+            bpm: 130,
+            meter: "3/4",
+            sequence: ["sixteenth", "sixteenth", "eighth", "quarter", "quarter", "eighth", "eighth", "quarterRest", "quarter"],
+          },
+        },
+      ],
+    },
   ],
 };
