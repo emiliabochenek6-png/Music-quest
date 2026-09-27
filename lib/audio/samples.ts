@@ -297,6 +297,26 @@ export const RHYTHM_NOTATION_TAP_L7_RECORDING_SAMPLES: readonly number[] = [
   require("@/assets/audio/reference/rhythm-notation-tap-l7-4.wav"),
 ];
 
+/** Same treatment, for lekcja 9's own rhythm-dictation exercises
+ * (mr-l9-e1..e4) — same purely-illustrative pattern and MuseScore-export
+ * conversion as RHYTHM_DICTATION_L7_RECORDING_SAMPLES's own doc. */
+export const RHYTHM_DICTATION_L9_RECORDING_SAMPLES: readonly number[] = [
+  require("@/assets/audio/reference/rhythm-dictation-l9-1.wav"),
+  require("@/assets/audio/reference/rhythm-dictation-l9-2.wav"),
+  require("@/assets/audio/reference/rhythm-dictation-l9-3.wav"),
+  require("@/assets/audio/reference/rhythm-dictation-l9-4.wav"),
+];
+
+/** Same treatment, for lekcja 9's own rhythm-notation-tap exercises
+ * (mr-l9-e5..e8) — same purely-illustrative pattern as
+ * RHYTHM_NOTATION_TAP_L7_RECORDING_SAMPLES above. */
+export const RHYTHM_NOTATION_TAP_L9_RECORDING_SAMPLES: readonly number[] = [
+  require("@/assets/audio/reference/rhythm-notation-tap-l9-1.wav"),
+  require("@/assets/audio/reference/rhythm-notation-tap-l9-2.wav"),
+  require("@/assets/audio/reference/rhythm-notation-tap-l9-3.wav"),
+  require("@/assets/audio/reference/rhythm-notation-tap-l9-4.wav"),
+];
+
 /** One seamless, sample-accurate loop per meter — built (not recorded)
  * from this app's own click-accent.wav/click-weak.wav at a fixed reference
  * tempo (METRONOME_LOOP_BPM_BY_METER) (a generic script, not MuseScore: hand-trimming a real

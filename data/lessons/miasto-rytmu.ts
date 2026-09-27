@@ -3,8 +3,10 @@ import {
   DRUMMER_4_4_SAMPLE,
   RHYTHM_DICTATION_L4_RECORDING_SAMPLES,
   RHYTHM_DICTATION_L7_RECORDING_SAMPLES,
+  RHYTHM_DICTATION_L9_RECORDING_SAMPLES,
   RHYTHM_NOTATION_TAP_L5_RECORDING_SAMPLES,
   RHYTHM_NOTATION_TAP_L7_RECORDING_SAMPLES,
+  RHYTHM_NOTATION_TAP_L9_RECORDING_SAMPLES,
   RHYTHM_SEQUENCING_L3_RECORDING_SAMPLES,
   RHYTHM_SEQUENCING_RECORDING_SAMPLES,
 } from "@/lib/audio/samples";
@@ -663,6 +665,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
               "eighthRest", "eighth", "quarter", "quarter", "quarter",
               "quarter", "eighthRest", "eighth", "quarter", "quarter",
             ],
+            referenceAudioSource: RHYTHM_DICTATION_L9_RECORDING_SAMPLES[0],
           },
         },
         {
@@ -677,6 +680,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
               "sixteenthRest", "sixteenth", "eighth", "quarter", "quarter", "quarter",
               "eighthRest", "eighth", "eighthRest", "eighth", "quarter", "quarter",
             ],
+            referenceAudioSource: RHYTHM_DICTATION_L9_RECORDING_SAMPLES[1],
           },
         },
         {
@@ -688,6 +692,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
             bpm: 96,
             meter: "3/4",
             sequence: ["eighthRest", "eighth", "quarter", "quarter", "quarter", "eighthRest", "eighth", "quarter"],
+            referenceAudioSource: RHYTHM_DICTATION_L9_RECORDING_SAMPLES[2],
           },
         },
         {
@@ -699,6 +704,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
             bpm: 96,
             meter: "3/4",
             sequence: ["sixteenthRest", "sixteenth", "eighth", "quarter", "quarter", "eighthRest", "eighth", "eighthRest", "eighth", "quarter"],
+            referenceAudioSource: RHYTHM_DICTATION_L9_RECORDING_SAMPLES[3],
           },
         },
         {
@@ -713,6 +719,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
               "quarter", "eighthRest", "eighth", "quarter", "quarter",
               "eighthRest", "eighth", "eighth", "eighth", "quarter", "quarter",
             ],
+            referenceAudioSource: RHYTHM_NOTATION_TAP_L9_RECORDING_SAMPLES[0],
           },
         },
         {
@@ -727,6 +734,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
               "sixteenthRest", "sixteenth", "sixteenth", "sixteenth", "eighth", "quarter", "eighth", "quarter",
               "eighthRest", "eighth", "quarterRest", "eighth", "eighth", "quarter",
             ],
+            referenceAudioSource: RHYTHM_NOTATION_TAP_L9_RECORDING_SAMPLES[1],
           },
         },
         {
@@ -738,6 +746,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
             bpm: 96,
             meter: "3/4",
             sequence: ["quarter", "eighthRest", "eighth", "quarter", "eighthRest", "eighth", "eighth", "eighth", "quarter"],
+            referenceAudioSource: RHYTHM_NOTATION_TAP_L9_RECORDING_SAMPLES[2],
           },
         },
         {
@@ -749,6 +758,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
             bpm: 96,
             meter: "3/4",
             sequence: ["eighthRest", "eighth", "eighthRest", "eighth", "quarter", "sixteenthRest", "sixteenth", "eighth", "quarter", "quarter"],
+            referenceAudioSource: RHYTHM_NOTATION_TAP_L9_RECORDING_SAMPLES[3],
           },
         },
       ],
