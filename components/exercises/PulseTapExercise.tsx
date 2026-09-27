@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Animated, Pressable, Text, View } from "react-native";
 import { DarkButton } from "@/components/exercises/DarkButton";
+import { useExerciseAccentColor } from "@/context/ExerciseAccentContext";
 import { scheduleAt, schedulerNow } from "@/lib/audio/player";
 import { playMetronome, stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
 import { t } from "@/lib/i18n/translate";
@@ -29,10 +30,20 @@ export function PulseTapExercise({ exercise, answer, onAnswerChange, checked, lo
   const [beatIndex, setBeatIndex] = useState(-1);
   const startTimeRef = useRef<number | null>(null);
   const pulseScale = useRef(new Animated.Value(1)).current;
+  const accentOverride = useExerciseAccentColor();
 
   useEffect(() => () => stopAllScheduledAudio(), []);
 
   const taps = answer?.tapTimestampsMs ?? [];
+  // Lead-in beats (see leadInBeats's own doc, types/exercises.ts) play
+  // and pulse exactly like the graded ones — same click, same animation —
+  // so without SOME visible difference here, a count-in is indistinguishable
+  // from "the exercise got longer" (this is exactly what it looked like
+  // before this was added: same dot, same counter, just more of both).
+  // beatTimesMs is always lead-in-then-graded (generate.ts's own pulse-tap
+  // case), so the length difference is exactly the lead-in count.
+  const leadInCount = exercise.beatTimesMs.length - exercise.requiredTapTimesMs.length;
+  const isLeadIn = beatIndex >= 0 && beatIndex < leadInCount;
 
   // Shared by both the initial start and the post-check "replay" — plays
   // the metronome and pulses the indicator in sync, WITHOUT touching taps
@@ -94,7 +105,7 @@ export function PulseTapExercise({ exercise, answer, onAnswerChange, checked, lo
           width: 64,
           height: 64,
           borderRadius: 32,
-          backgroundColor: theme.colors.primary,
+          backgroundColor: isLeadIn ? theme.colors.border : accentOverride ?? theme.colors.primary,
           transform: [{ scale: pulseScale }],
         }}
       />
@@ -105,9 +116,17 @@ export function PulseTapExercise({ exercise, answer, onAnswerChange, checked, lo
         // times as they like) after checking is the equivalent of
         // showing a correct answer for a discrete-choice exercise.
         <DarkButton label={t("lesson.playAgain", locale)} onPress={() => scheduleMetronomeAndPulse()} variant="secondary" />
+      ) : started && isLeadIn ? (
+        <Text style={{ color: theme.colors.muted, fontSize: theme.fontSize.body * 0.85, fontWeight: "700" }}>
+          {t("lesson.pulseTapLeadIn", locale, { remaining: leadInCount - beatIndex })}
+        </Text>
       ) : started ? (
         <Text style={{ color: theme.colors.muted, fontSize: theme.fontSize.body * 0.85 }}>
-          {t("lesson.pulseTapProgress", locale, { current: Math.max(beatIndex + 1, 0), total: exercise.beatTimesMs.length, taps: taps.length })}
+          {t("lesson.pulseTapProgress", locale, {
+            current: Math.max(beatIndex - leadInCount + 1, 0),
+            total: exercise.requiredTapTimesMs.length,
+            taps: taps.length,
+          })}
         </Text>
       ) : (
         <DarkButton label={t("lesson.playAgain", locale)} onPress={handleStart} variant="secondary" />

@@ -104,6 +104,7 @@
 
   "lesson.pulseTapPrompt": "Stukaj w rytm pulsu.",
   "lesson.tapHere": "Stukaj tutaj",
+  "lesson.pulseTapLeadIn": "Przygotuj się… start za {remaining}",
   "lesson.pulseTapProgress": "{current} / {total} · {taps} stuknięć",
   "lesson.meterChoicePrompt": "Posłuchaj i wybierz metrum.",
   "lesson.rhythmEchoPrompt": "Posłuchaj rytmu, a potem powtórz go, stukając.",
