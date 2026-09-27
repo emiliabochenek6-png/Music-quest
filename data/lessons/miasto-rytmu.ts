@@ -763,5 +763,137 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
         },
       ],
     },
+    {
+      // rhythm-sequencing hasn't been touched since lekcja 3, where every
+      // motif topped out at 4 notes — these run 5-6, mixing quarter/
+      // eighth/sixteenth/half in one motif so ORDERING them (not just
+      // hearing them) is the actual challenge, harder to hold in memory
+      // than a short 3-4-note one.
+      id: "mr-lekcja-10-rytmiczne-ukladanki",
+      order: 10,
+      difficulty: 2,
+      introSlides: [
+        {
+          body: "Czas na dłuższe układanki rytmiczne. Usłyszysz wzór z pięciu albo sześciu dźwięków o różnych długościach i musisz poukładać kawałki we właściwej kolejności — im dłuższy wzór, tym trudniej go zapamiętać za pierwszym razem.",
+        },
+      ],
+      exercises: [
+        {
+          id: "mr-l10-e1",
+          type: "rhythm-sequencing",
+          difficulty: 2,
+          spec: { type: "rhythm-sequencing", motif: ["quarter", "eighth", "eighth", "half", "quarter"], bpm: 90, showStandaloneMetronome: false },
+        },
+        {
+          id: "mr-l10-e2",
+          type: "rhythm-sequencing",
+          difficulty: 2,
+          spec: {
+            type: "rhythm-sequencing",
+            motif: ["eighth", "eighth", "quarter", "eighth", "eighth", "quarter"],
+            bpm: 90,
+            showStandaloneMetronome: false,
+          },
+        },
+        {
+          id: "mr-l10-e3",
+          type: "rhythm-sequencing",
+          difficulty: 2,
+          spec: {
+            type: "rhythm-sequencing",
+            motif: ["sixteenth", "sixteenth", "eighth", "quarter", "half"],
+            bpm: 85,
+            showStandaloneMetronome: false,
+          },
+        },
+        {
+          id: "mr-l10-e4",
+          type: "rhythm-sequencing",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-sequencing",
+            motif: ["quarter", "sixteenth", "sixteenth", "eighth", "quarter", "quarter"],
+            bpm: 85,
+            showStandaloneMetronome: false,
+          },
+        },
+        {
+          id: "mr-l10-e5",
+          type: "rhythm-sequencing",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-sequencing",
+            motif: ["eighth", "sixteenth", "sixteenth", "eighth", "eighth", "half"],
+            bpm: 80,
+            showStandaloneMetronome: false,
+          },
+        },
+        {
+          id: "mr-l10-e6",
+          type: "rhythm-sequencing",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-sequencing",
+            motif: ["half", "eighth", "eighth", "sixteenth", "sixteenth", "quarter"],
+            bpm: 80,
+            showStandaloneMetronome: false,
+          },
+        },
+      ],
+    },
+    {
+      // meter-choice hasn't been touched since lekcja 1, where it only
+      // ever got 2 exercises — nowhere near enough to make telling 4/4
+      // from 3/4 apart by ear an actual reflex. Same two meters, but more
+      // reps AND a wide tempo spread (70-150 bpm, echoing lekcja 6's own
+      // tempo range) so recognition has to hold up regardless of speed,
+      // not just at whatever one tempo lekcja 1 happened to use.
+      id: "mr-lekcja-11-wyczul-metrum",
+      order: 11,
+      difficulty: 2,
+      introSlides: [
+        {
+          body: "Znasz już 4/4 i 3/4 z lekcji 1. Teraz poćwicz rozpoznawanie ich ze słuchu w różnych tempach — od bardzo wolnych do bardzo szybkich. Licz uderzenia w grupach: cztery, albo trzy.",
+        },
+      ],
+      exercises: [
+        {
+          id: "mr-l11-e1",
+          type: "meter-choice",
+          difficulty: 2,
+          spec: { type: "meter-choice", correctMeter: "4/4", bpm: 76, optionPool: ["4/4", "3/4"] },
+        },
+        {
+          id: "mr-l11-e2",
+          type: "meter-choice",
+          difficulty: 2,
+          spec: { type: "meter-choice", correctMeter: "3/4", bpm: 132, optionPool: ["3/4", "4/4"] },
+        },
+        {
+          id: "mr-l11-e3",
+          type: "meter-choice",
+          difficulty: 2,
+          spec: { type: "meter-choice", correctMeter: "4/4", bpm: 150, optionPool: ["4/4", "3/4"] },
+        },
+        {
+          id: "mr-l11-e4",
+          type: "meter-choice",
+          difficulty: 3,
+          spec: { type: "meter-choice", correctMeter: "3/4", bpm: 70, optionPool: ["3/4", "4/4"] },
+        },
+        {
+          id: "mr-l11-e5",
+          type: "meter-choice",
+          difficulty: 3,
+          spec: { type: "meter-choice", correctMeter: "4/4", bpm: 112, optionPool: ["4/4", "3/4"] },
+        },
+        {
+          id: "mr-l11-e6",
+          type: "meter-choice",
+          difficulty: 3,
+          spec: { type: "meter-choice", correctMeter: "3/4", bpm: 108, optionPool: ["3/4", "4/4"] },
+        },
+      ],
+    },
   ],
 };
