@@ -482,9 +482,19 @@ export function generateExercise(definition: ExerciseDefinition, locale: Locale,
       return { id: definition.id, type: "staff-placement", targetStep };
     }
     case "pulse-tap": {
-      const { bpm, beatsPerMeasure, measureCount, accentOnly, minHits } = definition.spec;
-      const allBeats = beatTimesMs(bpm, beatsPerMeasure, measureCount);
-      const requiredTapTimesMs = accentOnly ? allBeats.filter((_, index) => index % beatsPerMeasure === 0) : allBeats;
+      const { bpm, beatsPerMeasure, measureCount, accentOnly, minHits, leadInBeats } = definition.spec;
+      const beatIntervalMs = (60 / bpm) * 1000;
+      // Count-in beats, played before the graded ones — see leadInBeats's
+      // own doc (types/exercises.ts). Only `gradedBeats` ever feeds
+      // requiredTapTimesMs; `allBeats` (lead-in + graded) is what actually
+      // plays/pulses on screen, so the player hears the full count-in-
+      // then-groove stream as one continuous pulse, not two separate
+      // phases.
+      const leadIn = leadInBeats ?? beatsPerMeasure;
+      const gradedBeats = beatTimesMs(bpm, beatsPerMeasure, measureCount).map((t) => t + leadIn * beatIntervalMs);
+      const leadInTimes = Array.from({ length: leadIn }, (_, index) => index * beatIntervalMs);
+      const allBeats = [...leadInTimes, ...gradedBeats];
+      const requiredTapTimesMs = accentOnly ? gradedBeats.filter((_, index) => index % beatsPerMeasure === 0) : gradedBeats;
       return {
         id: definition.id,
         type: "pulse-tap",

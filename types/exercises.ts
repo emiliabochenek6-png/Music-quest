@@ -75,7 +75,23 @@ export type ExerciseSpec =
   | { type: "pitch-height-choice"; targetNote: string; correctSide: "high" | "low" }
   | { type: "staff-placement"; targetStep: number }
   // Miasto Rytmu (rhythm world) — see data/lessons/miasto-rytmu.ts's own doc.
-  | { type: "pulse-tap"; bpm: number; beatsPerMeasure: number; measureCount: number; accentOnly?: boolean; minHits?: number }
+  | {
+      type: "pulse-tap";
+      bpm: number;
+      beatsPerMeasure: number;
+      measureCount: number;
+      accentOnly?: boolean;
+      minHits?: number;
+      /** Extra beats played (and pulsed on screen) BEFORE the graded
+       * ones start, so the player hears the tempo settle in before
+       * tapping is actually scored — a count-in, same idea as a real
+       * band leader counting "1, 2, 3, 4" before the song starts.
+       * Defaults to one full measure (`beatsPerMeasure`) when omitted.
+       * A tap made during the lead-in is simply never near enough to any
+       * requiredTapTimesMs entry to match, so no separate "too early,
+       * don't count it yet" state is needed anywhere downstream. */
+      leadInBeats?: number;
+    }
   | {
       type: "meter-choice";
       correctMeter: Meter;

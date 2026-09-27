@@ -118,8 +118,11 @@ describe("generateExercise", () => {
     const exercise = generateExercise(definition, "pl");
     expect(exercise.type).toBe("pulse-tap");
     if (exercise.type === "pulse-tap") {
-      expect(exercise.beatTimesMs).toHaveLength(8);
-      expect(exercise.requiredTapTimesMs).toEqual(exercise.beatTimesMs);
+      // 4 lead-in beats (default = beatsPerMeasure, see leadInBeats's own
+      // doc) + 8 graded beats.
+      expect(exercise.beatTimesMs).toHaveLength(12);
+      expect(exercise.requiredTapTimesMs).toHaveLength(8);
+      expect(exercise.requiredTapTimesMs).toEqual(exercise.beatTimesMs.slice(4));
       expect(exercise.minHits).toBe(Math.ceil(8 * 0.7));
     }
   });
@@ -132,7 +135,33 @@ describe("generateExercise", () => {
     const exercise = generateExercise(definition, "pl");
     if (exercise.type === "pulse-tap") {
       expect(exercise.requiredTapTimesMs).toHaveLength(2);
-      expect(exercise.beatTimesMs).toHaveLength(8);
+      expect(exercise.beatTimesMs).toHaveLength(12);
+    }
+  });
+
+  it("defaults pulse-tap's lead-in to one measure, playable but never required", () => {
+    const beatIntervalMs = (60 / 120) * 1000;
+    const definition = makeDefinition({
+      type: "pulse-tap",
+      spec: { type: "pulse-tap", bpm: 120, beatsPerMeasure: 3, measureCount: 1 },
+    });
+    const exercise = generateExercise(definition, "pl");
+    if (exercise.type === "pulse-tap") {
+      expect(exercise.beatTimesMs).toHaveLength(6); // 3 lead-in + 3 graded
+      expect(exercise.beatTimesMs.slice(0, 3)).toEqual([0, beatIntervalMs, 2 * beatIntervalMs]);
+      expect(exercise.requiredTapTimesMs).toEqual(exercise.beatTimesMs.slice(3));
+    }
+  });
+
+  it("honors an explicit pulse-tap leadInBeats override, including zero", () => {
+    const definition = makeDefinition({
+      type: "pulse-tap",
+      spec: { type: "pulse-tap", bpm: 120, beatsPerMeasure: 4, measureCount: 1, leadInBeats: 0 },
+    });
+    const exercise = generateExercise(definition, "pl");
+    if (exercise.type === "pulse-tap") {
+      expect(exercise.beatTimesMs).toHaveLength(4);
+      expect(exercise.requiredTapTimesMs).toEqual(exercise.beatTimesMs);
     }
   });
 

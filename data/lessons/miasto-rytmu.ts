@@ -403,6 +403,11 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
       // click track and 70%-of-beats default tolerance, same "no new
       // recording needed" pattern lekcja 2's own mr-l2-e2..e5 established
       // for rhythm-echo.
+      // Pulse-tap, restored (2026-09-27) after a brief detour replacing it
+      // with other exercise types — kept after all, now with a lead-in
+      // count-in (leadInBeats, see types/exercises.ts's own doc) so the
+      // player hears the tempo settle in before tapping is actually
+      // scored, instead of needing to react from the very first beat.
       id: "mr-lekcja-6-tempo",
       order: 6,
       difficulty: 2,
@@ -411,7 +416,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
           body: "Tempo to szybkość pulsu — jak szybko biją \"kroki\" muzyki. Wolne tempo brzmi spokojnie, jak spacer. Szybkie tempo brzmi żwawo, jak bieg. Ten sam rytm zagrany wolno i szybko wciąż jest tym samym rytmem — zmienia się tylko to, jak szybko go wystukujesz.",
         },
         {
-          body: "Stukaj równo w każde uderzenie pulsu, który usłyszysz — nie musisz trafiać co do milisekundy, wystarczy trzymać się blisko rytmu.",
+          body: "Na początku usłyszysz kilka pulsów \"na rozbieg\" — to jeszcze nie liczy się do wyniku. Dołącz do nich stukaniem i zostań w rytmie, gdy zacznie się liczyć naprawdę.",
         },
       ],
       exercises: [
