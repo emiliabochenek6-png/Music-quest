@@ -395,5 +395,157 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
         },
       ],
     },
+    {
+      // First content to actually use pulse-tap anywhere in the app (see
+      // components/exercises/PulseTapExercise.tsx) — every exercise omits
+      // referenceAudioSource/minHits (both optional, see
+      // types/exercises.ts's own doc), relying on generate.ts's synthesized
+      // click track and 70%-of-beats default tolerance, same "no new
+      // recording needed" pattern lekcja 2's own mr-l2-e2..e5 established
+      // for rhythm-echo.
+      id: "mr-lekcja-6-tempo",
+      order: 6,
+      difficulty: 2,
+      introSlides: [
+        {
+          body: "Tempo to szybkość pulsu — jak szybko biją \"kroki\" muzyki. Wolne tempo brzmi spokojnie, jak spacer. Szybkie tempo brzmi żwawo, jak bieg. Ten sam rytm zagrany wolno i szybko wciąż jest tym samym rytmem — zmienia się tylko to, jak szybko go wystukujesz.",
+        },
+        {
+          body: "Stukaj równo w każde uderzenie pulsu, który usłyszysz — nie musisz trafiać co do milisekundy, wystarczy trzymać się blisko rytmu.",
+        },
+      ],
+      exercises: [
+        { id: "mr-l6-e1", type: "pulse-tap", difficulty: 1, spec: { type: "pulse-tap", bpm: 66, beatsPerMeasure: 4, measureCount: 3 } },
+        { id: "mr-l6-e2", type: "pulse-tap", difficulty: 1, spec: { type: "pulse-tap", bpm: 100, beatsPerMeasure: 4, measureCount: 3 } },
+        { id: "mr-l6-e3", type: "pulse-tap", difficulty: 2, spec: { type: "pulse-tap", bpm: 138, beatsPerMeasure: 4, measureCount: 3 } },
+        { id: "mr-l6-e4", type: "pulse-tap", difficulty: 2, spec: { type: "pulse-tap", bpm: 96, beatsPerMeasure: 3, measureCount: 4 } },
+        {
+          id: "mr-l6-e5",
+          type: "pulse-tap",
+          difficulty: 3,
+          spec: { type: "pulse-tap", bpm: 126, beatsPerMeasure: 4, measureCount: 4, accentOnly: true },
+        },
+      ],
+    },
+    {
+      // Deliberately stays within lekcje 1-5's own established territory —
+      // 3/4 and 4/4 only, no compound meters (6/8/9/8/12/8 are Przystań
+      // Taktów's own new topic, see that file's doc — introducing them
+      // here would duplicate/pre-empt that world's role) and no dotted
+      // values (Gaj Grupowania/Szczyt Dyktand's own topic). Combines two
+      // things lekcje 3 and 4 taught SEPARATELY — sixteenth notes and
+      // syncopated rests — into the same sequences, same "teraz połączymy
+      // wszystko" idea lekcja 5 already used for notation-tap specifically.
+      id: "mr-lekcja-7-rytmy-zaawansowane",
+      order: 7,
+      difficulty: 3,
+      introSlides: [
+        {
+          body: "Czas połączyć to, co już umiesz: szesnastki z lekcji 3 i synkopy z lekcji 4 — czasem w jednym takcie. Słuchaj i patrz uważnie, gdzie w rytmie jest cisza, a gdzie dźwięk.",
+        },
+      ],
+      exercises: [
+        {
+          id: "mr-l7-e1",
+          type: "rhythm-dictation",
+          difficulty: 2,
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 108,
+            meter: "4/4",
+            sequence: [
+              "sixteenth", "sixteenth", "sixteenth", "sixteenth", "eighth", "eighth", "half",
+              "quarterRest", "eighth", "eighth", "quarter", "quarter",
+            ],
+          },
+        },
+        {
+          id: "mr-l7-e2",
+          type: "rhythm-dictation",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 108,
+            meter: "4/4",
+            sequence: [
+              "eighth", "quarter", "eighth", "quarter", "quarter",
+              "eighth", "eighth", "quarterRest", "eighth", "eighth", "quarter",
+            ],
+          },
+        },
+        {
+          id: "mr-l7-e3",
+          type: "rhythm-dictation",
+          difficulty: 2,
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 100,
+            meter: "3/4",
+            sequence: ["sixteenth", "sixteenth", "eighth", "quarter", "quarter", "eighth", "eighth", "eighth", "eighth", "quarter"],
+          },
+        },
+        {
+          id: "mr-l7-e4",
+          type: "rhythm-dictation",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 100,
+            meter: "3/4",
+            sequence: ["eighth", "quarter", "eighthRest", "quarter", "quarterRest", "eighth", "eighth", "eighth", "eighth"],
+          },
+        },
+        {
+          id: "mr-l7-e5",
+          type: "rhythm-notation-tap",
+          difficulty: 2,
+          spec: {
+            type: "rhythm-notation-tap",
+            bpm: 108,
+            meter: "4/4",
+            sequence: [
+              "quarter", "eighth", "eighth", "quarter", "quarter",
+              "sixteenth", "sixteenth", "sixteenth", "sixteenth", "half", "quarter",
+            ],
+          },
+        },
+        {
+          id: "mr-l7-e6",
+          type: "rhythm-notation-tap",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-notation-tap",
+            bpm: 108,
+            meter: "4/4",
+            sequence: [
+              "eighth", "sixteenth", "sixteenth", "quarter", "quarter", "quarter",
+              "quarterRest", "eighth", "eighth", "quarter", "quarter",
+            ],
+          },
+        },
+        {
+          id: "mr-l7-e7",
+          type: "rhythm-notation-tap",
+          difficulty: 2,
+          spec: {
+            type: "rhythm-notation-tap",
+            bpm: 100,
+            meter: "3/4",
+            sequence: ["quarter", "eighth", "eighth", "quarter", "sixteenth", "sixteenth", "sixteenth", "sixteenth", "quarter", "quarter"],
+          },
+        },
+        {
+          id: "mr-l7-e8",
+          type: "rhythm-notation-tap",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-notation-tap",
+            bpm: 100,
+            meter: "3/4",
+            sequence: ["eighth", "quarter", "eighthRest", "quarter", "quarterRest", "eighth", "eighth", "eighth", "eighth"],
+          },
+        },
+      ],
+    },
   ],
 };
