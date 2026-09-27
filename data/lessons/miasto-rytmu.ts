@@ -582,5 +582,176 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
         },
       ],
     },
+    {
+      // A concept lekcje 1-7 never named outright, despite having taught
+      // both halves of it separately all along: puls (lekcje 1, 6) is the
+      // steady, unchanging background beat; rytm (lekcje 2-5, 7) is the
+      // pattern of different-length notes played AGAINST that beat. Makes
+      // the distinction explicit by alternating pulse-tap (the pulse
+      // itself) with rhythm-echo (a rhythm on top of it) rather than
+      // introducing new note values or meters — a conceptual lesson, not
+      // a content-difficulty one, though the rhythm-echo patterns
+      // themselves are still new and a notch longer than lekcja 6's own.
+      id: "mr-lekcja-8-puls-kontra-rytm",
+      order: 8,
+      difficulty: 2,
+      introSlides: [
+        {
+          body: "Puls i rytm to nie to samo. Puls to stałe, równe tło — jak tykanie zegara, zawsze takie samo. Rytm to wzór różnych długości dźwięków, który GRASZ na tym tle — czasem szybciej, czasem wolniej niż sam puls.",
+        },
+        {
+          body: "W tej lekcji na przemian: raz stukasz czysty puls, raz powtarzasz usłyszany rytm. Posłuchaj różnicy między nimi.",
+        },
+      ],
+      exercises: [
+        { id: "mr-l8-e1", type: "pulse-tap", difficulty: 2, spec: { type: "pulse-tap", bpm: 90, beatsPerMeasure: 4, measureCount: 3, leadInBeats: 3 } },
+        {
+          id: "mr-l8-e2",
+          type: "rhythm-echo",
+          difficulty: 2,
+          spec: { type: "rhythm-echo", onsetsMs: [0, 400, 800, 1000, 1400, 1800, 2400], showStandaloneMetronome: false },
+        },
+        { id: "mr-l8-e3", type: "pulse-tap", difficulty: 2, spec: { type: "pulse-tap", bpm: 120, beatsPerMeasure: 3, measureCount: 4, leadInBeats: 3 } },
+        {
+          id: "mr-l8-e4",
+          type: "rhythm-echo",
+          difficulty: 3,
+          spec: { type: "rhythm-echo", onsetsMs: [0, 300, 450, 750, 900, 1350, 1650, 1800], showStandaloneMetronome: false },
+        },
+        {
+          id: "mr-l8-e5",
+          type: "pulse-tap",
+          difficulty: 3,
+          spec: { type: "pulse-tap", bpm: 104, beatsPerMeasure: 4, measureCount: 4, leadInBeats: 3, accentOnly: true },
+        },
+        {
+          id: "mr-l8-e6",
+          type: "rhythm-echo",
+          difficulty: 3,
+          spec: { type: "rhythm-echo", onsetsMs: [0, 200, 400, 700, 1100, 1300, 1700, 2100, 2300], showStandaloneMetronome: false },
+        },
+      ],
+    },
+    {
+      // Lekcja 4's own syncopation was always cued by a REST right before
+      // the off-beat note (easier to feel — silence tells you something's
+      // coming). This pushes further: the off-beat entry comes right at
+      // the very start of a measure/half-measure (a rest ON beat 1 itself,
+      // or a sixteenth-rest pickup), a genuinely harder syncopation to
+      // feel since there's no earlier note to feel "displaced" from — you
+      // have to feel the empty downbeat itself. Still only 3/4 and 4/4,
+      // still no dotted values (see lekcja 7's own doc for why those stay
+      // out of this world).
+      id: "mr-lekcja-9-trudniejsze-synkopy",
+      order: 9,
+      difficulty: 3,
+      introSlides: [
+        {
+          body: "Znasz już synkopy, które zaczynają się po krótkiej ciszy w środku taktu. Teraz cisza pojawia się na samym początku — na \"raz\", tam gdzie zwykle słyszysz pierwsze uderzenie. Musisz poczuć puls, nawet gdy on sam milczy.",
+        },
+      ],
+      exercises: [
+        {
+          id: "mr-l9-e1",
+          type: "rhythm-dictation",
+          difficulty: 2,
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 104,
+            meter: "4/4",
+            sequence: [
+              "eighthRest", "eighth", "quarter", "quarter", "quarter",
+              "quarter", "eighthRest", "eighth", "quarter", "quarter",
+            ],
+          },
+        },
+        {
+          id: "mr-l9-e2",
+          type: "rhythm-dictation",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 104,
+            meter: "4/4",
+            sequence: [
+              "sixteenthRest", "sixteenth", "eighth", "quarter", "quarter", "quarter",
+              "eighthRest", "eighth", "eighthRest", "eighth", "quarter", "quarter",
+            ],
+          },
+        },
+        {
+          id: "mr-l9-e3",
+          type: "rhythm-dictation",
+          difficulty: 2,
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 96,
+            meter: "3/4",
+            sequence: ["eighthRest", "eighth", "quarter", "quarter", "quarter", "eighthRest", "eighth", "quarter"],
+          },
+        },
+        {
+          id: "mr-l9-e4",
+          type: "rhythm-dictation",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 96,
+            meter: "3/4",
+            sequence: ["sixteenthRest", "sixteenth", "eighth", "quarter", "quarter", "eighthRest", "eighth", "eighthRest", "eighth", "quarter"],
+          },
+        },
+        {
+          id: "mr-l9-e5",
+          type: "rhythm-notation-tap",
+          difficulty: 2,
+          spec: {
+            type: "rhythm-notation-tap",
+            bpm: 104,
+            meter: "4/4",
+            sequence: [
+              "quarter", "eighthRest", "eighth", "quarter", "quarter",
+              "eighthRest", "eighth", "eighth", "eighth", "quarter", "quarter",
+            ],
+          },
+        },
+        {
+          id: "mr-l9-e6",
+          type: "rhythm-notation-tap",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-notation-tap",
+            bpm: 104,
+            meter: "4/4",
+            sequence: [
+              "sixteenthRest", "sixteenth", "sixteenth", "sixteenth", "eighth", "quarter", "eighth", "quarter",
+              "eighthRest", "eighth", "quarterRest", "eighth", "eighth", "quarter",
+            ],
+          },
+        },
+        {
+          id: "mr-l9-e7",
+          type: "rhythm-notation-tap",
+          difficulty: 2,
+          spec: {
+            type: "rhythm-notation-tap",
+            bpm: 96,
+            meter: "3/4",
+            sequence: ["quarter", "eighthRest", "eighth", "quarter", "eighthRest", "eighth", "eighth", "eighth", "quarter"],
+          },
+        },
+        {
+          id: "mr-l9-e8",
+          type: "rhythm-notation-tap",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-notation-tap",
+            bpm: 96,
+            meter: "3/4",
+            sequence: ["eighthRest", "eighth", "eighthRest", "eighth", "quarter", "sixteenthRest", "sixteenth", "eighth", "quarter", "quarter"],
+          },
+        },
+      ],
+    },
   ],
 };
