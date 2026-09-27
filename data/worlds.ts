@@ -23,7 +23,7 @@ export const WORLDS: WorldDefinition[] = [
     nameKey: "world.miastoRytmu.name",
     descriptionKey: "world.miastoRytmu.description",
     isPremium: false,
-    accentColor: "#E76F51",
+    accentColor: "#3A56C4",
     mapIllustrationId: "miasto-rytmu",
     mapIconId: "metronome",
   },

@@ -90,16 +90,27 @@ const NUTKI_MULTIPLIER_WHEN_INTRO_DISABLED = 2;
  * completing a world for the first time additionally layers a celebratory
  * WorldCompleteModal over that summary.
  */
+/** Per-world exercise-screen tint — a world only gets an entry once its
+ * own background art/map accent has been redone (see world/[worldId]
+ * .tsx's own WORLD_BACKGROUNDS), so the exercise screens match instead
+ * of opening every lesson on the app-wide neutral cream next to a
+ * differently-colored map. Every other world keeps the plain cream/
+ * default DarkButton-orange until it gets its own treatment. */
+const WORLD_LESSON_THEME: Partial<Record<string, { background: string }>> = {
+  note: { background: "#F3ECFC" }, // Wioska Nut — light purple
+  metronome: { background: "#E8EEFC" }, // Miasto Rytmu — light blue
+};
+
 /** Thin wrapper around the real screen purely to set up
  * ExerciseAccentProvider — every DarkButton/OptionButton the actual
  * lesson body renders (however many different early-return branches
  * below end up firing) sits somewhere inside this Provider's tree, so
- * this one place is the only thing that needs to know about the Wioska
- * Nut purple override; nothing further down does. */
+ * this one place is the only thing that needs to know about a themed
+ * world's own accent override; nothing further down does. */
 export default function LessonScreen() {
   const { worldId } = useLocalSearchParams<{ worldId: string }>();
   const world = getWorldById(worldId);
-  const accentOverride = world?.mapIconId === "note" ? world.accentColor : null;
+  const accentOverride = world && WORLD_LESSON_THEME[world.mapIconId] ? world.accentColor : null;
   return (
     <ExerciseAccentProvider color={accentOverride}>
       <LessonScreenBody />
@@ -126,13 +137,8 @@ function LessonScreenBody() {
   const world = getWorldById(worldId);
   const content = getWorldContent(worldId);
   const lesson = content?.lessons.find((l) => l.id === lessonId);
-  // Wioska Nut's own screens (world/[worldId].tsx's WORLD_BACKGROUNDS, the
-  // map node) went purple to match its new background art — this screen
-  // still opened every lesson on the app-wide neutral cream, which read as
-  // an orange-tinted page next to Wioska Nut's own orange-free branding
-  // and its purple map node. Only Wioska Nut gets a tint so far; every
-  // other world keeps the plain cream until it gets its own treatment.
-  const screenBackgroundColor = world?.mapIconId === "note" ? "#F3ECFC" : theme.colors.cream;
+  // See WORLD_LESSON_THEME's own doc.
+  const screenBackgroundColor = (world && WORLD_LESSON_THEME[world.mapIconId]?.background) || theme.colors.cream;
 
   const [index, setIndex] = useState(0);
   const [answer, setAnswer] = useState<AnswerInput | null>(null);

@@ -103,8 +103,17 @@ export default function WorldLevelsScreen() {
   }
 
   const backgroundEntry = WORLD_BACKGROUNDS[world.mapIconId];
+  // Not a plain `typeof backgroundEntry === "object"` check — on web,
+  // require()'ing an image ALSO returns an object (e.g. `{ uri: ... }`),
+  // not the plain numeric asset id native platforms give it, so that
+  // check matched Wioska Nut's own single-image entry too and tried to
+  // read a nonexistent `.portrait` off of it (silently rendering no
+  // background at all). Only an entry this file itself authored as a
+  // {portrait, landscape} pair actually has a `portrait` key.
   const backgroundSource =
-    backgroundEntry && typeof backgroundEntry === "object" ? (width < height ? backgroundEntry.portrait : backgroundEntry.landscape) : backgroundEntry;
+    backgroundEntry && typeof backgroundEntry === "object" && "portrait" in backgroundEntry
+      ? (width < height ? backgroundEntry.portrait : backgroundEntry.landscape)
+      : backgroundEntry;
 
   return (
     <View style={styles.root}>
