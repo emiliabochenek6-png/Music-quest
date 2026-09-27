@@ -2,7 +2,9 @@ import {
   DRUMMER_3_4_SAMPLE,
   DRUMMER_4_4_SAMPLE,
   RHYTHM_DICTATION_L4_RECORDING_SAMPLES,
+  RHYTHM_DICTATION_L7_RECORDING_SAMPLES,
   RHYTHM_NOTATION_TAP_L5_RECORDING_SAMPLES,
+  RHYTHM_NOTATION_TAP_L7_RECORDING_SAMPLES,
   RHYTHM_SEQUENCING_L3_RECORDING_SAMPLES,
   RHYTHM_SEQUENCING_RECORDING_SAMPLES,
 } from "@/lib/audio/samples";
@@ -402,12 +404,12 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
       // types/exercises.ts's own doc), relying on generate.ts's synthesized
       // click track and 70%-of-beats default tolerance, same "no new
       // recording needed" pattern lekcja 2's own mr-l2-e2..e5 established
-      // for rhythm-echo.
-      // Pulse-tap, restored (2026-09-27) after a brief detour replacing it
-      // with other exercise types — kept after all, now with a lead-in
-      // count-in (leadInBeats, see types/exercises.ts's own doc) so the
-      // player hears the tempo settle in before tapping is actually
-      // scored, instead of needing to react from the very first beat.
+      // for rhythm-echo. Restored (2026-09-27) after a brief detour
+      // replacing it with other exercise types — kept after all, now with
+      // an explicit 3-beat lead-in count-in (leadInBeats, see
+      // types/exercises.ts's own doc) on every exercise here, rather than
+      // the engine's own default of one full measure (4 beats for the 4/4
+      // ones) — a fixed "1, 2, 3, go" count-in regardless of meter.
       id: "mr-lekcja-6-tempo",
       order: 6,
       difficulty: 2,
@@ -420,15 +422,35 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
         },
       ],
       exercises: [
-        { id: "mr-l6-e1", type: "pulse-tap", difficulty: 1, spec: { type: "pulse-tap", bpm: 66, beatsPerMeasure: 4, measureCount: 3 } },
-        { id: "mr-l6-e2", type: "pulse-tap", difficulty: 1, spec: { type: "pulse-tap", bpm: 100, beatsPerMeasure: 4, measureCount: 3 } },
-        { id: "mr-l6-e3", type: "pulse-tap", difficulty: 2, spec: { type: "pulse-tap", bpm: 138, beatsPerMeasure: 4, measureCount: 3 } },
-        { id: "mr-l6-e4", type: "pulse-tap", difficulty: 2, spec: { type: "pulse-tap", bpm: 96, beatsPerMeasure: 3, measureCount: 4 } },
+        {
+          id: "mr-l6-e1",
+          type: "pulse-tap",
+          difficulty: 1,
+          spec: { type: "pulse-tap", bpm: 66, beatsPerMeasure: 4, measureCount: 3, leadInBeats: 3 },
+        },
+        {
+          id: "mr-l6-e2",
+          type: "pulse-tap",
+          difficulty: 1,
+          spec: { type: "pulse-tap", bpm: 100, beatsPerMeasure: 4, measureCount: 3, leadInBeats: 3 },
+        },
+        {
+          id: "mr-l6-e3",
+          type: "pulse-tap",
+          difficulty: 2,
+          spec: { type: "pulse-tap", bpm: 138, beatsPerMeasure: 4, measureCount: 3, leadInBeats: 3 },
+        },
+        {
+          id: "mr-l6-e4",
+          type: "pulse-tap",
+          difficulty: 2,
+          spec: { type: "pulse-tap", bpm: 96, beatsPerMeasure: 3, measureCount: 4, leadInBeats: 3 },
+        },
         {
           id: "mr-l6-e5",
           type: "pulse-tap",
           difficulty: 3,
-          spec: { type: "pulse-tap", bpm: 126, beatsPerMeasure: 4, measureCount: 4, accentOnly: true },
+          spec: { type: "pulse-tap", bpm: 126, beatsPerMeasure: 4, measureCount: 4, accentOnly: true, leadInBeats: 3 },
         },
       ],
     },
@@ -462,6 +484,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
               "sixteenth", "sixteenth", "sixteenth", "sixteenth", "eighth", "eighth", "half",
               "quarterRest", "eighth", "eighth", "quarter", "quarter",
             ],
+            referenceAudioSource: RHYTHM_DICTATION_L7_RECORDING_SAMPLES[0],
           },
         },
         {
@@ -476,6 +499,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
               "eighth", "quarter", "eighth", "quarter", "quarter",
               "eighth", "eighth", "quarterRest", "eighth", "eighth", "quarter",
             ],
+            referenceAudioSource: RHYTHM_DICTATION_L7_RECORDING_SAMPLES[1],
           },
         },
         {
@@ -487,6 +511,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
             bpm: 100,
             meter: "3/4",
             sequence: ["sixteenth", "sixteenth", "eighth", "quarter", "quarter", "eighth", "eighth", "eighth", "eighth", "quarter"],
+            referenceAudioSource: RHYTHM_DICTATION_L7_RECORDING_SAMPLES[2],
           },
         },
         {
@@ -498,6 +523,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
             bpm: 100,
             meter: "3/4",
             sequence: ["eighth", "quarter", "eighthRest", "quarter", "quarterRest", "eighth", "eighth", "eighth", "eighth"],
+            referenceAudioSource: RHYTHM_DICTATION_L7_RECORDING_SAMPLES[3],
           },
         },
         {
@@ -512,6 +538,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
               "quarter", "eighth", "eighth", "quarter", "quarter",
               "sixteenth", "sixteenth", "sixteenth", "sixteenth", "half", "quarter",
             ],
+            referenceAudioSource: RHYTHM_NOTATION_TAP_L7_RECORDING_SAMPLES[0],
           },
         },
         {
@@ -526,6 +553,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
               "eighth", "sixteenth", "sixteenth", "quarter", "quarter", "quarter",
               "quarterRest", "eighth", "eighth", "quarter", "quarter",
             ],
+            referenceAudioSource: RHYTHM_NOTATION_TAP_L7_RECORDING_SAMPLES[1],
           },
         },
         {
@@ -537,6 +565,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
             bpm: 100,
             meter: "3/4",
             sequence: ["quarter", "eighth", "eighth", "quarter", "sixteenth", "sixteenth", "sixteenth", "sixteenth", "quarter", "quarter"],
+            referenceAudioSource: RHYTHM_NOTATION_TAP_L7_RECORDING_SAMPLES[2],
           },
         },
         {
@@ -548,6 +577,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
             bpm: 100,
             meter: "3/4",
             sequence: ["eighth", "quarter", "eighthRest", "quarter", "quarterRest", "eighth", "eighth", "eighth", "eighth"],
+            referenceAudioSource: RHYTHM_NOTATION_TAP_L7_RECORDING_SAMPLES[3],
           },
         },
       ],
