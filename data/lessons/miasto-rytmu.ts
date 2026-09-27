@@ -1104,5 +1104,151 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
         },
       ],
     },
+    {
+      // rhythm-echo hasn't been deepened since lekcja 8 (max 9 onsets
+      // there) — these run 10-12, longer than anything before, same
+      // "length is the new axis" idea lekcja 12 already used for
+      // rhythm-dictation.
+      id: "mr-lekcja-14-dluzsze-echo",
+      order: 14,
+      difficulty: 2,
+      introSlides: [
+        {
+          body: "Te echa są dłuższe niż wcześniej — nawet dziesięć albo dwanaście uderzeń w jednym wzorze. Słuchaj uważnie całości, zanim zaczniesz powtarzać.",
+        },
+      ],
+      exercises: [
+        {
+          id: "mr-l14-e1",
+          type: "rhythm-echo",
+          difficulty: 2,
+          spec: {
+            type: "rhythm-echo",
+            onsetsMs: [0, 300, 600, 900, 1200, 1500, 1800, 2100, 2400, 2700],
+            showStandaloneMetronome: false,
+          },
+        },
+        {
+          id: "mr-l14-e2",
+          type: "rhythm-echo",
+          difficulty: 2,
+          spec: {
+            type: "rhythm-echo",
+            onsetsMs: [0, 400, 700, 1000, 1300, 1800, 2100, 2400, 2900, 3200],
+            showStandaloneMetronome: false,
+          },
+        },
+        {
+          id: "mr-l14-e3",
+          type: "rhythm-echo",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-echo",
+            onsetsMs: [0, 250, 500, 750, 1000, 1350, 1600, 1850, 2100, 2450, 2700],
+            showStandaloneMetronome: false,
+          },
+        },
+        {
+          id: "mr-l14-e4",
+          type: "rhythm-echo",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-echo",
+            onsetsMs: [0, 300, 450, 750, 900, 1200, 1500, 1650, 1950, 2250, 2550],
+            showStandaloneMetronome: false,
+          },
+        },
+        {
+          id: "mr-l14-e5",
+          type: "rhythm-echo",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-echo",
+            onsetsMs: [0, 200, 400, 600, 900, 1100, 1400, 1600, 1900, 2100, 2400, 2700],
+            showStandaloneMetronome: false,
+          },
+        },
+        {
+          id: "mr-l14-e6",
+          type: "rhythm-echo",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-echo",
+            onsetsMs: [0, 250, 400, 650, 900, 1050, 1350, 1550, 1800, 2150, 2400, 2650],
+            showStandaloneMetronome: false,
+          },
+        },
+      ],
+    },
+    {
+      // The first lesson to genuinely MIX types — every prior lesson
+      // stuck to one type (or, at most, two alternating — lekcja 8's own
+      // pulse-tap/rhythm-echo pairing). This draws from four: meter-
+      // choice, pulse-tap, rhythm-sequencing, rhythm-dictation — a real
+      // checkpoint pulling together everything this world has taught
+      // rather than a new skill of its own.
+      id: "mr-lekcja-15-wielka-powtorka",
+      order: 15,
+      difficulty: 2,
+      introSlides: [
+        {
+          body: "Czas na przegląd wszystkiego naraz: metrum, puls, układanki i dyktanda — jedno po drugim, tak jak przyjdzie. Żadnych nowych zasad, tylko to, co już umiesz.",
+        },
+      ],
+      exercises: [
+        {
+          id: "mr-l15-e1",
+          type: "meter-choice",
+          difficulty: 2,
+          spec: { type: "meter-choice", correctMeter: "4/4", bpm: 100, optionPool: ["4/4", "3/4"] },
+        },
+        {
+          id: "mr-l15-e2",
+          type: "pulse-tap",
+          difficulty: 2,
+          spec: { type: "pulse-tap", bpm: 100, beatsPerMeasure: 4, measureCount: 3, leadInBeats: 3 },
+        },
+        {
+          id: "mr-l15-e3",
+          type: "rhythm-sequencing",
+          difficulty: 2,
+          spec: { type: "rhythm-sequencing", motif: ["quarter", "eighth", "eighth", "half"], bpm: 90, showStandaloneMetronome: false },
+        },
+        {
+          id: "mr-l15-e4",
+          type: "meter-choice",
+          difficulty: 2,
+          spec: { type: "meter-choice", correctMeter: "3/4", bpm: 110, optionPool: ["3/4", "4/4"] },
+        },
+        {
+          id: "mr-l15-e5",
+          type: "rhythm-dictation",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 104,
+            meter: "4/4",
+            sequence: ["eighth", "eighth", "quarter", "quarter", "quarter", "sixteenth", "sixteenth", "eighth", "quarter", "half"],
+          },
+        },
+        {
+          id: "mr-l15-e6",
+          type: "pulse-tap",
+          difficulty: 3,
+          spec: { type: "pulse-tap", bpm: 120, beatsPerMeasure: 3, measureCount: 4, leadInBeats: 3, accentOnly: true },
+        },
+        {
+          id: "mr-l15-e7",
+          type: "rhythm-dictation",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 96,
+            meter: "3/4",
+            sequence: ["quarterRest", "eighth", "eighth", "quarter", "eighth", "eighth", "eighth", "eighth", "quarter"],
+          },
+        },
+      ],
+    },
   ],
 };
