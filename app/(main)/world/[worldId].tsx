@@ -64,6 +64,10 @@ const WORLD_BACKGROUNDS: Partial<Record<string, number | { portrait: number; lan
     portrait: require("@/assets/backgrounds/przystan-taktow-tlo-telefon.png"),
     landscape: require("@/assets/backgrounds/przystan-taktow-tlo-laptop.png"),
   },
+  interval: {
+    portrait: require("@/assets/backgrounds/pasmo-interwalow-tlo-telefon.png"),
+    landscape: require("@/assets/backgrounds/pasmo-interwalow-tlo-laptop.png"),
+  },
 };
 
 /**
