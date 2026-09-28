@@ -75,7 +75,7 @@ const WORLD_BACKGROUNDS: Partial<Record<string, number | { portrait: number; lan
  * screen in the app now uses (see theme/tokens.ts's own doc).
  */
 export default function WorldLevelsScreen() {
-  const { worldId } = useLocalSearchParams<{ worldId: string }>();
+  const { worldId, focusLessonId } = useLocalSearchParams<{ worldId: string; focusLessonId?: string }>();
   const insets = useSafeAreaInsets();
   const { width, height } = useWindowDimensions();
   const { progress } = useProgress();
@@ -193,6 +193,7 @@ export default function WorldLevelsScreen() {
           completedLessonIds={progress.completedLessonIds}
           lessonStars={gamification.lessonStars}
           accentHex={world.accentColor}
+          focusLessonId={focusLessonId}
           onSelectLesson={handleSelectLesson}
         />
       ) : (

@@ -1,4 +1,4 @@
-import { Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { IntervalStaffNotation } from "@/components/exercises/IntervalStaffNotation";
 import { OptionButton } from "@/components/exercises/OptionButton";
@@ -17,6 +17,13 @@ interface IntervalNameChoiceExerciseProps {
   locale: Locale;
 }
 
+/** Above this many options, the plain stacked-button list (lekcje 1-7's
+ * own 2-5 option pools) turns into a long random-order scroll that's hard
+ * to scan for the right answer — the full-range levels (8-10) always show
+ * every named interval at once. Past this threshold, this component
+ * switches to the sorted/scrollable "okienko" layout below instead. */
+const FULL_RANGE_OPTION_THRESHOLD = 8;
+
 /**
  * "Pasmo Interwałów" — two notes shown on a staff (IntervalStaffNotation)
  * and, via the speaker button, audible as a melodic interval (playInterval).
@@ -32,6 +39,15 @@ export function IntervalNameChoiceExercise({ exercise, selectedOptionId, onSelec
     const [a, b] = exercise.notes;
     playInterval([parseScientific(a), parseScientific(b)]);
   }
+
+  // Option ids ARE the semitone count (see generateExercise's own
+  // `correctOptionId: String(semitones)`) — sorting by that number puts
+  // every option in genuine "smallest to largest interval" order, not an
+  // alphabetical accident.
+  const isFullRange = exercise.options.length > FULL_RANGE_OPTION_THRESHOLD;
+  const orderedOptions = isFullRange
+    ? [...exercise.options].sort((a, b) => Number(a.id) - Number(b.id))
+    : exercise.options;
 
   return (
     <View style={{ alignItems: "center", gap: theme.spacing(3) }}>
@@ -49,19 +65,45 @@ export function IntervalNameChoiceExercise({ exercise, selectedOptionId, onSelec
 
       <DarkButton label="🔊" onPress={play} variant="secondary" size={72} fontSize={32} />
 
-      <View style={{ width: "100%", gap: theme.spacing(1.5) }}>
-        {exercise.options.map((option) => (
-          <OptionButton
-            key={option.id}
-            label={option.label}
-            selected={selectedOptionId === option.id}
-            correct={checked && option.id === exercise.correctOptionId}
-            incorrect={checked && selectedOptionId === option.id && option.id !== exercise.correctOptionId}
-            disabled={checked}
-            onPress={() => onSelect(option.id)}
-          />
-        ))}
-      </View>
+      {isFullRange ? (
+        // A fixed-height "okienko" (window) instead of the plain stacked
+        // list below — with every named interval shown at once (lekcje
+        // 8-10), a full-length stack would be mostly off-screen scroll
+        // with no sense of "smallest to largest, and back" the way a
+        // bounded, sorted, swipeable box gives you.
+        <ScrollView
+          style={{ width: "100%", maxHeight: 340 }}
+          contentContainerStyle={{ gap: theme.spacing(1.5) }}
+          nestedScrollEnabled
+          showsVerticalScrollIndicator
+        >
+          {orderedOptions.map((option) => (
+            <OptionButton
+              key={option.id}
+              label={option.label}
+              selected={selectedOptionId === option.id}
+              correct={checked && option.id === exercise.correctOptionId}
+              incorrect={checked && selectedOptionId === option.id && option.id !== exercise.correctOptionId}
+              disabled={checked}
+              onPress={() => onSelect(option.id)}
+            />
+          ))}
+        </ScrollView>
+      ) : (
+        <View style={{ width: "100%", gap: theme.spacing(1.5) }}>
+          {orderedOptions.map((option) => (
+            <OptionButton
+              key={option.id}
+              label={option.label}
+              selected={selectedOptionId === option.id}
+              correct={checked && option.id === exercise.correctOptionId}
+              incorrect={checked && selectedOptionId === option.id && option.id !== exercise.correctOptionId}
+              disabled={checked}
+              onPress={() => onSelect(option.id)}
+            />
+          ))}
+        </View>
+      )}
     </View>
   );
 }

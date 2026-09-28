@@ -13,6 +13,14 @@ interface LessonPathProps {
    * lessonStars) — passed straight through to each LessonNode. */
   lessonStars: Readonly<Record<string, 1 | 2 | 3>>;
   accentHex: string;
+  /** The lesson just left (see lesson/[lessonId].tsx's own goBackToLevels)
+   * — when set, the mount-scroll below lands on THIS node instead of the
+   * "first incomplete" default, so returning from a lesson always lands
+   * back where the player actually was, not wherever progress happens to
+   * resume (out-of-order play — jumping ahead via the local test-build
+   * unlock, or revisiting an earlier lesson after finishing later ones —
+   * would otherwise land somewhere else entirely). */
+  focusLessonId?: string;
   onSelectLesson: (lesson: LessonDefinition) => void;
 }
 
@@ -42,28 +50,30 @@ function nodeY(index: number): number {
  * on top as real Pressables (components/map/LessonNode), not SVG
  * hit-regions. No scattered background decoration — dropped along with
  * WorldMap's own for the light "educational" pass. */
-export function LessonPath({ lessons, completedLessonIds, lessonStars, accentHex, onSelectLesson }: LessonPathProps) {
+export function LessonPath({ lessons, completedLessonIds, lessonStars, accentHex, focusLessonId, onSelectLesson }: LessonPathProps) {
   const insets = useSafeAreaInsets();
   const totalHeight = TOP_PADDING + (lessons.length - 1) * NODE_SPACING_Y + 80;
 
-  // Jumps straight to the next thing to do — the first lesson that
-  // ISN'T completed yet (falls back to the very last node, the boss,
-  // once everything else is) — the instant this screen mounts. Without
-  // this, returning here after finishing a lesson dumped the player back
-  // at the TOP of a path that can run to 20+ nodes, forcing a manual
-  // scroll past everything already done just to find where to continue.
-  // Not animated — this is where the screen should already be, not a
-  // moment to draw attention to. Offsets by a fixed estimate of "how far
-  // down the screen feels comfortable", not this ScrollView's own
-  // measured height (react-native-web's ScrollView never actually fires
-  // `onLayout` — confirmed empirically, not just undocumented — so a
-  // measured approach silently never runs at all; a fixed guess that
-  // ALWAYS fires beats an exact one that doesn't fire).
+  // Jumps straight to the relevant node the instant this screen mounts —
+  // either the lesson the player just left (focusLessonId, see this
+  // prop's own doc) or, absent that, the next thing to do: the first
+  // lesson that ISN'T completed yet (falls back to the very last node,
+  // the boss, once everything else is). Without this, returning here
+  // dumped the player back at the TOP of a path that can run to 20+
+  // nodes, forcing a manual scroll past everything already done just to
+  // find where they were. Not animated — this is where the screen should
+  // already be, not a moment to draw attention to. Offsets by a fixed
+  // estimate of "how far down the screen feels comfortable", not this
+  // ScrollView's own measured height (react-native-web's ScrollView never
+  // actually fires `onLayout` — confirmed empirically, not just
+  // undocumented — so a measured approach silently never runs at all; a
+  // fixed guess that ALWAYS fires beats an exact one that doesn't fire).
   const scrollRef = useRef<ScrollView>(null);
+  const focusIndex = focusLessonId ? lessons.findIndex((lesson) => lesson.id === focusLessonId) : -1;
   const nextLessonIndex = lessons.findIndex(
     (lesson) => resolveLessonNodeState(lesson, lessons, completedLessonIds) !== "completed"
   );
-  const targetIndex = nextLessonIndex === -1 ? lessons.length - 1 : nextLessonIndex;
+  const targetIndex = focusIndex !== -1 ? focusIndex : nextLessonIndex === -1 ? lessons.length - 1 : nextLessonIndex;
   useEffect(() => {
     const targetY = nodeY(targetIndex) - SCROLL_TARGET_OFFSET;
     scrollRef.current?.scrollTo({ y: Math.max(0, targetY), animated: false });

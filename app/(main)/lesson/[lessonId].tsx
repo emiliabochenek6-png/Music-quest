@@ -249,7 +249,13 @@ function LessonScreenBody() {
 
   function goBackToLevels() {
     stopAllScheduledAudio();
-    router.replace({ pathname: "/(main)/world/[worldId]", params: { worldId } });
+    // Carries the lesson just left back to the levels screen (its own
+    // LessonPath reads this to scroll straight there — see that file's
+    // own doc) instead of that screen's default "jump to the first
+    // incomplete lesson" landing somewhere else entirely, e.g. when a
+    // player jumped ahead out of order (local test-build unlock, or a
+    // lesson revisited after already finishing later ones).
+    router.replace({ pathname: "/(main)/world/[worldId]", params: { worldId, focusLessonId: lessonId } });
   }
 
   if (!world || !content || !lesson) {
