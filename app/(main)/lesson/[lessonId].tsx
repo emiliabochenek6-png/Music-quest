@@ -53,6 +53,11 @@ const ENCOURAGEMENT_MESSAGE_COUNT = 4;
  * "Świetnie Ci idzie!" streak celebration, same interstitial mechanism
  * as the struggle-side encouragement but for the opposite moment. */
 const STREAK_CELEBRATION_INTERVAL = 5;
+/** After this many wrong answers on the SAME exercise (across makeup-round
+ * repeats too — see the `exercises` state's own doc), handleCheck stops
+ * requeuing it and lets the lesson move on without it, instead of looping
+ * forever on one question a player (or a broken exercise) can't get past. */
+const MAX_ATTEMPTS_PER_EXERCISE = 3;
 /** A correct answer also rewards hearts, not just XP — lets a player who's
  * doing well claw back toward MAX_HEARTS (see types/gamification.ts) well
  * before the slow passive regen would, instead of hearts being a purely
@@ -76,7 +81,11 @@ const NUTKI_MULTIPLIER_WHEN_INTRO_DISABLED = 2;
  * requeued onto the end of the session (Duolingo-style "makeup round" —
  * see the `exercises` state's own doc), so the lesson's authored list is
  * a STARTING point, not the full session length; a "🔁 Powtórka" banner
- * marks the makeup round once the player reaches it. Every third wrong
+ * marks the makeup round once the player reaches it. A single exercise
+ * only ever gets requeued this way up to MAX_ATTEMPTS_PER_EXERCISE times —
+ * past that it's simply dropped instead of coming back again, so one
+ * question a player (or a broken exercise) can't get past never blocks
+ * finishing the lesson. Every third wrong
  * answer TOTAL this attempt (mistakes don't need to be back to back —
  * correct answers in between still count toward the next checkpoint)
  * also inserts a one-off full-screen encouragement moment (big Soltek,
@@ -179,6 +188,16 @@ function LessonScreenBody() {
   const [showStreakInterstitial, setShowStreakInterstitial] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
   const [mistakeCount, setMistakeCount] = useState(0);
+  // Total wrong answers so far THIS ATTEMPT, per exercise id — not just the
+  // current index, since a makeup-round repeat shares its original's id
+  // (see the `exercises` state's own doc). Lets handleCheck give up on one
+  // particular exercise after MAX_ATTEMPTS_PER_EXERCISE fails instead of
+  // requeuing it again. Reset per lesson via the same lessonId effect as
+  // `exercises` below.
+  const [failCounts, setFailCounts] = useState<Record<string, number>>({});
+  useEffect(() => {
+    setFailCounts({});
+  }, [lessonId]);
   // Distinct ORIGINAL exercises answered correctly so far (once per
   // exercise — a repeat that finally succeeds counts here too, a repeat
   // that fails again does not double-count) — feeds LiveStarIndicator's
@@ -316,7 +335,11 @@ function LessonScreenBody() {
       }
       setConsecutiveCorrect(0);
       loseHeart();
-      setExercises((current) => [...current, definition]);
+      const failCountForThisExercise = (failCounts[definition.id] ?? 0) + 1;
+      setFailCounts((current) => ({ ...current, [definition.id]: failCountForThisExercise }));
+      if (failCountForThisExercise < MAX_ATTEMPTS_PER_EXERCISE) {
+        setExercises((current) => [...current, definition]);
+      }
     } else {
       awardXp(XP_PER_CORRECT_ANSWER);
       gainHearts(HEARTS_PER_CORRECT_ANSWER);
