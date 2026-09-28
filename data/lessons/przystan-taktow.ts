@@ -13,6 +13,8 @@ import {
   RHYTHM_DICTATION_PT_L5_RECORDING_SAMPLES,
   RHYTHM_DICTATION_PT_L6_RECORDING_SAMPLES,
   RHYTHM_DICTATION_PT_L7_RECORDING_SAMPLES,
+  RHYTHM_DICTATION_PT_L9_RECORDING_SAMPLES,
+  RHYTHM_DICTATION_PT_L10_RECORDING_SAMPLES,
 } from "@/lib/audio/samples";
 import type { WorldContent } from "@/types/exercises";
 
@@ -663,12 +665,13 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
           difficulty: 3,
           spec: {
             type: "rhythm-dictation",
-            bpm: 96,
+            bpm: 120,
             meter: "3/4",
             sequence: [
               "eighth", "eighth", "eighth", "eighth", "eighth", "eighth",
               "eighth", "eighth", "eighth", "eighth", "eighth", "eighth",
             ],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L9_RECORDING_SAMPLES[0],
           },
         },
         {
@@ -677,12 +680,18 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
           difficulty: 3,
           spec: {
             type: "rhythm-dictation",
-            bpm: 96,
+            bpm: 120,
             meter: "6/8",
             sequence: [
               "eighth", "eighth", "eighth", "eighth", "eighth", "eighth",
               "eighth", "eighth", "eighth", "eighth", "eighth", "eighth",
             ],
+            // Identical onset pattern to pt-l9-e5 — same real recording works
+            // for both (that's the whole point of this pair, see the
+            // lesson's own intro-slide doc): only the felt-pulse accent
+            // (background metronome) differs between the two meters, not
+            // the clap pattern itself.
+            referenceAudioSource: RHYTHM_DICTATION_PT_L9_RECORDING_SAMPLES[1],
           },
         },
       ],
@@ -708,23 +717,22 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
           difficulty: 2,
           spec: {
             type: "rhythm-dictation",
-            bpm: 84,
+            bpm: 120,
             meter: "6/8",
-            sequence: ["eighthRest", "eighth", "quarter", "eighth", "eighth", "quarter", "eighthRest", "eighth", "quarter"],
+            sequence: ["eighth", "eighth", "quarter", "eighth", "eighth", "quarter", "eighth", "eighth", "quarter"],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L10_RECORDING_SAMPLES[0],
           },
         },
         {
           id: "pt-l10-e2",
           type: "rhythm-dictation",
-          difficulty: 3,
+          difficulty: 2,
           spec: {
             type: "rhythm-dictation",
-            bpm: 84,
+            bpm: 120,
             meter: "6/8",
-            sequence: [
-              "eighth", "eighthRest", "eighth", "quarter", "eighthRest",
-              "quarter", "eighthRest", "eighth", "eighth", "eighth",
-            ],
+            sequence: ["quarter", "eighth", "eighth", "quarter", "quarter", "eighth", "eighth", "eighth", "eighth"],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L10_RECORDING_SAMPLES[1],
           },
         },
         {
@@ -733,12 +741,13 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
           difficulty: 2,
           spec: {
             type: "rhythm-dictation",
-            bpm: 80,
+            bpm: 120,
             meter: "9/8",
             sequence: [
-              "eighthRest", "eighth", "eighth", "quarter", "eighth", "eighth", "quarter",
-              "quarter", "eighth", "eighthRest", "eighth", "eighth", "eighth", "eighthRest", "eighth",
+              "eighth", "eighth", "eighth", "quarter", "eighth", "eighth",
+              "quarter", "quarter", "eighth", "eighth", "eighth", "eighth", "quarter", "eighth",
             ],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L10_RECORDING_SAMPLES[2],
           },
         },
         {
@@ -747,12 +756,13 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
           difficulty: 3,
           spec: {
             type: "rhythm-dictation",
-            bpm: 80,
+            bpm: 120,
             meter: "9/8",
             sequence: [
-              "eighth", "eighthRest", "eighth", "eighthRest", "quarter", "quarter", "eighth",
-              "quarter", "eighthRest", "eighth", "eighth", "eighth", "eighth", "quarter",
+              "quarter", "eighth", "eighth", "quarter", "quarter",
+              "eighth", "quarter", "eighthRest", "eighth", "eighth", "eighth", "eighth", "quarter",
             ],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L10_RECORDING_SAMPLES[3],
           },
         },
         {
@@ -761,12 +771,13 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
           difficulty: 2,
           spec: {
             type: "rhythm-dictation",
-            bpm: 76,
+            bpm: 120,
             meter: "12/8",
             sequence: [
-              "eighthRest", "eighth", "eighth", "quarter", "eighth", "eighth", "quarter", "quarter", "eighth",
-              "quarter", "eighth", "eighthRest", "eighth", "eighth", "quarter", "eighth", "eighth", "quarter",
+              "eighth", "eighth", "eighth", "quarter", "eighth", "eighth", "quarter", "quarter", "eighth",
+              "quarter", "eighth", "eighth", "eighth", "eighth", "quarter", "eighth", "eighth", "quarter",
             ],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L10_RECORDING_SAMPLES[4],
           },
         },
         {
@@ -775,12 +786,13 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
           difficulty: 3,
           spec: {
             type: "rhythm-dictation",
-            bpm: 76,
+            bpm: 120,
             meter: "12/8",
             sequence: [
-              "eighth", "eighthRest", "eighth", "eighthRest", "quarter", "quarter", "eighth", "eighth", "eighth", "eighth",
-              "quarter", "eighthRest", "eighth", "eighth", "eighth", "eighthRest", "eighth", "eighth", "quarter", "eighth",
+              "quarter", "eighth", "eighth", "quarter", "quarter", "eighth", "eighth", "eighth", "eighth",
+              "quarter", "eighthRest", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "quarter", "eighth",
             ],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L10_RECORDING_SAMPLES[5],
           },
         },
       ],
