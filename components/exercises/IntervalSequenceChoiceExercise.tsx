@@ -1,6 +1,6 @@
 import { Text, View } from "react-native";
 import { DarkButton } from "@/components/exercises/DarkButton";
-import { OptionButton } from "@/components/exercises/OptionButton";
+import { IntervalOptionPicker } from "@/components/exercises/IntervalOptionPicker";
 import { playInterval } from "@/lib/audio/player";
 import { parseScientific } from "@/lib/music/notes";
 import { t } from "@/lib/i18n/translate";
@@ -60,24 +60,23 @@ export function IntervalSequenceChoiceExercise({ exercise, answer, onAnswerChang
         </Text>
       </View>
 
-      {exercise.notePairs.map((_, position) => (
-        <View key={position} style={{ width: "100%", gap: theme.spacing(1) }}>
-          <Text style={{ fontSize: theme.fontSize.body, fontWeight: "800", color: theme.colors.primary }}>{position + 1}.</Text>
-          <View style={{ gap: theme.spacing(1.5) }}>
-            {exercise.optionsPerPosition[position].map((option) => (
-              <OptionButton
-                key={option.id}
-                label={option.label}
-                selected={selectedOptionIds[position] === option.id}
-                correct={checked && option.id === exercise.correctOptionIds[position]}
-                incorrect={checked && selectedOptionIds[position] === option.id && option.id !== exercise.correctOptionIds[position]}
-                disabled={checked}
-                onPress={() => selectAt(position, option.id)}
-              />
-            ))}
+      {exercise.notePairs.map((_, position) => {
+        // Sorted ascending by semitone, same as IntervalNameChoiceExercise's
+        // own picker — one independent "okienko" per position.
+        const orderedOptions = [...exercise.optionsPerPosition[position]].sort((a, b) => Number(a.id) - Number(b.id));
+        return (
+          <View key={position} style={{ width: "100%", gap: theme.spacing(1) }}>
+            <Text style={{ fontSize: theme.fontSize.body, fontWeight: "800", color: theme.colors.primary }}>{position + 1}.</Text>
+            <IntervalOptionPicker
+              options={orderedOptions}
+              selectedOptionId={selectedOptionIds[position]}
+              correctOptionId={exercise.correctOptionIds[position]}
+              checked={checked}
+              onSelect={(optionId) => selectAt(position, optionId)}
+            />
           </View>
-        </View>
-      ))}
+        );
+      })}
     </View>
   );
 }
