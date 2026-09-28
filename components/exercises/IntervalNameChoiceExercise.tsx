@@ -2,7 +2,7 @@ import { Text, View } from "react-native";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { IntervalOptionPicker } from "@/components/exercises/IntervalOptionPicker";
 import { IntervalStaffNotation } from "@/components/exercises/IntervalStaffNotation";
-import { playInterval } from "@/lib/audio/player";
+import { playHarmonicInterval, playInterval } from "@/lib/audio/player";
 import { parseScientific } from "@/lib/music/notes";
 import { t } from "@/lib/i18n/translate";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
@@ -19,18 +19,28 @@ interface IntervalNameChoiceExerciseProps {
 
 /**
  * "Pasmo Interwałów" — two notes shown on a staff (IntervalStaffNotation)
- * and, via the speaker button, audible as a melodic interval (playInterval).
- * The player names the interval from a multiple-choice pool — same
- * OptionButton/correctOptionId shape as multiple-choice-notation, no new
- * scoring logic needed. When exercise.hideNotation is set, the staff is
- * swapped for a plain "listen only" label — used partway through a level
- * once the visual shape is established, so the player has to rely on
- * hearing alone. Ported from the web app's IntervalNameChoiceExercise.tsx.
+ * and, via the speaker button, audible as an interval — melodic
+ * (playInterval, one note after another) by default, or harmonic
+ * (playHarmonicInterval, both at once — a "dwudźwięk") when
+ * exercise.harmonic is set. The player names the interval from a
+ * multiple-choice pool — same OptionButton/correctOptionId shape as
+ * multiple-choice-notation, no new scoring logic needed. When
+ * exercise.hideNotation is set, the staff is swapped for a plain
+ * "listen only" label (a harmonic-specific one when harmonic too, since
+ * a real dyad's own staff notation — two stacked noteheads — isn't
+ * something this component draws; ear-only sidesteps needing that
+ * rather than showing a misleadingly sequential pair). Ported from the
+ * web app's IntervalNameChoiceExercise.tsx.
  */
 export function IntervalNameChoiceExercise({ exercise, selectedOptionId, onSelect, checked, locale }: IntervalNameChoiceExerciseProps) {
   function play() {
     const [a, b] = exercise.notes;
-    playInterval([parseScientific(a), parseScientific(b)]);
+    const notes: [ReturnType<typeof parseScientific>, ReturnType<typeof parseScientific>] = [parseScientific(a), parseScientific(b)];
+    if (exercise.harmonic) {
+      playHarmonicInterval(notes);
+    } else {
+      playInterval(notes);
+    }
   }
 
   // Option ids ARE the semitone count (see generateExercise's own
@@ -50,7 +60,7 @@ export function IntervalNameChoiceExercise({ exercise, selectedOptionId, onSelec
 
       {exercise.hideNotation ? (
         <Text style={{ color: theme.colors.primary, fontSize: theme.fontSize.body * 0.85, fontWeight: "800", letterSpacing: 1, textTransform: "uppercase" }}>
-          {t("lesson.intervalNameChoiceListenOnlyLabel", locale)}
+          {t(exercise.harmonic ? "lesson.intervalNameChoiceHarmonicLabel" : "lesson.intervalNameChoiceListenOnlyLabel", locale)}
         </Text>
       ) : (
         <IntervalStaffNotation notes={exercise.notes} />

@@ -864,6 +864,22 @@ export function playInterval(notes: readonly [Note, Note], options: MelodyOption
   playMelody(notes, options);
 }
 
+/** The harmonic counterpart to playInterval — both notes of a "dwudźwięk"
+ * start at once instead of one after another, same "every note starts at
+ * once" shape as playChord below (this is really just its 2-note case),
+ * using the same long-ring NOTE_SAMPLES so the interval actually sustains
+ * as one combined sound rather than the short melodic fade playInterval's
+ * own MELODY_NOTE_SAMPLES uses — a dyad's whole identity is the two
+ * pitches ringing TOGETHER, the same reasoning playChord's own doc gives
+ * for triads. */
+export function playHarmonicInterval(notes: readonly [Note, Note], options: ToneOptions = {}): void {
+  const velocity = options.velocity ?? 0.45;
+  const resolved = notes.map((note) => resolveSample(NOTE_SAMPLES, note));
+  const playPooled = () => resolved.forEach(({ source, playbackRate }) => getPool(source).trigger(velocity, playbackRate));
+  const events = resolved.map(({ source, playbackRate }) => ({ source, delayMs: 0, velocity, playbackRate }));
+  if (!playWebAudioTrack(events, schedulerNow(), playPooled)) playPooled();
+}
+
 /** "Zatoka Trójdźwięków"'s TRUE simultaneous playback for a triad — unlike
  * playInterval/playMelody, every note here starts at once (no stagger),
  * because a chord's whole identity is three pitches sounding together.

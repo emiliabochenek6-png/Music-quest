@@ -602,7 +602,7 @@ export function generateExercise(definition: ExerciseDefinition, locale: Locale,
       };
     }
     case "interval-name-choice": {
-      const { allowedSemitones, noteRange, optionCount, hideNotation } = definition.spec;
+      const { allowedSemitones, noteRange, optionCount, hideNotation, harmonic } = definition.spec;
       const [rangeLow, rangeHigh] = noteRange;
       return generateWithoutRepeat(() => {
         const [rootNote, otherNote] = pickRandomIntervalNotePair(
@@ -617,6 +617,7 @@ export function generateExercise(definition: ExerciseDefinition, locale: Locale,
           options: buildIntervalOptions(semitones, optionCount ?? allowedSemitones.length, locale, allowedSemitones),
           correctOptionId: String(semitones),
           hideNotation: hideNotation ?? false,
+          harmonic: harmonic ?? false,
         };
       }, exclude);
     }
@@ -632,7 +633,7 @@ export function generateExercise(definition: ExerciseDefinition, locale: Locale,
       };
     }
     case "interval-sequence-choice": {
-      const { sequenceLength, allowedSemitones, noteRange, optionCount } = definition.spec;
+      const { sequenceLength, allowedSemitones, noteRange, optionCount, harmonic } = definition.spec;
       const [rangeLow, rangeHigh] = noteRange;
       return generateWithoutRepeat(() => {
         const notePairs: [string, string][] = [];
@@ -654,6 +655,7 @@ export function generateExercise(definition: ExerciseDefinition, locale: Locale,
           notePairs,
           optionsPerPosition,
           correctOptionIds,
+          harmonic: harmonic ?? false,
         };
       }, exclude);
     }

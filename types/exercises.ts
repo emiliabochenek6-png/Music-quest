@@ -167,6 +167,13 @@ export type ExerciseSpec =
       noteRange: [string, string];
       optionCount?: number;
       hideNotation?: boolean;
+      /** Both notes sound at once (playHarmonicInterval) instead of one
+       * after another (playInterval) — a genuinely different ear-training
+       * skill (recognizing a "dwudźwięk"/dyad by its combined sound, not
+       * by comparing two heard-in-turn pitches), so always paired with
+       * hideNotation: true in practice — see this world's own lekcja 15
+       * doc for why. */
+      harmonic?: boolean;
     }
   | {
       type: "interval-timed-test";
@@ -187,6 +194,12 @@ export type ExerciseSpec =
       allowedSemitones: number[];
       noteRange: [string, string];
       optionCount?: number;
+      /** See interval-name-choice's own `harmonic` doc — same meaning,
+       * applied to every pair in the sequence: each one sounds as a
+       * simultaneous dyad, but the sequence's own positions still play
+       * one after another (only within a single pair is anything
+       * simultaneous). */
+      harmonic?: boolean;
     }
   // Zatoka Trójdźwięków (triads world) — see data/lessons/zatoka-trojdzwiekow.ts's own doc.
   | { type: "triad-notes-choice"; fifthsRange: [number, number] }
@@ -565,6 +578,7 @@ export type GeneratedExercise =
       options: MultipleChoiceOption[];
       correctOptionId: string;
       hideNotation: boolean;
+      harmonic: boolean;
     }
   | {
       id: string;
@@ -585,6 +599,7 @@ export type GeneratedExercise =
       /** Parallel to notePairs/optionsPerPosition — correctOptionIds[i]
        * is notePairs[i]'s own answer. */
       correctOptionIds: string[];
+      harmonic: boolean;
     }
   | { id: string; type: "triad-notes-choice"; fifths: number; role: TriadRole; options: MultipleChoiceOption[]; correctOptionId: string }
   | {

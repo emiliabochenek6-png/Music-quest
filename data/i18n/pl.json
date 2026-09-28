@@ -114,6 +114,7 @@
   "lesson.intervalNameChoicePrompt": "Posłuchaj i zobacz te dwa dźwięki. Jak nazywa się ten interwał?",
   "lesson.intervalNameChoiceListenOnlyPrompt": "Posłuchaj uważnie. Jak nazywa się ten interwał?",
   "lesson.intervalNameChoiceListenOnlyLabel": "A teraz samo słuchanie",
+  "lesson.intervalNameChoiceHarmonicLabel": "Dwudźwięk — oba dźwięki naraz",
   "lesson.intervalSequenceChoicePrompt": "Posłuchaj kolejno {count} interwały, jeden po drugim. Nazwij każdy z nich.",
   "lesson.intervalSequenceChoicePlayAllHint": "Odtwórz wszystkie po kolei",
   "lesson.intervalTimedTestReadyPrompt": "Test na czas: {seconds} sekund na jak najwięcej poprawnych odpowiedzi. Gotowy?",

@@ -1,7 +1,7 @@
 import { Text, View } from "react-native";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { IntervalOptionPicker } from "@/components/exercises/IntervalOptionPicker";
-import { playInterval } from "@/lib/audio/player";
+import { playHarmonicInterval, playInterval } from "@/lib/audio/player";
 import { parseScientific } from "@/lib/music/notes";
 import { t } from "@/lib/i18n/translate";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
@@ -22,6 +22,12 @@ interface IntervalSequenceChoiceExerciseProps {
  * to finish ringing plus a beat of silence before the next one starts, so
  * the ear never has to split one interval's tail from the next's onset. */
 const SEQUENCE_STEP_MS = 900;
+/** Same idea as SEQUENCE_STEP_MS, but for harmonic (dwudźwięk) sequences —
+ * playHarmonicInterval rings for ~1.6s (player.ts's own CHORD_DURATION_
+ * SECONDS, since it shares that long-ring NOTE_SAMPLES with playChord),
+ * more than twice SEQUENCE_STEP_MS's own melodic gap, so a shorter step
+ * here would start the next dyad while the previous one is still ringing. */
+const HARMONIC_SEQUENCE_STEP_MS = 1900;
 
 /**
  * "Pasmo Interwałów" — the harder, ear-memory sibling of
@@ -36,8 +42,10 @@ export function IntervalSequenceChoiceExercise({ exercise, answer, onAnswerChang
   const selectedOptionIds = answer?.selectedOptionIds ?? exercise.notePairs.map(() => null);
 
   function playAll() {
+    const stepMs = exercise.harmonic ? HARMONIC_SEQUENCE_STEP_MS : SEQUENCE_STEP_MS;
     exercise.notePairs.forEach(([a, b], index) => {
-      setTimeout(() => playInterval([parseScientific(a), parseScientific(b)]), index * SEQUENCE_STEP_MS);
+      const notes: [ReturnType<typeof parseScientific>, ReturnType<typeof parseScientific>] = [parseScientific(a), parseScientific(b)];
+      setTimeout(() => (exercise.harmonic ? playHarmonicInterval(notes) : playInterval(notes)), index * stepMs);
     });
   }
 
