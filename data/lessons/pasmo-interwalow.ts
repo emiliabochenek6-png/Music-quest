@@ -213,5 +213,73 @@ export const PASMO_INTERWALOW_CONTENT: WorldContent = {
         { id: "pi-l8-e1", type: "interval-timed-test", difficulty: 3, spec: { type: "interval-timed-test", durationSeconds: 60, noteRange: ["C4", "C6"] } },
       ],
     },
+    {
+      // Every earlier level either narrows allowedSemitones to a
+      // teachable subset, or (lekcja 8) covers the full range but under
+      // time pressure with notation still shown. This is the missing
+      // combination: the FULL 0-12 semitone range, hideNotation on every
+      // single exercise (not just the harder tail of a level, like
+      // lekcje 3/6 do), and no clock — pure, unhurried ear training.
+      id: "pi-poziom-9-czyste-ucho",
+      order: 9,
+      difficulty: 3,
+      introSlides: [
+        {
+          body: "Czas na czyste ucho — bez zerkania na zapis nutowy. Usłysz interwał i nazwij go, korzystając wyłącznie ze słuchu. Wszystkie dwanaście interwałów naraz, bez ograniczenia czasowego jak w poprzedniej lekcji — możesz się w pełni skupić na samym dźwięku.",
+          intervalExamples: [
+            { notes: ["C4", "C4"], label: "pryma czysta (1)" },
+            { notes: ["B3", "C4"], label: "sekunda mała (2>)" },
+            { notes: ["C4", "D4"], label: "sekunda wielka (2)" },
+            { notes: ["D4", "F4"], label: "tercja mała (3>)" },
+            { notes: ["C4", "E4"], label: "tercja wielka (3)" },
+            { notes: ["C4", "F4"], label: "kwarta czysta (4)" },
+            { notes: ["C4", "F#4"], label: "tryton (4<)" },
+            { notes: ["C4", "G4"], label: "kwinta czysta (5)" },
+            { notes: ["E4", "C5"], label: "seksta mała (6>)" },
+            { notes: ["C4", "A4"], label: "seksta wielka (6)" },
+            { notes: ["D4", "C5"], label: "septyma mała (7)" },
+            { notes: ["C4", "B4"], label: "septyma wielka (7<)" },
+            { notes: ["C4", "C5"], label: "oktawa czysta (8)" },
+          ],
+        },
+      ],
+      exercises: [
+        { id: "pi-l9-e1", type: "interval-name-choice", difficulty: 3, spec: { type: "interval-name-choice", allowedSemitones: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], noteRange: ["C4", "C6"], hideNotation: true } },
+        { id: "pi-l9-e2", type: "interval-name-choice", difficulty: 3, spec: { type: "interval-name-choice", allowedSemitones: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], noteRange: ["C4", "C6"], hideNotation: true } },
+        { id: "pi-l9-e3", type: "interval-name-choice", difficulty: 3, spec: { type: "interval-name-choice", allowedSemitones: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], noteRange: ["C4", "C6"], hideNotation: true } },
+        { id: "pi-l9-e4", type: "interval-name-choice", difficulty: 3, spec: { type: "interval-name-choice", allowedSemitones: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], noteRange: ["C4", "C6"], hideNotation: true } },
+        { id: "pi-l9-e5", type: "interval-name-choice", difficulty: 3, spec: { type: "interval-name-choice", allowedSemitones: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], noteRange: ["C4", "C6"], hideNotation: true } },
+        { id: "pi-l9-e6", type: "interval-name-choice", difficulty: 3, spec: { type: "interval-name-choice", allowedSemitones: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], noteRange: ["C4", "C6"], hideNotation: true } },
+        { id: "pi-l9-e7", type: "interval-name-choice", difficulty: 3, spec: { type: "interval-name-choice", allowedSemitones: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], noteRange: ["C4", "C6"], hideNotation: true } },
+        { id: "pi-l9-e8", type: "interval-name-choice", difficulty: 3, spec: { type: "interval-name-choice", allowedSemitones: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], noteRange: ["C4", "C6"], hideNotation: true } },
+      ],
+    },
+    {
+      // Same ear-only drill as lekcja 9, widened from the C4-C6 range
+      // every earlier level used to the full C3-C6 span this app's own
+      // playable note range tops out at — the same interval sounds
+      // different low versus high (a minor third down in the bass reads
+      // very differently by ear than one up in the treble), so this
+      // tests recognizing it regardless of register, not just once more
+      // in the same comfortable octave pair.
+      id: "pi-poziom-10-szeroki-rejestr",
+      order: 10,
+      difficulty: 3,
+      introSlides: [
+        {
+          body: "Ten sam trening co w poprzedniej lekcji, ale w szerszym rejestrze — od C3 do C6. Ten sam interwał brzmi inaczej nisko niż wysoko, ale to wciąż ten sam interwał. Ucho musi go rozpoznać niezależnie od tego, gdzie w skali akurat gra.",
+        },
+      ],
+      exercises: [
+        { id: "pi-l10-e1", type: "interval-name-choice", difficulty: 3, spec: { type: "interval-name-choice", allowedSemitones: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], noteRange: ["C3", "C6"], hideNotation: true } },
+        { id: "pi-l10-e2", type: "interval-name-choice", difficulty: 3, spec: { type: "interval-name-choice", allowedSemitones: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], noteRange: ["C3", "C6"], hideNotation: true } },
+        { id: "pi-l10-e3", type: "interval-name-choice", difficulty: 3, spec: { type: "interval-name-choice", allowedSemitones: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], noteRange: ["C3", "C6"], hideNotation: true } },
+        { id: "pi-l10-e4", type: "interval-name-choice", difficulty: 3, spec: { type: "interval-name-choice", allowedSemitones: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], noteRange: ["C3", "C6"], hideNotation: true } },
+        { id: "pi-l10-e5", type: "interval-name-choice", difficulty: 3, spec: { type: "interval-name-choice", allowedSemitones: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], noteRange: ["C3", "C6"], hideNotation: true } },
+        { id: "pi-l10-e6", type: "interval-name-choice", difficulty: 3, spec: { type: "interval-name-choice", allowedSemitones: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], noteRange: ["C3", "C6"], hideNotation: true } },
+        { id: "pi-l10-e7", type: "interval-name-choice", difficulty: 3, spec: { type: "interval-name-choice", allowedSemitones: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], noteRange: ["C3", "C6"], hideNotation: true } },
+        { id: "pi-l10-e8", type: "interval-name-choice", difficulty: 3, spec: { type: "interval-name-choice", allowedSemitones: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], noteRange: ["C3", "C6"], hideNotation: true } },
+      ],
+    },
   ],
 };
