@@ -108,6 +108,7 @@ const NUTKI_MULTIPLIER_WHEN_INTRO_DISABLED = 2;
 const WORLD_LESSON_THEME: Partial<Record<string, { background: string }>> = {
   note: { background: "#F3ECFC" }, // Wioska Nut — light purple
   metronome: { background: "#E8EEFC" }, // Miasto Rytmu — light blue
+  "bar-line": { background: "#E3F5F1" }, // Przystań Taktów — light sea-green
 };
 
 /** Thin wrapper around the real screen purely to set up

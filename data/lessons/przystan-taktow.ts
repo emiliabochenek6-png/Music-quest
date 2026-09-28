@@ -612,5 +612,178 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
         },
       ],
     },
+    {
+      // Lekcja 8 tested all seven meters at once — this narrows back down
+      // to the pairs that are genuinely easy to confuse (same note count,
+      // different felt grouping), rather than the whole grab-bag. The two
+      // rhythm-dictation exercises use the literal SAME 12-eighth clap
+      // pattern in 3/4 and 6/8 — the onsets themselves sound identical
+      // (see lib/questions/validate.ts's own doc: only the gaps between
+      // taps matter), so what actually distinguishes them is the
+      // background metronome's own felt-pulse accenting (see
+      // RhythmDictationExercise.tsx's feltBpm/feltBeatsPerMeasure doc) —
+      // three even clicks per measure in 3/4 versus two bigger
+      // dotted-quarter pulses in 6/8. That's the whole point of the pair.
+      id: "pt-lekcja-9-podchwytliwe-pary",
+      order: 9,
+      difficulty: 3,
+      introSlides: [
+        {
+          body: "Niektóre metra brzmią bardzo podobnie, jeśli liczysz tylko dźwięki. 3/4 i 6/8 mogą mieć dokładnie tyle samo ósemek, ale inaczej się \"kołyszą\" — 3/4 liczy trzy równe uderzenia, a 6/8 dwie większe grupy po trzy. Tak samo 6/8 i 12/8 różnią się tylko liczbą tych grup, nie ich brzmieniem. Posłuchaj uważnie, gdzie wypada mocne uderzenie.",
+        },
+      ],
+      exercises: [
+        {
+          id: "pt-l9-e1",
+          type: "meter-choice",
+          difficulty: 3,
+          spec: { type: "meter-choice", correctMeter: "3/4", bpm: 100, optionPool: ["3/4", "6/8"], referenceAudioSource: DRUMMER_3_4_SAMPLE },
+        },
+        {
+          id: "pt-l9-e2",
+          type: "meter-choice",
+          difficulty: 3,
+          spec: { type: "meter-choice", correctMeter: "6/8", bpm: 100, optionPool: ["3/4", "6/8"], referenceAudioSource: DRUMMER_6_8_SAMPLE },
+        },
+        {
+          id: "pt-l9-e3",
+          type: "meter-choice",
+          difficulty: 3,
+          spec: { type: "meter-choice", correctMeter: "6/8", bpm: 96, optionPool: ["6/8", "12/8"], referenceAudioSource: DRUMMER_6_8_SAMPLE },
+        },
+        {
+          id: "pt-l9-e4",
+          type: "meter-choice",
+          difficulty: 3,
+          spec: { type: "meter-choice", correctMeter: "12/8", bpm: 96, optionPool: ["6/8", "12/8"], referenceAudioSource: DRUMMER_12_8_SAMPLE },
+        },
+        {
+          id: "pt-l9-e5",
+          type: "rhythm-dictation",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 96,
+            meter: "3/4",
+            sequence: [
+              "eighth", "eighth", "eighth", "eighth", "eighth", "eighth",
+              "eighth", "eighth", "eighth", "eighth", "eighth", "eighth",
+            ],
+          },
+        },
+        {
+          id: "pt-l9-e6",
+          type: "rhythm-dictation",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 96,
+            meter: "6/8",
+            sequence: [
+              "eighth", "eighth", "eighth", "eighth", "eighth", "eighth",
+              "eighth", "eighth", "eighth", "eighth", "eighth", "eighth",
+            ],
+          },
+        },
+      ],
+    },
+    {
+      // Lekcje 4-7 kept compound-meter dictation mostly regular (quarter+
+      // eighth pairs, straight eighth runs) — this is those same three
+      // meters' own "trudniejsze synkopy" (see Miasto Rytmu lekcja 9's
+      // identical idea for simple meters), rests displacing the strong
+      // start of a dotted-quarter pulse instead of a plain quarter beat.
+      id: "pt-lekcja-10-synkopy-w-metrum-zlozonym",
+      order: 10,
+      difficulty: 2,
+      introSlides: [
+        {
+          body: "Metra złożone (6/8, 9/8, 12/8) też mogą mieć synkopy — ciszę tam, gdzie spodziewasz się uderzenia na początku grupy trzech ósemek. Ucho musi trzymać się dużego pulsu, nawet gdy pojedyncza ósemka w grupie milczy.",
+        },
+      ],
+      exercises: [
+        {
+          id: "pt-l10-e1",
+          type: "rhythm-dictation",
+          difficulty: 2,
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 84,
+            meter: "6/8",
+            sequence: ["eighthRest", "eighth", "quarter", "eighth", "eighth", "quarter", "eighthRest", "eighth", "quarter"],
+          },
+        },
+        {
+          id: "pt-l10-e2",
+          type: "rhythm-dictation",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 84,
+            meter: "6/8",
+            sequence: [
+              "eighth", "eighthRest", "eighth", "quarter", "eighthRest",
+              "quarter", "eighthRest", "eighth", "eighth", "eighth",
+            ],
+          },
+        },
+        {
+          id: "pt-l10-e3",
+          type: "rhythm-dictation",
+          difficulty: 2,
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 80,
+            meter: "9/8",
+            sequence: [
+              "eighthRest", "eighth", "eighth", "quarter", "eighth", "eighth", "quarter",
+              "quarter", "eighth", "eighthRest", "eighth", "eighth", "eighth", "eighthRest", "eighth",
+            ],
+          },
+        },
+        {
+          id: "pt-l10-e4",
+          type: "rhythm-dictation",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 80,
+            meter: "9/8",
+            sequence: [
+              "eighth", "eighthRest", "eighth", "eighthRest", "quarter", "quarter", "eighth",
+              "quarter", "eighthRest", "eighth", "eighth", "eighth", "eighth", "quarter",
+            ],
+          },
+        },
+        {
+          id: "pt-l10-e5",
+          type: "rhythm-dictation",
+          difficulty: 2,
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 76,
+            meter: "12/8",
+            sequence: [
+              "eighthRest", "eighth", "eighth", "quarter", "eighth", "eighth", "quarter", "quarter", "eighth",
+              "quarter", "eighth", "eighthRest", "eighth", "eighth", "quarter", "eighth", "eighth", "quarter",
+            ],
+          },
+        },
+        {
+          id: "pt-l10-e6",
+          type: "rhythm-dictation",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 76,
+            meter: "12/8",
+            sequence: [
+              "eighth", "eighthRest", "eighth", "eighthRest", "quarter", "quarter", "eighth", "eighth", "eighth", "eighth",
+              "quarter", "eighthRest", "eighth", "eighth", "eighth", "eighthRest", "eighth", "eighth", "quarter", "eighth",
+            ],
+          },
+        },
+      ],
+    },
   ],
 };
