@@ -66,29 +66,41 @@ export function IntervalNameChoiceExercise({ exercise, selectedOptionId, onSelec
       <DarkButton label="🔊" onPress={play} variant="secondary" size={72} fontSize={32} />
 
       {isFullRange ? (
-        // A fixed-height "okienko" (window) instead of the plain stacked
-        // list below — with every named interval shown at once (lekcje
-        // 8-10), a full-length stack would be mostly off-screen scroll
-        // with no sense of "smallest to largest, and back" the way a
-        // bounded, sorted, swipeable box gives you.
-        <ScrollView
-          style={{ width: "100%", maxHeight: 340 }}
-          contentContainerStyle={{ gap: theme.spacing(1.5) }}
-          nestedScrollEnabled
-          showsVerticalScrollIndicator
+        // A visibly bordered, fixed-height "okienko" (window) instead of
+        // the plain stacked list below — with every named interval shown
+        // at once (lekcje 8-10), a full-length stack would be mostly
+        // off-screen scroll with no sense of "smallest to largest, and
+        // back" the way a bounded, sorted, swipeable box gives you. The
+        // border/background/padding here is what actually reads as "a
+        // window", not just the scrolling behavior alone — an unframed
+        // ScrollView looks identical to the plain list below, height
+        // aside, so nothing signals "this box scrolls" until a finger
+        // already happens to be on it.
+        <View
+          style={{
+            width: "100%",
+            maxHeight: 340,
+            borderWidth: theme.borderWidth,
+            borderColor: theme.colors.border,
+            borderRadius: theme.radius.lg,
+            backgroundColor: theme.colors.surfaceMuted,
+            padding: theme.spacing(1.5),
+          }}
         >
-          {orderedOptions.map((option) => (
-            <OptionButton
-              key={option.id}
-              label={option.label}
-              selected={selectedOptionId === option.id}
-              correct={checked && option.id === exercise.correctOptionId}
-              incorrect={checked && selectedOptionId === option.id && option.id !== exercise.correctOptionId}
-              disabled={checked}
-              onPress={() => onSelect(option.id)}
-            />
-          ))}
-        </ScrollView>
+          <ScrollView contentContainerStyle={{ gap: theme.spacing(1.5) }} nestedScrollEnabled showsVerticalScrollIndicator>
+            {orderedOptions.map((option) => (
+              <OptionButton
+                key={option.id}
+                label={option.label}
+                selected={selectedOptionId === option.id}
+                correct={checked && option.id === exercise.correctOptionId}
+                incorrect={checked && selectedOptionId === option.id && option.id !== exercise.correctOptionId}
+                disabled={checked}
+                onPress={() => onSelect(option.id)}
+              />
+            ))}
+          </ScrollView>
+        </View>
       ) : (
         <View style={{ width: "100%", gap: theme.spacing(1.5) }}>
           {orderedOptions.map((option) => (
