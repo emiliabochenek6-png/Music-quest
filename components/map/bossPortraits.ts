@@ -1,6 +1,7 @@
 import type { ComponentType } from "react";
 import { ArytmikPortrait } from "@/components/map/ArytmikPortrait";
 import { FalszomirPortrait } from "@/components/map/FalszomirPortrait";
+import { OsmiotaktPortrait } from "@/components/map/OsmiotaktPortrait";
 
 /** One entry per world's own boss (LessonDefinition's own `bossName`) —
  * both LessonNode.tsx (the map node's portrait) and IntroSlideCards.tsx
@@ -11,6 +12,7 @@ import { FalszomirPortrait } from "@/components/map/FalszomirPortrait";
 export const BOSS_PORTRAITS: Record<string, ComponentType<{ size?: number }>> = {
   Fałszomir: FalszomirPortrait,
   Arytmik: ArytmikPortrait,
+  Ośmiotakt: OsmiotaktPortrait,
 };
 
 /** Wioska Nut's own boss predates the `bossName` field — every lesson

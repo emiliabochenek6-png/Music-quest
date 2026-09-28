@@ -15,6 +15,8 @@ import {
   RHYTHM_DICTATION_PT_L7_RECORDING_SAMPLES,
   RHYTHM_DICTATION_PT_L9_RECORDING_SAMPLES,
   RHYTHM_DICTATION_PT_L10_RECORDING_SAMPLES,
+  RHYTHM_DICTATION_PT_L11_RECORDING_SAMPLES,
+  RHYTHM_DICTATION_PT_L12_RECORDING_SAMPLES,
 } from "@/lib/audio/samples";
 import type { WorldContent } from "@/types/exercises";
 
@@ -866,9 +868,10 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
             bpm: 80,
             meter: "9/8",
             sequence: [
-              "quarter", "eighth", "eighth", "eighth", "eighth", "quarter", "eighth",
-              "eighth", "eighth", "eighth", "quarter", "eighth", "quarter", "eighth",
+              "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth",
+              "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth",
             ],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L11_RECORDING_SAMPLES[0],
           },
         },
         {
@@ -880,9 +883,10 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
             bpm: 80,
             meter: "12/8",
             sequence: [
-              "quarter", "eighth", "eighth", "eighth", "eighth", "quarter", "eighth", "eighth", "eighth", "eighth",
-              "eighth", "eighth", "eighth", "quarter", "eighth", "eighth", "eighth", "eighth", "quarter", "eighth",
+              "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth",
+              "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth",
             ],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L11_RECORDING_SAMPLES[1],
           },
         },
       ],
@@ -908,12 +912,13 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
           difficulty: 2,
           spec: {
             type: "rhythm-dictation",
-            bpm: 72,
+            bpm: 80,
             meter: "6/8",
             sequence: [
               "sixteenth", "sixteenth", "eighth", "eighth", "eighth", "eighth", "eighth",
               "eighth", "eighth", "eighth", "sixteenth", "sixteenth", "eighth", "eighth",
             ],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L12_RECORDING_SAMPLES[0],
           },
         },
         {
@@ -922,12 +927,13 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
           difficulty: 3,
           spec: {
             type: "rhythm-dictation",
-            bpm: 72,
+            bpm: 80,
             meter: "6/8",
             sequence: [
               "sixteenth", "sixteenth", "sixteenth", "sixteenth", "eighth", "eighth", "eighth",
               "eighth", "eighth", "eighth", "eighth", "sixteenth", "sixteenth", "sixteenth", "sixteenth", "eighth",
             ],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L12_RECORDING_SAMPLES[1],
           },
         },
         {
@@ -936,12 +942,13 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
           difficulty: 2,
           spec: {
             type: "rhythm-dictation",
-            bpm: 68,
+            bpm: 80,
             meter: "9/8",
             sequence: [
-              "sixteenth", "sixteenth", "eighth", "eighth", "eighth", "eighth", "eighth", "quarter", "eighth",
-              "quarter", "eighth", "sixteenth", "sixteenth", "eighth", "eighth", "eighth", "eighth", "eighth",
+              "sixteenth", "sixteenth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth",
+              "eighth", "eighth", "eighth", "eighth", "sixteenth", "sixteenth", "eighth", "eighth", "eighth", "eighth", "eighth",
             ],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L12_RECORDING_SAMPLES[2],
           },
         },
         {
@@ -950,12 +957,13 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
           difficulty: 3,
           spec: {
             type: "rhythm-dictation",
-            bpm: 68,
+            bpm: 80,
             meter: "9/8",
             sequence: [
-              "sixteenth", "sixteenth", "sixteenth", "sixteenth", "eighth", "quarter", "eighth", "eighth", "eighth",
-              "eighth", "eighth", "eighth", "eighth", "sixteenth", "sixteenth", "sixteenth", "sixteenth", "eighth", "quarter", "eighth",
+              "sixteenth", "sixteenth", "sixteenth", "sixteenth", "eighth", "eighth", "eighth", "eighth", "eighth",
+              "eighth", "eighth", "eighth", "eighth", "eighth", "sixteenth", "sixteenth", "sixteenth", "sixteenth", "eighth", "eighth", "eighth", "eighth",
             ],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L12_RECORDING_SAMPLES[3],
           },
         },
         {
@@ -964,12 +972,14 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
           difficulty: 2,
           spec: {
             type: "rhythm-dictation",
-            bpm: 64,
+            bpm: 80,
             meter: "12/8",
             sequence: [
-              "sixteenth", "sixteenth", "eighth", "eighth", "eighth", "eighth", "eighth", "quarter", "eighth",
-              "eighth", "eighth", "eighth", "quarter", "eighth", "sixteenth", "sixteenth", "eighth", "eighth", "eighth", "eighth", "eighth", "quarter", "eighth",
+              "sixteenth", "sixteenth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth",
+              "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "sixteenth", "sixteenth",
+              "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth",
             ],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L12_RECORDING_SAMPLES[4],
           },
         },
         {
@@ -978,13 +988,140 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
           difficulty: 3,
           spec: {
             type: "rhythm-dictation",
-            bpm: 64,
+            bpm: 80,
             meter: "12/8",
             sequence: [
-              "sixteenth", "sixteenth", "sixteenth", "sixteenth", "eighth", "quarter", "eighth", "eighth", "eighth", "eighth",
+              "sixteenth", "sixteenth", "sixteenth", "sixteenth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth",
               "sixteenth", "sixteenth", "sixteenth", "sixteenth", "eighth", "eighth", "eighth", "eighth",
-              "sixteenth", "sixteenth", "sixteenth", "sixteenth", "eighth", "quarter", "eighth", "eighth", "eighth", "eighth",
+              "sixteenth", "sixteenth", "sixteenth", "sixteenth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth",
             ],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L12_RECORDING_SAMPLES[5],
+          },
+        },
+      ],
+    },
+    {
+      // Boss level — same shape as Miasto Rytmu's own Arytmik (see that
+      // file's lekcja 16 doc): a mix of meter-choice (broad recognition
+      // like lekcja 8, then narrow tricky pairs like lekcje 9/11) and the
+      // hardest rhythm-dictation content from earlier lekcje, REUSED
+      // verbatim (same sequence/bpm/referenceAudioSource) rather than
+      // freshly authored, so nothing here needs a new recording.
+      id: "pt-lekcja-13-boss-osmiotakt",
+      order: 13,
+      difficulty: 3,
+      isBoss: true,
+      bossName: "Ośmiotakt",
+      introSlides: [
+        {
+          body: "Kapitan Ośmiotakt pomieszał wszystkie takty w porcie — jego żagle noszą krzywe metrum, a jego macki liczą każda inaczej. Żeby go pokonać, pokaż, że rozpoznajesz i wystukujesz KAŻDE metrum tej krainy, od najprostszego po najbardziej złożone.",
+          bossPortrait: true,
+        },
+      ],
+      exercises: [
+        {
+          id: "pt-l13-e1",
+          type: "meter-choice",
+          difficulty: 3,
+          spec: {
+            type: "meter-choice",
+            correctMeter: "9/8",
+            bpm: 100,
+            optionPool: ["2/4", "2/2", "3/4", "4/4", "6/8", "9/8", "12/8"],
+            referenceAudioSource: DRUMMER_9_8_SAMPLE,
+          },
+        },
+        {
+          id: "pt-l13-e2",
+          type: "meter-choice",
+          difficulty: 3,
+          spec: { type: "meter-choice", correctMeter: "6/8", bpm: 100, optionPool: ["6/8", "12/8"], referenceAudioSource: DRUMMER_6_8_SAMPLE },
+        },
+        {
+          // Reuses lekcja 6's own hardest 12/8 dictation (and its real
+          // recording) rather than authoring fresh unaudioed content —
+          // same pattern as Miasto Rytmu's own boss.
+          id: "pt-l13-e3",
+          type: "rhythm-dictation",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 80,
+            meter: "12/8",
+            sequence: [
+              "quarter", "eighth", "quarter", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth",
+              "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "quarter", "eighth", "quarter", "eighth",
+            ],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L6_RECORDING_SAMPLES[2],
+          },
+        },
+        {
+          id: "pt-l13-e4",
+          type: "meter-choice",
+          difficulty: 3,
+          spec: {
+            type: "meter-choice",
+            correctMeter: "2/2",
+            bpm: 100,
+            optionPool: ["2/4", "2/2", "3/4", "4/4", "6/8", "9/8", "12/8"],
+            referenceAudioSource: DRUMMER_2_2_SAMPLE,
+          },
+        },
+        {
+          // Reuses lekcja 7's own hardest 12/8 dictation (real recording).
+          id: "pt-l13-e5",
+          type: "rhythm-dictation",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 80,
+            meter: "12/8",
+            sequence: [
+              "quarter", "eighth", "eighth", "eighth", "eighth", "eighth", "quarter", "eighthRest", "eighth", "eighth",
+              "eighth", "eighth", "eighth", "quarter", "eighth", "eighthRest", "eighth", "eighth", "eighth", "quarter",
+            ],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L7_RECORDING_SAMPLES[2],
+          },
+        },
+        {
+          id: "pt-l13-e6",
+          type: "meter-choice",
+          difficulty: 3,
+          spec: { type: "meter-choice", correctMeter: "9/8", bpm: 92, optionPool: ["3/4", "9/8"], referenceAudioSource: DRUMMER_9_8_SAMPLE },
+        },
+        {
+          // Reuses lekcja 12's own hardest 9/8 dictation (szesnastki,
+          // real recording).
+          id: "pt-l13-e7",
+          type: "rhythm-dictation",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 80,
+            meter: "9/8",
+            sequence: [
+              "sixteenth", "sixteenth", "sixteenth", "sixteenth", "eighth", "eighth", "eighth", "eighth", "eighth",
+              "eighth", "eighth", "eighth", "eighth", "eighth", "sixteenth", "sixteenth", "sixteenth", "sixteenth", "eighth", "eighth", "eighth", "eighth",
+            ],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L12_RECORDING_SAMPLES[3],
+          },
+        },
+        {
+          // Reuses lekcja 12's own hardest 12/8 dictation (szesnastki,
+          // real recording) — finale.
+          id: "pt-l13-e8",
+          type: "rhythm-dictation",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 80,
+            meter: "12/8",
+            sequence: [
+              "sixteenth", "sixteenth", "sixteenth", "sixteenth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth",
+              "sixteenth", "sixteenth", "sixteenth", "sixteenth", "eighth", "eighth", "eighth", "eighth",
+              "sixteenth", "sixteenth", "sixteenth", "sixteenth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth",
+            ],
+            referenceAudioSource: RHYTHM_DICTATION_PT_L12_RECORDING_SAMPLES[5],
           },
         },
       ],

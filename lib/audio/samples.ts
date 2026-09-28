@@ -469,3 +469,15 @@ export const RHYTHM_DICTATION_PT_L10_RECORDING_SAMPLES: readonly number[] = [
   require("@/assets/audio/reference/rhythm-dictation-pt-l10-5.wav"),
   require("@/assets/audio/reference/rhythm-dictation-pt-l10-6.wav"),
 ];
+export const RHYTHM_DICTATION_PT_L11_RECORDING_SAMPLES: readonly number[] = [
+  require("@/assets/audio/reference/rhythm-dictation-pt-l11-1.wav"),
+  require("@/assets/audio/reference/rhythm-dictation-pt-l11-2.wav"),
+];
+export const RHYTHM_DICTATION_PT_L12_RECORDING_SAMPLES: readonly number[] = [
+  require("@/assets/audio/reference/rhythm-dictation-pt-l12-1.wav"),
+  require("@/assets/audio/reference/rhythm-dictation-pt-l12-2.wav"),
+  require("@/assets/audio/reference/rhythm-dictation-pt-l12-3.wav"),
+  require("@/assets/audio/reference/rhythm-dictation-pt-l12-4.wav"),
+  require("@/assets/audio/reference/rhythm-dictation-pt-l12-5.wav"),
+  require("@/assets/audio/reference/rhythm-dictation-pt-l12-6.wav"),
+];
