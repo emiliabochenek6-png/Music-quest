@@ -804,5 +804,190 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
         },
       ],
     },
+    {
+      // Lekcja 9's own pairs compared meters that SHARE a measure length
+      // (3/4↔6/8, 6/8↔12/8 — same total quarter-beats, different felt
+      // grouping). This is the other classic confusable relationship:
+      // meters that share the same PULSE COUNT (3 big beats, 4 big beats)
+      // but split each pulse differently — a quarter-note pulse (simple)
+      // vs a dotted-quarter pulse (compound). 3/4 and 9/8 both feel like
+      // "three", 4/4 and 12/8 both feel like "four".
+      id: "pt-lekcja-11-trojki-metrum",
+      order: 11,
+      difficulty: 3,
+      introSlides: [
+        {
+          body: "3/4 i 9/8 mają tyle samo dużych pulsów — trzy. 4/4 i 12/8 też mają tyle samo — cztery. Różnica jest w tym, jak dzieli się KAŻDY puls: na dwie części (proste, jak 3/4) czy na trzy (złożone, jak 9/8). Licz pulsy, nie pojedyncze dźwięki.",
+        },
+      ],
+      exercises: [
+        {
+          id: "pt-l11-e1",
+          type: "meter-choice",
+          difficulty: 3,
+          spec: { type: "meter-choice", correctMeter: "3/4", bpm: 100, optionPool: ["3/4", "9/8"], referenceAudioSource: DRUMMER_3_4_SAMPLE },
+        },
+        {
+          id: "pt-l11-e2",
+          type: "meter-choice",
+          difficulty: 3,
+          spec: { type: "meter-choice", correctMeter: "9/8", bpm: 100, optionPool: ["3/4", "9/8"], referenceAudioSource: DRUMMER_9_8_SAMPLE },
+        },
+        {
+          id: "pt-l11-e3",
+          type: "meter-choice",
+          difficulty: 3,
+          spec: { type: "meter-choice", correctMeter: "4/4", bpm: 100, optionPool: ["4/4", "12/8"], referenceAudioSource: DRUMMER_4_4_SAMPLE },
+        },
+        {
+          id: "pt-l11-e4",
+          type: "meter-choice",
+          difficulty: 3,
+          spec: { type: "meter-choice", correctMeter: "12/8", bpm: 100, optionPool: ["4/4", "12/8"], referenceAudioSource: DRUMMER_12_8_SAMPLE },
+        },
+        {
+          id: "pt-l11-e5",
+          type: "meter-choice",
+          difficulty: 3,
+          spec: { type: "meter-choice", correctMeter: "9/8", bpm: 92, optionPool: ["3/4", "9/8"], referenceAudioSource: DRUMMER_9_8_SAMPLE },
+        },
+        {
+          id: "pt-l11-e6",
+          type: "meter-choice",
+          difficulty: 3,
+          spec: { type: "meter-choice", correctMeter: "12/8", bpm: 92, optionPool: ["4/4", "12/8"], referenceAudioSource: DRUMMER_12_8_SAMPLE },
+        },
+        {
+          id: "pt-l11-e7",
+          type: "rhythm-dictation",
+          difficulty: 2,
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 80,
+            meter: "9/8",
+            sequence: [
+              "quarter", "eighth", "eighth", "eighth", "eighth", "quarter", "eighth",
+              "eighth", "eighth", "eighth", "quarter", "eighth", "quarter", "eighth",
+            ],
+          },
+        },
+        {
+          id: "pt-l11-e8",
+          type: "rhythm-dictation",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 80,
+            meter: "12/8",
+            sequence: [
+              "quarter", "eighth", "eighth", "eighth", "eighth", "quarter", "eighth", "eighth", "eighth", "eighth",
+              "eighth", "eighth", "eighth", "quarter", "eighth", "eighth", "eighth", "eighth", "quarter", "eighth",
+            ],
+          },
+        },
+      ],
+    },
+    {
+      // Miasto Rytmu teaches sixteenths only in simple meter (2/4, 3/4,
+      // 4/4). This is the same subdivision — one eighth's own slot split
+      // into two sixteenths — landing inside a compound meter's
+      // dotted-quarter pulse instead, which packs more onsets into the
+      // same 1.5-beat pulse than lekcje 4-11 have used so far.
+      id: "pt-lekcja-12-szesnastki-w-zlozonym",
+      order: 12,
+      difficulty: 2,
+      introSlides: [
+        {
+          body: "W prostym metrum już zamieniałeś jedną ósemkę na dwie szesnastki. Ten sam trik działa też w metrum złożonym — w miejscu jednej z trzech ósemek pulsu 6/8, 9/8 czy 12/8 mogą zmieścić się dwie szesnastki, przez co ten fragment pulsu brzmi gęściej niż reszta.",
+        },
+      ],
+      exercises: [
+        {
+          id: "pt-l12-e1",
+          type: "rhythm-dictation",
+          difficulty: 2,
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 72,
+            meter: "6/8",
+            sequence: [
+              "sixteenth", "sixteenth", "eighth", "eighth", "eighth", "eighth", "eighth",
+              "eighth", "eighth", "eighth", "sixteenth", "sixteenth", "eighth", "eighth",
+            ],
+          },
+        },
+        {
+          id: "pt-l12-e2",
+          type: "rhythm-dictation",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 72,
+            meter: "6/8",
+            sequence: [
+              "sixteenth", "sixteenth", "sixteenth", "sixteenth", "eighth", "eighth", "eighth",
+              "eighth", "eighth", "eighth", "eighth", "sixteenth", "sixteenth", "sixteenth", "sixteenth", "eighth",
+            ],
+          },
+        },
+        {
+          id: "pt-l12-e3",
+          type: "rhythm-dictation",
+          difficulty: 2,
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 68,
+            meter: "9/8",
+            sequence: [
+              "sixteenth", "sixteenth", "eighth", "eighth", "eighth", "eighth", "eighth", "quarter", "eighth",
+              "quarter", "eighth", "sixteenth", "sixteenth", "eighth", "eighth", "eighth", "eighth", "eighth",
+            ],
+          },
+        },
+        {
+          id: "pt-l12-e4",
+          type: "rhythm-dictation",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 68,
+            meter: "9/8",
+            sequence: [
+              "sixteenth", "sixteenth", "sixteenth", "sixteenth", "eighth", "quarter", "eighth", "eighth", "eighth",
+              "eighth", "eighth", "eighth", "eighth", "sixteenth", "sixteenth", "sixteenth", "sixteenth", "eighth", "quarter", "eighth",
+            ],
+          },
+        },
+        {
+          id: "pt-l12-e5",
+          type: "rhythm-dictation",
+          difficulty: 2,
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 64,
+            meter: "12/8",
+            sequence: [
+              "sixteenth", "sixteenth", "eighth", "eighth", "eighth", "eighth", "eighth", "quarter", "eighth",
+              "eighth", "eighth", "eighth", "quarter", "eighth", "sixteenth", "sixteenth", "eighth", "eighth", "eighth", "eighth", "eighth", "quarter", "eighth",
+            ],
+          },
+        },
+        {
+          id: "pt-l12-e6",
+          type: "rhythm-dictation",
+          difficulty: 3,
+          spec: {
+            type: "rhythm-dictation",
+            bpm: 64,
+            meter: "12/8",
+            sequence: [
+              "sixteenth", "sixteenth", "sixteenth", "sixteenth", "eighth", "quarter", "eighth", "eighth", "eighth", "eighth",
+              "sixteenth", "sixteenth", "sixteenth", "sixteenth", "eighth", "eighth", "eighth", "eighth",
+              "sixteenth", "sixteenth", "sixteenth", "sixteenth", "eighth", "quarter", "eighth", "eighth", "eighth", "eighth",
+            ],
+          },
+        },
+      ],
+    },
   ],
 };
