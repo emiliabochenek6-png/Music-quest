@@ -331,8 +331,9 @@ function paddedClickableSteps(steps: readonly number[]): number[] {
 
 /** A dedup key identifying "this exact question" for the exercise types
  * whose CONTENT (not just its answer options) is randomly generated —
- * interval-name-choice/triad-quality-choice/triad-notes-choice/triad-
- * role-choice each roll a fresh note pair, triad, or key+role on every
+ * interval-name-choice/interval-sequence-choice/triad-quality-choice/
+ * triad-notes-choice/triad-role-choice each roll a fresh note pair (or,
+ * for interval-sequence-choice, several), triad, or key+role on every
  * generation, and a lesson can easily draw the same one twice by pure
  * chance (triad-notes-choice's own fifths×role space is only 21 combos,
  * and one lesson asks 8 of them). Every other type's content is fixed by
@@ -342,6 +343,8 @@ export function getExerciseSignature(exercise: GeneratedExercise): string | null
   switch (exercise.type) {
     case "interval-name-choice":
       return `interval-name-choice:${exercise.notes.join(",")}`;
+    case "interval-sequence-choice":
+      return `interval-sequence-choice:${exercise.notePairs.map((pair) => pair.join(",")).join("|")}`;
     case "triad-quality-choice":
       return `triad-quality-choice:${exercise.notes.join(",")}`;
     case "triad-inversion-choice":
@@ -627,6 +630,32 @@ export function generateExercise(definition: ExerciseDefinition, locale: Locale,
         allowedSemitones: allowedSemitones ?? [...NAMED_INTERVAL_SEMITONES],
         optionCount: optionCount ?? DEFAULT_INTERVAL_OPTION_COUNT,
       };
+    }
+    case "interval-sequence-choice": {
+      const { sequenceLength, allowedSemitones, noteRange, optionCount } = definition.spec;
+      const [rangeLow, rangeHigh] = noteRange;
+      return generateWithoutRepeat(() => {
+        const notePairs: [string, string][] = [];
+        const optionsPerPosition: MultipleChoiceOption[][] = [];
+        const correctOptionIds: string[] = [];
+        for (let position = 0; position < sequenceLength; position++) {
+          const [rootNote, otherNote] = pickRandomIntervalNotePair(
+            [parseScientific(rangeLow), parseScientific(rangeHigh)],
+            allowedSemitones
+          );
+          const semitones = intervalSemitones(rootNote, otherNote);
+          notePairs.push([formatScientific(rootNote), formatScientific(otherNote)]);
+          optionsPerPosition.push(buildIntervalOptions(semitones, optionCount ?? allowedSemitones.length, locale, allowedSemitones));
+          correctOptionIds.push(String(semitones));
+        }
+        return {
+          id: definition.id,
+          type: "interval-sequence-choice",
+          notePairs,
+          optionsPerPosition,
+          correctOptionIds,
+        };
+      }, exclude);
     }
     case "triad-notes-choice": {
       const { fifthsRange } = definition.spec;

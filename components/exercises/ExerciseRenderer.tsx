@@ -8,6 +8,7 @@ import { IntervalBuildChoiceExercise } from "@/components/exercises/IntervalBuil
 import { IntervalBuildStaffChoiceExercise } from "@/components/exercises/IntervalBuildStaffChoiceExercise";
 import { IntervalDistanceChoiceExercise } from "@/components/exercises/IntervalDistanceChoiceExercise";
 import { IntervalNameChoiceExercise } from "@/components/exercises/IntervalNameChoiceExercise";
+import { IntervalSequenceChoiceExercise } from "@/components/exercises/IntervalSequenceChoiceExercise";
 import { IntervalTimedTestExercise } from "@/components/exercises/IntervalTimedTestExercise";
 import { KeyFactChoiceExercise } from "@/components/exercises/KeyFactChoiceExercise";
 import { KeySignatureNamesChoiceExercise } from "@/components/exercises/KeySignatureNamesChoiceExercise";
@@ -230,6 +231,16 @@ export function ExerciseRenderer({ exercise, answer, onAnswerChange, checked, is
         <IntervalTimedTestExercise
           exercise={exercise}
           answer={answer?.type === "interval-timed-test" ? answer : null}
+          onAnswerChange={onAnswerChange}
+          checked={checked}
+          locale={locale}
+        />
+      );
+    case "interval-sequence-choice":
+      return (
+        <IntervalSequenceChoiceExercise
+          exercise={exercise}
+          answer={answer?.type === "interval-sequence-choice" ? answer : null}
           onAnswerChange={onAnswerChange}
           checked={checked}
           locale={locale}
@@ -556,6 +567,8 @@ export function hasAnswerToCheck(answer: AnswerInput | null): boolean {
       return answer.tapTimestampsMs.length > 0;
     case "interval-build-staff-choice":
       return answer.selectedStep !== null;
+    case "interval-sequence-choice":
+      return answer.selectedOptionIds.length > 0 && answer.selectedOptionIds.every((id) => id !== null);
     case "triad-build-staff-choice":
       return answer.selectedThirdStep !== null && answer.selectedFifthStep !== null;
     case "rhythm-value-dictation":

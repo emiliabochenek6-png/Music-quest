@@ -281,5 +281,96 @@ export const PASMO_INTERWALOW_CONTENT: WorldContent = {
         { id: "pi-l10-e8", type: "interval-name-choice", difficulty: 3, spec: { type: "interval-name-choice", allowedSemitones: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], noteRange: ["C3", "C6"], hideNotation: true } },
       ],
     },
+    {
+      // The new interval-sequence-choice type (see its own doc in
+      // types/exercises.ts) — two FRESH, independently-drawn intervals
+      // play back to back and both need naming, one small picker per
+      // position. Narrow semitone pool (seconds/thirds, lekcje 1-3's own
+      // territory) here on purpose: holding two things in memory at once
+      // is the new difficulty, not also facing the full interval range.
+      id: "pi-poziom-11-dwa-interwaly",
+      order: 11,
+      difficulty: 3,
+      introSlides: [
+        {
+          body: "Teraz usłyszysz dwa interwały pod rząd, jeden zaraz po drugim — Twoje zadanie to nazwać OBA, każdy osobno. Ucho musi zapamiętać pierwszy, zanim jeszcze zdąży usłyszeć drugi.",
+        },
+      ],
+      exercises: [
+        { id: "pi-l11-e1", type: "interval-sequence-choice", difficulty: 3, spec: { type: "interval-sequence-choice", sequenceLength: 2, allowedSemitones: [1, 2, 3, 4], noteRange: ["C4", "C6"] } },
+        { id: "pi-l11-e2", type: "interval-sequence-choice", difficulty: 3, spec: { type: "interval-sequence-choice", sequenceLength: 2, allowedSemitones: [1, 2, 3, 4], noteRange: ["C4", "C6"] } },
+        { id: "pi-l11-e3", type: "interval-sequence-choice", difficulty: 3, spec: { type: "interval-sequence-choice", sequenceLength: 2, allowedSemitones: [1, 2, 3, 4], noteRange: ["C4", "C6"] } },
+        { id: "pi-l11-e4", type: "interval-sequence-choice", difficulty: 3, spec: { type: "interval-sequence-choice", sequenceLength: 2, allowedSemitones: [1, 2, 3, 4], noteRange: ["C4", "C6"] } },
+        { id: "pi-l11-e5", type: "interval-sequence-choice", difficulty: 3, spec: { type: "interval-sequence-choice", sequenceLength: 2, allowedSemitones: [1, 2, 3, 4], noteRange: ["C4", "C6"] } },
+        { id: "pi-l11-e6", type: "interval-sequence-choice", difficulty: 3, spec: { type: "interval-sequence-choice", sequenceLength: 2, allowedSemitones: [1, 2, 3, 4], noteRange: ["C4", "C6"] } },
+      ],
+    },
+    {
+      // Same "two in a row" idea as lekcja 11, now drawing from the FULL
+      // interval range (0-12) instead of just seconds/thirds. optionCount
+      // pinned to 5 (not "all 13", the field's own default) — with two
+      // positions on screen at once, 13 options each would be a wall of
+      // buttons; a random 5-option pool per position (correct answer
+      // always included, see buildIntervalOptions) stays readable.
+      id: "pi-poziom-12-dwa-interwaly-pelny-zakres",
+      order: 12,
+      difficulty: 3,
+      introSlides: [
+        {
+          body: "Ten sam pomysł co w poprzedniej lekcji, ale teraz mogą pojawić się WSZYSTKIE poznane interwały — nie tylko sekundy i tercje, ale też kwarty, kwinty, seksty, septymy i oktawa.",
+        },
+      ],
+      exercises: [
+        { id: "pi-l12-e1", type: "interval-sequence-choice", difficulty: 3, spec: { type: "interval-sequence-choice", sequenceLength: 2, allowedSemitones: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], noteRange: ["C4", "C6"], optionCount: 5 } },
+        { id: "pi-l12-e2", type: "interval-sequence-choice", difficulty: 3, spec: { type: "interval-sequence-choice", sequenceLength: 2, allowedSemitones: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], noteRange: ["C4", "C6"], optionCount: 5 } },
+        { id: "pi-l12-e3", type: "interval-sequence-choice", difficulty: 3, spec: { type: "interval-sequence-choice", sequenceLength: 2, allowedSemitones: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], noteRange: ["C4", "C6"], optionCount: 5 } },
+        { id: "pi-l12-e4", type: "interval-sequence-choice", difficulty: 3, spec: { type: "interval-sequence-choice", sequenceLength: 2, allowedSemitones: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], noteRange: ["C4", "C6"], optionCount: 5 } },
+        { id: "pi-l12-e5", type: "interval-sequence-choice", difficulty: 3, spec: { type: "interval-sequence-choice", sequenceLength: 2, allowedSemitones: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], noteRange: ["C4", "C6"], optionCount: 5 } },
+        { id: "pi-l12-e6", type: "interval-sequence-choice", difficulty: 3, spec: { type: "interval-sequence-choice", sequenceLength: 2, allowedSemitones: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], noteRange: ["C4", "C6"], optionCount: 5 } },
+      ],
+    },
+    {
+      // Three in a row instead of two — back to the narrow seconds/
+      // thirds pool (like lekcja 11), since adding a third position is
+      // already a meaningfully bigger memory load on its own.
+      id: "pi-poziom-13-trzy-interwaly",
+      order: 13,
+      difficulty: 3,
+      introSlides: [
+        {
+          body: "Trzy interwały pod rząd zamiast dwóch — jeszcze więcej do zapamiętania naraz, zanim zdążysz odpowiedzieć na pierwsze pytanie.",
+        },
+      ],
+      exercises: [
+        { id: "pi-l13-e1", type: "interval-sequence-choice", difficulty: 3, spec: { type: "interval-sequence-choice", sequenceLength: 3, allowedSemitones: [1, 2, 3, 4], noteRange: ["C4", "C6"] } },
+        { id: "pi-l13-e2", type: "interval-sequence-choice", difficulty: 3, spec: { type: "interval-sequence-choice", sequenceLength: 3, allowedSemitones: [1, 2, 3, 4], noteRange: ["C4", "C6"] } },
+        { id: "pi-l13-e3", type: "interval-sequence-choice", difficulty: 3, spec: { type: "interval-sequence-choice", sequenceLength: 3, allowedSemitones: [1, 2, 3, 4], noteRange: ["C4", "C6"] } },
+        { id: "pi-l13-e4", type: "interval-sequence-choice", difficulty: 3, spec: { type: "interval-sequence-choice", sequenceLength: 3, allowedSemitones: [1, 2, 3, 4], noteRange: ["C4", "C6"] } },
+        { id: "pi-l13-e5", type: "interval-sequence-choice", difficulty: 3, spec: { type: "interval-sequence-choice", sequenceLength: 3, allowedSemitones: [1, 2, 3, 4], noteRange: ["C4", "C6"] } },
+        { id: "pi-l13-e6", type: "interval-sequence-choice", difficulty: 3, spec: { type: "interval-sequence-choice", sequenceLength: 3, allowedSemitones: [1, 2, 3, 4], noteRange: ["C4", "C6"] } },
+      ],
+    },
+    {
+      // The capstone of this whole "sequence" idea — three in a row,
+      // full interval range. Same optionCount=5 reasoning as lekcja 12
+      // (three positions at once would be an even bigger wall of buttons
+      // at the field's own "all 13" default).
+      id: "pi-poziom-14-trzy-interwaly-pelny-zakres",
+      order: 14,
+      difficulty: 3,
+      introSlides: [
+        {
+          body: "Trzy interwały, pełen zakres — najtrudniejsza wersja tego ćwiczenia. Wszystko, czego się nauczyłeś w tej krainie, naraz.",
+        },
+      ],
+      exercises: [
+        { id: "pi-l14-e1", type: "interval-sequence-choice", difficulty: 3, spec: { type: "interval-sequence-choice", sequenceLength: 3, allowedSemitones: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], noteRange: ["C4", "C6"], optionCount: 5 } },
+        { id: "pi-l14-e2", type: "interval-sequence-choice", difficulty: 3, spec: { type: "interval-sequence-choice", sequenceLength: 3, allowedSemitones: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], noteRange: ["C4", "C6"], optionCount: 5 } },
+        { id: "pi-l14-e3", type: "interval-sequence-choice", difficulty: 3, spec: { type: "interval-sequence-choice", sequenceLength: 3, allowedSemitones: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], noteRange: ["C4", "C6"], optionCount: 5 } },
+        { id: "pi-l14-e4", type: "interval-sequence-choice", difficulty: 3, spec: { type: "interval-sequence-choice", sequenceLength: 3, allowedSemitones: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], noteRange: ["C4", "C6"], optionCount: 5 } },
+        { id: "pi-l14-e5", type: "interval-sequence-choice", difficulty: 3, spec: { type: "interval-sequence-choice", sequenceLength: 3, allowedSemitones: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], noteRange: ["C4", "C6"], optionCount: 5 } },
+        { id: "pi-l14-e6", type: "interval-sequence-choice", difficulty: 3, spec: { type: "interval-sequence-choice", sequenceLength: 3, allowedSemitones: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], noteRange: ["C4", "C6"], optionCount: 5 } },
+      ],
+    },
   ],
 };

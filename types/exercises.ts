@@ -175,6 +175,19 @@ export type ExerciseSpec =
       allowedSemitones?: number[];
       optionCount?: number;
     }
+  | {
+      /** Plays `sequenceLength` intervals back to back (a fresh random
+       * pair each, independently drawn — not a "same pair, different
+       * order" trick) and asks for EVERY one's name at once, one picker
+       * per position ("1.", "2.", (3.)) — harder than interval-name-
+       * choice's own single pair because the earlier interval(s) have to
+       * stay held in memory while listening to the next. */
+      type: "interval-sequence-choice";
+      sequenceLength: 2 | 3;
+      allowedSemitones: number[];
+      noteRange: [string, string];
+      optionCount?: number;
+    }
   // Zatoka Trójdźwięków (triads world) — see data/lessons/zatoka-trojdzwiekow.ts's own doc.
   | { type: "triad-notes-choice"; fifthsRange: [number, number] }
   | {
@@ -561,6 +574,18 @@ export type GeneratedExercise =
       allowedSemitones: number[];
       optionCount: number;
     }
+  | {
+      id: string;
+      type: "interval-sequence-choice";
+      notePairs: [string, string][];
+      /** One option pool per position — same buildIntervalOptions shape
+       * as interval-name-choice's own, generated independently per
+       * position so the pools/distractors don't have to match. */
+      optionsPerPosition: MultipleChoiceOption[][];
+      /** Parallel to notePairs/optionsPerPosition — correctOptionIds[i]
+       * is notePairs[i]'s own answer. */
+      correctOptionIds: string[];
+    }
   | { id: string; type: "triad-notes-choice"; fifths: number; role: TriadRole; options: MultipleChoiceOption[]; correctOptionId: string }
   | {
       id: string;
@@ -753,6 +778,7 @@ export type AnswerInput =
   | { type: "rhythm-notation-tap"; tapTimestampsMs: number[] }
   | { type: "interval-name-choice"; selectedOptionId: string }
   | { type: "interval-timed-test"; correctCount: number; totalCount: number }
+  | { type: "interval-sequence-choice"; selectedOptionIds: (string | null)[] }
   | { type: "triad-notes-choice"; selectedOptionId: string }
   | { type: "triad-fact-choice"; selectedOptionId: string }
   | { type: "triad-quality-choice"; selectedOptionId: string }
