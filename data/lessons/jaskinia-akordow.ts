@@ -443,7 +443,7 @@ export const JASKINIA_AKORDOW_CONTENT: WorldContent = {
       difficulty: 4,
       introSlides: [
         {
-          body: "Tym razem zamiast rozpoznawać gotowy przewrót, sam go odtworzysz z pamięci — dostaniesz nazwę przewrotu i tonację, a Ty wskażesz poprawny zapis nut od najniższego dźwięku.",
+          body: "Tym razem zamiast rozpoznawać gotowy przewrót, sam go odtworzysz z pamięci — dostaniesz nazwę przewrotu i tonację, a Ty wskażesz poprawny zapis nut od najniższego dźwięku. Na pięciolinii w każdym pytaniu zawsze zobaczysz tę samą postać zasadniczą trójdźwięku (dla przypomnienia, jakie dźwięki w ogóle wchodzą w jego skład) — to punkt wyjścia, a nie odpowiedź.",
         },
       ],
       exercises: [
