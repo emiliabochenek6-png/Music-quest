@@ -72,6 +72,10 @@ const WORLD_BACKGROUNDS: Partial<Record<string, number | { portrait: number; lan
     portrait: require("@/assets/backgrounds/zatoka-trojdzwiekow-tlo-telefon.png"),
     landscape: require("@/assets/backgrounds/zatoka-trojdzwiekow-tlo-laptop.png"),
   },
+  inversion: {
+    portrait: require("@/assets/backgrounds/jaskinia-akordow-tlo-telefon.png"),
+    landscape: require("@/assets/backgrounds/jaskinia-akordow-tlo-laptop.png"),
+  },
 };
 
 /**
