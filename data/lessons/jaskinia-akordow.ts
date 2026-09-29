@@ -23,6 +23,21 @@ import type { WorldContent } from "@/types/exercises";
  * position, all 4 qualities) with this world's own triad-inversion-choice
  * (major/minor, all 3 inversions) — a combined recall of both worlds'
  * skills, per the world's own design brief.
+ *
+ * Lekcje 7-8 extend this further. Lekcja 7 widens noteRange to ["C3","G4"]
+ * — a full octave lower than every earlier lesson's ["C4","G4"] — the same
+ * "wide register" step Zatoka Trójdźwięków's own lekcja 9 and Pasmo
+ * Interwałów's lekcja 10 already take for their own topics. This is safe
+ * against the ceiling concern the doc above raises: inversions only ever
+ * push notes UP relative to the bass, so lowering the noteRange's floor
+ * only makes the worst case (root=G3, major, second inversion) LOWER
+ * (B4), never closer to the NOTE_SAMPLES ceiling — the octave-shift
+ * fallback in resolveSample (lib/audio/player.ts) covers any note without
+ * its own sample regardless. Lekcja 8 takes a structural, not ear-
+ * training, angle on the same inversion concept — same idea as Zatoka
+ * Trójdźwięków's own lekcja 8 (triad-fact-choice reasoning about WHICH
+ * note changes/moves), applied here to "which note lands in the bass for
+ * a given inversion" instead of "which note changes for a given quality".
  */
 export const JASKINIA_AKORDOW_CONTENT: WorldContent = {
   worldId: "jaskinia-akordow",
@@ -170,6 +185,132 @@ export const JASKINIA_AKORDOW_CONTENT: WorldContent = {
         { id: "ja-l6-e6", type: "triad-inversion-choice", difficulty: 5, spec: { type: "triad-inversion-choice", noteRange: ["C4", "G4"], hideNotation: true } },
         { id: "ja-l6-e7", type: "triad-quality-choice", difficulty: 5, spec: { type: "triad-quality-choice", noteRange: ["C4", "C5"], hideNotation: true } },
         { id: "ja-l6-e8", type: "triad-inversion-choice", difficulty: 5, spec: { type: "triad-inversion-choice", noteRange: ["C4", "G4"], hideNotation: true } },
+      ],
+    },
+    {
+      // Same recognition task as lekcja 5, one octave lower on the floor
+      // (["C3","G4"] instead of ["C4","G4"]) — see this file's own top
+      // doc for why this stays safely under the sample ceiling. Ear-only
+      // throughout, mixed qualities/inversions from the start (this isn't
+      // teaching a new concept, just generalizing the existing one to a
+      // register nothing earlier in this world has used).
+      id: "ja-poziom-7-nizszy-rejestr",
+      order: 7,
+      difficulty: 5,
+      introSlides: [
+        {
+          body: "Ten sam trening co wcześniej, ale w szerszym, niższym rejestrze — od C3. Ten sam przewrót brzmi inaczej nisko niż w dotychczasowym zakresie, ale to wciąż ten sam przewrót. Ucho musi go rozpoznać niezależnie od tego, gdzie w skali akurat gra.",
+        },
+      ],
+      exercises: [
+        { id: "ja-l7-e1", type: "triad-inversion-choice", difficulty: 5, spec: { type: "triad-inversion-choice", noteRange: ["C3", "G4"], hideNotation: true } },
+        { id: "ja-l7-e2", type: "triad-inversion-choice", difficulty: 5, spec: { type: "triad-inversion-choice", noteRange: ["C3", "G4"], hideNotation: true } },
+        { id: "ja-l7-e3", type: "triad-inversion-choice", difficulty: 5, spec: { type: "triad-inversion-choice", noteRange: ["C3", "G4"], hideNotation: true } },
+        { id: "ja-l7-e4", type: "triad-inversion-choice", difficulty: 5, spec: { type: "triad-inversion-choice", noteRange: ["C3", "G4"], hideNotation: true } },
+        { id: "ja-l7-e5", type: "triad-inversion-choice", difficulty: 5, spec: { type: "triad-inversion-choice", noteRange: ["C3", "G4"], hideNotation: true } },
+        { id: "ja-l7-e6", type: "triad-inversion-choice", difficulty: 5, spec: { type: "triad-inversion-choice", noteRange: ["C3", "G4"], hideNotation: true } },
+        { id: "ja-l7-e7", type: "triad-inversion-choice", difficulty: 5, spec: { type: "triad-inversion-choice", noteRange: ["C3", "G4"], hideNotation: true } },
+      ],
+    },
+    {
+      // A structural, not ear-training, angle on the same inversion
+      // concept — same idea as Zatoka Trójdźwięków's own lekcja 8
+      // (triad-fact-choice reasoning about a triad's structure), applied
+      // here to "which note lands in the bass for a given inversion"
+      // (and its reverse: "given this bass note, name the inversion").
+      id: "ja-poziom-8-ktory-dzwiek-w-basie",
+      order: 8,
+      difficulty: 4,
+      introSlides: [
+        {
+          body: "Każdy przewrót to inny dźwięk trójdźwięku w basie: w postaci zasadniczej — pryma, w sekstakordzie — tercja, w kwartsekstakordzie — kwinta. W tej lekcji zobaczysz trójdźwięk w postaci zasadniczej i będziesz szukać, który dźwięk musi wylądować w basie, żeby powstał dany przewrót — albo odwrotnie: mając dany bas, nazwiesz przewrót.",
+        },
+      ],
+      exercises: [
+        {
+          id: "ja-l8-e1",
+          type: "triad-fact-choice",
+          difficulty: 3,
+          spec: {
+            type: "triad-fact-choice",
+            prompt: "Masz trójdźwięk C-dur w postaci zasadniczej: C-E-G. Który dźwięk musi wylądować w basie, żeby powstał sekstakord?",
+            hint: "Sekstakord to I przewrót — w basie ląduje tercja.",
+            options: ["C", "E", "G"],
+            correctOptionIndex: 1,
+            explanation: "W sekstakordzie (I przewrót) w basie jest tercja trójdźwięku — tutaj E.",
+            notationNotes: ["C4", "E4", "G4"],
+          },
+        },
+        {
+          id: "ja-l8-e2",
+          type: "triad-fact-choice",
+          difficulty: 3,
+          spec: {
+            type: "triad-fact-choice",
+            prompt: "Masz trójdźwięk C-dur w postaci zasadniczej: C-E-G. Który dźwięk musi wylądować w basie, żeby powstał kwartsekstakord?",
+            hint: "Kwartsekstakord to II przewrót — w basie ląduje kwinta.",
+            options: ["C", "E", "G"],
+            correctOptionIndex: 2,
+            explanation: "W kwartsekstakordzie (II przewrót) w basie jest kwinta trójdźwięku — tutaj G.",
+            notationNotes: ["C4", "E4", "G4"],
+          },
+        },
+        {
+          id: "ja-l8-e3",
+          type: "triad-fact-choice",
+          difficulty: 4,
+          spec: {
+            type: "triad-fact-choice",
+            prompt: "Masz trójdźwięk d-moll w postaci zasadniczej: D-F-A. W basie słyszysz F. Jak nazywa się ten przewrót?",
+            hint: "F to środkowy dźwięk trójdźwięku — tercja.",
+            options: ["postać zasadnicza", "sekstakord", "kwartsekstakord"],
+            correctOptionIndex: 1,
+            explanation: "F to tercja trójdźwięku d-moll — tercja w basie to sekstakord (I przewrót).",
+            notationNotes: ["D4", "F4", "A4"],
+          },
+        },
+        {
+          id: "ja-l8-e4",
+          type: "triad-fact-choice",
+          difficulty: 4,
+          spec: {
+            type: "triad-fact-choice",
+            prompt: "Masz trójdźwięk d-moll w postaci zasadniczej: D-F-A. W basie słyszysz A. Jak nazywa się ten przewrót?",
+            hint: "A to górny dźwięk trójdźwięku — kwinta.",
+            options: ["postać zasadnicza", "sekstakord", "kwartsekstakord"],
+            correctOptionIndex: 2,
+            explanation: "A to kwinta trójdźwięku d-moll — kwinta w basie to kwartsekstakord (II przewrót).",
+            notationNotes: ["D4", "F4", "A4"],
+          },
+        },
+        {
+          id: "ja-l8-e5",
+          type: "triad-fact-choice",
+          difficulty: 5,
+          spec: {
+            type: "triad-fact-choice",
+            prompt: "Słyszysz sekstakord zbudowany z trójdźwięku G-dur (G-H-D — pryma G, tercja H, kwinta D). Jaki dźwięk jest teraz w basie?",
+            hint: "Sekstakord to I przewrót — w basie ląduje tercja.",
+            options: ["G", "H", "D"],
+            correctOptionIndex: 1,
+            explanation: "W sekstakordzie w basie jest tercja — dla G-dur to H.",
+            notationNotes: ["G4", "B4", "D5"],
+          },
+        },
+        {
+          id: "ja-l8-e6",
+          type: "triad-fact-choice",
+          difficulty: 5,
+          spec: {
+            type: "triad-fact-choice",
+            prompt: "Słyszysz kwartsekstakord zbudowany z trójdźwięku G-dur (G-H-D). Jaki dźwięk jest teraz w basie?",
+            hint: "Kwartsekstakord to II przewrót — w basie ląduje kwinta.",
+            options: ["G", "H", "D"],
+            correctOptionIndex: 2,
+            explanation: "W kwartsekstakordzie w basie jest kwinta — dla G-dur to D.",
+            notationNotes: ["G4", "B4", "D5"],
+          },
+        },
       ],
     },
   ],
