@@ -98,6 +98,13 @@ export function isAnswerCorrect(exercise: GeneratedExercise, answer: AnswerInput
         selectedOptionIds.every((selectedId, position) => selectedId === exercise.correctOptionIds[position])
       );
     }
+    case "triad-quality-sequence-choice": {
+      const { selectedOptionIds } = answer as { selectedOptionIds: (string | null)[] };
+      return (
+        selectedOptionIds.length === exercise.correctOptionIds.length &&
+        selectedOptionIds.every((selectedId, position) => selectedId === exercise.correctOptionIds[position])
+      );
+    }
     case "interval-timed-test": {
       const { correctCount, totalCount } = answer as { correctCount: number; totalCount: number };
       return isValidIntervalTimedTest(correctCount, totalCount);

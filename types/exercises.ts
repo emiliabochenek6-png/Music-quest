@@ -212,8 +212,35 @@ export type ExerciseSpec =
       explanation?: string;
       notationNotes?: [string, string, string];
     }
-  | { type: "triad-quality-choice"; noteRange: [string, string]; allowedQualities?: TriadQuality[]; hideNotation?: boolean }
+  | {
+      type: "triad-quality-choice";
+      noteRange: [string, string];
+      allowedQualities?: TriadQuality[];
+      hideNotation?: boolean;
+      /** Plays the triad's three notes one after another (a "trójdźwięk
+       * rozłożony"/broken chord, playArpeggiatedTriad) instead of all at
+       * once (playChord's own default). Same idea as interval-name-
+       * choice's own `harmonic` flag, but in the opposite direction — this
+       * world's default playback is already simultaneous, so this is the
+       * new, ADDED mode rather than harmonic's own addition to a
+       * melodic-by-default world. */
+      arpeggiated?: boolean;
+    }
   | { type: "triad-role-choice"; fifthsRange: [number, number]; hideNotation?: boolean }
+  | {
+      /** Plays `sequenceLength` triads back to back (a fresh random
+       * root+quality each, independently drawn) and asks for EVERY one's
+       * quality at once, one picker per position — the triad's own
+       * "interval-sequence-choice": each triad still sounds as a normal
+       * simultaneous chord (playChordSequence, same as triad-quality-
+       * choice's own playChord), only the POSITIONS in the sequence play
+       * one after another. Harder than triad-quality-choice's own single
+       * chord because earlier triad(s) have to stay held in memory. */
+      type: "triad-quality-sequence-choice";
+      sequenceLength: 2 | 3;
+      noteRange: [string, string];
+      allowedQualities?: TriadQuality[];
+    }
   // Jaskinia Akordów (triad inversions world) — see data/lessons/jaskinia-akordow.ts's own doc.
   | {
       type: "triad-inversion-choice";
@@ -617,8 +644,21 @@ export type GeneratedExercise =
       type: "triad-quality-choice";
       notes: [string, string, string];
       hideNotation: boolean;
+      arpeggiated: boolean;
       options: MultipleChoiceOption[];
       correctOptionId: string;
+    }
+  | {
+      id: string;
+      type: "triad-quality-sequence-choice";
+      triads: [string, string, string][];
+      /** One option pool per position — same "shuffle the quality pool"
+       * shape as triad-quality-choice's own, generated independently per
+       * position so the pools don't have to match. */
+      optionsPerPosition: MultipleChoiceOption[][];
+      /** Parallel to triads/optionsPerPosition — correctOptionIds[i] is
+       * triads[i]'s own answer. */
+      correctOptionIds: string[];
     }
   | {
       id: string;
@@ -797,6 +837,7 @@ export type AnswerInput =
   | { type: "triad-notes-choice"; selectedOptionId: string }
   | { type: "triad-fact-choice"; selectedOptionId: string }
   | { type: "triad-quality-choice"; selectedOptionId: string }
+  | { type: "triad-quality-sequence-choice"; selectedOptionIds: (string | null)[] }
   | { type: "triad-inversion-choice"; selectedOptionId: string }
   | { type: "dominant-seventh-inversion-choice"; selectedOptionId: string }
   | { type: "triad-role-choice"; selectedOptionId: string }

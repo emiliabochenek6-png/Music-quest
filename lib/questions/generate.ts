@@ -347,6 +347,8 @@ export function getExerciseSignature(exercise: GeneratedExercise): string | null
       return `interval-sequence-choice:${exercise.notePairs.map((pair) => pair.join(",")).join("|")}`;
     case "triad-quality-choice":
       return `triad-quality-choice:${exercise.notes.join(",")}`;
+    case "triad-quality-sequence-choice":
+      return `triad-quality-sequence-choice:${exercise.triads.map((triad) => triad.join(",")).join("|")}`;
     case "triad-inversion-choice":
       return `triad-inversion-choice:${exercise.notes.join(",")}-${exercise.inversion}`;
     case "dominant-seventh-inversion-choice":
@@ -659,6 +661,37 @@ export function generateExercise(definition: ExerciseDefinition, locale: Locale,
         };
       }, exclude);
     }
+    case "triad-quality-sequence-choice": {
+      const { sequenceLength, noteRange, allowedQualities } = definition.spec;
+      const qualities = allowedQualities ?? ALL_TRIAD_QUALITIES;
+      return generateWithoutRepeat(() => {
+        const triads: [string, string, string][] = [];
+        const optionsPerPosition: MultipleChoiceOption[][] = [];
+        const correctOptionIds: string[] = [];
+        for (let position = 0; position < sequenceLength; position++) {
+          const quality = qualities[Math.floor(Math.random() * qualities.length)];
+          const root = randomNoteInRange(noteRange);
+          let triad: Triad;
+          try {
+            triad = buildTriad(root, quality);
+          } catch {
+            triad = buildTriad(flatAlternateSpelling(root), quality);
+          }
+          triads.push([formatScientific(triad.root), formatScientific(triad.third), formatScientific(triad.fifth)]);
+          optionsPerPosition.push(
+            shuffled(qualities).map((candidateQuality) => ({ id: candidateQuality, label: getTriadQualityName(candidateQuality, locale) }))
+          );
+          correctOptionIds.push(quality);
+        }
+        return {
+          id: definition.id,
+          type: "triad-quality-sequence-choice",
+          triads,
+          optionsPerPosition,
+          correctOptionIds,
+        };
+      }, exclude);
+    }
     case "triad-notes-choice": {
       const { fifthsRange } = definition.spec;
       return generateWithoutRepeat(() => {
@@ -712,7 +745,7 @@ export function generateExercise(definition: ExerciseDefinition, locale: Locale,
       };
     }
     case "triad-quality-choice": {
-      const { noteRange, allowedQualities, hideNotation } = definition.spec;
+      const { noteRange, allowedQualities, hideNotation, arpeggiated } = definition.spec;
       const qualities = allowedQualities ?? ALL_TRIAD_QUALITIES;
       return generateWithoutRepeat(() => {
         const quality = qualities[Math.floor(Math.random() * qualities.length)];
@@ -741,6 +774,7 @@ export function generateExercise(definition: ExerciseDefinition, locale: Locale,
           type: "triad-quality-choice",
           notes,
           hideNotation: hideNotation ?? false,
+          arpeggiated: arpeggiated ?? false,
           options,
           correctOptionId: quality,
         };

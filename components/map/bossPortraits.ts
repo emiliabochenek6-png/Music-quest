@@ -3,6 +3,7 @@ import { ArytmikPortrait } from "@/components/map/ArytmikPortrait";
 import { FalszomirPortrait } from "@/components/map/FalszomirPortrait";
 import { OktawiuszPortrait } from "@/components/map/OktawiuszPortrait";
 import { OsmiotaktPortrait } from "@/components/map/OsmiotaktPortrait";
+import { TrojglosPortrait } from "@/components/map/TrojglosPortrait";
 
 /** One entry per world's own boss (LessonDefinition's own `bossName`) —
  * both LessonNode.tsx (the map node's portrait) and IntroSlideCards.tsx
@@ -15,6 +16,7 @@ export const BOSS_PORTRAITS: Record<string, ComponentType<{ size?: number }>> = 
   Arytmik: ArytmikPortrait,
   Ośmiotakt: OsmiotaktPortrait,
   Oktawiusz: OktawiuszPortrait,
+  Trójgłos: TrojglosPortrait,
 };
 
 /** Wioska Nut's own boss predates the `bossName` field — every lesson

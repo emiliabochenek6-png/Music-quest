@@ -2,7 +2,7 @@ import { Text, View } from "react-native";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { OptionButton } from "@/components/exercises/OptionButton";
 import { TriadStaffNotation } from "@/components/exercises/TriadStaffNotation";
-import { playChord } from "@/lib/audio/player";
+import { playArpeggiatedTriad, playChord } from "@/lib/audio/player";
 import { parseScientific } from "@/lib/music/notes";
 import { t } from "@/lib/i18n/translate";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
@@ -24,12 +24,21 @@ interface TriadQualityChoiceExerciseProps {
  * correctOptionId shape as interval-name-choice, no new scoring logic
  * needed. When exercise.hideNotation is set, the staff is swapped for a
  * plain "listen only" label — same ear-training progression as Pasmo
- * Interwałów's own hideNotation. Ported from the web app's
- * TriadQualityChoiceExercise.tsx.
+ * Interwałów's own hideNotation. When exercise.arpeggiated is set, the
+ * three notes play one after another (playArpeggiatedTriad, a "trójdźwięk
+ * rozłożony") instead of together (playChord) — same idea as Pasmo
+ * Interwałów's own `harmonic` flag on interval-name-choice, just this
+ * world's default is the simultaneous mode instead. Ported from the web
+ * app's TriadQualityChoiceExercise.tsx.
  */
 export function TriadQualityChoiceExercise({ exercise, selectedOptionId, onSelect, checked, locale }: TriadQualityChoiceExerciseProps) {
   function play() {
-    playChord(exercise.notes.map((note) => parseScientific(note)));
+    const notes = exercise.notes.map((note) => parseScientific(note));
+    if (exercise.arpeggiated) {
+      playArpeggiatedTriad(notes);
+    } else {
+      playChord(notes);
+    }
   }
 
   return (
@@ -44,6 +53,12 @@ export function TriadQualityChoiceExercise({ exercise, selectedOptionId, onSelec
         </Text>
       ) : (
         <TriadStaffNotation notes={exercise.notes} />
+      )}
+
+      {exercise.arpeggiated && (
+        <Text style={{ color: theme.colors.primary, fontSize: theme.fontSize.body * 0.75, fontWeight: "800", letterSpacing: 1, textTransform: "uppercase" }}>
+          {t("lesson.triadQualityChoiceArpeggiatedLabel", locale)}
+        </Text>
       )}
 
       <DarkButton label="🔊" onPress={play} variant="secondary" size={90} fontSize={44} />

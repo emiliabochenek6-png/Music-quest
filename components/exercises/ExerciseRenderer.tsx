@@ -37,6 +37,7 @@ import { TriadFactChoiceExercise } from "@/components/exercises/TriadFactChoiceE
 import { TriadInversionChoiceExercise } from "@/components/exercises/TriadInversionChoiceExercise";
 import { TriadNotesChoiceExercise } from "@/components/exercises/TriadNotesChoiceExercise";
 import { TriadQualityChoiceExercise } from "@/components/exercises/TriadQualityChoiceExercise";
+import { TriadQualitySequenceChoiceExercise } from "@/components/exercises/TriadQualitySequenceChoiceExercise";
 import { TriadRoleChoiceExercise } from "@/components/exercises/TriadRoleChoiceExercise";
 import { dropLastIndexFromGroups, toggleGroupBoundary } from "@/lib/rhythm/beamGrouping";
 import type { Locale } from "@/types/locale";
@@ -271,6 +272,16 @@ export function ExerciseRenderer({ exercise, answer, onAnswerChange, checked, is
           exercise={exercise}
           selectedOptionId={answer?.type === "triad-quality-choice" ? answer.selectedOptionId : null}
           onSelect={(selectedOptionId) => onAnswerChange({ type: "triad-quality-choice", selectedOptionId })}
+          checked={checked}
+          locale={locale}
+        />
+      );
+    case "triad-quality-sequence-choice":
+      return (
+        <TriadQualitySequenceChoiceExercise
+          exercise={exercise}
+          answer={answer?.type === "triad-quality-sequence-choice" ? answer : null}
+          onAnswerChange={onAnswerChange}
           checked={checked}
           locale={locale}
         />
@@ -568,6 +579,7 @@ export function hasAnswerToCheck(answer: AnswerInput | null): boolean {
     case "interval-build-staff-choice":
       return answer.selectedStep !== null;
     case "interval-sequence-choice":
+    case "triad-quality-sequence-choice":
       return answer.selectedOptionIds.length > 0 && answer.selectedOptionIds.every((id) => id !== null);
     case "triad-build-staff-choice":
       return answer.selectedThirdStep !== null && answer.selectedFifthStep !== null;

@@ -900,6 +900,36 @@ export function playChord(notes: readonly Note[], options: ToneOptions = {}): vo
   if (!playWebAudioTrack(events, schedulerNow(), playPooled)) playPooled();
 }
 
+/** Gap between one note's own onset and the next's, for playArpeggiatedTriad
+ * below — short enough that consecutive notes still overlap and ring
+ * together by the third one (a real "trójdźwięk rozłożony"/broken chord
+ * doesn't wait for one note to die out before the next starts, unlike
+ * playMelody's own MELODY_NOTE_DURATION_SECONDS spacing), long enough that
+ * the three onsets are still clearly heard as separate events rather than
+ * one blurred attack. */
+const ARPEGGIO_STEP_SECONDS = 0.35;
+
+/** "Zatoka Trójdźwięków"'s broken-chord counterpart to playChord — the same
+ * three notes, but each one's onset is staggered (ARPEGGIO_STEP_SECONDS
+ * apart) instead of starting together, same "staggered onset" shape as
+ * playMelody. Still uses NOTE_SAMPLES (the long ~1.6s ring playChord uses,
+ * not MELODY_NOTE_SAMPLES's short fade) so by the third note all three are
+ * still ringing and genuinely sound like one spread-out chord, not three
+ * disconnected notes. */
+export function playArpeggiatedTriad(notes: readonly Note[], options: MelodyOptions = {}): void {
+  const stepSeconds = options.gapSeconds ?? ARPEGGIO_STEP_SECONDS;
+  const velocity = options.velocity ?? 0.35;
+  const resolved = notes.map((note) => resolveSample(NOTE_SAMPLES, note));
+  const anchorMs = schedulerNow();
+  const playScheduled = () => {
+    resolved.forEach(({ source, playbackRate }, index) => {
+      scheduleAt(index * stepSeconds * 1000, () => getPool(source).trigger(velocity, playbackRate), anchorMs);
+    });
+  };
+  const events = resolved.map(({ source, playbackRate }, index) => ({ source, delayMs: index * stepSeconds * 1000, velocity, playbackRate }));
+  if (!playWebAudioTrack(events, anchorMs, playScheduled)) playScheduled();
+}
+
 /** How long one playChord() call audibly rings, by construction of
  * NOTE_SAMPLES's own render (see samples.ts's own doc) — playChordSequence
  * uses this to space consecutive chords far enough apart that one never
