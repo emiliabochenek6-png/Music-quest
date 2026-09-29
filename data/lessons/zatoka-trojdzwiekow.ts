@@ -16,7 +16,16 @@ import type { WorldContent } from "@/types/exercises";
  * playChordSequence) — a first for this app, every earlier world's
  * "interval"/"melody" playback was sequential. Every lesson's introSlides
  * is ported (3 of 5 carry a triadExamples row, lessons 3 and 5 are
- * body-only).
+ * body-only). Lekcje 6-7 extend this same content, authored fresh (not
+ * ported from the web app): lekcja 6 narrows triad-quality-choice's own
+ * `allowedQualities` to the two genuinely confusable neighbor pairs
+ * (minor/diminished share their lower minor third, major/augmented share
+ * their lower major third) instead of picking from all four every time;
+ * lekcja 7 widens triad-notes-choice/triad-role-choice's `fifthsRange`
+ * from lekcje 3-4's [-3,3] to this app's own full [-5,5] (lib/music/
+ * keys.ts's MIN_FIFTHS/MAX_FIFTHS), the same "narrow → full range"
+ * difficulty ladder already used elsewhere in this app (e.g. Pasmo
+ * Interwałów's lekcje 11→12).
  */
 export const ZATOKA_TROJDZWIEKOW_CONTENT: WorldContent = {
   worldId: "zatoka-trojdzwiekow",
@@ -228,6 +237,64 @@ export const ZATOKA_TROJDZWIEKOW_CONTENT: WorldContent = {
           difficulty: 3,
           spec: { type: "triad-role-choice", fifthsRange: [-3, 3], hideNotation: true },
         },
+      ],
+    },
+    {
+      // Lekcja 2 already lets you pick from all four qualities at once,
+      // which a lot of kids solve by elimination ("brzmi wesoło, na pewno
+      // nie moll ani zmniejszony") rather than really telling two similar
+      // ones apart. This lesson narrows allowedQualities to the two pairs
+      // that share their LOWER third and differ only in the upper one —
+      // minor/diminished (both 3>+... ) and major/augmented (both 3+...)
+      // — so guessing by elimination stops working and the ear has to do
+      // the actual work.
+      id: "zt-poziom-6-blizniacze-akordy",
+      order: 6,
+      difficulty: 3,
+      introSlides: [
+        {
+          body: "Niektóre rodzaje trójdźwięków są do siebie bardzo podobne — mają tę samą dolną tercję, różni je tylko górna. Molowy i zmniejszony zaczynają się tak samo (tercja mała u dołu), a durowy i zwiększony też (tercja wielka u dołu). W tej lekcji usłyszysz tylko takie bliźniacze pary — musisz naprawdę wsłuchać się w górną tercję, żeby je rozróżnić.",
+          triadExamples: [
+            { notes: ["C4", "Eb4", "G4"], label: "molowy (3>+3) — górna tercja wielka" },
+            { notes: ["C4", "Eb4", "Gb4"], label: "zmniejszony (3>+3>) — górna tercja mała" },
+            { notes: ["C4", "E4", "G4"], label: "durowy (3+3>) — górna tercja mała" },
+            { notes: ["C4", "E4", "G#4"], label: "zwiększony (3+3) — górna tercja wielka" },
+          ],
+        },
+      ],
+      exercises: [
+        { id: "zt-l6-e1", type: "triad-quality-choice", difficulty: 2, spec: { type: "triad-quality-choice", noteRange: ["C4", "C5"], allowedQualities: ["minor", "diminished"] } },
+        { id: "zt-l6-e2", type: "triad-quality-choice", difficulty: 2, spec: { type: "triad-quality-choice", noteRange: ["C4", "C5"], allowedQualities: ["minor", "diminished"] } },
+        { id: "zt-l6-e3", type: "triad-quality-choice", difficulty: 3, spec: { type: "triad-quality-choice", noteRange: ["C4", "C5"], allowedQualities: ["minor", "diminished"], hideNotation: true } },
+        { id: "zt-l6-e4", type: "triad-quality-choice", difficulty: 2, spec: { type: "triad-quality-choice", noteRange: ["C4", "C5"], allowedQualities: ["major", "augmented"] } },
+        { id: "zt-l6-e5", type: "triad-quality-choice", difficulty: 2, spec: { type: "triad-quality-choice", noteRange: ["C4", "C5"], allowedQualities: ["major", "augmented"] } },
+        { id: "zt-l6-e6", type: "triad-quality-choice", difficulty: 3, spec: { type: "triad-quality-choice", noteRange: ["C4", "C5"], allowedQualities: ["major", "augmented"], hideNotation: true } },
+        { id: "zt-l6-e7", type: "triad-quality-choice", difficulty: 3, spec: { type: "triad-quality-choice", noteRange: ["C4", "C5"], allowedQualities: ["minor", "diminished", "major", "augmented"], hideNotation: true } },
+      ],
+    },
+    {
+      // Lekcje 3-4's own T/S/D ladder, widened from fifthsRange [-3,3]
+      // (up to 3 sharps/flats) to this app's full [-5,5] (MIN_FIFTHS/
+      // MAX_FIFTHS in lib/music/keys.ts) — same triad-notes-choice/
+      // triad-role-choice types, just drawing from a bigger pool of
+      // (rarer, harder) keys instead of a new kind of question.
+      id: "zt-poziom-7-trudniejsze-tonacje",
+      order: 7,
+      difficulty: 3,
+      introSlides: [
+        {
+          body: "Do tej pory tonika, subdominanta i dominanta pojawiały się w tonacjach do trzech znaków przy kluczu. Teraz dojdą też te rzadziej spotykane, aż do pięciu znaków — jak Des-dur czy H-dur. Zasada budowania T, S i D jest dokładnie taka sama, zmienia się tylko sama tonacja.",
+        },
+      ],
+      exercises: [
+        { id: "zt-l7-e1", type: "triad-notes-choice", difficulty: 3, spec: { type: "triad-notes-choice", fifthsRange: [-5, 5] } },
+        { id: "zt-l7-e2", type: "triad-notes-choice", difficulty: 3, spec: { type: "triad-notes-choice", fifthsRange: [-5, 5] } },
+        { id: "zt-l7-e3", type: "triad-notes-choice", difficulty: 3, spec: { type: "triad-notes-choice", fifthsRange: [-5, 5] } },
+        { id: "zt-l7-e4", type: "triad-notes-choice", difficulty: 3, spec: { type: "triad-notes-choice", fifthsRange: [-5, 5] } },
+        { id: "zt-l7-e5", type: "triad-role-choice", difficulty: 3, spec: { type: "triad-role-choice", fifthsRange: [-5, 5] } },
+        { id: "zt-l7-e6", type: "triad-role-choice", difficulty: 3, spec: { type: "triad-role-choice", fifthsRange: [-5, 5] } },
+        { id: "zt-l7-e7", type: "triad-role-choice", difficulty: 3, spec: { type: "triad-role-choice", fifthsRange: [-5, 5], hideNotation: true } },
+        { id: "zt-l7-e8", type: "triad-role-choice", difficulty: 3, spec: { type: "triad-role-choice", fifthsRange: [-5, 5], hideNotation: true } },
       ],
     },
   ],
