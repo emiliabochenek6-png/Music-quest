@@ -249,6 +249,20 @@ export type ExerciseSpec =
       allowedInversions?: TriadInversion[];
       hideNotation?: boolean;
     }
+  | {
+      /** triad-inversion-choice's own "interval-sequence-choice" /
+       * triad-quality-sequence-choice sibling — `sequenceLength` triads
+       * play back to back (a fresh random root+quality+INVERSION each),
+       * and the player names EVERY one's inversion, one picker per
+       * position. Same playChordSequence shape as triad-quality-
+       * sequence-choice (each triad still a normal simultaneous chord,
+       * only the positions are staggered). */
+      type: "triad-inversion-sequence-choice";
+      sequenceLength: 2 | 3;
+      noteRange: [string, string];
+      allowedQualities?: TriadQuality[];
+      allowedInversions?: TriadInversion[];
+    }
   // Cytadela Dominant (dominant seventh chord world) — see data/lessons/cytadela-dominant.ts's own doc.
   | {
       type: "dominant-seventh-inversion-choice";
@@ -673,6 +687,18 @@ export type GeneratedExercise =
     }
   | {
       id: string;
+      type: "triad-inversion-sequence-choice";
+      triads: [string, string, string][];
+      /** One option pool per position — same "shuffle the inversion pool"
+       * shape as triad-inversion-choice's own, generated independently
+       * per position so the pools don't have to match. */
+      optionsPerPosition: MultipleChoiceOption[][];
+      /** Parallel to triads/optionsPerPosition — correctOptionIds[i] is
+       * triads[i]'s own answer. */
+      correctOptionIds: string[];
+    }
+  | {
+      id: string;
       type: "dominant-seventh-inversion-choice";
       notes: [string, string, string, string];
       inversion: SeventhChordInversion;
@@ -839,6 +865,7 @@ export type AnswerInput =
   | { type: "triad-quality-choice"; selectedOptionId: string }
   | { type: "triad-quality-sequence-choice"; selectedOptionIds: (string | null)[] }
   | { type: "triad-inversion-choice"; selectedOptionId: string }
+  | { type: "triad-inversion-sequence-choice"; selectedOptionIds: (string | null)[] }
   | { type: "dominant-seventh-inversion-choice"; selectedOptionId: string }
   | { type: "triad-role-choice"; selectedOptionId: string }
   | { type: "circle-step-choice"; selectedFifths: number }

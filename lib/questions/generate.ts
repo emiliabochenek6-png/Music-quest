@@ -351,6 +351,8 @@ export function getExerciseSignature(exercise: GeneratedExercise): string | null
       return `triad-quality-sequence-choice:${exercise.triads.map((triad) => triad.join(",")).join("|")}`;
     case "triad-inversion-choice":
       return `triad-inversion-choice:${exercise.notes.join(",")}-${exercise.inversion}`;
+    case "triad-inversion-sequence-choice":
+      return `triad-inversion-sequence-choice:${exercise.triads.map((triad) => triad.join(",")).join("|")}`;
     case "dominant-seventh-inversion-choice":
       return `dominant-seventh-inversion-choice:${exercise.notes.join(",")}-${exercise.inversion}`;
     case "solfege-note-singing":
@@ -777,6 +779,40 @@ export function generateExercise(definition: ExerciseDefinition, locale: Locale,
           arpeggiated: arpeggiated ?? false,
           options,
           correctOptionId: quality,
+        };
+      }, exclude);
+    }
+    case "triad-inversion-sequence-choice": {
+      const { sequenceLength, noteRange, allowedQualities, allowedInversions } = definition.spec;
+      const qualities = allowedQualities ?? (["major", "minor"] as const);
+      const inversions = allowedInversions ?? (["root", "first", "second"] as const);
+      return generateWithoutRepeat(() => {
+        const triads: [string, string, string][] = [];
+        const optionsPerPosition: MultipleChoiceOption[][] = [];
+        const correctOptionIds: string[] = [];
+        for (let position = 0; position < sequenceLength; position++) {
+          const quality = qualities[Math.floor(Math.random() * qualities.length)];
+          const inversion = inversions[Math.floor(Math.random() * inversions.length)];
+          const root = randomNoteInRange(noteRange);
+          let triad: Triad;
+          try {
+            triad = buildTriad(root, quality);
+          } catch {
+            triad = buildTriad(flatAlternateSpelling(root), quality);
+          }
+          const invertedNotes = getTriadInversionNotes(triad, inversion);
+          triads.push([formatScientific(invertedNotes[0]), formatScientific(invertedNotes[1]), formatScientific(invertedNotes[2])]);
+          optionsPerPosition.push(
+            shuffled(inversions).map((candidateInversion) => ({ id: candidateInversion, label: getTriadInversionName(candidateInversion, locale) }))
+          );
+          correctOptionIds.push(inversion);
+        }
+        return {
+          id: definition.id,
+          type: "triad-inversion-sequence-choice",
+          triads,
+          optionsPerPosition,
+          correctOptionIds,
         };
       }, exclude);
     }

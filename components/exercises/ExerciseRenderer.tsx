@@ -35,6 +35,7 @@ import { StaffPlacementExercise } from "@/components/exercises/StaffPlacementExe
 import { TriadBuildStaffChoiceExercise } from "@/components/exercises/TriadBuildStaffChoiceExercise";
 import { TriadFactChoiceExercise } from "@/components/exercises/TriadFactChoiceExercise";
 import { TriadInversionChoiceExercise } from "@/components/exercises/TriadInversionChoiceExercise";
+import { TriadInversionSequenceChoiceExercise } from "@/components/exercises/TriadInversionSequenceChoiceExercise";
 import { TriadNotesChoiceExercise } from "@/components/exercises/TriadNotesChoiceExercise";
 import { TriadQualityChoiceExercise } from "@/components/exercises/TriadQualityChoiceExercise";
 import { TriadQualitySequenceChoiceExercise } from "@/components/exercises/TriadQualitySequenceChoiceExercise";
@@ -281,6 +282,16 @@ export function ExerciseRenderer({ exercise, answer, onAnswerChange, checked, is
         <TriadQualitySequenceChoiceExercise
           exercise={exercise}
           answer={answer?.type === "triad-quality-sequence-choice" ? answer : null}
+          onAnswerChange={onAnswerChange}
+          checked={checked}
+          locale={locale}
+        />
+      );
+    case "triad-inversion-sequence-choice":
+      return (
+        <TriadInversionSequenceChoiceExercise
+          exercise={exercise}
+          answer={answer?.type === "triad-inversion-sequence-choice" ? answer : null}
           onAnswerChange={onAnswerChange}
           checked={checked}
           locale={locale}
@@ -580,6 +591,7 @@ export function hasAnswerToCheck(answer: AnswerInput | null): boolean {
       return answer.selectedStep !== null;
     case "interval-sequence-choice":
     case "triad-quality-sequence-choice":
+    case "triad-inversion-sequence-choice":
       return answer.selectedOptionIds.length > 0 && answer.selectedOptionIds.every((id) => id !== null);
     case "triad-build-staff-choice":
       return answer.selectedThirdStep !== null && answer.selectedFifthStep !== null;

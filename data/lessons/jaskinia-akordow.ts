@@ -47,6 +47,15 @@ import type { WorldContent } from "@/types/exercises";
  * every earlier lesson shows/plays a finished inversion and asks to name
  * it, this one gives the NAME (+key) and asks to pick the correct
  * bottom-to-top spelling from three orderings of the same three notes.
+ * Lekcja 11 drills lekcje 9-10's own two skills on three new keys
+ * (F-dur, a-moll, D-dur). Lekcje 12-15 add the new
+ * `triad-inversion-sequence-choice` type (types/exercises.ts) — this
+ * world's own version of Pasmo Interwałów's interval-sequence-choice /
+ * Zatoka Trójdźwięków's triad-quality-sequence-choice: 2 or 3 fresh
+ * triads play back to back (still each one a normal simultaneous chord
+ * via playChordSequence), one IntervalOptionPicker "okienko" per
+ * position, narrow (root/sekstakord only) then full-postacie variants
+ * exactly mirroring those other worlds' own narrow→full sequence ladder.
  */
 export const JASKINIA_AKORDOW_CONTENT: WorldContent = {
   worldId: "jaskinia-akordow",
@@ -632,6 +641,93 @@ export const JASKINIA_AKORDOW_CONTENT: WorldContent = {
             notationNotes: ["D4", "F#4", "A4"],
           },
         },
+      ],
+    },
+    {
+      // This world's own version of Pasmo Interwałów's interval-sequence-
+      // choice / Zatoka Trójdźwięków's triad-quality-sequence-choice —
+      // now for INVERSIONS: two fresh triads play back to back, each
+      // still a normal simultaneous chord, and both inversions need
+      // naming. Narrow pool (root/sekstakord only, no kwartsekstakord)
+      // here on purpose: holding two full chords in memory at once is
+      // the new difficulty, not also facing all three postacie.
+      id: "ja-poziom-12-dwa-przewroty",
+      order: 12,
+      difficulty: 4,
+      introSlides: [
+        {
+          body: "Teraz usłyszysz dwa trójdźwięki pod rząd, jeden zaraz po drugim — każdy z nich brzmi normalnie, jako trzy dźwięki naraz. Twoje zadanie to nazwać postać OBU, każdy osobno, w swoim okienku.",
+        },
+      ],
+      exercises: [
+        { id: "ja-l12-e1", type: "triad-inversion-sequence-choice", difficulty: 4, spec: { type: "triad-inversion-sequence-choice", sequenceLength: 2, noteRange: ["C4", "G4"], allowedInversions: ["root", "first"] } },
+        { id: "ja-l12-e2", type: "triad-inversion-sequence-choice", difficulty: 4, spec: { type: "triad-inversion-sequence-choice", sequenceLength: 2, noteRange: ["C4", "G4"], allowedInversions: ["root", "first"] } },
+        { id: "ja-l12-e3", type: "triad-inversion-sequence-choice", difficulty: 4, spec: { type: "triad-inversion-sequence-choice", sequenceLength: 2, noteRange: ["C4", "G4"], allowedInversions: ["root", "first"] } },
+        { id: "ja-l12-e4", type: "triad-inversion-sequence-choice", difficulty: 4, spec: { type: "triad-inversion-sequence-choice", sequenceLength: 2, noteRange: ["C4", "G4"], allowedInversions: ["root", "first"] } },
+        { id: "ja-l12-e5", type: "triad-inversion-sequence-choice", difficulty: 4, spec: { type: "triad-inversion-sequence-choice", sequenceLength: 2, noteRange: ["C4", "G4"], allowedInversions: ["root", "first"] } },
+        { id: "ja-l12-e6", type: "triad-inversion-sequence-choice", difficulty: 4, spec: { type: "triad-inversion-sequence-choice", sequenceLength: 2, noteRange: ["C4", "G4"], allowedInversions: ["root", "first"] } },
+      ],
+    },
+    {
+      // Lekcja 12, all three postacie instead of just root/sekstakord —
+      // same "narrow → full" step Zatoka Trójdźwięków's own lekcja 11→12
+      // and Pasmo Interwałów's lekcja 11→12 already take.
+      id: "ja-poziom-13-dwa-przewroty-pelny-zakres",
+      order: 13,
+      difficulty: 4,
+      introSlides: [
+        {
+          body: "Ten sam pomysł co w poprzedniej lekcji, ale teraz mogą pojawić się WSZYSTKIE postacie — nie tylko postać zasadnicza i sekstakord, ale też kwartsekstakord.",
+        },
+      ],
+      exercises: [
+        { id: "ja-l13-e1", type: "triad-inversion-sequence-choice", difficulty: 4, spec: { type: "triad-inversion-sequence-choice", sequenceLength: 2, noteRange: ["C4", "G4"] } },
+        { id: "ja-l13-e2", type: "triad-inversion-sequence-choice", difficulty: 4, spec: { type: "triad-inversion-sequence-choice", sequenceLength: 2, noteRange: ["C4", "G4"] } },
+        { id: "ja-l13-e3", type: "triad-inversion-sequence-choice", difficulty: 4, spec: { type: "triad-inversion-sequence-choice", sequenceLength: 2, noteRange: ["C4", "G4"] } },
+        { id: "ja-l13-e4", type: "triad-inversion-sequence-choice", difficulty: 4, spec: { type: "triad-inversion-sequence-choice", sequenceLength: 2, noteRange: ["C4", "G4"] } },
+        { id: "ja-l13-e5", type: "triad-inversion-sequence-choice", difficulty: 4, spec: { type: "triad-inversion-sequence-choice", sequenceLength: 2, noteRange: ["C4", "G4"] } },
+        { id: "ja-l13-e6", type: "triad-inversion-sequence-choice", difficulty: 4, spec: { type: "triad-inversion-sequence-choice", sequenceLength: 2, noteRange: ["C4", "G4"] } },
+      ],
+    },
+    {
+      // Three in a row instead of two — back to the narrow root/sekstakord
+      // pool (like lekcja 12), since adding a third position is already a
+      // meaningfully bigger memory load on its own.
+      id: "ja-poziom-14-trzy-przewroty",
+      order: 14,
+      difficulty: 5,
+      introSlides: [
+        {
+          body: "Trzy trójdźwięki pod rząd zamiast dwóch — jeszcze więcej do zapamiętania, zanim zdążysz odpowiedzieć na pierwsze pytanie.",
+        },
+      ],
+      exercises: [
+        { id: "ja-l14-e1", type: "triad-inversion-sequence-choice", difficulty: 5, spec: { type: "triad-inversion-sequence-choice", sequenceLength: 3, noteRange: ["C4", "G4"], allowedInversions: ["root", "first"] } },
+        { id: "ja-l14-e2", type: "triad-inversion-sequence-choice", difficulty: 5, spec: { type: "triad-inversion-sequence-choice", sequenceLength: 3, noteRange: ["C4", "G4"], allowedInversions: ["root", "first"] } },
+        { id: "ja-l14-e3", type: "triad-inversion-sequence-choice", difficulty: 5, spec: { type: "triad-inversion-sequence-choice", sequenceLength: 3, noteRange: ["C4", "G4"], allowedInversions: ["root", "first"] } },
+        { id: "ja-l14-e4", type: "triad-inversion-sequence-choice", difficulty: 5, spec: { type: "triad-inversion-sequence-choice", sequenceLength: 3, noteRange: ["C4", "G4"], allowedInversions: ["root", "first"] } },
+        { id: "ja-l14-e5", type: "triad-inversion-sequence-choice", difficulty: 5, spec: { type: "triad-inversion-sequence-choice", sequenceLength: 3, noteRange: ["C4", "G4"], allowedInversions: ["root", "first"] } },
+        { id: "ja-l14-e6", type: "triad-inversion-sequence-choice", difficulty: 5, spec: { type: "triad-inversion-sequence-choice", sequenceLength: 3, noteRange: ["C4", "G4"], allowedInversions: ["root", "first"] } },
+      ],
+    },
+    {
+      // The capstone of this whole "sequence" idea — three in a row, all
+      // three postacie. Same step as lekcja 13 took after lekcja 12.
+      id: "ja-poziom-15-trzy-przewroty-pelny-zakres",
+      order: 15,
+      difficulty: 5,
+      introSlides: [
+        {
+          body: "Trzy trójdźwięki, wszystkie postacie — najtrudniejsza wersja tego ćwiczenia. Wszystko, czego się nauczyłeś o rozpoznawaniu przewrotów, naraz.",
+        },
+      ],
+      exercises: [
+        { id: "ja-l15-e1", type: "triad-inversion-sequence-choice", difficulty: 5, spec: { type: "triad-inversion-sequence-choice", sequenceLength: 3, noteRange: ["C4", "G4"] } },
+        { id: "ja-l15-e2", type: "triad-inversion-sequence-choice", difficulty: 5, spec: { type: "triad-inversion-sequence-choice", sequenceLength: 3, noteRange: ["C4", "G4"] } },
+        { id: "ja-l15-e3", type: "triad-inversion-sequence-choice", difficulty: 5, spec: { type: "triad-inversion-sequence-choice", sequenceLength: 3, noteRange: ["C4", "G4"] } },
+        { id: "ja-l15-e4", type: "triad-inversion-sequence-choice", difficulty: 5, spec: { type: "triad-inversion-sequence-choice", sequenceLength: 3, noteRange: ["C4", "G4"] } },
+        { id: "ja-l15-e5", type: "triad-inversion-sequence-choice", difficulty: 5, spec: { type: "triad-inversion-sequence-choice", sequenceLength: 3, noteRange: ["C4", "G4"] } },
+        { id: "ja-l15-e6", type: "triad-inversion-sequence-choice", difficulty: 5, spec: { type: "triad-inversion-sequence-choice", sequenceLength: 3, noteRange: ["C4", "G4"] } },
       ],
     },
   ],
