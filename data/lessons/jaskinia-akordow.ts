@@ -533,5 +533,106 @@ export const JASKINIA_AKORDOW_CONTENT: WorldContent = {
         },
       ],
     },
+    {
+      // Same two structural skills as lekcje 9-10 (interval-counting
+      // shortcut, reverse-direction spelling), practiced on three keys
+      // neither lesson has used yet (F-dur, a-moll, D-dur) — more
+      // practice on the same skill, not a new one, the same "more keys"
+      // step Zatoka Trójdźwięków's own T/S/D lessons already take.
+      id: "ja-poziom-11-wiecej-tonacji",
+      order: 11,
+      difficulty: 4,
+      introSlides: [
+        {
+          body: "Te same dwie sztuczki co w poprzednich lekcjach — odczytywanie przewrotu z odległości i odtwarzanie zapisu nut z pamięci — tym razem w trzech nowych tonacjach: F-dur, a-moll i D-dur.",
+        },
+      ],
+      exercises: [
+        {
+          id: "ja-l11-e1",
+          type: "triad-fact-choice",
+          difficulty: 4,
+          spec: {
+            type: "triad-fact-choice",
+            prompt: "Masz trójdźwięk zapisany jako A-C-F. Odległość A-C to tercja mała, C-F to kwarta. Jaka to postać?",
+            hint: "Tercja na dole — szukaj sekstakordu.",
+            options: ["postać zasadnicza", "sekstakord", "kwartsekstakord"],
+            correctOptionIndex: 1,
+            explanation: "Tercja na dole (A-C) — to sekstakord (I przewrót) trójdźwięku F-dur.",
+            notationNotes: ["A4", "C5", "F5"],
+          },
+        },
+        {
+          id: "ja-l11-e2",
+          type: "triad-fact-choice",
+          difficulty: 4,
+          spec: {
+            type: "triad-fact-choice",
+            prompt: "Masz trójdźwięk zapisany jako E-A-C. Odległość E-A to kwarta, A-C to tercja mała. Jaka to postać?",
+            hint: "Kwarta na dole — szukaj kwartsekstakordu.",
+            options: ["postać zasadnicza", "sekstakord", "kwartsekstakord"],
+            correctOptionIndex: 2,
+            explanation: "Kwarta na dole (E-A) — to kwartsekstakord (II przewrót) trójdźwięku a-moll.",
+            notationNotes: ["E4", "A4", "C5"],
+          },
+        },
+        {
+          id: "ja-l11-e3",
+          type: "triad-fact-choice",
+          difficulty: 4,
+          spec: {
+            type: "triad-fact-choice",
+            prompt: "Masz trójdźwięk zapisany jako D-Fis-A. Odległość D-Fis to tercja wielka, Fis-A to tercja mała. Jaka to postać?",
+            hint: "Dwie tercje — szukaj postaci zasadniczej.",
+            options: ["postać zasadnicza", "sekstakord", "kwartsekstakord"],
+            correctOptionIndex: 0,
+            explanation: "Dwie tercje jedna nad drugą (D-Fis, Fis-A) — to postać zasadnicza trójdźwięku D-dur.",
+            notationNotes: ["D4", "F#4", "A4"],
+          },
+        },
+        {
+          id: "ja-l11-e4",
+          type: "triad-fact-choice",
+          difficulty: 4,
+          spec: {
+            type: "triad-fact-choice",
+            prompt: "Jak zapisane są (od najniższego dźwięku) nuty sekstakordu F-dur?",
+            hint: "Sekstakord to I przewrót — zaczyna się od tercji trójdźwięku.",
+            options: ["F-A-C", "A-C-F", "C-F-A"],
+            correctOptionIndex: 1,
+            explanation: "Sekstakord F-dur zaczyna się od tercji (A), potem kwinta (C), na końcu pryma o oktawę wyżej (F).",
+            notationNotes: ["F4", "A4", "C5"],
+          },
+        },
+        {
+          id: "ja-l11-e5",
+          type: "triad-fact-choice",
+          difficulty: 4,
+          spec: {
+            type: "triad-fact-choice",
+            prompt: "Jak zapisane są (od najniższego dźwięku) nuty kwartsekstakordu a-moll?",
+            hint: "Kwartsekstakord to II przewrót — zaczyna się od kwinty trójdźwięku.",
+            options: ["A-C-E", "C-E-A", "E-A-C"],
+            correctOptionIndex: 2,
+            explanation: "Kwartsekstakord a-moll zaczyna się od kwinty (E), potem pryma (A), na końcu tercja o oktawę wyżej (C).",
+            notationNotes: ["A4", "C5", "E5"],
+          },
+        },
+        {
+          id: "ja-l11-e6",
+          type: "triad-fact-choice",
+          difficulty: 4,
+          spec: {
+            type: "triad-fact-choice",
+            prompt: "Jak zapisane są (od najniższego dźwięku) nuty sekstakordu D-dur?",
+            hint: "Sekstakord to I przewrót — zaczyna się od tercji trójdźwięku.",
+            options: ["D-Fis-A", "Fis-A-D", "A-D-Fis"],
+            correctOptionIndex: 1,
+            explanation: "Sekstakord D-dur zaczyna się od tercji (Fis), potem kwinta (A), na końcu pryma o oktawę wyżej (D).",
+            notationNotes: ["D4", "F#4", "A4"],
+          },
+        },
+      ],
+    },
   ],
 };
