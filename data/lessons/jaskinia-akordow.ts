@@ -340,6 +340,11 @@ export const JASKINIA_AKORDOW_CONTENT: WorldContent = {
       introSlides: [
         {
           body: "Jest jeszcze jeden sposób na rozpoznanie przewrotu — policzyć odległości między sąsiednimi dźwiękami, licząc od basu w górę. Tercja i tercja (3 lub 4 półtony, potem znów 3 lub 4) to postać zasadnicza. Tercja, a potem kwarta — sekstakord. Kwarta, a potem tercja — kwartsekstakord. Ta zasada działa zawsze, niezależnie od tonacji.",
+          triadExamples: [
+            { notes: ["C4", "E4", "G4"], label: "tercja + tercja → postać zasadnicza", degrees: [1, 3, 5] },
+            { notes: ["E4", "G4", "C5"], label: "tercja + kwarta → sekstakord", degrees: [3, 5, 1] },
+            { notes: ["G4", "C5", "E5"], label: "kwarta + tercja → kwartsekstakord", degrees: [5, 1, 3] },
+          ],
         },
       ],
       exercises: [
