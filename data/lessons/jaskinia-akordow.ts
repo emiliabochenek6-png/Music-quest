@@ -730,5 +730,71 @@ export const JASKINIA_AKORDOW_CONTENT: WorldContent = {
         { id: "ja-l15-e6", type: "triad-inversion-sequence-choice", difficulty: 5, spec: { type: "triad-inversion-sequence-choice", sequenceLength: 3, noteRange: ["C4", "G4"] } },
       ],
     },
+    {
+      // Boss lekcja — Hrabia Akordeon. Jak Arytmik/Ośmiotakt/Oktawiusz/
+      // Trójgłos: mix ćwiczeń REUSED z wcześniejszych lekcji tej krainy
+      // (część specs skopiowana dosłownie) zamiast świeżo pisanej treści —
+      // rozpoznawanie ze słuchu, rodzaj (Zatoka), struktura (który dźwięk
+      // w basie, odczyt z odległości, zapis nut) i sekwencje przewrotów.
+      id: "ja-poziom-16-boss-akordeon",
+      order: 16,
+      difficulty: 5,
+      isBoss: true,
+      bossName: "Akordeon",
+      introSlides: [
+        {
+          body: "Hrabia Akordeon strzeże wyjścia z Jaskini Akordów — jego skrzydła to miechy akordeonu, a na piersi nosi klawiaturę. Zna każdy przewrót trójdźwięku: ze słuchu, z zapisu i z odległości między dźwiękami. Żeby go pokonać, pokaż, że opanowałeś je wszystkie.",
+          bossPortrait: true,
+        },
+      ],
+      exercises: [
+        { id: "ja-l16-e1", type: "triad-inversion-choice", difficulty: 5, spec: { type: "triad-inversion-choice", noteRange: ["C4", "G4"], hideNotation: true } },
+        { id: "ja-l16-e2", type: "triad-quality-choice", difficulty: 5, spec: { type: "triad-quality-choice", noteRange: ["C4", "C5"] } },
+        {
+          id: "ja-l16-e3",
+          type: "triad-fact-choice",
+          difficulty: 4,
+          spec: {
+            type: "triad-fact-choice",
+            prompt: "Masz trójdźwięk C-dur w postaci zasadniczej: C-E-G. Który dźwięk musi wylądować w basie, żeby powstał sekstakord?",
+            hint: "Sekstakord to I przewrót — w basie ląduje tercja.",
+            options: ["C", "E", "G"],
+            correctOptionIndex: 1,
+            explanation: "W sekstakordzie (I przewrót) w basie jest tercja trójdźwięku — tutaj E.",
+            notationNotes: ["C4", "E4", "G4"],
+          },
+        },
+        { id: "ja-l16-e4", type: "triad-inversion-sequence-choice", difficulty: 5, spec: { type: "triad-inversion-sequence-choice", sequenceLength: 2, noteRange: ["C4", "G4"] } },
+        {
+          id: "ja-l16-e5",
+          type: "triad-fact-choice",
+          difficulty: 3,
+          spec: {
+            type: "triad-fact-choice",
+            prompt: "W trójdźwięku dolna odległość (od basu do środkowego dźwięku) to tercja wielka (4 półtony), a górna (od środkowego do najwyższego) to kwarta (5 półtonów). Jaka to postać?",
+            hint: "Tercja na dole (wielka czy mała — bez różnicy), kwarta na górze.",
+            options: ["postać zasadnicza", "sekstakord", "kwartsekstakord"],
+            correctOptionIndex: 1,
+            explanation: "Tercja na dole (tu wielka, 4 półtony) i kwarta na górze (5 półtonów) — tak wygląda sekstakord (I przewrót), niezależnie od tonacji i od tego, czy tercja jest mała czy wielka.",
+          },
+        },
+        { id: "ja-l16-e6", type: "triad-inversion-choice", difficulty: 5, spec: { type: "triad-inversion-choice", noteRange: ["C4", "G4"], hideNotation: true } },
+        { id: "ja-l16-e7", type: "triad-inversion-sequence-choice", difficulty: 5, spec: { type: "triad-inversion-sequence-choice", sequenceLength: 3, noteRange: ["C4", "G4"] } },
+        {
+          id: "ja-l16-e8",
+          type: "triad-fact-choice",
+          difficulty: 4,
+          spec: {
+            type: "triad-fact-choice",
+            prompt: "Jak zapisane są (od najniższego dźwięku) nuty sekstakordu C-dur?",
+            hint: "Sekstakord to I przewrót — zaczyna się od tercji trójdźwięku.",
+            options: ["C-E-G", "E-G-C", "G-C-E"],
+            correctOptionIndex: 1,
+            explanation: "Sekstakord C-dur zaczyna się od tercji (E), potem kwinta (G), na końcu pryma o oktawę wyżej (C).",
+            notationNotes: ["C4", "E4", "G4"],
+          },
+        },
+      ],
+    },
   ],
 };

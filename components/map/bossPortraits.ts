@@ -1,4 +1,5 @@
 import type { ComponentType } from "react";
+import { AkordeonPortrait } from "@/components/map/AkordeonPortrait";
 import { ArytmikPortrait } from "@/components/map/ArytmikPortrait";
 import { FalszomirPortrait } from "@/components/map/FalszomirPortrait";
 import { OktawiuszPortrait } from "@/components/map/OktawiuszPortrait";
@@ -17,6 +18,7 @@ export const BOSS_PORTRAITS: Record<string, ComponentType<{ size?: number }>> = 
   Ośmiotakt: OsmiotaktPortrait,
   Oktawiusz: OktawiuszPortrait,
   Trójgłos: TrojglosPortrait,
+  Akordeon: AkordeonPortrait,
 };
 
 /** Wioska Nut's own boss predates the `bossName` field — every lesson
