@@ -339,11 +339,11 @@ export const JASKINIA_AKORDOW_CONTENT: WorldContent = {
       difficulty: 3,
       introSlides: [
         {
-          body: "Jest jeszcze jeden sposób na rozpoznanie przewrotu — policzyć odległości między sąsiednimi dźwiękami, licząc od basu w górę. Tercja i tercja (3 lub 4 półtony, potem znów 3 lub 4) to postać zasadnicza. Tercja, a potem kwarta — sekstakord. Kwarta, a potem tercja — kwartsekstakord. Ta zasada działa zawsze, niezależnie od tonacji.",
+          body: "Jest jeszcze jeden sposób na rozpoznanie przewrotu — policzyć odległości między sąsiednimi dźwiękami, licząc od basu w górę. Tercja mała ma 3 półtony, tercja wielka — 4, a kwarta — 5. Dwie tercje z rzędu (mała i wielka, w dowolnej kolejności) to postać zasadnicza. Tercja, a potem kwarta — sekstakord. Kwarta, a potem tercja — kwartsekstakord. Nieważne, czy to tercja mała czy wielka — liczy się tylko, że to tercja, a nie kwarta. Ta zasada działa zawsze, niezależnie od tonacji.",
           triadExamples: [
-            { notes: ["C4", "E4", "G4"], label: "tercja + tercja → postać zasadnicza", degrees: [1, 3, 5] },
-            { notes: ["E4", "G4", "C5"], label: "tercja + kwarta → sekstakord", degrees: [3, 5, 1] },
-            { notes: ["G4", "C5", "E5"], label: "kwarta + tercja → kwartsekstakord", degrees: [5, 1, 3] },
+            { notes: ["C4", "E4", "G4"], label: "tercja wielka + tercja mała → postać zasadnicza", degrees: [1, 3, 5] },
+            { notes: ["E4", "G4", "C5"], label: "tercja mała + kwarta → sekstakord", degrees: [3, 5, 1] },
+            { notes: ["G4", "C5", "E5"], label: "kwarta + tercja wielka → kwartsekstakord", degrees: [5, 1, 3] },
           ],
         },
       ],
@@ -354,11 +354,11 @@ export const JASKINIA_AKORDOW_CONTENT: WorldContent = {
           difficulty: 3,
           spec: {
             type: "triad-fact-choice",
-            prompt: "W trójdźwięku dolna odległość (od basu do środkowego dźwięku) to 4 półtony, a górna (od środkowego do najwyższego) to 5 półtonów. Jaka to postać?",
-            hint: "4 półtony to tercja, 5 półtonów to kwarta — tercja na dole.",
+            prompt: "W trójdźwięku dolna odległość (od basu do środkowego dźwięku) to tercja wielka (4 półtony), a górna (od środkowego do najwyższego) to kwarta (5 półtonów). Jaka to postać?",
+            hint: "Tercja na dole (wielka czy mała — bez różnicy), kwarta na górze.",
             options: ["postać zasadnicza", "sekstakord", "kwartsekstakord"],
             correctOptionIndex: 1,
-            explanation: "Tercja na dole (4 półtony) i kwarta na górze (5 półtonów) — tak wygląda sekstakord (I przewrót), niezależnie od tonacji.",
+            explanation: "Tercja na dole (tu wielka, 4 półtony) i kwarta na górze (5 półtonów) — tak wygląda sekstakord (I przewrót), niezależnie od tonacji i od tego, czy tercja jest mała czy wielka.",
           },
         },
         {
@@ -367,11 +367,11 @@ export const JASKINIA_AKORDOW_CONTENT: WorldContent = {
           difficulty: 3,
           spec: {
             type: "triad-fact-choice",
-            prompt: "Dolna odległość to 5 półtonów, a górna to 3 półtony. Jaka to postać?",
-            hint: "5 półtonów to kwarta — kwarta na dole.",
+            prompt: "Dolna odległość to kwarta (5 półtonów), a górna to tercja mała (3 półtony). Jaka to postać?",
+            hint: "Kwarta na dole — nieważne, jaka tercja jest na górze.",
             options: ["postać zasadnicza", "sekstakord", "kwartsekstakord"],
             correctOptionIndex: 2,
-            explanation: "Kwarta na dole (5 półtonów) — tak wygląda kwartsekstakord (II przewrót), niezależnie od tonacji.",
+            explanation: "Kwarta na dole (5 półtonów) — tak wygląda kwartsekstakord (II przewrót), niezależnie od tonacji i od tego, czy górna tercja jest mała czy wielka.",
           },
         },
         {
@@ -380,11 +380,11 @@ export const JASKINIA_AKORDOW_CONTENT: WorldContent = {
           difficulty: 3,
           spec: {
             type: "triad-fact-choice",
-            prompt: "Dolna odległość to 3 półtony, a górna to 4 półtony. Jaka to postać?",
-            hint: "Obie odległości to tercje (3 i 4 półtony) — żadna nie jest kwartą.",
+            prompt: "Dolna odległość to tercja mała (3 półtony), a górna to tercja wielka (4 półtony). Jaka to postać?",
+            hint: "Obie odległości to tercje — żadna nie jest kwartą.",
             options: ["postać zasadnicza", "sekstakord", "kwartsekstakord"],
             correctOptionIndex: 0,
-            explanation: "Dwie tercje jedna nad drugą (3 i 4 półtony) — to zawsze postać zasadnicza.",
+            explanation: "Dwie tercje jedna nad drugą (tu: mała, potem wielka) — to zawsze postać zasadnicza, niezależnie od kolejności mała/wielka.",
           },
         },
         {
@@ -393,7 +393,7 @@ export const JASKINIA_AKORDOW_CONTENT: WorldContent = {
           difficulty: 4,
           spec: {
             type: "triad-fact-choice",
-            prompt: "Masz trójdźwięk zapisany jako D-G-H. Odległość D-G to kwarta, G-H to tercja. Jaka to postać?",
+            prompt: "Masz trójdźwięk zapisany jako D-G-H. Odległość D-G to kwarta, G-H to tercja wielka. Jaka to postać?",
             hint: "Kwarta na dole — szukaj kwartsekstakordu.",
             options: ["postać zasadnicza", "sekstakord", "kwartsekstakord"],
             correctOptionIndex: 2,
@@ -407,7 +407,7 @@ export const JASKINIA_AKORDOW_CONTENT: WorldContent = {
           difficulty: 4,
           spec: {
             type: "triad-fact-choice",
-            prompt: "Masz trójdźwięk zapisany jako F-A-D. Odległość F-A to tercja, A-D to kwarta. Jaka to postać?",
+            prompt: "Masz trójdźwięk zapisany jako F-A-D. Odległość F-A to tercja wielka, A-D to kwarta. Jaka to postać?",
             hint: "Tercja na dole — szukaj sekstakordu.",
             options: ["postać zasadnicza", "sekstakord", "kwartsekstakord"],
             correctOptionIndex: 1,
@@ -421,7 +421,7 @@ export const JASKINIA_AKORDOW_CONTENT: WorldContent = {
           difficulty: 4,
           spec: {
             type: "triad-fact-choice",
-            prompt: "Masz trójdźwięk zapisany jako E-G-H. Odległość E-G to tercja, G-H to tercja. Jaka to postać?",
+            prompt: "Masz trójdźwięk zapisany jako E-G-H. Odległość E-G to tercja mała, G-H to tercja wielka. Jaka to postać?",
             hint: "Dwie tercje — szukaj postaci zasadniczej.",
             options: ["postać zasadnicza", "sekstakord", "kwartsekstakord"],
             correctOptionIndex: 0,
