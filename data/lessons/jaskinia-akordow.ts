@@ -192,6 +192,10 @@ export const JASKINIA_AKORDOW_CONTENT: WorldContent = {
       introSlides: [
         {
           body: "Podsumowanie: wszystkie trójdźwięki poznane do tej pory. Czasem zapytamy o RODZAJ trójdźwięku (durowy, molowy, zmniejszony, zwiększony — wiedza z Zatoki Trójdźwięków, zawsze w postaci zasadniczej), a czasem o POSTAĆ, w jakiej stoi trójdźwięk durowy lub molowy (postać zasadnicza, sekstakord, kwartsekstakord — wiedza z Jaskini Akordów).",
+          triadExamples: [
+            { notes: ["C4", "E4", "G4"], label: "durowy, postać zasadnicza — pytanie o RODZAJ", degrees: [1, 3, 5] },
+            { notes: ["E4", "G4", "C5"], label: "durowy, sekstakord — pytanie o POSTAĆ", degrees: [3, 5, 1] },
+          ],
         },
       ],
       exercises: [
@@ -218,6 +222,10 @@ export const JASKINIA_AKORDOW_CONTENT: WorldContent = {
       introSlides: [
         {
           body: "Ten sam trening co wcześniej, ale w szerszym, niższym rejestrze — od C3. Ten sam przewrót brzmi inaczej nisko niż w dotychczasowym zakresie, ale to wciąż ten sam przewrót. Ucho musi go rozpoznać niezależnie od tego, gdzie w skali akurat gra.",
+          triadExamples: [
+            { notes: ["C4", "E4", "G4"], label: "postać zasadnicza w dotychczasowym rejestrze (C4)", degrees: [1, 3, 5] },
+            { notes: ["C3", "E3", "G3"], label: "ta sama postać zasadnicza, oktawę niżej (C3)", degrees: [1, 3, 5] },
+          ],
         },
       ],
       exercises: [
@@ -453,6 +461,11 @@ export const JASKINIA_AKORDOW_CONTENT: WorldContent = {
       introSlides: [
         {
           body: "Tym razem zamiast rozpoznawać gotowy przewrót, sam go odtworzysz z pamięci — dostaniesz nazwę przewrotu i tonację, a Ty wskażesz poprawny zapis nut od najniższego dźwięku. Na pięciolinii w każdym pytaniu zawsze zobaczysz tę samą postać zasadniczą trójdźwięku (dla przypomnienia, jakie dźwięki w ogóle wchodzą w jego skład) — to punkt wyjścia, a nie odpowiedź.",
+          triadExamples: [
+            { notes: ["C4", "E4", "G4"], label: "postać zasadnicza — C-E-G", degrees: [1, 3, 5] },
+            { notes: ["E4", "G4", "C5"], label: "sekstakord — E-G-C", degrees: [3, 5, 1] },
+            { notes: ["G4", "C5", "E5"], label: "kwartsekstakord — G-C-E", degrees: [5, 1, 3] },
+          ],
         },
       ],
       exercises: [
@@ -554,6 +567,11 @@ export const JASKINIA_AKORDOW_CONTENT: WorldContent = {
       introSlides: [
         {
           body: "Te same dwie sztuczki co w poprzednich lekcjach — odczytywanie przewrotu z odległości i odtwarzanie zapisu nut z pamięci — tym razem w trzech nowych tonacjach: F-dur, a-moll i D-dur.",
+          triadExamples: [
+            { notes: ["F4", "A4", "C5"], label: "F-dur — F-A-C", degrees: [1, 3, 5] },
+            { notes: ["A4", "C5", "E5"], label: "a-moll — A-C-E", degrees: [1, 3, 5] },
+            { notes: ["D4", "F#4", "A4"], label: "D-dur — D-Fis-A", degrees: [1, 3, 5] },
+          ],
         },
       ],
       exercises: [
@@ -657,6 +675,10 @@ export const JASKINIA_AKORDOW_CONTENT: WorldContent = {
       introSlides: [
         {
           body: "Teraz usłyszysz dwa trójdźwięki pod rząd, jeden zaraz po drugim — każdy z nich brzmi normalnie, jako trzy dźwięki naraz. Twoje zadanie to nazwać postać OBU, każdy osobno, w swoim okienku.",
+          triadExamples: [
+            { notes: ["C4", "E4", "G4"], label: "postać zasadnicza", degrees: [1, 3, 5] },
+            { notes: ["E4", "G4", "C5"], label: "sekstakord", degrees: [3, 5, 1] },
+          ],
         },
       ],
       exercises: [
@@ -678,6 +700,11 @@ export const JASKINIA_AKORDOW_CONTENT: WorldContent = {
       introSlides: [
         {
           body: "Ten sam pomysł co w poprzedniej lekcji, ale teraz mogą pojawić się WSZYSTKIE postacie — nie tylko postać zasadnicza i sekstakord, ale też kwartsekstakord.",
+          triadExamples: [
+            { notes: ["C4", "E4", "G4"], label: "postać zasadnicza", degrees: [1, 3, 5] },
+            { notes: ["E4", "G4", "C5"], label: "sekstakord", degrees: [3, 5, 1] },
+            { notes: ["G4", "C5", "E5"], label: "kwartsekstakord", degrees: [5, 1, 3] },
+          ],
         },
       ],
       exercises: [
@@ -699,6 +726,10 @@ export const JASKINIA_AKORDOW_CONTENT: WorldContent = {
       introSlides: [
         {
           body: "Trzy trójdźwięki pod rząd zamiast dwóch — jeszcze więcej do zapamiętania, zanim zdążysz odpowiedzieć na pierwsze pytanie.",
+          triadExamples: [
+            { notes: ["C4", "E4", "G4"], label: "postać zasadnicza", degrees: [1, 3, 5] },
+            { notes: ["E4", "G4", "C5"], label: "sekstakord", degrees: [3, 5, 1] },
+          ],
         },
       ],
       exercises: [
@@ -719,6 +750,11 @@ export const JASKINIA_AKORDOW_CONTENT: WorldContent = {
       introSlides: [
         {
           body: "Trzy trójdźwięki, wszystkie postacie — najtrudniejsza wersja tego ćwiczenia. Wszystko, czego się nauczyłeś o rozpoznawaniu przewrotów, naraz.",
+          triadExamples: [
+            { notes: ["C4", "E4", "G4"], label: "postać zasadnicza", degrees: [1, 3, 5] },
+            { notes: ["E4", "G4", "C5"], label: "sekstakord", degrees: [3, 5, 1] },
+            { notes: ["G4", "C5", "E5"], label: "kwartsekstakord", degrees: [5, 1, 3] },
+          ],
         },
       ],
       exercises: [
