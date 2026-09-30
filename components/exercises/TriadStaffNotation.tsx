@@ -24,6 +24,12 @@ interface TriadStaffNotationProps {
 const NOTE_RADIUS = 7;
 const LEDGER_WIDTH = 26;
 const NOTE_X_FRACTION = 0.55;
+/** How far a notehead shifts right when it sits a second (one staff step)
+ * above its neighbor — real notation convention for two adjacent pitches
+ * that would otherwise draw as overlapping circles at the same X. Wide
+ * enough that the two noteheads clear each other with a hairline gap,
+ * not just touch edge-to-edge. */
+const SECOND_OFFSET_X = NOTE_RADIUS * 2;
 const ACCIDENTAL_SYMBOL: Record<-1 | 1, string> = { [-1]: "♭", [1]: "♯" };
 /** The flat glyph reads smaller than the sharp at the same font size (its
  * bowl doesn't fill the em box the way the sharp's crossed lines do), so
@@ -49,10 +55,17 @@ const EDGE_MARGIN = NOTE_RADIUS + 4;
  * Dominant"'s dominant-seventh-inversion-choice. Ported from the web
  * app's TriadStaffNotation.tsx (same expanding-viewBox math as
  * IntervalStaffNotation for notes far off the 5-line staff). Read-only,
- * no interaction. Stacked thirds are always at least two staff steps
- * apart (a third skips a letter), so — unlike a chord containing a
- * second — no note ever needs a horizontal offset to stay legible; every
- * note sits at the same X. */
+ * no interaction. Stacked thirds (root position) are always at least two
+ * staff steps apart (a third skips a letter), so every note sits at the
+ * same X — but an INVERTED dominant seventh chord always has exactly one
+ * pair of adjacent notes only a second apart (one staff step — e.g. B-C
+ * in a C⁷'s own kwintsekstakord), and two noteheads a second apart drawn
+ * at the same X collide into one blob. `xOffsets` below shifts the upper
+ * note of any such pair to the right (real notation's own convention for
+ * a chord containing a second), so the two circles sit side by side
+ * instead of overlapping. Accidentals stay anchored to the shared base X
+ * regardless of a note's own offset — see its own inline comment for
+ * why that's still correct once a notehead has moved. */
 const DEGREE_LABEL_FONT_SIZE = 12;
 const DEGREE_LABEL_X_GAP = 6;
 
@@ -60,6 +73,33 @@ export function TriadStaffNotation({ notes, width = 130, degreeLabels }: TriadSt
   const parsedNotes = notes.map((note) => parseScientific(note));
   const positions = parsedNotes.map((note) => describeStaffPosition(note));
   const noteX = VIEW_WIDTH * NOTE_X_FRACTION;
+
+  // One staff step (a second) above the previous note -> shift right so
+  // the two noteheads clear each other, UNLESS the previous note was
+  // itself already shifted right (a run of consecutive seconds zigzags
+  // left/right rather than drifting ever further right).
+  let previousXOffset = 0;
+  const xOffsets = positions.map((position, index) => {
+    if (index === 0) {
+      previousXOffset = 0;
+      return 0;
+    }
+    const stepDiff = position.step - positions[index - 1].step;
+    const offset = stepDiff === 1 && previousXOffset === 0 ? SECOND_OFFSET_X : 0;
+    previousXOffset = offset;
+    return offset;
+  });
+
+  // A degree label sits to the right of its OWN notehead, but when the
+  // note directly above this one got shifted right (xOffsets, above) for
+  // being a second away, that neighbor's notehead now occupies exactly
+  // the space this note's own label would otherwise print into — so
+  // this note's label needs the same extra clearance its neighbor's
+  // notehead already took, not just clearance from its own notehead.
+  const labelXOffsets = positions.map((_, index) => {
+    const nextIsOffset = index < xOffsets.length - 1 && xOffsets[index + 1] > 0;
+    return xOffsets[index] + (nextIsOffset ? SECOND_OFFSET_X : 0);
+  });
 
   const noteCenterYs = positions.map((position) => stepToY(position.step));
   const viewMinY = Math.min(0, ...noteCenterYs.map((y) => y - EDGE_MARGIN));
@@ -87,8 +127,8 @@ export function TriadStaffNotation({ notes, width = 130, degreeLabels }: TriadSt
             {ledgerLineSteps(position.step).map((ledgerStep) => (
               <Line
                 key={ledgerStep}
-                x1={noteX - LEDGER_WIDTH / 2}
-                x2={noteX + LEDGER_WIDTH / 2}
+                x1={noteX + xOffsets[index] - LEDGER_WIDTH / 2}
+                x2={noteX + xOffsets[index] + LEDGER_WIDTH / 2}
                 y1={stepToY(ledgerStep)}
                 y2={stepToY(ledgerStep)}
                 stroke={theme.colors.ink}
@@ -97,6 +137,13 @@ export function TriadStaffNotation({ notes, width = 130, degreeLabels }: TriadSt
             ))}
             {parsedNotes[index].accidental !== 0 && (
               <SvgText
+                // Anchored to the shared BASE noteX, never to this note's
+                // own xOffsets[index] — a note shifted right (because it
+                // sits a second above its neighbor) still needs its
+                // accidental clearing BOTH noteheads, and the base column
+                // is exactly where the unshifted neighbor's own notehead
+                // already ends, so anchoring here keeps the glyph left of
+                // both circles instead of drifting onto the lower one.
                 // Stacked thirds put adjacent accidentals only a couple
                 // staff steps apart vertically — close enough for two
                 // flat/sharp glyphs to visually collide. Push this one
@@ -112,10 +159,10 @@ export function TriadStaffNotation({ notes, width = 130, degreeLabels }: TriadSt
                 {ACCIDENTAL_SYMBOL[parsedNotes[index].accidental as -1 | 1]}
               </SvgText>
             )}
-            <Ellipse cx={noteX} cy={stepToY(position.step)} rx={NOTE_RADIUS} ry={NOTE_RADIUS - 1} fill={theme.colors.ink} />
+            <Ellipse cx={noteX + xOffsets[index]} cy={stepToY(position.step)} rx={NOTE_RADIUS} ry={NOTE_RADIUS - 1} fill={theme.colors.ink} />
             {degreeLabels && (
               <SvgText
-                x={noteX + NOTE_RADIUS + DEGREE_LABEL_X_GAP}
+                x={noteX + labelXOffsets[index] + NOTE_RADIUS + DEGREE_LABEL_X_GAP}
                 y={stepToY(position.step) + DEGREE_LABEL_FONT_SIZE / 3}
                 fontSize={DEGREE_LABEL_FONT_SIZE}
                 fontWeight="700"
