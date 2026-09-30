@@ -19,6 +19,20 @@ import type { WorldContent } from "@/types/exercises";
  * the intro slides' own read-only reference visual). This world uses NO
  * audio at all — every exercise is visual/text only. Every lesson's
  * introSlides is ported (all 4 have exactly one, body + circleHighlight).
+ *
+ * Lekcje 5-12 extend this further, authored fresh. Lekcje 5-9 each give
+ * ONE of lekcja 3's five crammed-together types (circle-neighbor-key-
+ * choice, key-signature-staff-choice, relative-key-choice, key-
+ * signature-names-choice, accidental-count-key-choice) its own
+ * dedicated, focused lesson — this world is the only one that never
+ * introduced a skill in isolation before mixing it with four others at
+ * once. Lekcja 10 returns to circle-step-choice without a fixed
+ * `direction`, harder than lekcje 1-2's own one-direction intro. Lekcja
+ * 11 is a second, fresh "mix everything" capstone (new key-fact-choice
+ * questions, not lekcja 4's own). Lekcja 12 is this world's own boss
+ * (Molotaur — a minotaur guarding the labyrinth, one horn carved with a
+ * sharp, the other with a flat) — same reused-content pattern as every
+ * other world's boss.
  */
 export const LABIRYNT_TONACJI_CONTENT: WorldContent = {
   worldId: "labirynt-tonacji",
@@ -279,6 +293,214 @@ export const LABIRYNT_TONACJI_CONTENT: WorldContent = {
         { id: "lt-l4-e10", type: "key-signature-staff-choice", difficulty: 3, spec: { type: "key-signature-staff-choice", fifthsRange: [-5, 5] } },
         { id: "lt-l4-e11", type: "accidental-count-key-choice", difficulty: 3, spec: { type: "accidental-count-key-choice", fifthsRange: [-5, 5] } },
         { id: "lt-l4-e12", type: "accidental-count-key-choice", difficulty: 3, spec: { type: "accidental-count-key-choice", fifthsRange: [-5, 5] } },
+      ],
+    },
+    {
+      // Lekcja 3 introduces all 5 of its new types crammed into one
+      // 16-exercise lesson — unlike every other world in this app, which
+      // teaches one skill per lesson before mixing. Lekcje 5-9 each give
+      // ONE of those under-practiced types (circle-neighbor-key-choice
+      // here only had 5 exercises total across lekcje 3-4) its own
+      // dedicated, focused lesson — deeper practice, not a new skill.
+      id: "lt-poziom-5-sasiedzi-na-kole",
+      order: 5,
+      difficulty: 2,
+      introSlides: [
+        {
+          body: "Teraz poćwiczysz TYLKO jedną rzecz: nazywanie sąsiada na kole kwintowym, bez przełączania się między pięcioma różnymi rodzajami pytań na raz. Podana tonacja durowa — Ty nazywasz tę o kwintę wyżej albo niżej, w obie strony.",
+          circleHighlight: { fifths: 0 },
+        },
+      ],
+      exercises: [
+        { id: "lt-l5-e1", type: "circle-neighbor-key-choice", difficulty: 2, spec: { type: "circle-neighbor-key-choice", fifthsRange: [-5, 5] } },
+        { id: "lt-l5-e2", type: "circle-neighbor-key-choice", difficulty: 2, spec: { type: "circle-neighbor-key-choice", fifthsRange: [-5, 5] } },
+        { id: "lt-l5-e3", type: "circle-neighbor-key-choice", difficulty: 3, spec: { type: "circle-neighbor-key-choice", fifthsRange: [-5, 5] } },
+        { id: "lt-l5-e4", type: "circle-neighbor-key-choice", difficulty: 3, spec: { type: "circle-neighbor-key-choice", fifthsRange: [-5, 5] } },
+        { id: "lt-l5-e5", type: "circle-neighbor-key-choice", difficulty: 3, spec: { type: "circle-neighbor-key-choice", fifthsRange: [-5, 5] } },
+      ],
+    },
+    {
+      id: "lt-poziom-6-rozpoznaj-z-zapisu",
+      order: 6,
+      difficulty: 2,
+      introSlides: [
+        {
+          body: "Kolejna dedykowana lekcja: rozpoznawanie tonacji po samym zapisie znaków przykluczowych na pięciolinii, bez żadnych innych pytań w tle.",
+          circleHighlight: { fifths: 0 },
+        },
+      ],
+      exercises: [
+        { id: "lt-l6-e1", type: "key-signature-staff-choice", difficulty: 2, spec: { type: "key-signature-staff-choice", fifthsRange: [-5, 5] } },
+        { id: "lt-l6-e2", type: "key-signature-staff-choice", difficulty: 2, spec: { type: "key-signature-staff-choice", fifthsRange: [-5, 5] } },
+        { id: "lt-l6-e3", type: "key-signature-staff-choice", difficulty: 3, spec: { type: "key-signature-staff-choice", fifthsRange: [-5, 5] } },
+        { id: "lt-l6-e4", type: "key-signature-staff-choice", difficulty: 3, spec: { type: "key-signature-staff-choice", fifthsRange: [-5, 5] } },
+        { id: "lt-l6-e5", type: "key-signature-staff-choice", difficulty: 3, spec: { type: "key-signature-staff-choice", fifthsRange: [-5, 5] } },
+      ],
+    },
+    {
+      id: "lt-poziom-7-tonacje-rownolegle",
+      order: 7,
+      difficulty: 2,
+      introSlides: [
+        {
+          body: "Dedykowana lekcja tonacji równoległych — klikasz na kole sektor pasujący do podanej tonacji, czasem durowej, czasem molowej.",
+          circleHighlight: { fifths: 0 },
+        },
+      ],
+      exercises: [
+        { id: "lt-l7-e1", type: "relative-key-choice", difficulty: 2, spec: { type: "relative-key-choice", fifthsRange: [-5, 5] } },
+        { id: "lt-l7-e2", type: "relative-key-choice", difficulty: 2, spec: { type: "relative-key-choice", fifthsRange: [-5, 5] } },
+        { id: "lt-l7-e3", type: "relative-key-choice", difficulty: 3, spec: { type: "relative-key-choice", fifthsRange: [-5, 5] } },
+        { id: "lt-l7-e4", type: "relative-key-choice", difficulty: 3, spec: { type: "relative-key-choice", fifthsRange: [-5, 5] } },
+        { id: "lt-l7-e5", type: "relative-key-choice", difficulty: 3, spec: { type: "relative-key-choice", fifthsRange: [-5, 5] } },
+      ],
+    },
+    {
+      id: "lt-poziom-8-nazwij-znaki",
+      order: 8,
+      difficulty: 2,
+      introSlides: [
+        {
+          body: "Dedykowana lekcja: podana para tonacji równoległych (durowa i molowa) — Ty nazywasz dokładnie, jakie znaki przykluczowe mają (np. „fis, cis”, nie tylko ich liczbę).",
+          circleHighlight: { fifths: 0 },
+        },
+      ],
+      exercises: [
+        { id: "lt-l8-e1", type: "key-signature-names-choice", difficulty: 2, spec: { type: "key-signature-names-choice", fifthsRange: [-5, 5] } },
+        { id: "lt-l8-e2", type: "key-signature-names-choice", difficulty: 2, spec: { type: "key-signature-names-choice", fifthsRange: [-5, 5] } },
+        { id: "lt-l8-e3", type: "key-signature-names-choice", difficulty: 3, spec: { type: "key-signature-names-choice", fifthsRange: [-5, 5] } },
+        { id: "lt-l8-e4", type: "key-signature-names-choice", difficulty: 3, spec: { type: "key-signature-names-choice", fifthsRange: [-5, 5] } },
+        { id: "lt-l8-e5", type: "key-signature-names-choice", difficulty: 3, spec: { type: "key-signature-names-choice", fifthsRange: [-5, 5] } },
+      ],
+    },
+    {
+      id: "lt-poziom-9-odwrocona-logika",
+      order: 9,
+      difficulty: 3,
+      introSlides: [
+        {
+          body: "Ostatnia dedykowana lekcja odwraca kierunek myślenia: zamiast pytać „ile znaków ma ta tonacja”, podaje LICZBĘ znaków i każe znaleźć, która para tonacji równoległych do niej pasuje.",
+          circleHighlight: { fifths: 0 },
+        },
+      ],
+      exercises: [
+        { id: "lt-l9-e1", type: "accidental-count-key-choice", difficulty: 3, spec: { type: "accidental-count-key-choice", fifthsRange: [-5, 5] } },
+        { id: "lt-l9-e2", type: "accidental-count-key-choice", difficulty: 3, spec: { type: "accidental-count-key-choice", fifthsRange: [-5, 5] } },
+        { id: "lt-l9-e3", type: "accidental-count-key-choice", difficulty: 3, spec: { type: "accidental-count-key-choice", fifthsRange: [-5, 5] } },
+        { id: "lt-l9-e4", type: "accidental-count-key-choice", difficulty: 3, spec: { type: "accidental-count-key-choice", fifthsRange: [-5, 5] } },
+        { id: "lt-l9-e5", type: "accidental-count-key-choice", difficulty: 3, spec: { type: "accidental-count-key-choice", fifthsRange: [-5, 5] } },
+      ],
+    },
+    {
+      // Back to circle-step-choice (lekcje 1-2's own type), now with no
+      // fixed `direction` — both clockwise and counterclockwise steps
+      // mixed at random, across the full range — harder than lekcje 1-2's
+      // own one-direction-at-a-time introduction.
+      id: "lt-poziom-10-szybkie-kroki",
+      order: 10,
+      difficulty: 3,
+      introSlides: [
+        {
+          body: "Powrót do kroków po kole kwintowym — tym razem bez podpowiedzi kierunku. Czasem o kwintę w prawo (więcej krzyżyków), czasem w lewo (więcej bemoli) — musisz sam rozpoznać, w którą stronę patrzysz.",
+          circleHighlight: { fifths: 0 },
+        },
+      ],
+      exercises: [
+        { id: "lt-l10-e1", type: "circle-step-choice", difficulty: 3, spec: { type: "circle-step-choice", fifthsRange: [-5, 5] } },
+        { id: "lt-l10-e2", type: "circle-step-choice", difficulty: 3, spec: { type: "circle-step-choice", fifthsRange: [-5, 5] } },
+        { id: "lt-l10-e3", type: "circle-step-choice", difficulty: 3, spec: { type: "circle-step-choice", fifthsRange: [-5, 5] } },
+        { id: "lt-l10-e4", type: "circle-step-choice", difficulty: 3, spec: { type: "circle-step-choice", fifthsRange: [-5, 5] } },
+        { id: "lt-l10-e5", type: "circle-step-choice", difficulty: 3, spec: { type: "circle-step-choice", fifthsRange: [-5, 5] } },
+      ],
+    },
+    {
+      // A second, fresh capstone — same "mix everything" idea as lekcja
+      // 4, but with its own new key-fact-choice questions (As-dur/f-moll,
+      // and a reverse-direction cis-moll -> E-dur question) rather than
+      // repeating lekcja 4's own set.
+      id: "lt-poziom-11-wielkie-podsumowanie",
+      order: 11,
+      difficulty: 3,
+      introSlides: [
+        {
+          body: "Drugie wielkie podsumowanie — znowu wszystkie rodzaje pytań z tej krainy wymieszane, tym razem z nowym zestawem tonacji.",
+          circleHighlight: { fifths: 0 },
+        },
+      ],
+      exercises: [
+        { id: "lt-l11-e1", type: "circle-step-choice", difficulty: 3, spec: { type: "circle-step-choice", fifthsRange: [-5, 5] } },
+        {
+          id: "lt-l11-e2",
+          type: "key-fact-choice",
+          difficulty: 2,
+          spec: {
+            type: "key-fact-choice",
+            prompt: "Jaka jest gama równoległa (molowa) dla gamy As-dur i ile ma znaków przykluczowych?",
+            hint: "As-dur ma 4 bemole (b, es, as, des). Zejdź o tercję małą w dół od dźwięku As.",
+            options: ["f-moll, 4 bemole", "g-moll, 4 bemole", "c-moll, 3 bemole", "f-moll, 5 bemoli"],
+            correctOptionIndex: 0,
+            explanation: "As-dur i f-moll to gamy równoległe posiadające 4 bemole (b, es, as, des).",
+          },
+        },
+        {
+          id: "lt-l11-e3",
+          type: "key-fact-choice",
+          difficulty: 3,
+          spec: {
+            type: "key-fact-choice",
+            prompt: "Jaka gama durowa jest równoległa do gamy cis-moll, i ile ma znaków przykluczowych?",
+            hint: "To pytanie w odwrotną stronę niż zwykle — zacznij od cis-moll i wejdź o tercję małą w górę.",
+            options: ["E-dur, 4 krzyżyki", "A-dur, 3 krzyżyki", "H-dur, 5 krzyżyków", "E-dur, 3 krzyżyki"],
+            correctOptionIndex: 0,
+            explanation: "cis-moll i E-dur to gamy równoległe posiadające 4 krzyżyki (fis, cis, gis, dis).",
+          },
+        },
+        { id: "lt-l11-e4", type: "relative-key-choice", difficulty: 3, spec: { type: "relative-key-choice", fifthsRange: [-5, 5] } },
+        { id: "lt-l11-e5", type: "key-signature-names-choice", difficulty: 3, spec: { type: "key-signature-names-choice", fifthsRange: [-5, 5] } },
+        { id: "lt-l11-e6", type: "key-signature-names-choice", difficulty: 3, spec: { type: "key-signature-names-choice", fifthsRange: [-5, 5] } },
+        { id: "lt-l11-e7", type: "circle-neighbor-key-choice", difficulty: 3, spec: { type: "circle-neighbor-key-choice", fifthsRange: [-5, 5] } },
+        { id: "lt-l11-e8", type: "key-signature-staff-choice", difficulty: 3, spec: { type: "key-signature-staff-choice", fifthsRange: [-5, 5] } },
+        { id: "lt-l11-e9", type: "key-signature-staff-choice", difficulty: 3, spec: { type: "key-signature-staff-choice", fifthsRange: [-5, 5] } },
+        { id: "lt-l11-e10", type: "accidental-count-key-choice", difficulty: 3, spec: { type: "accidental-count-key-choice", fifthsRange: [-5, 5] } },
+      ],
+    },
+    {
+      // Boss lekcja — Molotaur (minotaur strzegący labiryntu — jeden róg
+      // rzeźbiony w krzyżyk, drugi w bemol). Jak Arytmik/Ośmiotakt/
+      // Oktawiusz/Trójgłos/Akordeon/Dominik: mix ćwiczeń REUSED z
+      // wcześniejszych lekcji tej krainy zamiast świeżo pisanej treści.
+      id: "lt-poziom-12-boss-molotaur",
+      order: 12,
+      difficulty: 3,
+      isBoss: true,
+      bossName: "Molotaur",
+      introSlides: [
+        {
+          body: "Molotaur strzeże wyjścia z Labiryntu Tonacji — na jednym rogu ma wyryty krzyżyk, na drugim bemol, a jego szarfa i oczy są pół na pół: dur i moll. Zna każdą tonację: jej sąsiadów, jej parę równoległą, jej znaki przykluczowe i jej zapis na pięciolinii. Żeby go pokonać, pokaż, że Ty też je znasz.",
+          bossPortrait: true,
+        },
+      ],
+      exercises: [
+        { id: "lt-l12-e1", type: "circle-step-choice", difficulty: 3, spec: { type: "circle-step-choice", fifthsRange: [-5, 5] } },
+        { id: "lt-l12-e2", type: "relative-key-choice", difficulty: 3, spec: { type: "relative-key-choice", fifthsRange: [-5, 5] } },
+        { id: "lt-l12-e3", type: "key-signature-names-choice", difficulty: 3, spec: { type: "key-signature-names-choice", fifthsRange: [-5, 5] } },
+        { id: "lt-l12-e4", type: "circle-neighbor-key-choice", difficulty: 3, spec: { type: "circle-neighbor-key-choice", fifthsRange: [-5, 5] } },
+        { id: "lt-l12-e5", type: "key-signature-staff-choice", difficulty: 3, spec: { type: "key-signature-staff-choice", fifthsRange: [-5, 5] } },
+        { id: "lt-l12-e6", type: "accidental-count-key-choice", difficulty: 3, spec: { type: "accidental-count-key-choice", fifthsRange: [-5, 5] } },
+        {
+          id: "lt-l12-e7",
+          type: "key-fact-choice",
+          difficulty: 3,
+          spec: {
+            type: "key-fact-choice",
+            prompt: "Jaka jest gama równoległa (molowa) dla gamy As-dur i ile ma znaków przykluczowych?",
+            hint: "As-dur ma 4 bemole (b, es, as, des). Zejdź o tercję małą w dół od dźwięku As.",
+            options: ["f-moll, 4 bemole", "g-moll, 4 bemole", "c-moll, 3 bemole", "f-moll, 5 bemoli"],
+            correctOptionIndex: 0,
+            explanation: "As-dur i f-moll to gamy równoległe posiadające 4 bemole (b, es, as, des).",
+          },
+        },
+        { id: "lt-l12-e8", type: "key-signature-staff-choice", difficulty: 3, spec: { type: "key-signature-staff-choice", fifthsRange: [-5, 5] } },
       ],
     },
   ],

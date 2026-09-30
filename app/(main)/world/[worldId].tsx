@@ -80,6 +80,10 @@ const WORLD_BACKGROUNDS: Partial<Record<string, number | { portrait: number; lan
     portrait: require("@/assets/backgrounds/cytadela-dominant-tlo-telefon.png"),
     landscape: require("@/assets/backgrounds/cytadela-dominant-tlo-laptop.png"),
   },
+  "key-signature": {
+    portrait: require("@/assets/backgrounds/labirynt-tonacji-tlo-telefon.png"),
+    landscape: require("@/assets/backgrounds/labirynt-tonacji-tlo-laptop.png"),
+  },
 };
 
 /**
