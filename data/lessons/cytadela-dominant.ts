@@ -617,5 +617,70 @@ export const CYTADELA_DOMINANT_CONTENT: WorldContent = {
         { id: "cd-l14-e6", type: "dominant-seventh-inversion-sequence-choice", difficulty: 5, spec: { type: "dominant-seventh-inversion-sequence-choice", sequenceLength: 3, noteRange: ["C4", "E4"] } },
       ],
     },
+    {
+      // Boss lekcja — Rycerz Dominik V. Jak Arytmik/Ośmiotakt/Oktawiusz/
+      // Trójgłos/Akordeon: mix ćwiczeń REUSED z wcześniejszych lekcji tej
+      // krainy (część specs skopiowana dosłownie) zamiast świeżo pisanej
+      // treści — rozpoznawanie ze słuchu (zwykłe i w szerszym rejestrze),
+      // struktura (który dźwięk w basie, zapis nut, więcej tonacji) i
+      // sekwencje przewrotów.
+      id: "cd-poziom-15-boss-dominik",
+      order: 15,
+      difficulty: 5,
+      isBoss: true,
+      bossName: "Dominik",
+      introSlides: [
+        {
+          body: "Rycerz Dominik V strzeże wyjścia z Cytadeli Dominant — jego tarcza nosi rzymskie V, a proporzec V⁷. Wiecznie czeka w pozie napięcia na rozwiązanie, które nie nadchodzi. Zna każdy przewrót dominanty septymowej: ze słuchu, z zapisu i w sekwencjach. Żeby go pokonać, pokaż, że opanowałeś je wszystkie.",
+          bossPortrait: true,
+        },
+      ],
+      exercises: [
+        { id: "cd-l15-e1", type: "dominant-seventh-inversion-choice", difficulty: 5, spec: { type: "dominant-seventh-inversion-choice", noteRange: ["C4", "E4"], hideNotation: true } },
+        { id: "cd-l15-e2", type: "dominant-seventh-inversion-choice", difficulty: 5, spec: { type: "dominant-seventh-inversion-choice", noteRange: ["C3", "E4"], hideNotation: true } },
+        {
+          id: "cd-l15-e3",
+          type: "triad-fact-choice",
+          difficulty: 4,
+          spec: {
+            type: "triad-fact-choice",
+            prompt: "Masz dominantę septymową zbudowaną na dźwięku C: C-E-G-B♭ (pryma-tercja-kwinta-septyma). Który dźwięk musi wylądować w basie, żeby powstał kwintsekstakord (I przewrót)?",
+            hint: "Kwintsekstakord to I przewrót — w basie ląduje tercja.",
+            options: ["C", "E", "G", "B♭"],
+            correctOptionIndex: 1,
+            explanation: "W kwintsekstakordzie (I przewrót) w basie jest tercja akordu — tutaj E.",
+          },
+        },
+        { id: "cd-l15-e4", type: "dominant-seventh-inversion-sequence-choice", difficulty: 5, spec: { type: "dominant-seventh-inversion-sequence-choice", sequenceLength: 2, noteRange: ["C4", "E4"] } },
+        {
+          id: "cd-l15-e5",
+          type: "triad-fact-choice",
+          difficulty: 4,
+          spec: {
+            type: "triad-fact-choice",
+            prompt: "Jak zapisane są (od najniższego dźwięku) nuty kwintsekstakordu zbudowanego na dźwięku C?",
+            hint: "Kwintsekstakord to I przewrót — zaczyna się od tercji akordu.",
+            options: ["C-E-G-B♭", "E-G-B♭-C", "G-B♭-C-E", "B♭-C-E-G"],
+            correctOptionIndex: 1,
+            explanation: "Kwintsekstakord zaczyna się od tercji (E), potem kwinta (G), septyma (B♭), na końcu pryma o oktawę wyżej (C).",
+          },
+        },
+        { id: "cd-l15-e6", type: "dominant-seventh-inversion-choice", difficulty: 5, spec: { type: "dominant-seventh-inversion-choice", noteRange: ["C4", "E4"], hideNotation: true } },
+        { id: "cd-l15-e7", type: "dominant-seventh-inversion-sequence-choice", difficulty: 5, spec: { type: "dominant-seventh-inversion-sequence-choice", sequenceLength: 3, noteRange: ["C4", "E4"] } },
+        {
+          id: "cd-l15-e8",
+          type: "triad-fact-choice",
+          difficulty: 5,
+          spec: {
+            type: "triad-fact-choice",
+            prompt: "Masz dominantę septymową zbudowaną na dźwięku F: F-A-C-Es (pryma-tercja-kwinta-septyma). Który dźwięk musi wylądować w basie, żeby powstał kwintsekstakord (I przewrót)?",
+            hint: "Kwintsekstakord to I przewrót — w basie ląduje tercja.",
+            options: ["F", "A", "C", "Es"],
+            correctOptionIndex: 1,
+            explanation: "W kwintsekstakordzie w basie jest tercja akordu — tutaj A.",
+          },
+        },
+      ],
+    },
   ],
 };

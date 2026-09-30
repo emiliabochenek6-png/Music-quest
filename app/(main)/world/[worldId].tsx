@@ -76,6 +76,10 @@ const WORLD_BACKGROUNDS: Partial<Record<string, number | { portrait: number; lan
     portrait: require("@/assets/backgrounds/jaskinia-akordow-tlo-telefon.png"),
     landscape: require("@/assets/backgrounds/jaskinia-akordow-tlo-laptop.png"),
   },
+  citadel: {
+    portrait: require("@/assets/backgrounds/cytadela-dominant-tlo-telefon.png"),
+    landscape: require("@/assets/backgrounds/cytadela-dominant-tlo-laptop.png"),
+  },
 };
 
 /**
