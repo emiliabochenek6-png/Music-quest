@@ -158,6 +158,39 @@ export function isAnswerCorrect(exercise: GeneratedExercise, answer: AnswerInput
         selectedFifthAccidental === exercise.fifthAccidental
       );
     }
+    case "triad-inversion-build-staff-choice": {
+      const { selectedMiddleStep, selectedMiddleAccidental, selectedTopStep, selectedTopAccidental } = answer as {
+        selectedMiddleStep: number | null;
+        selectedMiddleAccidental: number;
+        selectedTopStep: number | null;
+        selectedTopAccidental: number;
+      };
+      return (
+        selectedMiddleStep === exercise.middleStep &&
+        selectedMiddleAccidental === exercise.middleAccidental &&
+        selectedTopStep === exercise.topStep &&
+        selectedTopAccidental === exercise.topAccidental
+      );
+    }
+    case "dominant-seventh-build-staff-choice": {
+      const { selectedCol1Step, selectedCol1Accidental, selectedCol2Step, selectedCol2Accidental, selectedCol3Step, selectedCol3Accidental } =
+        answer as {
+          selectedCol1Step: number | null;
+          selectedCol1Accidental: number;
+          selectedCol2Step: number | null;
+          selectedCol2Accidental: number;
+          selectedCol3Step: number | null;
+          selectedCol3Accidental: number;
+        };
+      return (
+        selectedCol1Step === exercise.col1Step &&
+        selectedCol1Accidental === exercise.col1Accidental &&
+        selectedCol2Step === exercise.col2Step &&
+        selectedCol2Accidental === exercise.col2Accidental &&
+        selectedCol3Step === exercise.col3Step &&
+        selectedCol3Accidental === exercise.col3Accidental
+      );
+    }
     case "rhythm-value-dictation": {
       // Built by clicking discrete values, not a live gesture — must
       // match precisely, no tap-timing tolerance (so a short answer or

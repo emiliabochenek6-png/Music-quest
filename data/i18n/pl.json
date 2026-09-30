@@ -204,6 +204,10 @@
   "lesson.intervalBuildStaffChoiceSolution": "Rozwiązanie: interwał {interval} {direction} od dźwięku {root} to {target}.",
   "lesson.triadBuildStaffChoicePrompt": "Zbuduj trójdźwięk {quality} od dźwięku {root} na pięciolinii. Kliknij pozycję tercji, a potem wybierz jej znak chromatyczny — to samo dla kwinty.",
   "lesson.triadBuildStaffChoiceSolution": "Rozwiązanie: trójdźwięk {quality} od dźwięku {root} to {root} – {third} – {fifth}.",
+  "lesson.triadInversionBuildStaffChoicePrompt": "Zbuduj {inversion} trójdźwięku {quality} — w basie stoi już {root}. Kliknij pozycję kolejnego dźwięku, a potem wybierz jego znak chromatyczny — to samo dla ostatniego.",
+  "lesson.triadInversionBuildStaffChoiceSolution": "Rozwiązanie: {inversion} od dźwięku {root} w basie to {root} – {third} – {fifth}.",
+  "lesson.dominantSeventhBuildStaffChoicePrompt": "Zbuduj dominantę septymową w postaci {inversion} — w basie stoi już {root}. Kliknij pozycję kolejnego dźwięku, a potem wybierz jego znak chromatyczny — to samo dla dwóch pozostałych.",
+  "lesson.dominantSeventhBuildStaffChoiceSolution": "Rozwiązanie: {inversion} od dźwięku {root} w basie to {root} – {col1} – {col2} – {col3}.",
 
   "lesson.beamGroupingChoicePrompt": "Który wariant pokazuje poprawne grupowanie (belkowanie) nut?",
   "lesson.beamGroupingOptionLabel": "Opcja {n}",

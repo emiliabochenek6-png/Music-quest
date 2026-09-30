@@ -384,6 +384,10 @@ export function getExerciseSignature(exercise: GeneratedExercise): string | null
       return `interval-build-staff-choice:${exercise.rootNote}-${exercise.targetStep}-${exercise.targetAccidental}`;
     case "triad-build-staff-choice":
       return `triad-build-staff-choice:${exercise.rootNote}-${exercise.quality}`;
+    case "triad-inversion-build-staff-choice":
+      return `triad-inversion-build-staff-choice:${exercise.bassNote}-${exercise.quality}-${exercise.inversion}`;
+    case "dominant-seventh-build-staff-choice":
+      return `dominant-seventh-build-staff-choice:${exercise.bassNote}-${exercise.inversion}`;
     default:
       return null;
   }
@@ -1206,6 +1210,87 @@ export function generateExercise(definition: ExerciseDefinition, locale: Locale,
           fifthDisplayName: getNoteDisplayName(triad.fifth, locale),
           allowDoubleAccidentals: false,
           clickableSteps: paddedClickableSteps([rootPosition.step, thirdPosition.step, fifthPosition.step]),
+        };
+      }, exclude);
+    }
+    case "triad-inversion-build-staff-choice": {
+      const { noteRange, allowedQualities, allowedInversions } = definition.spec;
+      const qualities = allowedQualities ?? ALL_TRIAD_QUALITIES;
+      const inversions = allowedInversions ?? (["root", "first", "second"] as const);
+      return generateWithoutRepeat(() => {
+        const quality = qualities[Math.floor(Math.random() * qualities.length)];
+        const inversion = inversions[Math.floor(Math.random() * inversions.length)];
+        const root = randomNoteInRange(noteRange);
+        let triad: Triad;
+        try {
+          triad = buildTriad(root, quality);
+        } catch {
+          triad = buildTriad(flatAlternateSpelling(root), quality);
+        }
+        const [bass, middle, top] = getTriadInversionNotes(triad, inversion);
+        const bassPosition = describeStaffPosition(bass);
+        const middlePosition = describeStaffPosition(middle);
+        const topPosition = describeStaffPosition(top);
+        return {
+          id: definition.id,
+          type: "triad-inversion-build-staff-choice",
+          bassNote: formatScientific(bass),
+          bassDisplayName: getNoteDisplayName(bass, locale),
+          qualityName: getTriadQualityName(quality, locale),
+          quality,
+          inversion,
+          inversionName: getTriadInversionName(inversion, locale),
+          middleLabel: getIntervalDisplayName(intervalSemitones(bass, middle), locale),
+          middleStep: middlePosition.step,
+          middleAccidental: middle.accidental,
+          middleDisplayName: getNoteDisplayName(middle, locale),
+          topLabel: getIntervalDisplayName(intervalSemitones(middle, top), locale),
+          topStep: topPosition.step,
+          topAccidental: top.accidental,
+          topDisplayName: getNoteDisplayName(top, locale),
+          allowDoubleAccidentals: false,
+          clickableSteps: paddedClickableSteps([bassPosition.step, middlePosition.step, topPosition.step]),
+        };
+      }, exclude);
+    }
+    case "dominant-seventh-build-staff-choice": {
+      const { noteRange, allowedInversions, allowDoubleAccidentals } = definition.spec;
+      const inversions = allowedInversions ?? (["root"] as const);
+      return generateWithoutRepeat(() => {
+        const inversion = inversions[Math.floor(Math.random() * inversions.length)];
+        const root = randomNoteInRange(noteRange);
+        let chord: ReturnType<typeof buildDominantSeventh>;
+        try {
+          chord = buildDominantSeventh(root);
+        } catch {
+          chord = buildDominantSeventh(flatAlternateSpelling(root));
+        }
+        const [bass, note1, note2, note3] = getSeventhChordInversionNotes(chord, inversion);
+        const bassPosition = describeStaffPosition(bass);
+        const position1 = describeStaffPosition(note1);
+        const position2 = describeStaffPosition(note2);
+        const position3 = describeStaffPosition(note3);
+        return {
+          id: definition.id,
+          type: "dominant-seventh-build-staff-choice",
+          bassNote: formatScientific(bass),
+          bassDisplayName: getNoteDisplayName(bass, locale),
+          inversion,
+          inversionName: getSeventhChordInversionName(inversion, locale),
+          col1Label: getIntervalDisplayName(intervalSemitones(bass, note1), locale),
+          col1Step: position1.step,
+          col1Accidental: note1.accidental,
+          col1DisplayName: getNoteDisplayName(note1, locale),
+          col2Label: getIntervalDisplayName(intervalSemitones(note1, note2), locale),
+          col2Step: position2.step,
+          col2Accidental: note2.accidental,
+          col2DisplayName: getNoteDisplayName(note2, locale),
+          col3Label: getIntervalDisplayName(intervalSemitones(note2, note3), locale),
+          col3Step: position3.step,
+          col3Accidental: note3.accidental,
+          col3DisplayName: getNoteDisplayName(note3, locale),
+          allowDoubleAccidentals: allowDoubleAccidentals ?? false,
+          clickableSteps: paddedClickableSteps([bassPosition.step, position1.step, position2.step, position3.step]),
         };
       }, exclude);
     }

@@ -3,6 +3,7 @@ import { BeamGroupingChoiceExercise } from "@/components/exercises/BeamGroupingC
 import { CircleNeighborKeyChoiceExercise } from "@/components/exercises/CircleNeighborKeyChoiceExercise";
 import { CircleStepChoiceExercise } from "@/components/exercises/CircleStepChoiceExercise";
 import { ClefTraceExercise } from "@/components/exercises/ClefTraceExercise";
+import { DominantSeventhBuildStaffChoiceExercise } from "@/components/exercises/DominantSeventhBuildStaffChoiceExercise";
 import { DominantSeventhInversionChoiceExercise } from "@/components/exercises/DominantSeventhInversionChoiceExercise";
 import { DominantSeventhInversionSequenceChoiceExercise } from "@/components/exercises/DominantSeventhInversionSequenceChoiceExercise";
 import { IntervalBuildChoiceExercise } from "@/components/exercises/IntervalBuildChoiceExercise";
@@ -35,6 +36,7 @@ import { SolfegePhraseSingingExercise } from "@/components/exercises/SolfegePhra
 import { StaffPlacementExercise } from "@/components/exercises/StaffPlacementExercise";
 import { TriadBuildStaffChoiceExercise } from "@/components/exercises/TriadBuildStaffChoiceExercise";
 import { TriadFactChoiceExercise } from "@/components/exercises/TriadFactChoiceExercise";
+import { TriadInversionBuildStaffChoiceExercise } from "@/components/exercises/TriadInversionBuildStaffChoiceExercise";
 import { TriadInversionChoiceExercise } from "@/components/exercises/TriadInversionChoiceExercise";
 import { TriadInversionSequenceChoiceExercise } from "@/components/exercises/TriadInversionSequenceChoiceExercise";
 import { TriadNotesChoiceExercise } from "@/components/exercises/TriadNotesChoiceExercise";
@@ -489,6 +491,148 @@ export function ExerciseRenderer({ exercise, answer, onAnswerChange, checked, is
         />
       );
     }
+    case "triad-inversion-build-staff-choice": {
+      const currentAnswer = answer?.type === "triad-inversion-build-staff-choice" ? answer : null;
+      const selectedMiddleStep = currentAnswer?.selectedMiddleStep ?? null;
+      const selectedMiddleAccidental = currentAnswer?.selectedMiddleAccidental ?? 0;
+      const selectedTopStep = currentAnswer?.selectedTopStep ?? null;
+      const selectedTopAccidental = currentAnswer?.selectedTopAccidental ?? 0;
+      return (
+        <TriadInversionBuildStaffChoiceExercise
+          exercise={exercise}
+          selectedMiddleStep={selectedMiddleStep}
+          selectedMiddleAccidental={selectedMiddleAccidental}
+          selectedTopStep={selectedTopStep}
+          selectedTopAccidental={selectedTopAccidental}
+          onSelectMiddleStep={(step) =>
+            onAnswerChange({
+              type: "triad-inversion-build-staff-choice",
+              selectedMiddleStep: step,
+              selectedMiddleAccidental,
+              selectedTopStep,
+              selectedTopAccidental,
+            })
+          }
+          onSelectMiddleAccidental={(accidental) =>
+            onAnswerChange({
+              type: "triad-inversion-build-staff-choice",
+              selectedMiddleStep,
+              selectedMiddleAccidental: accidental,
+              selectedTopStep,
+              selectedTopAccidental,
+            })
+          }
+          onSelectTopStep={(step) =>
+            onAnswerChange({
+              type: "triad-inversion-build-staff-choice",
+              selectedMiddleStep,
+              selectedMiddleAccidental,
+              selectedTopStep: step,
+              selectedTopAccidental,
+            })
+          }
+          onSelectTopAccidental={(accidental) =>
+            onAnswerChange({
+              type: "triad-inversion-build-staff-choice",
+              selectedMiddleStep,
+              selectedMiddleAccidental,
+              selectedTopStep,
+              selectedTopAccidental: accidental,
+            })
+          }
+          checked={checked}
+          locale={locale}
+        />
+      );
+    }
+    case "dominant-seventh-build-staff-choice": {
+      const currentAnswer = answer?.type === "dominant-seventh-build-staff-choice" ? answer : null;
+      const selectedCol1Step = currentAnswer?.selectedCol1Step ?? null;
+      const selectedCol1Accidental = currentAnswer?.selectedCol1Accidental ?? 0;
+      const selectedCol2Step = currentAnswer?.selectedCol2Step ?? null;
+      const selectedCol2Accidental = currentAnswer?.selectedCol2Accidental ?? 0;
+      const selectedCol3Step = currentAnswer?.selectedCol3Step ?? null;
+      const selectedCol3Accidental = currentAnswer?.selectedCol3Accidental ?? 0;
+      return (
+        <DominantSeventhBuildStaffChoiceExercise
+          exercise={exercise}
+          selectedCol1Step={selectedCol1Step}
+          selectedCol1Accidental={selectedCol1Accidental}
+          selectedCol2Step={selectedCol2Step}
+          selectedCol2Accidental={selectedCol2Accidental}
+          selectedCol3Step={selectedCol3Step}
+          selectedCol3Accidental={selectedCol3Accidental}
+          onSelectCol1Step={(step) =>
+            onAnswerChange({
+              type: "dominant-seventh-build-staff-choice",
+              selectedCol1Step: step,
+              selectedCol1Accidental,
+              selectedCol2Step,
+              selectedCol2Accidental,
+              selectedCol3Step,
+              selectedCol3Accidental,
+            })
+          }
+          onSelectCol1Accidental={(accidental) =>
+            onAnswerChange({
+              type: "dominant-seventh-build-staff-choice",
+              selectedCol1Step,
+              selectedCol1Accidental: accidental,
+              selectedCol2Step,
+              selectedCol2Accidental,
+              selectedCol3Step,
+              selectedCol3Accidental,
+            })
+          }
+          onSelectCol2Step={(step) =>
+            onAnswerChange({
+              type: "dominant-seventh-build-staff-choice",
+              selectedCol1Step,
+              selectedCol1Accidental,
+              selectedCol2Step: step,
+              selectedCol2Accidental,
+              selectedCol3Step,
+              selectedCol3Accidental,
+            })
+          }
+          onSelectCol2Accidental={(accidental) =>
+            onAnswerChange({
+              type: "dominant-seventh-build-staff-choice",
+              selectedCol1Step,
+              selectedCol1Accidental,
+              selectedCol2Step,
+              selectedCol2Accidental: accidental,
+              selectedCol3Step,
+              selectedCol3Accidental,
+            })
+          }
+          onSelectCol3Step={(step) =>
+            onAnswerChange({
+              type: "dominant-seventh-build-staff-choice",
+              selectedCol1Step,
+              selectedCol1Accidental,
+              selectedCol2Step,
+              selectedCol2Accidental,
+              selectedCol3Step: step,
+              selectedCol3Accidental,
+            })
+          }
+          onSelectCol3Accidental={(accidental) =>
+            onAnswerChange({
+              type: "dominant-seventh-build-staff-choice",
+              selectedCol1Step,
+              selectedCol1Accidental,
+              selectedCol2Step,
+              selectedCol2Accidental,
+              selectedCol3Step,
+              selectedCol3Accidental: accidental,
+            })
+          }
+          checked={checked}
+          locale={locale}
+        />
+      );
+    }
     case "beam-grouping-choice":
       return (
         <BeamGroupingChoiceExercise
@@ -607,6 +751,10 @@ export function hasAnswerToCheck(answer: AnswerInput | null): boolean {
       return answer.selectedOptionIds.length > 0 && answer.selectedOptionIds.every((id) => id !== null);
     case "triad-build-staff-choice":
       return answer.selectedThirdStep !== null && answer.selectedFifthStep !== null;
+    case "triad-inversion-build-staff-choice":
+      return answer.selectedMiddleStep !== null && answer.selectedTopStep !== null;
+    case "dominant-seventh-build-staff-choice":
+      return answer.selectedCol1Step !== null && answer.selectedCol2Step !== null && answer.selectedCol3Step !== null;
     case "rhythm-value-dictation":
       return answer.sequence.length > 0;
     case "melodic-rhythmic-dictation":

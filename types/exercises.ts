@@ -301,6 +301,29 @@ export type ExerciseSpec =
   | { type: "interval-build-choice"; noteRange: [string, string]; allowedSemitones?: number[]; allowDoubleAccidentals?: boolean }
   | { type: "interval-build-staff-choice"; noteRange: [string, string]; allowedSemitones?: number[]; allowDoubleAccidentals?: boolean }
   | { type: "triad-build-staff-choice"; noteRange: [string, string]; allowedQualities?: TriadQuality[] }
+  | {
+      /** triad-build-staff-choice's own inversion-aware sibling — the
+       * BASS note (whichever chord tone the target inversion puts on
+       * bottom, not always the root) is drawn fixed, and the player
+       * builds the other two in their correct stacked order. Same
+       * two-column TriadBuildStaffBoard UI, just fed a fixed note and
+       * two target columns that aren't always "root's own third/fifth". */
+      type: "triad-inversion-build-staff-choice";
+      noteRange: [string, string];
+      allowedQualities?: TriadQuality[];
+      allowedInversions?: TriadInversion[];
+    }
+  | {
+      /** The four-note, three-build-column counterpart of triad-build-
+       * staff-choice/triad-inversion-build-staff-choice — builds a
+       * dominant seventh chord (always root position when
+       * allowedInversions is omitted, any of its four postacie
+       * otherwise), one column per chord tone above the fixed bass. */
+      type: "dominant-seventh-build-staff-choice";
+      noteRange: [string, string];
+      allowedInversions?: SeventhChordInversion[];
+      allowDoubleAccidentals?: boolean;
+    }
   // Gaj Grupowania (beaming/grouping world) — see data/lessons/gaj-grupowania.ts's own doc.
   | {
       type: "beam-grouping-choice";
@@ -812,6 +835,58 @@ export type GeneratedExercise =
     }
   | {
       id: string;
+      type: "triad-inversion-build-staff-choice";
+      bassNote: string;
+      bassDisplayName: string;
+      qualityName: string;
+      quality: TriadQuality;
+      inversion: TriadInversion;
+      inversionName: string;
+      /** Interval name from the fixed bass up to the middle note — not
+       * always "tercja" like triad-build-staff-choice's own hardcoded
+       * framing, since an inversion's first hop can be a third OR a
+       * fourth depending which chord tone the bass is. */
+      middleLabel: string;
+      middleStep: number;
+      middleAccidental: Accidental;
+      middleDisplayName: string;
+      /** Interval name from the middle note up to the top note. */
+      topLabel: string;
+      topStep: number;
+      topAccidental: Accidental;
+      topDisplayName: string;
+      allowDoubleAccidentals: boolean;
+      clickableSteps: number[];
+    }
+  | {
+      id: string;
+      type: "dominant-seventh-build-staff-choice";
+      bassNote: string;
+      bassDisplayName: string;
+      inversion: SeventhChordInversion;
+      inversionName: string;
+      /** Three build columns above the fixed bass, bottom to top — each
+       * one's own label is the interval from the PREVIOUS column (or the
+       * bass, for the first), the same "adjacent hop" framing
+       * triad-inversion-build-staff-choice's own middleLabel/topLabel
+       * use, just one column longer since this chord has four tones. */
+      col1Label: string;
+      col1Step: number;
+      col1Accidental: Accidental;
+      col1DisplayName: string;
+      col2Label: string;
+      col2Step: number;
+      col2Accidental: Accidental;
+      col2DisplayName: string;
+      col3Label: string;
+      col3Step: number;
+      col3Accidental: Accidental;
+      col3DisplayName: string;
+      allowDoubleAccidentals: boolean;
+      clickableSteps: number[];
+    }
+  | {
+      id: string;
       type: "beam-grouping-choice";
       sequence: (RhythmNoteValue | RhythmRestValue)[];
       meter: Meter;
@@ -910,6 +985,22 @@ export type AnswerInput =
       selectedThirdAccidental: Accidental;
       selectedFifthStep: number | null;
       selectedFifthAccidental: Accidental;
+    }
+  | {
+      type: "triad-inversion-build-staff-choice";
+      selectedMiddleStep: number | null;
+      selectedMiddleAccidental: Accidental;
+      selectedTopStep: number | null;
+      selectedTopAccidental: Accidental;
+    }
+  | {
+      type: "dominant-seventh-build-staff-choice";
+      selectedCol1Step: number | null;
+      selectedCol1Accidental: Accidental;
+      selectedCol2Step: number | null;
+      selectedCol2Accidental: Accidental;
+      selectedCol3Step: number | null;
+      selectedCol3Accidental: Accidental;
     }
   | { type: "rhythm-value-dictation"; sequence: (RhythmNoteValue | RhythmRestValue)[]; groups: number[][] }
   | { type: "melodic-rhythmic-dictation"; notes: { step: number; accidental: Accidental; value: RhythmNoteValue }[]; groups: number[][] }

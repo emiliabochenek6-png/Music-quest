@@ -10,6 +10,21 @@ import type { WorldContent } from "@/types/exercises";
  * fifth the same staff way, next to a fixed root (triad-build-staff-
  * choice). Content transcribed verbatim from the web app's
  * data/worlds/fabryka-budowania.json.
+ *
+ * Lekcje 12-22 extend building further, authored fresh (not ported).
+ * Lekcje 12-16 build triad INVERSIONS (Jaskinia Akordów's own topic,
+ * recognition-only there) via the new triad-inversion-build-staff-choice
+ * type — same TriadBuildStaffBoard UI as triad-build-staff-choice, but
+ * the fixed note is whichever chord tone the target inversion puts in
+ * the bass (not always the root), and the two build columns' own labels
+ * are the ACTUAL interval from bass to middle and middle to top for that
+ * inversion (a third and a fourth, in either order — never always
+ * "tercja"/"kwinta"). Lekcje 17-21 build the dominant seventh chord
+ * (Cytadela Dominant's own topic) via dominant-seventh-build-staff-
+ * choice — the four-note, three-build-column sibling, using the new
+ * SeventhChordBuildStaffBoard. Lekcja 22 is this world's own boss
+ * (Inżynier Piętrus), mixing reused content across everything this world
+ * builds — same pattern as every other world's boss.
  */
 export const FABRYKA_BUDOWANIA_CONTENT: WorldContent = {
   worldId: "fabryka-budowania",
@@ -308,6 +323,261 @@ export const FABRYKA_BUDOWANIA_CONTENT: WorldContent = {
         { id: "fb-l11-e4", type: "triad-build-staff-choice", difficulty: 3, spec: { type: "triad-build-staff-choice", noteRange: ["C4", "C5"] } },
         { id: "fb-l11-e5", type: "interval-build-staff-choice", difficulty: 3, spec: { type: "interval-build-staff-choice", noteRange: ["C4", "C5"], allowedSemitones: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] } },
         { id: "fb-l11-e6", type: "triad-build-staff-choice", difficulty: 3, spec: { type: "triad-build-staff-choice", noteRange: ["C4", "C5"] } },
+      ],
+    },
+    {
+      // Lekcje 12-16 extend building to triad INVERSIONS (Jaskinia
+      // Akordów's own topic, recognition-only there — this is the
+      // building counterpart). Unlike lekcje 9-11's own root-position
+      // triad-build-staff-choice, the fixed note on the left is now
+      // whichever chord tone the target inversion puts in the bass, and
+      // the two build columns' own labels change accordingly (a third
+      // then a fourth, or a fourth then a third, never always "tercja"
+      // then "kwinta"). Root position itself is already covered by
+      // lekcje 9-11, so lekcja 12 jumps straight to sekstakord alone.
+      id: "fb-poziom-12-sekstakord",
+      order: 12,
+      difficulty: 3,
+      introSlides: [
+        {
+          body: "Teraz budujesz przewroty trójdźwięków, tak jak poznałeś je w Jaskini Akordów — tylko że sam je konstruujesz, zamiast tylko rozpoznawać. W sekstakordzie (I przewrót) w basie stoi już tercja trójdźwięku — Ty dobudowujesz kwintę i prymę (o oktawę wyżej), każdą osobno: najpierw klikasz jej pozycję na pięciolinii, potem jej znak chromatyczny.",
+          triadExamples: [
+            { notes: ["E4", "G4", "C5"], label: "sekstakord C-dur — w basie tercja (E)", degrees: [3, 5, 1] },
+          ],
+        },
+      ],
+      exercises: [
+        { id: "fb-l12-e1", type: "triad-inversion-build-staff-choice", difficulty: 3, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"], allowedQualities: ["major"], allowedInversions: ["first"] } },
+        { id: "fb-l12-e2", type: "triad-inversion-build-staff-choice", difficulty: 3, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"], allowedQualities: ["major"], allowedInversions: ["first"] } },
+        { id: "fb-l12-e3", type: "triad-inversion-build-staff-choice", difficulty: 3, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"], allowedQualities: ["minor"], allowedInversions: ["first"] } },
+        { id: "fb-l12-e4", type: "triad-inversion-build-staff-choice", difficulty: 3, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"], allowedQualities: ["minor"], allowedInversions: ["first"] } },
+        { id: "fb-l12-e5", type: "triad-inversion-build-staff-choice", difficulty: 3, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"], allowedQualities: ["major", "minor"], allowedInversions: ["first"] } },
+        { id: "fb-l12-e6", type: "triad-inversion-build-staff-choice", difficulty: 3, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"], allowedQualities: ["major", "minor"], allowedInversions: ["first"] } },
+      ],
+    },
+    {
+      id: "fb-poziom-13-kwartsekstakord",
+      order: 13,
+      difficulty: 3,
+      introSlides: [
+        {
+          body: "Teraz kwartsekstakord (II przewrót): w basie stoi już kwinta trójdźwięku — Ty dobudowujesz prymę (o oktawę wyżej) i tercję, każdą osobno.",
+          triadExamples: [
+            { notes: ["G4", "C5", "E5"], label: "kwartsekstakord C-dur — w basie kwinta (G)", degrees: [5, 1, 3] },
+          ],
+        },
+      ],
+      exercises: [
+        { id: "fb-l13-e1", type: "triad-inversion-build-staff-choice", difficulty: 3, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"], allowedQualities: ["major"], allowedInversions: ["second"] } },
+        { id: "fb-l13-e2", type: "triad-inversion-build-staff-choice", difficulty: 3, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"], allowedQualities: ["major"], allowedInversions: ["second"] } },
+        { id: "fb-l13-e3", type: "triad-inversion-build-staff-choice", difficulty: 3, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"], allowedQualities: ["minor"], allowedInversions: ["second"] } },
+        { id: "fb-l13-e4", type: "triad-inversion-build-staff-choice", difficulty: 3, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"], allowedQualities: ["minor"], allowedInversions: ["second"] } },
+        { id: "fb-l13-e5", type: "triad-inversion-build-staff-choice", difficulty: 3, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"], allowedQualities: ["major", "minor"], allowedInversions: ["second"] } },
+        { id: "fb-l13-e6", type: "triad-inversion-build-staff-choice", difficulty: 3, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"], allowedQualities: ["major", "minor"], allowedInversions: ["second"] } },
+      ],
+    },
+    {
+      id: "fb-poziom-14-wszystkie-przewroty-dur",
+      order: 14,
+      difficulty: 3,
+      introSlides: [
+        {
+          body: "Teraz wszystkie trzy postacie na raz — postać zasadnicza, sekstakord i kwartsekstakord — ale tylko dla trójdźwięków durowych. Zwróć uwagę, że etykiety kolumn się zmieniają: czasem dobudowujesz tercję i kwartę, a czasem kwartę i tercję, zależnie od tego, który dźwięk już stoi w basie.",
+          triadExamples: [
+            { notes: ["C4", "E4", "G4"], label: "postać zasadnicza", degrees: [1, 3, 5] },
+            { notes: ["E4", "G4", "C5"], label: "sekstakord", degrees: [3, 5, 1] },
+            { notes: ["G4", "C5", "E5"], label: "kwartsekstakord", degrees: [5, 1, 3] },
+          ],
+        },
+      ],
+      exercises: [
+        { id: "fb-l14-e1", type: "triad-inversion-build-staff-choice", difficulty: 3, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"], allowedQualities: ["major"] } },
+        { id: "fb-l14-e2", type: "triad-inversion-build-staff-choice", difficulty: 3, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"], allowedQualities: ["major"] } },
+        { id: "fb-l14-e3", type: "triad-inversion-build-staff-choice", difficulty: 3, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"], allowedQualities: ["major"] } },
+        { id: "fb-l14-e4", type: "triad-inversion-build-staff-choice", difficulty: 3, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"], allowedQualities: ["major"] } },
+        { id: "fb-l14-e5", type: "triad-inversion-build-staff-choice", difficulty: 3, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"], allowedQualities: ["major"] } },
+        { id: "fb-l14-e6", type: "triad-inversion-build-staff-choice", difficulty: 3, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"], allowedQualities: ["major"] } },
+      ],
+    },
+    {
+      id: "fb-poziom-15-wszystkie-przewroty-moll",
+      order: 15,
+      difficulty: 3,
+      introSlides: [
+        {
+          body: "To samo, ale dla trójdźwięków molowych — wszystkie trzy postacie wymieszane.",
+          triadExamples: [
+            { notes: ["C4", "Eb4", "G4"], label: "postać zasadnicza", degrees: [1, 3, 5] },
+            { notes: ["Eb4", "G4", "C5"], label: "sekstakord", degrees: [3, 5, 1] },
+            { notes: ["G4", "C5", "Eb5"], label: "kwartsekstakord", degrees: [5, 1, 3] },
+          ],
+        },
+      ],
+      exercises: [
+        { id: "fb-l15-e1", type: "triad-inversion-build-staff-choice", difficulty: 3, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"], allowedQualities: ["minor"] } },
+        { id: "fb-l15-e2", type: "triad-inversion-build-staff-choice", difficulty: 3, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"], allowedQualities: ["minor"] } },
+        { id: "fb-l15-e3", type: "triad-inversion-build-staff-choice", difficulty: 3, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"], allowedQualities: ["minor"] } },
+        { id: "fb-l15-e4", type: "triad-inversion-build-staff-choice", difficulty: 3, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"], allowedQualities: ["minor"] } },
+        { id: "fb-l15-e5", type: "triad-inversion-build-staff-choice", difficulty: 3, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"], allowedQualities: ["minor"] } },
+        { id: "fb-l15-e6", type: "triad-inversion-build-staff-choice", difficulty: 3, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"], allowedQualities: ["minor"] } },
+      ],
+    },
+    {
+      id: "fb-poziom-16-przewroty-mix",
+      order: 16,
+      difficulty: 4,
+      introSlides: [
+        {
+          body: "Podsumowanie budowania przewrotów — dur i moll wymieszane, wszystkie trzy postacie.",
+        },
+      ],
+      exercises: [
+        { id: "fb-l16-e1", type: "triad-inversion-build-staff-choice", difficulty: 4, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"] } },
+        { id: "fb-l16-e2", type: "triad-inversion-build-staff-choice", difficulty: 4, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"] } },
+        { id: "fb-l16-e3", type: "triad-inversion-build-staff-choice", difficulty: 4, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"] } },
+        { id: "fb-l16-e4", type: "triad-inversion-build-staff-choice", difficulty: 4, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"] } },
+        { id: "fb-l16-e5", type: "triad-inversion-build-staff-choice", difficulty: 4, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"] } },
+        { id: "fb-l16-e6", type: "triad-inversion-build-staff-choice", difficulty: 4, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"] } },
+        { id: "fb-l16-e7", type: "triad-inversion-build-staff-choice", difficulty: 4, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"] } },
+      ],
+    },
+    {
+      // Lekcje 17-21 extend building to the dominant seventh chord
+      // (Cytadela Dominant's own topic) — the four-note, three-build-
+      // column counterpart of lekcje 9-11's triad-build-staff-choice,
+      // using the new SeventhChordBuildStaffBoard. Lekcja 17 starts at
+      // postać zasadnicza (fixed root, build third/fifth/seventh) since
+      // — unlike triads — this world has never built a seventh chord at
+      // all yet, even in root position.
+      id: "fb-poziom-17-dominanta-septymowa",
+      order: 17,
+      difficulty: 3,
+      introSlides: [
+        {
+          body: "Nowy akord do budowania: dominanta septymowa (D⁷), poznana w Cytadeli Dominant — trójdźwięk durowy z dołożoną jeszcze jedną tercją małą na górze. Cztery dźwięki, więc trzy kolumny do zbudowania obok stałej prymy: tercja, kwinta i septyma, każda osobno (pozycja, potem znak chromatyczny).",
+          triadExamples: [
+            { notes: ["C4", "E4", "G4", "Bb4"], label: "postać zasadnicza (D⁷)", degrees: [1, 3, 5, 7] },
+          ],
+        },
+      ],
+      exercises: [
+        { id: "fb-l17-e1", type: "dominant-seventh-build-staff-choice", difficulty: 3, spec: { type: "dominant-seventh-build-staff-choice", noteRange: ["C4", "C5"] } },
+        { id: "fb-l17-e2", type: "dominant-seventh-build-staff-choice", difficulty: 3, spec: { type: "dominant-seventh-build-staff-choice", noteRange: ["C4", "C5"] } },
+        { id: "fb-l17-e3", type: "dominant-seventh-build-staff-choice", difficulty: 3, spec: { type: "dominant-seventh-build-staff-choice", noteRange: ["C4", "C5"] } },
+        { id: "fb-l17-e4", type: "dominant-seventh-build-staff-choice", difficulty: 3, spec: { type: "dominant-seventh-build-staff-choice", noteRange: ["C4", "C5"] } },
+        { id: "fb-l17-e5", type: "dominant-seventh-build-staff-choice", difficulty: 3, spec: { type: "dominant-seventh-build-staff-choice", noteRange: ["C4", "C5"] } },
+        { id: "fb-l17-e6", type: "dominant-seventh-build-staff-choice", difficulty: 3, spec: { type: "dominant-seventh-build-staff-choice", noteRange: ["C4", "C5"] } },
+      ],
+    },
+    {
+      id: "fb-poziom-18-kwintsekstakord-septymowy",
+      order: 18,
+      difficulty: 3,
+      introSlides: [
+        {
+          body: "Teraz kwintsekstakord (D⁶₅, I przewrót dominanty septymowej): w basie stoi już tercja akordu — Ty dobudowujesz kwintę, septymę i prymę (o oktawę wyżej).",
+          triadExamples: [
+            { notes: ["E4", "G4", "Bb4", "C5"], label: "kwintsekstakord (D⁶₅) — w basie tercja (E)", degrees: [3, 5, 7, 1] },
+          ],
+        },
+      ],
+      exercises: [
+        { id: "fb-l18-e1", type: "dominant-seventh-build-staff-choice", difficulty: 3, spec: { type: "dominant-seventh-build-staff-choice", noteRange: ["C4", "C5"], allowedInversions: ["first"] } },
+        { id: "fb-l18-e2", type: "dominant-seventh-build-staff-choice", difficulty: 3, spec: { type: "dominant-seventh-build-staff-choice", noteRange: ["C4", "C5"], allowedInversions: ["first"] } },
+        { id: "fb-l18-e3", type: "dominant-seventh-build-staff-choice", difficulty: 3, spec: { type: "dominant-seventh-build-staff-choice", noteRange: ["C4", "C5"], allowedInversions: ["first"] } },
+        { id: "fb-l18-e4", type: "dominant-seventh-build-staff-choice", difficulty: 3, spec: { type: "dominant-seventh-build-staff-choice", noteRange: ["C4", "C5"], allowedInversions: ["first"] } },
+        { id: "fb-l18-e5", type: "dominant-seventh-build-staff-choice", difficulty: 3, spec: { type: "dominant-seventh-build-staff-choice", noteRange: ["C4", "C5"], allowedInversions: ["first"] } },
+        { id: "fb-l18-e6", type: "dominant-seventh-build-staff-choice", difficulty: 3, spec: { type: "dominant-seventh-build-staff-choice", noteRange: ["C4", "C5"], allowedInversions: ["first"] } },
+      ],
+    },
+    {
+      id: "fb-poziom-19-tercekwartakord-septymowy",
+      order: 19,
+      difficulty: 3,
+      introSlides: [
+        {
+          body: "Teraz tercekwartakord (D⁴₃, II przewrót): w basie stoi już kwinta akordu — Ty dobudowujesz septymę, prymę (o oktawę wyżej) i tercję.",
+          triadExamples: [
+            { notes: ["G4", "Bb4", "C5", "E5"], label: "tercekwartakord (D⁴₃) — w basie kwinta (G)", degrees: [5, 7, 1, 3] },
+          ],
+        },
+      ],
+      exercises: [
+        { id: "fb-l19-e1", type: "dominant-seventh-build-staff-choice", difficulty: 3, spec: { type: "dominant-seventh-build-staff-choice", noteRange: ["C4", "C5"], allowedInversions: ["second"] } },
+        { id: "fb-l19-e2", type: "dominant-seventh-build-staff-choice", difficulty: 3, spec: { type: "dominant-seventh-build-staff-choice", noteRange: ["C4", "C5"], allowedInversions: ["second"] } },
+        { id: "fb-l19-e3", type: "dominant-seventh-build-staff-choice", difficulty: 3, spec: { type: "dominant-seventh-build-staff-choice", noteRange: ["C4", "C5"], allowedInversions: ["second"] } },
+        { id: "fb-l19-e4", type: "dominant-seventh-build-staff-choice", difficulty: 3, spec: { type: "dominant-seventh-build-staff-choice", noteRange: ["C4", "C5"], allowedInversions: ["second"] } },
+        { id: "fb-l19-e5", type: "dominant-seventh-build-staff-choice", difficulty: 3, spec: { type: "dominant-seventh-build-staff-choice", noteRange: ["C4", "C5"], allowedInversions: ["second"] } },
+        { id: "fb-l19-e6", type: "dominant-seventh-build-staff-choice", difficulty: 3, spec: { type: "dominant-seventh-build-staff-choice", noteRange: ["C4", "C5"], allowedInversions: ["second"] } },
+      ],
+    },
+    {
+      id: "fb-poziom-20-sekundakord-septymowy",
+      order: 20,
+      difficulty: 4,
+      introSlides: [
+        {
+          body: "Ostatni, najtrudniejszy przewrót: sekundakord (D², III przewrót). W basie stoi już septyma akordu — Ty dobudowujesz prymę, tercję i kwintę (wszystkie o oktawę wyżej). Uwaga: odległość od basu do pierwszej dobudowanej nuty to tym razem sekunda, nie tercja ani kwarta — stąd nazwa tego przewrotu.",
+          triadExamples: [
+            { notes: ["Bb4", "C5", "E5", "G5"], label: "sekundakord (D²) — w basie septyma (B♭)", degrees: [7, 1, 3, 5] },
+          ],
+        },
+      ],
+      exercises: [
+        { id: "fb-l20-e1", type: "dominant-seventh-build-staff-choice", difficulty: 4, spec: { type: "dominant-seventh-build-staff-choice", noteRange: ["C4", "C5"], allowedInversions: ["third"] } },
+        { id: "fb-l20-e2", type: "dominant-seventh-build-staff-choice", difficulty: 4, spec: { type: "dominant-seventh-build-staff-choice", noteRange: ["C4", "C5"], allowedInversions: ["third"] } },
+        { id: "fb-l20-e3", type: "dominant-seventh-build-staff-choice", difficulty: 4, spec: { type: "dominant-seventh-build-staff-choice", noteRange: ["C4", "C5"], allowedInversions: ["third"] } },
+        { id: "fb-l20-e4", type: "dominant-seventh-build-staff-choice", difficulty: 4, spec: { type: "dominant-seventh-build-staff-choice", noteRange: ["C4", "C5"], allowedInversions: ["third"] } },
+        { id: "fb-l20-e5", type: "dominant-seventh-build-staff-choice", difficulty: 4, spec: { type: "dominant-seventh-build-staff-choice", noteRange: ["C4", "C5"], allowedInversions: ["third"] } },
+        { id: "fb-l20-e6", type: "dominant-seventh-build-staff-choice", difficulty: 4, spec: { type: "dominant-seventh-build-staff-choice", noteRange: ["C4", "C5"], allowedInversions: ["third"] } },
+      ],
+    },
+    {
+      id: "fb-poziom-21-dominanta-septymowa-mix",
+      order: 21,
+      difficulty: 4,
+      introSlides: [
+        {
+          body: "Podsumowanie budowania dominanty septymowej — wszystkie cztery postacie wymieszane: zasadnicza, kwintsekstakord, tercekwartakord i sekundakord.",
+        },
+      ],
+      exercises: [
+        { id: "fb-l21-e1", type: "dominant-seventh-build-staff-choice", difficulty: 4, spec: { type: "dominant-seventh-build-staff-choice", noteRange: ["C4", "C5"], allowedInversions: ["root", "first", "second", "third"] } },
+        { id: "fb-l21-e2", type: "dominant-seventh-build-staff-choice", difficulty: 4, spec: { type: "dominant-seventh-build-staff-choice", noteRange: ["C4", "C5"], allowedInversions: ["root", "first", "second", "third"] } },
+        { id: "fb-l21-e3", type: "dominant-seventh-build-staff-choice", difficulty: 4, spec: { type: "dominant-seventh-build-staff-choice", noteRange: ["C4", "C5"], allowedInversions: ["root", "first", "second", "third"] } },
+        { id: "fb-l21-e4", type: "dominant-seventh-build-staff-choice", difficulty: 4, spec: { type: "dominant-seventh-build-staff-choice", noteRange: ["C4", "C5"], allowedInversions: ["root", "first", "second", "third"] } },
+        { id: "fb-l21-e5", type: "dominant-seventh-build-staff-choice", difficulty: 4, spec: { type: "dominant-seventh-build-staff-choice", noteRange: ["C4", "C5"], allowedInversions: ["root", "first", "second", "third"] } },
+        { id: "fb-l21-e6", type: "dominant-seventh-build-staff-choice", difficulty: 4, spec: { type: "dominant-seventh-build-staff-choice", noteRange: ["C4", "C5"], allowedInversions: ["root", "first", "second", "third"] } },
+        { id: "fb-l21-e7", type: "dominant-seventh-build-staff-choice", difficulty: 4, spec: { type: "dominant-seventh-build-staff-choice", noteRange: ["C4", "C5"], allowedInversions: ["root", "first", "second", "third"] } },
+      ],
+    },
+    {
+      // Boss lekcja — Inżynier Piętrus. Jak Arytmik/Ośmiotakt/Oktawiusz/
+      // Trójgłos/Akordeon/Dominik/Molotaur: mix ćwiczeń REUSED z
+      // wcześniejszych lekcji tej krainy zamiast świeżo pisanej treści —
+      // tym razem obejmujący WSZYSTKO, co ta kraina uczy budować:
+      // interwały, trójdźwięki w postaci zasadniczej i przewrotach,
+      // dominantę septymową w postaci zasadniczej i przewrotach.
+      id: "fb-poziom-22-boss-pietrus",
+      order: 22,
+      difficulty: 4,
+      isBoss: true,
+      bossName: "Piętrus",
+      introSlides: [
+        {
+          body: "Inżynier Piętrus strzeże wyjścia z Fabryki Budowania — akordy buduje piętro po piętrze, układając tercje jedną na drugiej, ale czasem miesza piętra i dokłada krzywy klocek. Żeby go pokonać, pokaż, że Ty budujesz bezbłędnie: interwały, trójdźwięki (zwykłe i przewrócone) i dominantę septymową (zwykłą i przewróconą).",
+          bossPortrait: true,
+        },
+      ],
+      exercises: [
+        { id: "fb-l22-e1", type: "interval-build-staff-choice", difficulty: 3, spec: { type: "interval-build-staff-choice", noteRange: ["C4", "C5"], allowedSemitones: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] } },
+        { id: "fb-l22-e2", type: "triad-build-staff-choice", difficulty: 3, spec: { type: "triad-build-staff-choice", noteRange: ["C4", "C5"] } },
+        { id: "fb-l22-e3", type: "triad-inversion-build-staff-choice", difficulty: 3, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"], allowedInversions: ["first"] } },
+        { id: "fb-l22-e4", type: "triad-inversion-build-staff-choice", difficulty: 3, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"], allowedInversions: ["second"] } },
+        { id: "fb-l22-e5", type: "dominant-seventh-build-staff-choice", difficulty: 3, spec: { type: "dominant-seventh-build-staff-choice", noteRange: ["C4", "C5"] } },
+        { id: "fb-l22-e6", type: "dominant-seventh-build-staff-choice", difficulty: 4, spec: { type: "dominant-seventh-build-staff-choice", noteRange: ["C4", "C5"], allowedInversions: ["first"] } },
+        { id: "fb-l22-e7", type: "dominant-seventh-build-staff-choice", difficulty: 4, spec: { type: "dominant-seventh-build-staff-choice", noteRange: ["C4", "C5"], allowedInversions: ["third"] } },
+        { id: "fb-l22-e8", type: "triad-inversion-build-staff-choice", difficulty: 4, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"] } },
       ],
     },
   ],
