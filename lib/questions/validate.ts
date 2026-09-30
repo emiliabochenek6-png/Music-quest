@@ -99,7 +99,8 @@ export function isAnswerCorrect(exercise: GeneratedExercise, answer: AnswerInput
       );
     }
     case "triad-quality-sequence-choice":
-    case "triad-inversion-sequence-choice": {
+    case "triad-inversion-sequence-choice":
+    case "dominant-seventh-inversion-sequence-choice": {
       const { selectedOptionIds } = answer as { selectedOptionIds: (string | null)[] };
       return (
         selectedOptionIds.length === exercise.correctOptionIds.length &&

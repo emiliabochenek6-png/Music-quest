@@ -4,6 +4,7 @@ import { CircleNeighborKeyChoiceExercise } from "@/components/exercises/CircleNe
 import { CircleStepChoiceExercise } from "@/components/exercises/CircleStepChoiceExercise";
 import { ClefTraceExercise } from "@/components/exercises/ClefTraceExercise";
 import { DominantSeventhInversionChoiceExercise } from "@/components/exercises/DominantSeventhInversionChoiceExercise";
+import { DominantSeventhInversionSequenceChoiceExercise } from "@/components/exercises/DominantSeventhInversionSequenceChoiceExercise";
 import { IntervalBuildChoiceExercise } from "@/components/exercises/IntervalBuildChoiceExercise";
 import { IntervalBuildStaffChoiceExercise } from "@/components/exercises/IntervalBuildStaffChoiceExercise";
 import { IntervalDistanceChoiceExercise } from "@/components/exercises/IntervalDistanceChoiceExercise";
@@ -317,6 +318,16 @@ export function ExerciseRenderer({ exercise, answer, onAnswerChange, checked, is
           locale={locale}
         />
       );
+    case "dominant-seventh-inversion-sequence-choice":
+      return (
+        <DominantSeventhInversionSequenceChoiceExercise
+          exercise={exercise}
+          answer={answer?.type === "dominant-seventh-inversion-sequence-choice" ? answer : null}
+          onAnswerChange={onAnswerChange}
+          checked={checked}
+          locale={locale}
+        />
+      );
     case "triad-role-choice":
       return (
         <TriadRoleChoiceExercise
@@ -592,6 +603,7 @@ export function hasAnswerToCheck(answer: AnswerInput | null): boolean {
     case "interval-sequence-choice":
     case "triad-quality-sequence-choice":
     case "triad-inversion-sequence-choice":
+    case "dominant-seventh-inversion-sequence-choice":
       return answer.selectedOptionIds.length > 0 && answer.selectedOptionIds.every((id) => id !== null);
     case "triad-build-staff-choice":
       return answer.selectedThirdStep !== null && answer.selectedFifthStep !== null;

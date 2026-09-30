@@ -355,6 +355,8 @@ export function getExerciseSignature(exercise: GeneratedExercise): string | null
       return `triad-inversion-sequence-choice:${exercise.triads.map((triad) => triad.join(",")).join("|")}`;
     case "dominant-seventh-inversion-choice":
       return `dominant-seventh-inversion-choice:${exercise.notes.join(",")}-${exercise.inversion}`;
+    case "dominant-seventh-inversion-sequence-choice":
+      return `dominant-seventh-inversion-sequence-choice:${exercise.chords.map((chord) => chord.join(",")).join("|")}`;
     case "solfege-note-singing":
       return `solfege-note-singing:${exercise.targetNote}`;
     case "triad-notes-choice":
@@ -858,6 +860,43 @@ export function generateExercise(definition: ExerciseDefinition, locale: Locale,
           hideNotation: hideNotation ?? false,
           options,
           correctOptionId: inversion,
+        };
+      }, exclude);
+    }
+    case "dominant-seventh-inversion-sequence-choice": {
+      const { sequenceLength, noteRange, allowedInversions } = definition.spec;
+      const inversions = allowedInversions ?? (["root", "first", "second", "third"] as const);
+      return generateWithoutRepeat(() => {
+        const chords: [string, string, string, string][] = [];
+        const optionsPerPosition: MultipleChoiceOption[][] = [];
+        const correctOptionIds: string[] = [];
+        for (let position = 0; position < sequenceLength; position++) {
+          const inversion = inversions[Math.floor(Math.random() * inversions.length)];
+          const root = randomNoteInRange(noteRange);
+          let chord: ReturnType<typeof buildDominantSeventh>;
+          try {
+            chord = buildDominantSeventh(root);
+          } catch {
+            chord = buildDominantSeventh(flatAlternateSpelling(root));
+          }
+          const invertedNotes = getSeventhChordInversionNotes(chord, inversion);
+          chords.push([
+            formatScientific(invertedNotes[0]),
+            formatScientific(invertedNotes[1]),
+            formatScientific(invertedNotes[2]),
+            formatScientific(invertedNotes[3]),
+          ]);
+          optionsPerPosition.push(
+            shuffled(inversions).map((candidateInversion) => ({ id: candidateInversion, label: getSeventhChordInversionName(candidateInversion, locale) }))
+          );
+          correctOptionIds.push(inversion);
+        }
+        return {
+          id: definition.id,
+          type: "dominant-seventh-inversion-sequence-choice",
+          chords,
+          optionsPerPosition,
+          correctOptionIds,
         };
       }, exclude);
     }

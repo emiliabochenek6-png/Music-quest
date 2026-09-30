@@ -130,6 +130,8 @@
   "lesson.triadQualitySequenceChoicePlayAllHint": "Odtwórz wszystkie po kolei",
   "lesson.triadInversionSequenceChoicePrompt": "Posłuchaj kolejno {count} trójdźwięki, jeden po drugim. Nazwij postać każdego z nich.",
   "lesson.triadInversionSequenceChoicePlayAllHint": "Odtwórz wszystkie po kolei",
+  "lesson.dominantSeventhInversionSequenceChoicePrompt": "Posłuchaj kolejno {count} dominanty septymowe, jedna po drugiej. Nazwij postać każdej z nich.",
+  "lesson.dominantSeventhInversionSequenceChoicePlayAllHint": "Odtwórz wszystkie po kolei",
   "lesson.triadInversionChoicePrompt": "Posłuchaj i zobacz ten trójdźwięk {quality}. W jakiej jest postaci?",
   "lesson.triadInversionChoiceListenOnlyPrompt": "Posłuchaj uważnie tego trójdźwięku {quality}. W jakiej jest postaci?",
   "lesson.triadInversionChoiceListenOnlyLabel": "A teraz samo słuchanie",

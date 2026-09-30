@@ -270,6 +270,18 @@ export type ExerciseSpec =
       allowedInversions?: SeventhChordInversion[];
       hideNotation?: boolean;
     }
+  | {
+      /** dominant-seventh-inversion-choice's own triad-inversion-sequence-
+       * choice sibling — `sequenceLength` dominant sevenths play back to
+       * back (a fresh random root+INVERSION each), and the player names
+       * EVERY one's inversion, one picker per position. Same
+       * playChordSequence shape (each chord still a normal simultaneous
+       * 4-note chord, only the positions are staggered). */
+      type: "dominant-seventh-inversion-sequence-choice";
+      sequenceLength: 2 | 3;
+      noteRange: [string, string];
+      allowedInversions?: SeventhChordInversion[];
+    }
   // Labirynt Tonacji (circle-of-fifths world) — see data/lessons/labirynt-tonacji.ts's own doc.
   | { type: "circle-step-choice"; direction?: CircleStepDirection; fifthsRange: [number, number] }
   | { type: "relative-key-choice"; promptMode?: TonalityMode; fifthsRange: [number, number] }
@@ -708,6 +720,18 @@ export type GeneratedExercise =
     }
   | {
       id: string;
+      type: "dominant-seventh-inversion-sequence-choice";
+      chords: [string, string, string, string][];
+      /** One option pool per position — same "shuffle the inversion pool"
+       * shape as dominant-seventh-inversion-choice's own, generated
+       * independently per position so the pools don't have to match. */
+      optionsPerPosition: MultipleChoiceOption[][];
+      /** Parallel to chords/optionsPerPosition — correctOptionIds[i] is
+       * chords[i]'s own answer. */
+      correctOptionIds: string[];
+    }
+  | {
+      id: string;
       type: "triad-role-choice";
       fifths: number;
       referenceNotes: [string, string, string];
@@ -867,6 +891,7 @@ export type AnswerInput =
   | { type: "triad-inversion-choice"; selectedOptionId: string }
   | { type: "triad-inversion-sequence-choice"; selectedOptionIds: (string | null)[] }
   | { type: "dominant-seventh-inversion-choice"; selectedOptionId: string }
+  | { type: "dominant-seventh-inversion-sequence-choice"; selectedOptionIds: (string | null)[] }
   | { type: "triad-role-choice"; selectedOptionId: string }
   | { type: "circle-step-choice"; selectedFifths: number }
   | { type: "relative-key-choice"; selectedFifths: number }
