@@ -40,8 +40,11 @@ const ACCIDENTAL_FONT_SIZE: Record<Accidental, number> = { [-2]: 22, [-1]: 22, [
 const ACCIDENTAL_LETTER_SPACING: Record<Accidental, number> = { [-2]: -15, [-1]: 0, [0]: 0, [1]: 0, [2]: 0 };
 // [-1]/[1] (plain flat/sharp) nudged up again per a later round of live
 // feedback (Fabryka Budowania) — they still sat a bit low relative to
-// the note/line they mark.
-const ACCIDENTAL_DY: Record<Accidental, number> = { [-2]: 7, [-1]: 4, [0]: 0, [1]: 8, [2]: 5 };
+// the note/line they mark — then the sharp ([1]) nudged back down again
+// per a later round of live feedback (Fabryka Budowania's build
+// exercises), to sit centered on its own line/note instead of a touch
+// high.
+const ACCIDENTAL_DY: Record<Accidental, number> = { [-2]: 7, [-1]: 4, [0]: 0, [1]: 11, [2]: 5 };
 const ACCIDENTAL_X_OFFSET: Record<Accidental, number> = { [-2]: -7, [-1]: 0, [0]: 0, [1]: 0, [2]: 0 };
 const BOARD_WIDTH = 220;
 /** Extra room on both sides of the 0-VIEW_WIDTH viewBox so every note and
