@@ -9,8 +9,24 @@ import type { WorldContent } from "@/types/exercises";
  * encoded as rules anywhere in this app) and `rhythm-math-choice` (pick
  * which combination of note values sums to exactly one 4/4 measure — this
  * one IS computed at generation time, see lib/questions/generate.ts).
- * Content transcribed verbatim from the web app's
- * data/worlds/gaj-grupowania.json.
+ * Lekcje 1-7 transcribed verbatim from the web app's
+ * data/worlds/gaj-grupowania.json. Lekcje 8-14 (pauza ósemkowa, triole
+ * obok prostych wartości, długie wartości, nieparzyste metra ćwiartkowe
+ * — 5/4 i 7/4, nowe to this world — granica taktu, przegląd, i lekcja-
+ * boss z Wiewiórem Pęczkiem) added later, same two exercise types
+ * throughout. Every `options[].groups` partition here was checked by
+ * script against two rules: (1) every measure's note/rest values sum to
+ * exactly its meter's own beat count (lib/rhythm/valueBeats.ts's own
+ * table), and (2) the CORRECT option and every WRONG option actually
+ * render as visually different beamings — BeamedNotation only draws a
+ * beam between 2+ "beamable" values (eighth/dottedEighth/sixteenth/
+ * eighthTriplet) sharing a group, so a wrong option that only
+ * rearranges non-beamable neighbors (a rest, a quarter-or-longer note)
+ * around an already-settled beam is indistinguishable on screen from the
+ * correct one — an unfair, unanswerable question. 5/4 and 7/4 (added to
+ * `Meter` in types/exercises.ts for this world) follow the same 3+2 /
+ * 2+2+3 felt-pulse shape this world's own 5/8 and 7/8 already use, just
+ * in quarters instead of eighths.
  */
 export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
   worldId: "gaj-grupowania",
@@ -974,6 +990,998 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
               { groups: [[0, 1], [2, 3], [4, 5], [6, 7]] },
             ],
             correctOptionIndex: 0,
+          },
+        },
+      ],
+    },
+    {
+      id: "gg-poziom-8-pauza-osemkowa",
+      order: 8,
+      difficulty: 4,
+      introSlides: [
+        {
+          body: "Pauza ósemkowa wewnątrz grupy nut nie przerywa belki — belka nadal łączy prawdziwe nuty po obu jej stronach, dokładnie jak pauza szesnastkowa i ćwierćpauza, które już znasz.",
+          groupingExamples: [
+            {
+              sequence: ["eighth", "eighth", "eighth", "eighthRest", "eighth", "eighth"],
+              groups: [[0, 1, 2], [3, 4, 5]],
+              meter: "6/8",
+              label: "Pauza ósemkowa w środku grupy — belka nadal łączy ósemki po obu stronach",
+            },
+          ],
+        },
+      ],
+      exercises: [
+        {
+          id: "gg-l8-e1",
+          type: "beam-grouping-choice",
+          difficulty: 4,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["eighth", "eighthRest", "eighth", "eighth"],
+            meter: "2/4",
+            options: [
+              { groups: [[0, 1], [2, 3]] },
+              { groups: [[0, 1, 2, 3]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l8-e2",
+          type: "beam-grouping-choice",
+          difficulty: 4,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["eighthRest", "eighth", "eighth", "eighth"],
+            meter: "2/4",
+            options: [
+              { groups: [[0, 1], [2, 3]] },
+              { groups: [[0], [1], [2], [3]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l8-e3",
+          type: "beam-grouping-choice",
+          difficulty: 4,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["eighth", "eighth", "eighthRest", "eighth", "eighth", "eighth"],
+            meter: "3/4",
+            options: [
+              { groups: [[0, 1], [2, 3], [4, 5]] },
+              { groups: [[0, 1], [2, 3, 4, 5]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l8-e4",
+          type: "beam-grouping-choice",
+          difficulty: 4,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["sixteenth", "sixteenth", "eighth", "eighthRest", "eighth"],
+            meter: "2/4",
+            options: [
+              { groups: [[0, 1, 2], [3, 4]] },
+              { groups: [[0, 1], [2, 3, 4]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l8-e5",
+          type: "beam-grouping-choice",
+          difficulty: 5,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["eighth", "eighthRest", "sixteenth", "sixteenth", "eighth", "quarter", "quarter"],
+            meter: "4/4",
+            options: [
+              { groups: [[0, 1], [2, 3, 4], [5], [6]] },
+              { groups: [[0, 1, 2, 3, 4], [5], [6]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l8-e6",
+          type: "beam-grouping-choice",
+          difficulty: 5,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["eighthRest", "eighth", "sixteenth", "sixteenth", "eighth", "eighth", "eighth", "quarter"],
+            meter: "4/4",
+            options: [
+              { groups: [[0, 1], [2, 3, 4], [5, 6], [7]] },
+              { groups: [[0, 1], [2, 3, 4, 5, 6], [7]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l8-e7",
+          type: "beam-grouping-choice",
+          difficulty: 5,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["eighth", "eighth", "eighth", "eighthRest", "eighth", "eighth"],
+            meter: "6/8",
+            options: [
+              { groups: [[0, 1, 2], [3, 4, 5]] },
+              { groups: [[0, 1, 2, 3, 4, 5]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l8-e8",
+          type: "beam-grouping-choice",
+          difficulty: 5,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["eighthRest", "eighth", "eighth", "eighth", "eighth", "eighthRest"],
+            meter: "6/8",
+            options: [
+              { groups: [[0, 1, 2], [3, 4, 5]] },
+              { groups: [[0], [1], [2], [3, 4, 5]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+      ],
+    },
+    {
+      id: "gg-poziom-9-triole-i-proste-wartosci",
+      order: 9,
+      difficulty: 5,
+      introSlides: [
+        {
+          body: "Triola obok zwykłych wartości: jej własna belka i etykieta '3' nigdy nie wychodzą poza jej własny puls — sąsiednie ósemki czy szesnastki w innym pulsie zawsze mają swoją osobną belkę.",
+          groupingExamples: [
+            {
+              sequence: ["eighthTriplet", "eighthTriplet", "eighthTriplet", "eighth", "eighth"],
+              groups: [[0, 1, 2], [3, 4]],
+              meter: "2/4",
+              label: "Triola w jednym pulsie, zwykłe ósemki w drugim — każdy pulsuje osobno",
+            },
+          ],
+        },
+        {
+          body: "Triola nigdy nie łączy się belką z sąsiednią ćwiartką ani z żadną pojedynczą wartością spoza niej — zawsze zostaje własną, zamkniętą grupą trzech.",
+          groupingExamples: [
+            {
+              sequence: ["quarter", "eighthTriplet", "eighthTriplet", "eighthTriplet"],
+              groups: [[0], [1, 2, 3]],
+              meter: "2/4",
+              label: "Triola nigdy nie łączy się belką z sąsiednią ćwiartką",
+            },
+          ],
+        },
+      ],
+      exercises: [
+        {
+          id: "gg-l9-e1",
+          type: "beam-grouping-choice",
+          difficulty: 5,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["eighthTriplet", "eighthTriplet", "eighthTriplet", "eighth", "eighth"],
+            meter: "2/4",
+            options: [
+              { groups: [[0, 1, 2], [3, 4]] },
+              { groups: [[0, 1, 2, 3, 4]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l9-e2",
+          type: "beam-grouping-choice",
+          difficulty: 5,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["eighth", "eighth", "eighthTriplet", "eighthTriplet", "eighthTriplet"],
+            meter: "2/4",
+            options: [
+              { groups: [[0, 1], [2, 3, 4]] },
+              { groups: [[0, 1, 2, 3, 4]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l9-e3",
+          type: "beam-grouping-choice",
+          difficulty: 5,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["quarter", "eighthTriplet", "eighthTriplet", "eighthTriplet", "quarter"],
+            meter: "3/4",
+            options: [
+              { groups: [[0], [1, 2, 3], [4]] },
+              { groups: [[0], [1, 2], [3], [4]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l9-e4",
+          type: "beam-grouping-choice",
+          difficulty: 6,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["eighthTriplet", "eighthTriplet", "eighthTriplet", "sixteenth", "sixteenth", "eighth", "quarter"],
+            meter: "3/4",
+            options: [
+              { groups: [[0, 1, 2], [3, 4, 5], [6]] },
+              { groups: [[0, 1, 2, 3, 4, 5], [6]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l9-e5",
+          type: "beam-grouping-choice",
+          difficulty: 6,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["eighthTriplet", "eighthTriplet", "eighthTriplet", "eighthTriplet", "eighthTriplet", "eighthTriplet", "quarter", "quarter"],
+            meter: "4/4",
+            options: [
+              { groups: [[0, 1, 2], [3, 4, 5], [6], [7]] },
+              { groups: [[0, 1, 2, 3, 4, 5], [6], [7]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l9-e6",
+          type: "beam-grouping-choice",
+          difficulty: 6,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["quarter", "eighthTriplet", "eighthTriplet", "eighthTriplet", "sixteenth", "sixteenth", "eighth", "quarter"],
+            meter: "4/4",
+            options: [
+              { groups: [[0], [1, 2, 3], [4, 5, 6], [7]] },
+              { groups: [[0], [1, 2, 3, 4, 5, 6], [7]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l9-e7",
+          type: "beam-grouping-choice",
+          difficulty: 6,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["eighthTriplet", "eighthTriplet", "eighthTriplet", "eighthTriplet", "eighthTriplet", "eighthTriplet", "eighthTriplet", "eighthTriplet", "eighthTriplet"],
+            meter: "3/4",
+            options: [
+              { groups: [[0, 1, 2], [3, 4, 5], [6, 7, 8]] },
+              { groups: [[0, 1, 2, 3, 4, 5, 6, 7, 8]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l9-e8",
+          type: "beam-grouping-choice",
+          difficulty: 6,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["eighthTriplet", "eighthTriplet", "eighthTriplet", "eighthTriplet", "eighthTriplet", "eighthTriplet", "eighthTriplet", "eighthTriplet", "eighthTriplet", "eighthTriplet", "eighthTriplet", "eighthTriplet"],
+            meter: "4/4",
+            options: [
+              { groups: [[0, 1, 2], [3, 4, 5], [6, 7, 8], [9, 10, 11]] },
+              { groups: [[0, 1, 2], [3, 4, 5, 6, 7, 8], [9, 10, 11]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+      ],
+    },
+    {
+      id: "gg-poziom-10-dlugie-wartosci",
+      order: 10,
+      difficulty: 4,
+      introSlides: [
+        {
+          body: "Półnuta, półnuta z kropką i cała nuta nigdy nie mają belki ani chorągiewki — stoją zawsze same, nawet w środku taktu, obok belkowanych grup ósemek czy szesnastek.",
+          groupingExamples: [
+            {
+              sequence: ["eighth", "eighth", "half", "quarter"],
+              groups: [[0, 1], [2], [3]],
+              meter: "4/4",
+              label: "Półnuta nigdy nie ma belki — stoi sama, nawet w środku taktu",
+            },
+          ],
+        },
+      ],
+      exercises: [
+        {
+          id: "gg-l10-e1",
+          type: "beam-grouping-choice",
+          difficulty: 4,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["eighth", "eighth", "half", "quarter"],
+            meter: "4/4",
+            options: [
+              { groups: [[0, 1], [2], [3]] },
+              { groups: [[0], [1, 2], [3]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l10-e2",
+          type: "beam-grouping-choice",
+          difficulty: 4,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["half", "eighth", "eighth"],
+            meter: "3/4",
+            options: [
+              { groups: [[0], [1, 2]] },
+              { groups: [[0, 1], [2]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l10-e3",
+          type: "beam-grouping-choice",
+          difficulty: 4,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["half", "quarter", "eighth", "eighth"],
+            meter: "4/4",
+            options: [
+              { groups: [[0], [1], [2, 3]] },
+              { groups: [[0], [1], [2], [3]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l10-e4",
+          type: "beam-grouping-choice",
+          difficulty: 5,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["sixteenth", "sixteenth", "eighth", "half", "quarter"],
+            meter: "4/4",
+            options: [
+              { groups: [[0, 1, 2], [3], [4]] },
+              { groups: [[0, 1], [2, 3], [4]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l10-e5",
+          type: "beam-grouping-choice",
+          difficulty: 4,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["eighth", "eighth", "quarter", "half"],
+            meter: "2/2",
+            options: [
+              { groups: [[0, 1, 2], [3]] },
+              { groups: [[0], [1, 2], [3]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l10-e6",
+          type: "beam-grouping-choice",
+          difficulty: 5,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["eighth", "eighth", "eighth", "eighth", "half"],
+            meter: "2/2",
+            options: [
+              { groups: [[0, 1, 2, 3], [4]] },
+              { groups: [[0, 1], [2, 3], [4]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l10-e7",
+          type: "beam-grouping-choice",
+          difficulty: 5,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["whole", "eighth", "eighth", "quarter", "quarter", "quarter"],
+            meter: "4/4",
+            options: [
+              { groups: [[0], [1, 2], [3], [4], [5]] },
+              { groups: [[0], [1], [2, 3, 4, 5]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l10-e8",
+          type: "beam-grouping-choice",
+          difficulty: 5,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["dottedHalf", "eighth", "eighth", "quarter", "quarter"],
+            meter: "3/4",
+            options: [
+              { groups: [[0], [1, 2], [3], [4]] },
+              { groups: [[0], [1], [2, 3, 4]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+      ],
+    },
+    {
+      id: "gg-poziom-11-nieparzyste-metra-cwiartkowe",
+      order: 11,
+      difficulty: 6,
+      introSlides: [
+        {
+          body: "5/4 najczęściej grupuje się jako 3+2 (trzy ćwiartki, potem dwie) — ten sam podział, który już znasz z 5/8, tylko teraz jednostką jest ćwiartka, nie ósemka.",
+          groupingExamples: [
+            {
+              sequence: ["eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth"],
+              groups: [[0, 1, 2, 3, 4, 5], [6, 7, 8, 9]],
+              meter: "5/4",
+              label: "5/4 jako 3+2 (trzy ćwiartki + dwie ćwiartki)",
+            },
+          ],
+        },
+        {
+          body: "7/4 najczęściej grupuje się jako 2+2+3 — dokładnie jak 7/8, tylko w ćwiartkach zamiast w ósemkach.",
+          groupingExamples: [
+            {
+              sequence: ["eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth"],
+              groups: [[0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10, 11, 12, 13]],
+              meter: "7/4",
+              label: "7/4 jako 2+2+3",
+            },
+          ],
+        },
+      ],
+      exercises: [
+        {
+          id: "gg-l11-e1",
+          type: "beam-grouping-choice",
+          difficulty: 6,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth"],
+            meter: "5/4",
+            options: [
+              { groups: [[0, 1, 2, 3, 4, 5], [6, 7, 8, 9]] },
+              { groups: [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l11-e2",
+          type: "beam-grouping-choice",
+          difficulty: 6,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["quarter", "eighth", "eighth", "eighth", "eighth", "quarter", "quarter"],
+            meter: "5/4",
+            options: [
+              { groups: [[0, 1, 2, 3, 4], [5, 6]] },
+              { groups: [[0], [1, 2], [3, 4], [5], [6]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l11-e3",
+          type: "beam-grouping-choice",
+          difficulty: 6,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth"],
+            meter: "7/4",
+            options: [
+              { groups: [[0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10, 11, 12, 13]] },
+              { groups: [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l11-e4",
+          type: "beam-grouping-choice",
+          difficulty: 6,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["quarter", "quarter", "eighth", "eighth", "eighth", "eighth", "quarter", "eighth", "eighth", "eighth", "eighth"],
+            meter: "7/4",
+            options: [
+              { groups: [[0, 1], [2, 3, 4, 5], [6, 7, 8, 9, 10]] },
+              { groups: [[0, 1], [2, 3, 4, 5, 6, 7, 8, 9, 10]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l11-e5",
+          type: "beam-grouping-choice",
+          difficulty: 6,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["sixteenth", "sixteenth", "eighth", "eighth", "eighth", "eighth", "eighth", "quarter", "quarter"],
+            meter: "5/4",
+            options: [
+              { groups: [[0, 1, 2, 3, 4, 5, 6], [7, 8]] },
+              { groups: [[0, 1], [2, 3], [4, 5, 6], [7], [8]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l11-e6",
+          type: "beam-grouping-choice",
+          difficulty: 6,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["quarter", "quarter", "quarter", "eighth", "eighth", "eighth", "eighth"],
+            meter: "5/4",
+            options: [
+              { groups: [[0, 1, 2], [3, 4, 5, 6]] },
+              { groups: [[0], [1], [2], [3, 4], [5, 6]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l11-e7",
+          type: "beam-grouping-choice",
+          difficulty: 6,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["eighth", "eighth", "eighth", "eighth", "quarter", "quarter", "sixteenth", "sixteenth", "sixteenth", "sixteenth", "eighth", "eighth", "quarter"],
+            meter: "7/4",
+            options: [
+              { groups: [[0, 1, 2, 3], [4, 5], [6, 7, 8, 9, 10, 11, 12]] },
+              { groups: [[0, 1], [2, 3], [4], [5], [6, 7, 8, 9], [10, 11], [12]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l11-e8",
+          type: "beam-grouping-choice",
+          difficulty: 6,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["quarter", "eighth", "eighth", "quarter", "quarter", "eighth", "eighth", "eighth", "eighth", "quarter"],
+            meter: "7/4",
+            options: [
+              { groups: [[0, 1, 2], [3, 4], [5, 6, 7, 8, 9]] },
+              { groups: [[0, 1, 2], [3, 4], [5, 6], [7, 8], [9]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+      ],
+    },
+    {
+      id: "gg-poziom-12-granica-taktu",
+      order: 12,
+      difficulty: 5,
+      introSlides: [
+        {
+          body: "Teraz dwa takty naraz — belka NIGDY nie przeskakuje przez kreskę taktową, choćby dwie sąsiednie grupy wyglądały tak samo. Każdy takt grupuje się całkiem osobno.",
+          groupingExamples: [
+            {
+              sequence: ["eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth"],
+              groups: [[0, 1], [2, 3], [4, 5], [6, 7]],
+              barBeforeIndex: 4,
+              meter: "2/4",
+              label: "Każdy takt grupowany osobno — belka nigdy nie przeskakuje przez kreskę taktową",
+            },
+          ],
+        },
+      ],
+      exercises: [
+        {
+          id: "gg-l12-e1",
+          type: "beam-grouping-choice",
+          difficulty: 5,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth"],
+            meter: "2/4",
+            options: [
+              { groups: [[0, 1], [2, 3], [4, 5], [6, 7]] },
+              { groups: [[0, 1], [2, 3, 4, 5], [6, 7]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l12-e2",
+          type: "beam-grouping-choice",
+          difficulty: 5,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth"],
+            meter: "3/4",
+            options: [
+              { groups: [[0, 1], [2, 3], [4, 5], [6, 7], [8, 9], [10, 11]] },
+              { groups: [[0, 1], [2, 3], [4, 5, 6, 7], [8, 9], [10, 11]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l12-e3",
+          type: "beam-grouping-choice",
+          difficulty: 6,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["quarter", "quarter", "quarter", "sixteenth", "sixteenth", "eighth", "sixteenth", "sixteenth", "eighth", "quarter", "quarter", "quarter"],
+            meter: "4/4",
+            options: [
+              { groups: [[0], [1], [2], [3, 4, 5], [6, 7, 8], [9], [10], [11]] },
+              { groups: [[0], [1], [2], [3, 4, 5, 6, 7, 8], [9], [10], [11]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l12-e4",
+          type: "beam-grouping-choice",
+          difficulty: 5,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth"],
+            meter: "6/8",
+            options: [
+              { groups: [[0, 1, 2], [3, 4, 5], [6, 7, 8], [9, 10, 11]] },
+              { groups: [[0, 1, 2], [3, 4, 5, 6, 7, 8], [9, 10, 11]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l12-e5",
+          type: "beam-grouping-choice",
+          difficulty: 6,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["quarter", "sixteenth", "sixteenth", "sixteenth", "sixteenth", "sixteenth", "sixteenth", "sixteenth", "sixteenth", "quarter"],
+            meter: "2/4",
+            options: [
+              { groups: [[0], [1, 2, 3, 4], [5, 6, 7, 8], [9]] },
+              { groups: [[0], [1, 2, 3, 4, 5, 6, 7, 8], [9]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l12-e6",
+          type: "beam-grouping-choice",
+          difficulty: 6,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["eighth", "eighth", "quarter", "eighth", "eighth", "eighth", "eighth", "quarter", "eighth", "eighth"],
+            meter: "3/4",
+            options: [
+              { groups: [[0, 1], [2], [3, 4], [5, 6], [7], [8, 9]] },
+              { groups: [[0, 1], [2], [3, 4, 5, 6], [7], [8, 9]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l12-e7",
+          type: "beam-grouping-choice",
+          difficulty: 6,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["quarter", "eighthTriplet", "eighthTriplet", "eighthTriplet", "eighthTriplet", "eighthTriplet", "eighthTriplet", "quarter"],
+            meter: "2/4",
+            options: [
+              { groups: [[0], [1, 2, 3], [4, 5, 6], [7]] },
+              { groups: [[0], [1, 2, 3, 4, 5, 6], [7]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l12-e8",
+          type: "beam-grouping-choice",
+          difficulty: 6,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "sixteenth", "sixteenth", "eighth", "eighth", "eighth", "eighth", "eighth"],
+            meter: "6/8",
+            options: [
+              { groups: [[0, 1, 2], [3, 4, 5], [6, 7, 8, 9], [10, 11, 12]] },
+              { groups: [[0, 1, 2], [3, 4, 5, 6, 7, 8, 9], [10, 11, 12]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+      ],
+    },
+    {
+      id: "gg-poziom-13-mieszanka-przed-bossem",
+      order: 13,
+      difficulty: 6,
+      introSlides: [
+        {
+          body: "Podsumowanie grupowania — metra proste, złożone i nieparzyste, pauzy, triole i długie wartości, wszystko wymieszane. Dokładnie to czeka Cię u bossa.",
+        },
+      ],
+      exercises: [
+        {
+          id: "gg-l13-e1",
+          type: "beam-grouping-choice",
+          difficulty: 6,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["dottedEighth", "sixteenth", "eighth", "eighth", "eighth"],
+            meter: "5/8",
+            options: [
+              { groups: [[0, 1, 2], [3, 4]] },
+              { groups: [[0, 1, 2, 3, 4]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l13-e2",
+          type: "beam-grouping-choice",
+          difficulty: 6,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["eighth", "eighth", "sixteenth", "sixteenth", "eighth", "eighth", "eighth", "eighth"],
+            meter: "7/8",
+            options: [
+              { groups: [[0, 1], [2, 3, 4], [5, 6, 7]] },
+              { groups: [[0, 1, 2, 3, 4], [5, 6, 7]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l13-e3",
+          type: "beam-grouping-choice",
+          difficulty: 6,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["dottedEighth", "sixteenth", "eighth", "eighth", "eighth", "eighth"],
+            meter: "6/8",
+            options: [
+              { groups: [[0, 1, 2], [3, 4, 5]] },
+              { groups: [[0, 1, 2, 3, 4, 5]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l13-e4",
+          type: "beam-grouping-choice",
+          difficulty: 6,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["quarter", "eighthTriplet", "eighthTriplet", "eighthTriplet", "sixteenth", "sixteenth", "eighth", "quarter"],
+            meter: "4/4",
+            options: [
+              { groups: [[0], [1, 2, 3], [4, 5, 6], [7]] },
+              { groups: [[0], [1, 2, 3, 4, 5, 6], [7]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l13-e5",
+          type: "beam-grouping-choice",
+          difficulty: 5,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["eighth", "eighth", "half"],
+            meter: "3/4",
+            options: [
+              { groups: [[0, 1], [2]] },
+              { groups: [[0], [1], [2]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l13-e6",
+          type: "beam-grouping-choice",
+          difficulty: 6,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["quarter", "quarter", "eighth", "eighth", "quarter", "quarter"],
+            meter: "5/4",
+            options: [
+              { groups: [[0, 1, 2, 3], [4, 5]] },
+              { groups: [[0], [1], [2], [3], [4], [5]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l13-e7",
+          type: "beam-grouping-choice",
+          difficulty: 5,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["eighthRest", "eighth", "sixteenth", "sixteenth", "eighth"],
+            meter: "2/4",
+            options: [
+              { groups: [[0, 1], [2, 3, 4]] },
+              { groups: [[0, 1, 2, 3, 4]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l13-e8",
+          type: "beam-grouping-choice",
+          difficulty: 6,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["eighth", "eighth", "eighth", "eighth", "quarter", "quarter", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth"],
+            meter: "7/4",
+            options: [
+              { groups: [[0, 1, 2, 3], [4, 5], [6, 7, 8, 9, 10, 11]] },
+              { groups: [[0, 1], [2, 3], [4], [5], [6, 7, 8], [9, 10, 11]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l13-e9",
+          type: "beam-grouping-choice",
+          difficulty: 6,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["eighthRest", "eighth", "eighthTriplet", "eighthTriplet", "eighthTriplet", "dottedEighth", "sixteenth", "quarter"],
+            meter: "4/4",
+            options: [
+              { groups: [[0, 1], [2, 3, 4], [5, 6], [7]] },
+              { groups: [[0, 1, 2, 3, 4], [5, 6], [7]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+      ],
+    },
+    {
+      // Boss lekcja — Wiewiór Pęczek. Jak Arytmik/Ośmiotakt/.../Piętrus:
+      // mix ćwiczeń z nowym, świeżym materiałem w stylu/trudności lekcji
+      // 1-13, obejmujący wszystko, co ta kraina uczy grupować: pauzy,
+      // triole, długie wartości, nieparzyste metra, granicę taktu.
+      id: "gg-poziom-14-boss-peczek",
+      order: 14,
+      difficulty: 4,
+      isBoss: true,
+      bossName: "Pęczek",
+      introSlides: [
+        {
+          body: "Wiewiór Pęczek strzeże wyjścia z Gaju Grupowania — wiąże żołędzie-nuty gałązkami, ale zawsze źle: zamiast porządnych grup robi krzywe pęczki. Pokaż, że Ty grupujesz bezbłędnie: pauzy, triole, długie wartości, nieparzyste metra i nigdy nie przekraczasz granicy taktu.",
+          bossPortrait: true,
+        },
+      ],
+      exercises: [
+        {
+          id: "gg-l14-e1",
+          type: "beam-grouping-choice",
+          difficulty: 3,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["sixteenth", "sixteenth", "eighth", "quarter", "quarter", "quarter"],
+            meter: "4/4",
+            options: [
+              { groups: [[0, 1, 2], [3], [4], [5]] },
+              { groups: [[0], [1], [2], [3], [4], [5]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l14-e2",
+          type: "beam-grouping-choice",
+          difficulty: 4,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["eighth", "eighthRest", "sixteenth", "sixteenth", "eighth", "quarter", "quarter"],
+            meter: "4/4",
+            options: [
+              { groups: [[0, 1], [2, 3, 4], [5], [6]] },
+              { groups: [[0, 1, 2, 3, 4], [5], [6]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l14-e3",
+          type: "beam-grouping-choice",
+          difficulty: 5,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["eighthTriplet", "eighthTriplet", "eighthTriplet", "eighthTriplet", "eighthTriplet", "eighthTriplet", "quarter"],
+            meter: "3/4",
+            options: [
+              { groups: [[0, 1, 2], [3, 4, 5], [6]] },
+              { groups: [[0, 1, 2, 3, 4, 5], [6]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l14-e4",
+          type: "beam-grouping-choice",
+          difficulty: 5,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["eighth", "eighth", "half", "quarter"],
+            meter: "4/4",
+            options: [
+              { groups: [[0, 1], [2], [3]] },
+              { groups: [[0], [1, 2], [3]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l14-e5",
+          type: "beam-grouping-choice",
+          difficulty: 6,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["eighth", "eighth", "eighth", "eighth", "eighth"],
+            meter: "5/8",
+            options: [
+              { groups: [[0, 1, 2], [3, 4]] },
+              { groups: [[0, 1, 2, 3, 4]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l14-e6",
+          type: "beam-grouping-choice",
+          difficulty: 6,
+          spec: {
+            type: "beam-grouping-choice",
+            sequence: ["eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth"],
+            meter: "2/4",
+            options: [
+              { groups: [[0, 1], [2, 3], [4, 5], [6, 7]] },
+              { groups: [[0, 1], [2, 3, 4, 5], [6, 7]] },
+            ],
+            correctOptionIndex: 0,
+          },
+        },
+        {
+          id: "gg-l14-e7",
+          type: "rhythm-math-choice",
+          difficulty: 4,
+          spec: {
+            type: "rhythm-math-choice",
+            combinations: [
+              ["quarter", "quarter", "half"],
+              ["quarter", "half"],
+              ["half", "half", "quarter"],
+            ],
           },
         },
       ],

@@ -88,6 +88,10 @@ const WORLD_BACKGROUNDS: Partial<Record<string, number | { portrait: number; lan
     portrait: require("@/assets/backgrounds/fabryka-budowania-tlo-telefon.png"),
     landscape: require("@/assets/backgrounds/fabryka-budowania-tlo-laptop.png"),
   },
+  beam: {
+    portrait: require("@/assets/backgrounds/gaj-grupowania-tlo-telefon.png"),
+    landscape: require("@/assets/backgrounds/gaj-grupowania-tlo-laptop.png"),
+  },
 };
 
 /**

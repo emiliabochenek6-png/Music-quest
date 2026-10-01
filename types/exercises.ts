@@ -13,7 +13,7 @@ export type CircleStepDirection = "clockwise" | "counterclockwise";
 /** Time signatures Miasto Rytmu's content actually uses ("4/4"/"3/4") plus
  * the rest of the web app's own Meter union, kept for type fidelity even
  * though nothing here authors the others yet. */
-export type Meter = "2/4" | "3/4" | "4/4" | "2/2" | "3/8" | "5/8" | "6/8" | "7/8" | "9/8" | "12/8";
+export type Meter = "2/4" | "3/4" | "4/4" | "2/2" | "3/8" | "5/8" | "6/8" | "7/8" | "9/8" | "12/8" | "5/4" | "7/4";
 
 /** dottedQuarter/dottedHalf/dottedEighth/eighthTriplet added for "Gaj
  * Grupowania" (beam-grouping-choice/rhythm-math-choice content) — every
