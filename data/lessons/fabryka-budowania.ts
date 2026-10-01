@@ -429,6 +429,11 @@ export const FABRYKA_BUDOWANIA_CONTENT: WorldContent = {
       introSlides: [
         {
           body: "Podsumowanie budowania przewrotów — dur i moll wymieszane, wszystkie trzy postacie.",
+          triadExamples: [
+            { notes: ["C4", "E4", "G4"], label: "postać zasadnicza, C-dur", degrees: [1, 3, 5] },
+            { notes: ["Eb4", "G4", "C5"], label: "sekstakord, c-moll", degrees: [3, 5, 1] },
+            { notes: ["G4", "C5", "E5"], label: "kwartsekstakord, C-dur", degrees: [5, 1, 3] },
+          ],
         },
       ],
       exercises: [
