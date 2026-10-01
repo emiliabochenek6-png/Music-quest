@@ -179,5 +179,162 @@ export const SZCZYT_DYKTAND_CONTENT: WorldContent = {
         { id: "sd-l9-e6", type: "melodic-rhythmic-dictation", difficulty: 9, spec: { type: "melodic-rhythmic-dictation", bpm: 96, key: 0, meter: "9/8", allowedValues: ["quarter", "half", "dottedHalf", "eighth", "dottedQuarter", "dottedEighth", "sixteenth", "whole"], notes: [{ pitch: "F5", value: "half" }, { pitch: "D5", value: "dottedQuarter" }, { pitch: "Bb4", value: "eighth" }, { pitch: "G4", value: "eighth" }, { pitch: "F#4", value: "eighth" }, { pitch: "E4", value: "whole" }] } },
       ],
     },
+    {
+      id: "sd-poziom-10-nieparzysta-gran",
+      order: 10,
+      difficulty: 9,
+      introSlides: [
+        {
+          body: "Teraz usłyszysz coś nowego: takt, który NIE dzieli się na równe grupy po dwa albo trzy. W 5/8 i 7/8 jedna fraza ma czasem grupę 2, a czasem grupę 3 uderzenia pod rząd — i to się zmienia w obrębie jednego taktu.",
+        },
+        {
+          body: 'Zanim cokolwiek zapiszesz, policz w głowie: "raz-dwa-trzy, raz-dwa" (to 5/8) albo "raz-dwa, raz-dwa, raz-dwa-trzy" (to 7/8). Posłuchaj kilka razy tylko po to, żeby złapać ten podział — dopiero potem zacznij klikać wartości.',
+        },
+        {
+          body: "Nie musisz się spieszyć — możesz odsłuchać dowolną liczbę razy, dokładnie jak na poprzednich poziomach.",
+        },
+      ],
+      exercises: [
+        { id: "sd-l10-e1", type: "rhythm-value-dictation", difficulty: 9, spec: { type: "rhythm-value-dictation", bpm: 96, meter: "5/8", allowedValues: ["dottedQuarter", "eighth"], sequence: ["dottedQuarter", "eighth", "eighth"] } },
+        { id: "sd-l10-e2", type: "rhythm-value-dictation", difficulty: 9, spec: { type: "rhythm-value-dictation", bpm: 97, meter: "5/8", allowedValues: ["dottedQuarter", "eighth"], sequence: ["eighth", "eighth", "dottedQuarter"] } },
+        { id: "sd-l10-e3", type: "rhythm-value-dictation", difficulty: 9, spec: { type: "rhythm-value-dictation", bpm: 97, meter: "5/8", allowedValues: ["quarter", "eighth"], sequence: ["quarter", "quarter", "eighth"] } },
+        { id: "sd-l10-e4", type: "rhythm-value-dictation", difficulty: 9, spec: { type: "rhythm-value-dictation", bpm: 98, meter: "5/8", allowedValues: ["quarter", "eighth"], sequence: ["eighth", "eighth", "eighth", "quarter"] } },
+        { id: "sd-l10-e5", type: "rhythm-value-dictation", difficulty: 9, spec: { type: "rhythm-value-dictation", bpm: 98, meter: "7/8", allowedValues: ["dottedQuarter", "eighth"], sequence: ["dottedQuarter", "dottedQuarter", "eighth"] } },
+        { id: "sd-l10-e6", type: "rhythm-value-dictation", difficulty: 9, spec: { type: "rhythm-value-dictation", bpm: 99, meter: "7/8", allowedValues: ["quarter", "eighth"], sequence: ["quarter", "quarter", "quarter", "eighth"] } },
+        { id: "sd-l10-e7", type: "rhythm-value-dictation", difficulty: 9, spec: { type: "rhythm-value-dictation", bpm: 100, meter: "7/8", allowedValues: ["dottedQuarter", "quarter", "eighth"], sequence: ["eighth", "eighth", "dottedQuarter", "quarter"] } },
+      ],
+    },
+    {
+      id: "sd-poziom-11-drugi-szczyt",
+      order: 11,
+      difficulty: 10,
+      introSlides: [
+        {
+          body: "Ten sam nieparzysty podział co na poprzednim poziomie, ale teraz dochodzi wysokość — tak jak przy przejściu z poziomu 5 na 6.",
+        },
+        {
+          body: "Najlepsza strategia: najpierw zapisz SAM rytm w głowie (same wartości, bez myślenia o wysokości), licząc podział jak w poprzednim poziomie. Dopiero kiedy rytm 'siedzi', odtwórz jeszcze raz i dopisz wysokości. Próba robienia obu rzeczy naraz od razu jest dużo trudniejsza.",
+        },
+      ],
+      exercises: [
+        { id: "sd-l11-e1", type: "melodic-rhythmic-dictation", difficulty: 9, spec: { type: "melodic-rhythmic-dictation", bpm: 76, key: 0, meter: "5/8", allowedValues: ["dottedQuarter", "eighth"], notes: [{ pitch: "C5", value: "dottedQuarter" }, { pitch: "B4", value: "eighth" }, { pitch: "A4", value: "eighth" }] } },
+        { id: "sd-l11-e2", type: "melodic-rhythmic-dictation", difficulty: 9, spec: { type: "melodic-rhythmic-dictation", bpm: 77, key: 0, meter: "5/8", allowedValues: ["dottedQuarter", "eighth"], notes: [{ pitch: "G4", value: "eighth" }, { pitch: "A4", value: "eighth" }, { pitch: "B4", value: "dottedQuarter" }] } },
+        { id: "sd-l11-e3", type: "melodic-rhythmic-dictation", difficulty: 9, spec: { type: "melodic-rhythmic-dictation", bpm: 78, key: 0, meter: "5/8", allowedValues: ["quarter", "eighth"], notes: [{ pitch: "E4", value: "quarter" }, { pitch: "G4", value: "quarter" }, { pitch: "B4", value: "eighth" }] } },
+        { id: "sd-l11-e4", type: "melodic-rhythmic-dictation", difficulty: 10, spec: { type: "melodic-rhythmic-dictation", bpm: 78, key: 0, meter: "7/8", allowedValues: ["dottedQuarter", "eighth"], notes: [{ pitch: "C5", value: "dottedQuarter" }, { pitch: "B4", value: "dottedQuarter" }, { pitch: "A4", value: "eighth" }] } },
+        { id: "sd-l11-e5", type: "melodic-rhythmic-dictation", difficulty: 10, spec: { type: "melodic-rhythmic-dictation", bpm: 79, key: 0, meter: "7/8", allowedValues: ["quarter", "eighth"], notes: [{ pitch: "G4", value: "quarter" }, { pitch: "A4", value: "quarter" }, { pitch: "B4", value: "quarter" }, { pitch: "C5", value: "eighth" }] } },
+        { id: "sd-l11-e6", type: "melodic-rhythmic-dictation", difficulty: 10, spec: { type: "melodic-rhythmic-dictation", bpm: 80, key: 1, meter: "7/8", allowedValues: ["quarter", "eighth"], notes: [{ pitch: "E4", value: "eighth" }, { pitch: "F#4", value: "eighth" }, { pitch: "G4", value: "quarter" }, { pitch: "A4", value: "quarter" }, { pitch: "B4", value: "eighth" }] } },
+        { id: "sd-l11-e7", type: "melodic-rhythmic-dictation", difficulty: 10, spec: { type: "melodic-rhythmic-dictation", bpm: 81, key: 0, meter: "7/8", allowedValues: ["dottedQuarter", "quarter", "eighth"], notes: [{ pitch: "C5", value: "dottedQuarter" }, { pitch: "A4", value: "eighth" }, { pitch: "G4", value: "eighth" }, { pitch: "E4", value: "quarter" }] } },
+      ],
+    },
+    {
+      id: "sd-poziom-12-dlugie-frazy",
+      order: 12,
+      difficulty: 10,
+      introSlides: [
+        {
+          body: "Frazy robią się dłuższe — dwa takty zamiast jednego. Więcej do zapamiętania, ale metoda zostaje ta sama.",
+        },
+        {
+          body: "Nie czekaj, aż usłyszysz całość, żeby zacząć pisać. Zapisuj na bieżąco, nutę po nucie, w miarę jak je rozpoznajesz — od tego jest przycisk odtwarzania jeszcze raz: żeby dopełnić to, czego nie zdążyłeś za pierwszym razem.",
+        },
+      ],
+      exercises: [
+        { id: "sd-l12-e1", type: "melodic-rhythmic-dictation", difficulty: 10, spec: { type: "melodic-rhythmic-dictation", bpm: 88, key: 0, meter: "4/4", allowedValues: ["quarter", "half", "eighth"], notes: [{ pitch: "G4", value: "quarter" }, { pitch: "A4", value: "quarter" }, { pitch: "B4", value: "quarter" }, { pitch: "C5", value: "quarter" }, { pitch: "B4", value: "eighth" }, { pitch: "A4", value: "eighth" }, { pitch: "G4", value: "quarter" }, { pitch: "E4", value: "half" }] } },
+        { id: "sd-l12-e2", type: "melodic-rhythmic-dictation", difficulty: 10, spec: { type: "melodic-rhythmic-dictation", bpm: 89, key: 0, meter: "3/4", allowedValues: ["quarter", "eighth"], notes: [{ pitch: "E4", value: "eighth" }, { pitch: "F4", value: "eighth" }, { pitch: "G4", value: "quarter" }, { pitch: "A4", value: "quarter" }, { pitch: "B4", value: "quarter" }, { pitch: "A4", value: "eighth" }, { pitch: "G4", value: "eighth" }, { pitch: "F4", value: "quarter" }] } },
+        { id: "sd-l12-e3", type: "melodic-rhythmic-dictation", difficulty: 10, spec: { type: "melodic-rhythmic-dictation", bpm: 90, key: 0, meter: "6/8", allowedValues: ["dottedQuarter", "eighth"], notes: [{ pitch: "G4", value: "eighth" }, { pitch: "A4", value: "eighth" }, { pitch: "B4", value: "eighth" }, { pitch: "C5", value: "dottedQuarter" }, { pitch: "B4", value: "eighth" }, { pitch: "A4", value: "eighth" }, { pitch: "F4", value: "eighth" }, { pitch: "G4", value: "dottedQuarter" }] } },
+        { id: "sd-l12-e4", type: "melodic-rhythmic-dictation", difficulty: 10, spec: { type: "melodic-rhythmic-dictation", bpm: 91, key: 1, meter: "4/4", allowedValues: ["quarter", "half", "eighth"], notes: [{ pitch: "E4", value: "quarter" }, { pitch: "F#4", value: "quarter" }, { pitch: "G4", value: "quarter" }, { pitch: "A4", value: "eighth" }, { pitch: "B4", value: "eighth" }, { pitch: "A4", value: "quarter" }, { pitch: "G4", value: "quarter" }, { pitch: "E4", value: "half" }] } },
+        { id: "sd-l12-e5", type: "melodic-rhythmic-dictation", difficulty: 10, spec: { type: "melodic-rhythmic-dictation", bpm: 92, key: -1, meter: "3/4", allowedValues: ["quarter", "eighth"], notes: [{ pitch: "C5", value: "quarter" }, { pitch: "Bb4", value: "quarter" }, { pitch: "A4", value: "quarter" }, { pitch: "G4", value: "eighth" }, { pitch: "F4", value: "eighth" }, { pitch: "G4", value: "quarter" }, { pitch: "A4", value: "quarter" }] } },
+        { id: "sd-l12-e6", type: "melodic-rhythmic-dictation", difficulty: 11, spec: { type: "melodic-rhythmic-dictation", bpm: 93, key: 0, meter: "4/4", allowedValues: ["quarter", "dottedHalf", "eighth"], notes: [{ pitch: "E4", value: "eighth" }, { pitch: "G4", value: "eighth" }, { pitch: "B4", value: "quarter" }, { pitch: "A4", value: "eighth" }, { pitch: "G4", value: "eighth" }, { pitch: "F4", value: "quarter" }, { pitch: "E4", value: "quarter" }, { pitch: "C5", value: "dottedHalf" }] } },
+      ],
+    },
+    {
+      id: "sd-poziom-13-szeroki-zakres",
+      order: 13,
+      difficulty: 10,
+      introSlides: [
+        {
+          body: "Wysokości sięgają teraz aż do G5 — najwyższego dźwięku w tej grze. Dochodzi też coś nowego: w jednej frazie mogą pojawić się RAZEM krzyżyk i bemol, nie tylko jeden rodzaj znaku.",
+        },
+        {
+          body: "Wysoki dźwięk łatwo pomylić z sąsiednim, jeśli nie masz punktu odniesienia — zacznij od zlokalizowania najniższego i najwyższego dźwięku frazy, dopiero potem wypełniaj to, co jest pomiędzy.",
+        },
+      ],
+      exercises: [
+        { id: "sd-l13-e1", type: "melodic-rhythmic-dictation", difficulty: 10, spec: { type: "melodic-rhythmic-dictation", bpm: 90, key: 0, meter: "4/4", allowedValues: ["quarter"], notes: [{ pitch: "E4", value: "quarter" }, { pitch: "C5", value: "quarter" }, { pitch: "E5", value: "quarter" }, { pitch: "G5", value: "quarter" }] } },
+        { id: "sd-l13-e2", type: "melodic-rhythmic-dictation", difficulty: 10, spec: { type: "melodic-rhythmic-dictation", bpm: 90, key: 0, meter: "3/4", allowedValues: ["quarter"], notes: [{ pitch: "G5", value: "quarter" }, { pitch: "E5", value: "quarter" }, { pitch: "C5", value: "quarter" }] } },
+        { id: "sd-l13-e3", type: "melodic-rhythmic-dictation", difficulty: 10, spec: { type: "melodic-rhythmic-dictation", bpm: 91, key: 0, meter: "4/4", allowedValues: ["quarter", "eighth"], notes: [{ pitch: "E4", value: "eighth" }, { pitch: "F#4", value: "eighth" }, { pitch: "G4", value: "quarter" }, { pitch: "Bb4", value: "quarter" }, { pitch: "A4", value: "quarter" }] } },
+        { id: "sd-l13-e4", type: "melodic-rhythmic-dictation", difficulty: 10, spec: { type: "melodic-rhythmic-dictation", bpm: 92, key: 0, meter: "3/4", allowedValues: ["quarter", "eighth"], notes: [{ pitch: "C5", value: "quarter" }, { pitch: "Bb4", value: "eighth" }, { pitch: "A4", value: "eighth" }, { pitch: "F#4", value: "quarter" }] } },
+        { id: "sd-l13-e5", type: "melodic-rhythmic-dictation", difficulty: 10, spec: { type: "melodic-rhythmic-dictation", bpm: 93, key: 0, meter: "4/4", allowedValues: ["quarter"], notes: [{ pitch: "G5", value: "quarter" }, { pitch: "E5", value: "quarter" }, { pitch: "C5", value: "quarter" }, { pitch: "Bb4", value: "quarter" }] } },
+        { id: "sd-l13-e6", type: "melodic-rhythmic-dictation", difficulty: 11, spec: { type: "melodic-rhythmic-dictation", bpm: 94, key: 0, meter: "3/4", allowedValues: ["quarter", "eighth"], notes: [{ pitch: "C5", value: "eighth" }, { pitch: "Bb4", value: "eighth" }, { pitch: "A4", value: "quarter" }, { pitch: "F#4", value: "quarter" }] } },
+      ],
+    },
+    {
+      id: "sd-poziom-14-szybkie-tempo",
+      order: 14,
+      difficulty: 10,
+      introSlides: [
+        {
+          body: "Te same wartości, które już znasz, ale szybciej — to ważna umiejętność: rozpoznawać ósemkę po tym, JAK brzmi względem tempa, nie 'na pamięć z wyglądu'.",
+        },
+        {
+          body: "Jeśli gubisz się w szybkim tempie, odsłuchaj raz całość bez pisania, tylko po to, żeby poczuć puls — dopiero za drugim razem zacznij zapisywać.",
+        },
+      ],
+      exercises: [
+        { id: "sd-l14-e1", type: "melodic-rhythmic-dictation", difficulty: 10, spec: { type: "melodic-rhythmic-dictation", bpm: 100, key: 0, meter: "4/4", allowedValues: ["quarter", "eighth"], notes: [{ pitch: "E4", value: "eighth" }, { pitch: "F4", value: "eighth" }, { pitch: "G4", value: "eighth" }, { pitch: "A4", value: "eighth" }, { pitch: "B4", value: "quarter" }, { pitch: "G4", value: "quarter" }] } },
+        { id: "sd-l14-e2", type: "melodic-rhythmic-dictation", difficulty: 10, spec: { type: "melodic-rhythmic-dictation", bpm: 102, key: 0, meter: "4/4", allowedValues: ["quarter", "eighth"], notes: [{ pitch: "G4", value: "eighth" }, { pitch: "A4", value: "eighth" }, { pitch: "B4", value: "eighth" }, { pitch: "C5", value: "eighth" }, { pitch: "B4", value: "quarter" }, { pitch: "G4", value: "quarter" }] } },
+        { id: "sd-l14-e3", type: "melodic-rhythmic-dictation", difficulty: 10, spec: { type: "melodic-rhythmic-dictation", bpm: 104, key: 0, meter: "3/4", allowedValues: ["quarter", "eighth"], notes: [{ pitch: "E4", value: "eighth" }, { pitch: "G4", value: "eighth" }, { pitch: "B4", value: "quarter" }, { pitch: "A4", value: "quarter" }] } },
+        { id: "sd-l14-e4", type: "melodic-rhythmic-dictation", difficulty: 10, spec: { type: "melodic-rhythmic-dictation", bpm: 105, key: 1, meter: "4/4", allowedValues: ["eighth", "half"], notes: [{ pitch: "E4", value: "eighth" }, { pitch: "F#4", value: "eighth" }, { pitch: "G4", value: "eighth" }, { pitch: "A4", value: "eighth" }, { pitch: "B4", value: "half" }] } },
+        { id: "sd-l14-e5", type: "melodic-rhythmic-dictation", difficulty: 11, spec: { type: "melodic-rhythmic-dictation", bpm: 107, key: 0, meter: "3/4", allowedValues: ["quarter", "eighth"], notes: [{ pitch: "C5", value: "eighth" }, { pitch: "B4", value: "eighth" }, { pitch: "A4", value: "eighth" }, { pitch: "G4", value: "eighth" }, { pitch: "F4", value: "quarter" }] } },
+        { id: "sd-l14-e6", type: "melodic-rhythmic-dictation", difficulty: 11, spec: { type: "melodic-rhythmic-dictation", bpm: 109, key: 0, meter: "4/4", allowedValues: ["quarter", "eighth"], notes: [{ pitch: "G4", value: "eighth" }, { pitch: "A4", value: "eighth" }, { pitch: "B4", value: "eighth" }, { pitch: "A4", value: "eighth" }, { pitch: "G4", value: "quarter" }, { pitch: "F4", value: "quarter" }] } },
+      ],
+    },
+    {
+      id: "sd-poziom-15-bogatsze-tonacje",
+      order: 15,
+      difficulty: 11,
+      introSlides: [
+        {
+          body: "Tonacje z dwoma znakami przy kluczu — D-dur (dwa krzyżyki) albo B-dur (dwa bemole) — zamiast tylko jednego znaku, jak dotąd.",
+        },
+        {
+          body: "Znak przy kluczu działa przez CAŁĄ frazę, nie tylko przy pierwszym wystąpieniu danego dźwięku — jeśli fraza jest w D-dur, każde F w tej frazie to Fis, chyba że usłyszysz wyraźnie inny dźwięk.",
+        },
+      ],
+      exercises: [
+        { id: "sd-l15-e1", type: "melodic-rhythmic-dictation", difficulty: 11, spec: { type: "melodic-rhythmic-dictation", bpm: 94, key: 2, meter: "4/4", allowedValues: ["quarter"], notes: [{ pitch: "E4", value: "quarter" }, { pitch: "F#4", value: "quarter" }, { pitch: "G4", value: "quarter" }, { pitch: "A4", value: "quarter" }] } },
+        { id: "sd-l15-e2", type: "melodic-rhythmic-dictation", difficulty: 11, spec: { type: "melodic-rhythmic-dictation", bpm: 95, key: 2, meter: "3/4", allowedValues: ["quarter"], notes: [{ pitch: "A4", value: "quarter" }, { pitch: "B4", value: "quarter" }, { pitch: "C#5", value: "quarter" }] } },
+        { id: "sd-l15-e3", type: "melodic-rhythmic-dictation", difficulty: 11, spec: { type: "melodic-rhythmic-dictation", bpm: 96, key: -2, meter: "4/4", allowedValues: ["quarter"], notes: [{ pitch: "F4", value: "quarter" }, { pitch: "G4", value: "quarter" }, { pitch: "A4", value: "quarter" }, { pitch: "Bb4", value: "quarter" }] } },
+        { id: "sd-l15-e4", type: "melodic-rhythmic-dictation", difficulty: 11, spec: { type: "melodic-rhythmic-dictation", bpm: 97, key: -2, meter: "3/4", allowedValues: ["quarter"], notes: [{ pitch: "Bb4", value: "quarter" }, { pitch: "C5", value: "quarter" }, { pitch: "D5", value: "quarter" }] } },
+        { id: "sd-l15-e5", type: "melodic-rhythmic-dictation", difficulty: 11, spec: { type: "melodic-rhythmic-dictation", bpm: 98, key: 2, meter: "4/4", allowedValues: ["quarter", "eighth"], notes: [{ pitch: "E4", value: "eighth" }, { pitch: "F#4", value: "eighth" }, { pitch: "G4", value: "quarter" }, { pitch: "A4", value: "eighth" }, { pitch: "B4", value: "eighth" }, { pitch: "C#5", value: "quarter" }] } },
+        { id: "sd-l15-e6", type: "melodic-rhythmic-dictation", difficulty: 11, spec: { type: "melodic-rhythmic-dictation", bpm: 99, key: -2, meter: "4/4", allowedValues: ["quarter", "eighth"], notes: [{ pitch: "F4", value: "eighth" }, { pitch: "G4", value: "eighth" }, { pitch: "A4", value: "quarter" }, { pitch: "Bb4", value: "eighth" }, { pitch: "C5", value: "eighth" }, { pitch: "D5", value: "quarter" }] } },
+      ],
+    },
+    {
+      // Boss lekcja — Baran Bazgroł. Jak inne bossy tej sesji: mix
+      // świeżych zadań w stylu/trudności poziomów 10-15, obejmujący
+      // wszystko, co ta kraina dodała: nieparzyste metra, długie frazy,
+      // szeroki zakres, szybkie tempo, bogatsze tonacje.
+      id: "sd-poziom-16-boss-bazgrol",
+      order: 16,
+      difficulty: 9,
+      isBoss: true,
+      bossName: "Bazgroł",
+      introSlides: [
+        {
+          body: "Baran Bazgroł strzeże szczytu — zapisuje dyktanda przez sen, bazgrząc byle jak: złe wartości, złe wysokości, czasem w ogóle nie ten takt. Pokaż, że Ty zapisujesz dokładnie: nieparzyste metra, długie frazy, szeroki zakres i szybkie tempo na raz.",
+          bossPortrait: true,
+        },
+      ],
+      exercises: [
+        { id: "sd-l16-e1", type: "rhythm-value-dictation", difficulty: 7, spec: { type: "rhythm-value-dictation", bpm: 96, meter: "5/8", allowedValues: ["dottedQuarter", "eighth"], sequence: ["dottedQuarter", "eighth", "eighth"] } },
+        { id: "sd-l16-e2", type: "melodic-rhythmic-dictation", difficulty: 8, spec: { type: "melodic-rhythmic-dictation", bpm: 80, key: 0, meter: "7/8", allowedValues: ["quarter", "eighth"], notes: [{ pitch: "G4", value: "quarter" }, { pitch: "A4", value: "quarter" }, { pitch: "B4", value: "quarter" }, { pitch: "C5", value: "eighth" }] } },
+        { id: "sd-l16-e3", type: "melodic-rhythmic-dictation", difficulty: 8, spec: { type: "melodic-rhythmic-dictation", bpm: 90, key: 0, meter: "4/4", allowedValues: ["quarter", "half", "eighth"], notes: [{ pitch: "E4", value: "quarter" }, { pitch: "G4", value: "quarter" }, { pitch: "B4", value: "quarter" }, { pitch: "C5", value: "quarter" }, { pitch: "B4", value: "eighth" }, { pitch: "A4", value: "eighth" }, { pitch: "F4", value: "quarter" }, { pitch: "G4", value: "half" }] } },
+        { id: "sd-l16-e4", type: "melodic-rhythmic-dictation", difficulty: 9, spec: { type: "melodic-rhythmic-dictation", bpm: 92, key: 0, meter: "4/4", allowedValues: ["quarter"], notes: [{ pitch: "E4", value: "quarter" }, { pitch: "C5", value: "quarter" }, { pitch: "E5", value: "quarter" }, { pitch: "G5", value: "quarter" }] } },
+        { id: "sd-l16-e5", type: "melodic-rhythmic-dictation", difficulty: 9, spec: { type: "melodic-rhythmic-dictation", bpm: 100, key: 0, meter: "3/4", allowedValues: ["quarter", "eighth"], notes: [{ pitch: "E4", value: "eighth" }, { pitch: "G4", value: "eighth" }, { pitch: "B4", value: "quarter" }, { pitch: "A4", value: "quarter" }] } },
+        { id: "sd-l16-e6", type: "melodic-rhythmic-dictation", difficulty: 9, spec: { type: "melodic-rhythmic-dictation", bpm: 95, key: 2, meter: "4/4", allowedValues: ["quarter", "eighth"], notes: [{ pitch: "G4", value: "quarter" }, { pitch: "F#4", value: "eighth" }, { pitch: "G4", value: "eighth" }, { pitch: "A4", value: "quarter" }, { pitch: "B4", value: "quarter" }] } },
+        { id: "sd-l16-e7", type: "melodic-rhythmic-dictation", difficulty: 10, spec: { type: "melodic-rhythmic-dictation", bpm: 98, key: -1, meter: "4/4", allowedValues: ["quarter", "eighth"], notes: [{ pitch: "F4", value: "eighth" }, { pitch: "G4", value: "eighth" }, { pitch: "Bb4", value: "quarter" }, { pitch: "C5", value: "quarter" }, { pitch: "D5", value: "quarter" }] } },
+      ],
+    },
   ],
 };

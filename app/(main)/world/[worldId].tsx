@@ -92,6 +92,10 @@ const WORLD_BACKGROUNDS: Partial<Record<string, number | { portrait: number; lan
     portrait: require("@/assets/backgrounds/gaj-grupowania-tlo-telefon.png"),
     landscape: require("@/assets/backgrounds/gaj-grupowania-tlo-laptop.png"),
   },
+  dictation: {
+    portrait: require("@/assets/backgrounds/szczyt-dyktand-tlo-telefon.png"),
+    landscape: require("@/assets/backgrounds/szczyt-dyktand-tlo-laptop.png"),
+  },
 };
 
 /**
