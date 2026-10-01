@@ -99,17 +99,27 @@ const NUTKI_MULTIPLIER_WHEN_INTRO_DISABLED = 2;
  * completing a world for the first time additionally layers a celebratory
  * WorldCompleteModal over that summary.
  */
-/** Per-world exercise-screen tint — a world only gets an entry once its
- * own background art/map accent has been redone (see world/[worldId]
- * .tsx's own WORLD_BACKGROUNDS), so the exercise screens match instead
- * of opening every lesson on the app-wide neutral cream next to a
- * differently-colored map. Every other world keeps the plain cream/
- * default DarkButton-orange until it gets its own treatment. */
+/** Per-world exercise-screen tint — every world's own `accentColor` (see
+ * data/worlds.ts) lightened toward white, so each world's lesson screens
+ * (button fill, background wash) match its own map/background art instead
+ * of all opening on one app-wide neutral cream+orange. Covers all 12
+ * worlds now; the first four entries were hand-picked earlier (kept as-is
+ * rather than reflowed through the formula below, to not shift an already-
+ * shipped look), the rest are a plain ~12% mix of the world's accentColor
+ * into white. */
 const WORLD_LESSON_THEME: Partial<Record<string, { background: string }>> = {
   note: { background: "#F3ECFC" }, // Wioska Nut — light purple
   metronome: { background: "#E8EEFC" }, // Miasto Rytmu — light blue
   "bar-line": { background: "#E3F5F1" }, // Przystań Taktów — light sea-green
   interval: { background: "#E6F3FB" }, // Pasmo Interwałów — light icy blue
+  chord: { background: "#E9EFF3" }, // Zatoka Trójdźwięków — light steel blue
+  inversion: { background: "#EEEAE7" }, // Jaskinia Akordów — light brown
+  citadel: { background: "#F9E3E9" }, // Cytadela Dominant — light crimson
+  "key-signature": { background: "#F0E7FD" }, // Labirynt Tonacji — light violet
+  build: { background: "#FFF0E0" }, // Fabryka Budowania — light orange
+  beam: { background: "#EBF0EB" }, // Gaj Grupowania — light green
+  dictation: { background: "#F3EAFB" }, // Szczyt Dyktand — light purple
+  microphone: { background: "#FBF5ED" }, // Zaczarowany Solfeż — light gold
 };
 
 /** Thin wrapper around the real screen purely to set up
