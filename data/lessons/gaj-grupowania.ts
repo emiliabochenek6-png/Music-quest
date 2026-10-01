@@ -112,9 +112,9 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
           difficulty: 1,
           spec: {
             type: "beam-grouping-choice",
-            sequence: ["dottedQuarter", "eighth"],
-            meter: "2/4",
-            options: [{ groups: [[0], [1]] }, { groups: [[0, 1]] }],
+            sequence: ["dottedQuarter", "eighth", "eighth", "eighth"],
+            meter: "3/4",
+            options: [{ groups: [[0], [1], [2, 3]] }, { groups: [[0], [1], [2], [3]] }],
             correctOptionIndex: 0,
           },
         },
@@ -124,9 +124,9 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
           difficulty: 1,
           spec: {
             type: "beam-grouping-choice",
-            sequence: ["quarter", "dottedQuarter", "eighth", "quarter"],
+            sequence: ["quarter", "dottedQuarter", "eighth", "eighth", "eighth"],
             meter: "4/4",
-            options: [{ groups: [[0], [1], [2], [3]] }, { groups: [[0], [1, 2], [3]] }],
+            options: [{ groups: [[0], [1], [2], [3, 4]] }, { groups: [[0], [1], [2], [3], [4]] }],
             correctOptionIndex: 0,
           },
         },
@@ -378,7 +378,7 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
             options: [
               { groups: [[0, 1], [2], [3, 4], [5]] },
               { groups: [[0], [1], [2], [3], [4], [5]] },
-              { groups: [[0, 1, 2], [3, 4, 5]] },
+              { groups: [[0], [1], [2], [3, 4], [5]] },
             ],
             correctOptionIndex: 0,
           },
@@ -394,7 +394,6 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
             options: [
               { groups: [[0], [1, 2], [3], [4, 5]] },
               { groups: [[0], [1], [2], [3], [4], [5]] },
-              { groups: [[0, 1, 2], [3, 4, 5]] },
             ],
             correctOptionIndex: 0,
           },
@@ -405,9 +404,9 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
           difficulty: 3,
           spec: {
             type: "beam-grouping-choice",
-            sequence: ["dottedQuarter", "eighth", "dottedQuarter", "eighth"],
+            sequence: ["dottedQuarter", "eighth", "eighth", "eighth", "eighth", "eighth"],
             meter: "2/2",
-            options: [{ groups: [[0], [1], [2], [3]] }, { groups: [[0, 1], [2, 3]] }],
+            options: [{ groups: [[0], [1], [2, 3, 4, 5]] }, { groups: [[0], [1], [2, 3], [4, 5]] }],
             correctOptionIndex: 0,
           },
         },
@@ -417,9 +416,9 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
           difficulty: 3,
           spec: {
             type: "beam-grouping-choice",
-            sequence: ["half", "dottedQuarter", "eighth"],
+            sequence: ["half", "eighth", "eighth", "quarter"],
             meter: "2/2",
-            options: [{ groups: [[0], [1], [2]] }, { groups: [[0], [1, 2]] }],
+            options: [{ groups: [[0], [1, 2], [3]] }, { groups: [[0], [1], [2], [3]] }],
             correctOptionIndex: 0,
           },
         },
@@ -514,7 +513,6 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
             options: [
               { groups: [[0, 1], [2], [3], [4]] },
               { groups: [[0], [1], [2], [3], [4]] },
-              { groups: [[0, 1, 2], [3], [4]] },
             ],
             correctOptionIndex: 0,
           },
@@ -530,7 +528,6 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
             options: [
               { groups: [[0], [1, 2], [3], [4]] },
               { groups: [[0], [1], [2], [3], [4]] },
-              { groups: [[0], [1, 2, 3], [4]] },
             ],
             correctOptionIndex: 0,
           },
@@ -546,7 +543,6 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
             options: [
               { groups: [[0, 1, 2, 3], [4], [5]] },
               { groups: [[0, 1], [2, 3], [4], [5]] },
-              { groups: [[0, 1, 2, 3, 4], [5]] },
             ],
             correctOptionIndex: 0,
           },
@@ -562,7 +558,6 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
             options: [
               { groups: [[0], [1, 2, 3], [4]] },
               { groups: [[0], [1], [2, 3], [4]] },
-              { groups: [[0, 1], [2, 3], [4]] },
             ],
             correctOptionIndex: 0,
           },
@@ -575,7 +570,7 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
             type: "beam-grouping-choice",
             sequence: ["dottedEighth", "sixteenth", "quarter"],
             meter: "2/4",
-            options: [{ groups: [[0, 1], [2]] }, { groups: [[0], [1], [2]] }, { groups: [[0, 1, 2]] }],
+            options: [{ groups: [[0, 1], [2]] }, { groups: [[0], [1], [2]] }],
             correctOptionIndex: 0,
           },
         },
@@ -656,7 +651,6 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
             options: [
               { groups: [[0, 1, 2, 3], [4]] },
               { groups: [[0], [1], [2, 3], [4]] },
-              { groups: [[0, 1], [2, 3], [4]] },
             ],
             correctOptionIndex: 0,
           },
@@ -819,7 +813,7 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
             type: "beam-grouping-choice",
             sequence: ["quarter", "eighthTriplet", "eighthTriplet", "eighthTriplet"],
             meter: "2/4",
-            options: [{ groups: [[0], [1, 2, 3]] }, { groups: [[0, 1], [2, 3]] }],
+            options: [{ groups: [[0], [1, 2, 3]] }, { groups: [[0], [1], [2, 3]] }],
             correctOptionIndex: 0,
           },
         },
@@ -831,7 +825,7 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
             type: "beam-grouping-choice",
             sequence: ["eighthTriplet", "eighthTriplet", "eighthTriplet", "quarter", "quarter"],
             meter: "3/4",
-            options: [{ groups: [[0, 1, 2], [3], [4]] }, { groups: [[0, 1, 2, 3], [4]] }],
+            options: [{ groups: [[0, 1, 2], [3], [4]] }, { groups: [[0, 1], [2], [3], [4]] }],
             correctOptionIndex: 0,
           },
         },
@@ -864,7 +858,7 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
             meter: "4/4",
             options: [
               { groups: [[0, 1, 2], [3], [4], [5]] },
-              { groups: [[0, 1, 2, 3], [4], [5]] },
+              { groups: [[0, 1], [2], [3], [4], [5]] },
             ],
             correctOptionIndex: 0,
           },
@@ -940,7 +934,7 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
             type: "beam-grouping-choice",
             sequence: ["quarter", "eighth", "eighth", "eighth"],
             meter: "5/8",
-            options: [{ groups: [[0], [1], [2, 3]] }, { groups: [[0, 1], [2, 3]] }],
+            options: [{ groups: [[0], [1], [2, 3]] }, { groups: [[0], [1, 2], [3]] }],
             correctOptionIndex: 0,
           },
         },
@@ -1313,7 +1307,7 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
             meter: "4/4",
             options: [
               { groups: [[0, 1], [2], [3]] },
-              { groups: [[0], [1, 2], [3]] },
+              { groups: [[0], [1], [2], [3]] },
             ],
             correctOptionIndex: 0,
           },
@@ -1328,7 +1322,7 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
             meter: "3/4",
             options: [
               { groups: [[0], [1, 2]] },
-              { groups: [[0, 1], [2]] },
+              { groups: [[0], [1], [2]] },
             ],
             correctOptionIndex: 0,
           },
@@ -1358,7 +1352,7 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
             meter: "4/4",
             options: [
               { groups: [[0, 1, 2], [3], [4]] },
-              { groups: [[0, 1], [2, 3], [4]] },
+              { groups: [[0, 1], [2], [3], [4]] },
             ],
             correctOptionIndex: 0,
           },
@@ -1372,8 +1366,8 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
             sequence: ["eighth", "eighth", "quarter", "half"],
             meter: "2/2",
             options: [
-              { groups: [[0, 1, 2], [3]] },
-              { groups: [[0], [1, 2], [3]] },
+              { groups: [[0, 1], [2], [3]] },
+              { groups: [[0], [1], [2], [3]] },
             ],
             correctOptionIndex: 0,
           },
@@ -1404,7 +1398,7 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
             barBeforeIndex: 1,
             options: [
               { groups: [[0], [1, 2], [3], [4], [5]] },
-              { groups: [[0], [1], [2, 3, 4, 5]] },
+              { groups: [[0], [1], [2], [3], [4], [5]] },
             ],
             correctOptionIndex: 0,
           },
@@ -1420,7 +1414,7 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
             barBeforeIndex: 1,
             options: [
               { groups: [[0], [1, 2], [3], [4]] },
-              { groups: [[0], [1], [2, 3, 4]] },
+              { groups: [[0], [1], [2], [3], [4]] },
             ],
             correctOptionIndex: 0,
           },
@@ -1480,7 +1474,7 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
             sequence: ["quarter", "eighth", "eighth", "eighth", "eighth", "quarter", "quarter"],
             meter: "5/4",
             options: [
-              { groups: [[0, 1, 2, 3, 4], [5, 6]] },
+              { groups: [[0], [1, 2, 3, 4], [5], [6]] },
               { groups: [[0], [1, 2], [3, 4], [5], [6]] },
             ],
             correctOptionIndex: 0,
@@ -1510,8 +1504,8 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
             sequence: ["quarter", "quarter", "eighth", "eighth", "eighth", "eighth", "quarter", "eighth", "eighth", "eighth", "eighth"],
             meter: "7/4",
             options: [
-              { groups: [[0, 1], [2, 3, 4, 5], [6, 7, 8, 9, 10]] },
-              { groups: [[0, 1], [2, 3, 4, 5, 6, 7, 8, 9, 10]] },
+              { groups: [[0], [1], [2, 3, 4, 5], [6], [7, 8, 9, 10]] },
+              { groups: [[0], [1], [2, 3], [4, 5], [6], [7, 8], [9, 10]] },
             ],
             correctOptionIndex: 0,
           },
@@ -1525,7 +1519,7 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
             sequence: ["sixteenth", "sixteenth", "eighth", "eighth", "eighth", "eighth", "eighth", "quarter", "quarter"],
             meter: "5/4",
             options: [
-              { groups: [[0, 1, 2, 3, 4, 5, 6], [7, 8]] },
+              { groups: [[0, 1, 2, 3, 4, 5, 6], [7], [8]] },
               { groups: [[0, 1], [2, 3], [4, 5, 6], [7], [8]] },
             ],
             correctOptionIndex: 0,
@@ -1540,7 +1534,7 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
             sequence: ["quarter", "quarter", "quarter", "eighth", "eighth", "eighth", "eighth"],
             meter: "5/4",
             options: [
-              { groups: [[0, 1, 2], [3, 4, 5, 6]] },
+              { groups: [[0], [1], [2], [3, 4, 5, 6]] },
               { groups: [[0], [1], [2], [3, 4], [5, 6]] },
             ],
             correctOptionIndex: 0,
@@ -1555,7 +1549,7 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
             sequence: ["eighth", "eighth", "eighth", "eighth", "quarter", "quarter", "sixteenth", "sixteenth", "sixteenth", "sixteenth", "eighth", "eighth", "quarter"],
             meter: "7/4",
             options: [
-              { groups: [[0, 1, 2, 3], [4, 5], [6, 7, 8, 9, 10, 11, 12]] },
+              { groups: [[0, 1, 2, 3], [4], [5], [6, 7, 8, 9, 10, 11], [12]] },
               { groups: [[0, 1], [2, 3], [4], [5], [6, 7, 8, 9], [10, 11], [12]] },
             ],
             correctOptionIndex: 0,
@@ -1570,8 +1564,8 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
             sequence: ["quarter", "eighth", "eighth", "quarter", "quarter", "eighth", "eighth", "eighth", "eighth", "quarter"],
             meter: "7/4",
             options: [
-              { groups: [[0, 1, 2], [3, 4], [5, 6, 7, 8, 9]] },
-              { groups: [[0, 1, 2], [3, 4], [5, 6], [7, 8], [9]] },
+              { groups: [[0], [1, 2], [3], [4], [5, 6, 7, 8], [9]] },
+              { groups: [[0], [1, 2], [3], [4], [5, 6], [7, 8], [9]] },
             ],
             correctOptionIndex: 0,
           },
@@ -1821,7 +1815,7 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
             sequence: ["quarter", "quarter", "eighth", "eighth", "quarter", "quarter"],
             meter: "5/4",
             options: [
-              { groups: [[0, 1, 2, 3], [4, 5]] },
+              { groups: [[0], [1], [2, 3], [4], [5]] },
               { groups: [[0], [1], [2], [3], [4], [5]] },
             ],
             correctOptionIndex: 0,
@@ -1851,7 +1845,7 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
             sequence: ["eighth", "eighth", "eighth", "eighth", "quarter", "quarter", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth"],
             meter: "7/4",
             options: [
-              { groups: [[0, 1, 2, 3], [4, 5], [6, 7, 8, 9, 10, 11]] },
+              { groups: [[0, 1, 2, 3], [4], [5], [6, 7, 8, 9, 10, 11]] },
               { groups: [[0, 1], [2, 3], [4], [5], [6, 7, 8], [9, 10, 11]] },
             ],
             correctOptionIndex: 0,
@@ -1946,7 +1940,7 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
             meter: "4/4",
             options: [
               { groups: [[0, 1], [2], [3]] },
-              { groups: [[0], [1, 2], [3]] },
+              { groups: [[0], [1], [2], [3]] },
             ],
             correctOptionIndex: 0,
           },
