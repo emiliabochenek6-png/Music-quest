@@ -2,7 +2,7 @@
  * only what the player is TOLD: the real charge goes through the store
  * product (see SubscriptionContext), so these must be kept equal to the
  * prices set in App Store Connect / Google Play by hand. */
-export const MONTHLY_PRICE_ZL = 35;
+export const MONTHLY_PRICE_ZL = 39;
 export const YEARLY_PRICE_ZL = 349;
 
 /** How much cheaper a year is than 12 months paid monthly, in whole percent. */

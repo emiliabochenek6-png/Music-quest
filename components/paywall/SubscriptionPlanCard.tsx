@@ -14,7 +14,7 @@ interface SubscriptionPlanCardProps {
   priceLabel: string;
   /** A short unit suffix ("/ mies.", "/ rok") set right after the price
    * itself, small and muted — NOT the plan's own name repeated (that
-   * used to render as "Miesięcznie … 35 zł / miesiąc", the same word
+   * used to render as "Miesięcznie … 39 zł / miesiąc", the same word
    * twice in one card, which read as a mistake rather than a deliberate
    * label). The plan name is now its own small uppercase eyebrow above
    * the price instead of sitting in the same row as it. */
