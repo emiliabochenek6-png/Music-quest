@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Redirect } from "expo-router";
 import { LoadingScreen } from "@/components/LoadingScreen";
 import { useAuth } from "@/context/AuthContext";
@@ -9,11 +10,20 @@ import { useProfile } from "@/context/ProfileContext";
  * first-launch "start screen" (see its own doc). Waits on ProfileContext
  * too, so a returning player's stored narrator/sound preferences are in
  * place before this redirect fires. */
+/** The loading screen with Soltek stays at least this long when the app opens, even if everything is ready sooner, so it is seen rather than flashing past. */
+const MIN_LOADING_SCREEN_MS = 1800;
+
 export default function Index() {
   const { isLoading: isProfileLoading } = useProfile();
   const { user, isLoading: isAuthLoading } = useAuth();
+  const [minTimeElapsed, setMinTimeElapsed] = useState(false);
 
-  if (isProfileLoading || isAuthLoading) {
+  useEffect(() => {
+    const timer = setTimeout(() => setMinTimeElapsed(true), MIN_LOADING_SCREEN_MS);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isProfileLoading || isAuthLoading || !minTimeElapsed) {
     return <LoadingScreen />;
   }
 

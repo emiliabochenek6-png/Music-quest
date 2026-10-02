@@ -1,38 +1,46 @@
 import { useEffect, useRef, useState } from "react";
-import { Animated, Easing, Image, StyleSheet, Text, View, type LayoutChangeEvent } from "react-native";
-import { DARK_EXERCISE_THEME } from "@/theme/darkExerciseTheme";
+import { Animated, Easing, Image, StyleSheet, Text, View, useWindowDimensions, type LayoutChangeEvent } from "react-native";
 
-// Matches app.json's own native splash background/adaptive-icon color
-// exactly, via the same constant every screen already uses — this
-// screen renders before ProfileContext/AuthContext resolve (it might BE
-// what's still loading), but DARK_EXERCISE_THEME is a plain constant
-// (now just an alias for THEME_TOKENS, see its own doc), not derived
-// from any context, so it's safe to read directly here regardless of
-// loading state. Keeping this in sync with the native splash matters
-// more than for any other single screen: this is the very first JS
-// frame the app paints, right after that splash — a mismatch here reads
-// as a visible flash of the wrong theme before the login screen appears.
-const BACKGROUND = DARK_EXERCISE_THEME.colors.cream;
-const INK = DARK_EXERCISE_THEME.colors.ink;
-const PRIMARY = DARK_EXERCISE_THEME.colors.primary;
-const TRACK_COLOR = DARK_EXERCISE_THEME.colors.border;
+const BACKGROUND_PHONE = require("@/assets/backgrounds/ladowanie-tlo-telefon.jpg");
+const BACKGROUND_LAPTOP = require("@/assets/backgrounds/ladowanie-tlo-laptop.jpg");
+const SOLTEK = require("@/assets/soltek/soltek-ladowanie.png");
+const SOLTEK_ASPECT = 379 / 512;
+
+// Soltek's own warm palette, matching the login screen and the app icon.
+const INK = "#3B2414";
+const ORANGE = "#F28A1E";
+const TRACK = "#F4C98F";
+const CREAM = "#FFE8C8";
 
 const TRACK_HEIGHT = 8;
 const NOTE_SIZE = 30;
-const TRACK_MAX_WIDTH = 220;
-// The logo with Soltek (560x720 source), shown instead of the plain title.
-const LOGO = require("@/assets/logo/logo-pionowe-560.png");
+const TRACK_WIDTH = 220;
 const BOUNCE_DURATION_MS = 1100;
+const HOP_DURATION_MS = 700;
 
-/** The app's own branded "please wait" screen — shown at launch while
- * ProfileContext/AuthContext resolve (see app/index.tsx), replacing
- * a bare ActivityIndicator. A musical note "rides" back and forth along a
- * track, Duolingo-style — an INDETERMINATE bounce rather than a fill bar,
- * since nothing here tracks real progress toward a known total; implying
- * one with a growing fill would be a claim this screen can't back up. */
+/** The app's own "please wait" screen, shown when it opens: Soltek hops
+ * happily on Soltek's orange hills (the same picture as the login screen,
+ * with Soltek drawn separately so he can move), with the name and a small
+ * bouncing note on a track below him. The note's bounce is INDETERMINATE
+ * on purpose — nothing here tracks real progress toward a known total, and
+ * a filling bar would claim one. */
 export function LoadingScreen() {
+  const { width, height } = useWindowDimensions();
+  const portrait = width < height;
   const [trackWidth, setTrackWidth] = useState(0);
   const progress = useRef(new Animated.Value(0)).current;
+  const hop = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(hop, { toValue: 1, duration: HOP_DURATION_MS, easing: Easing.out(Easing.quad), useNativeDriver: true }),
+        Animated.timing(hop, { toValue: 0, duration: HOP_DURATION_MS, easing: Easing.in(Easing.quad), useNativeDriver: true }),
+      ])
+    );
+    loop.start();
+    return () => loop.stop();
+  }, [hop]);
 
   useEffect(() => {
     if (trackWidth === 0) return;
@@ -46,10 +54,19 @@ export function LoadingScreen() {
     return () => loop.stop();
   }, [trackWidth, progress]);
 
-  const translateX = progress.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, Math.max(trackWidth - NOTE_SIZE, 0)],
-  });
+  const noteX = progress.interpolate({ inputRange: [0, 1], outputRange: [0, Math.max(trackWidth - NOTE_SIZE, 0)] });
+  const hopY = hop.interpolate({ inputRange: [0, 1], outputRange: [0, -22] });
+  const tilt = hop.interpolate({ inputRange: [0, 0.5, 1], outputRange: ["-2deg", "0deg", "2deg"] });
+  const shadowScale = hop.interpolate({ inputRange: [0, 1], outputRange: [1, 0.78] });
+
+  // Soltek: big at the top on a phone; on the left on a laptop (the calm right side holds the loader).
+  const soltekHeight = Math.min(portrait ? height * 0.36 : height * 0.62, 460);
+  const soltekWidth = soltekHeight * SOLTEK_ASPECT;
+  const soltekLeft = portrait ? (width - soltekWidth) / 2 : width * 0.3 - soltekWidth / 2;
+  const soltekTop = portrait ? height * 0.07 : height * 0.17;
+  const loaderStyle = portrait
+    ? { left: 0, right: 0, top: height * 0.5, alignItems: "center" as const }
+    : { left: width * 0.5, right: 0, top: height * 0.34, alignItems: "center" as const };
 
   function handleTrackLayout(event: LayoutChangeEvent) {
     setTrackWidth(event.nativeEvent.layout.width);
@@ -57,53 +74,45 @@ export function LoadingScreen() {
 
   return (
     <View style={styles.root}>
-      <Image source={LOGO} style={styles.logo} resizeMode="contain" accessibilityLabel="Music Quest" />
-      <View style={styles.trackWrap}>
-        <View onLayout={handleTrackLayout} style={styles.track} />
-        <Animated.View style={[styles.note, { transform: [{ translateX }] }]}>
-          <Text style={styles.noteGlyph}>♪</Text>
-        </Animated.View>
+      <Image source={portrait ? BACKGROUND_PHONE : BACKGROUND_LAPTOP} resizeMode="cover" style={[StyleSheet.absoluteFill, { width: "100%", height: "100%" }]} />
+
+      <Animated.View style={[styles.shadow, { left: soltekLeft + soltekWidth * 0.15, top: soltekTop + soltekHeight * 0.93, width: soltekWidth * 0.7, transform: [{ scaleX: shadowScale }] }]} />
+      <Animated.Image
+        source={SOLTEK}
+        resizeMode="contain"
+        accessibilityLabel="Soltek"
+        style={{ position: "absolute", left: soltekLeft, top: soltekTop, width: soltekWidth, height: soltekHeight, transform: [{ translateY: hopY }, { rotate: tilt }] }}
+      />
+
+      <View style={[styles.loader, loaderStyle]}>
+        <Text style={styles.title}>Music Quest</Text>
+        <Text style={styles.subtitle}>Ładuję… Soltek już się rozgrzewa!</Text>
+        <View style={styles.trackWrap}>
+          <View onLayout={handleTrackLayout} style={styles.track} />
+          <Animated.View style={[styles.note, { transform: [{ translateX: noteX }] }]}>
+            <Text style={styles.noteGlyph}>♪</Text>
+          </Animated.View>
+        </View>
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: BACKGROUND,
-    paddingHorizontal: 48,
-  },
-  logo: {
-    width: 220,
-    height: 283,
-    marginBottom: 24,
-  },
-  title: {
-    fontSize: 26,
-    fontWeight: "800",
-    color: INK,
-    letterSpacing: 0.4,
-    marginBottom: 32,
-  },
-  trackWrap: {
-    width: "100%",
-    maxWidth: TRACK_MAX_WIDTH,
-  },
-  track: {
-    height: TRACK_HEIGHT,
-    borderRadius: TRACK_HEIGHT / 2,
-    backgroundColor: TRACK_COLOR,
-  },
+  root: { flex: 1, backgroundColor: CREAM, overflow: "hidden" },
+  shadow: { position: "absolute", height: 14, borderRadius: 7, backgroundColor: "rgba(120,60,10,0.22)" },
+  loader: { position: "absolute", paddingHorizontal: 24, gap: 10 },
+  title: { fontSize: 30, fontWeight: "800", color: INK, letterSpacing: 0.4, textAlign: "center" },
+  subtitle: { fontSize: 14, fontWeight: "700", color: "#7A5638", textAlign: "center", marginBottom: 14 },
+  trackWrap: { width: "100%", maxWidth: TRACK_WIDTH },
+  track: { height: TRACK_HEIGHT, borderRadius: TRACK_HEIGHT / 2, backgroundColor: TRACK },
   note: {
     position: "absolute",
     top: -(NOTE_SIZE - TRACK_HEIGHT) / 2,
     width: NOTE_SIZE,
     height: NOTE_SIZE,
     borderRadius: NOTE_SIZE / 2,
-    backgroundColor: PRIMARY,
+    backgroundColor: ORANGE,
     alignItems: "center",
     justifyContent: "center",
     shadowColor: "#000",
@@ -112,13 +121,5 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     elevation: 3,
   },
-  noteGlyph: {
-    // White, not BACKGROUND — this glyph sits ON the purple note bubble
-    // (PRIMARY), not on the page's own dark background, and needs
-    // contrast against THAT (same choice DarkButton makes for its own
-    // primary-variant label text).
-    color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "700",
-  },
+  noteGlyph: { color: "#FFFFFF", fontSize: 18, fontWeight: "800", lineHeight: 22 },
 });
