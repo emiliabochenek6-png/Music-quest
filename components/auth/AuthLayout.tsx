@@ -44,7 +44,7 @@ export function AuthLayout({ children, onBack }: AuthLayoutProps) {
           justifyContent: portrait ? "flex-start" : "center",
           alignItems: portrait ? "center" : "flex-end",
           // Phone: the card starts below Soltek (he fills the top ~40%). Laptop: the card sits in the calm right-hand part.
-          paddingTop: portrait ? Math.max(insets.top + 24, height * 0.36) : insets.top + 24,
+          paddingTop: portrait ? Math.max(insets.top + 24, height * 0.385) : insets.top + 24,
           paddingBottom: insets.bottom + 24,
           paddingHorizontal: portrait ? 16 : width * 0.08,
         }}
