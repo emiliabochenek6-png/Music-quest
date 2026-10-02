@@ -16,6 +16,7 @@ import { getUnlockedExercisePool, pickDailyChallengeDefinition } from "@/lib/dai
 import { NUTKI_REWARDS } from "@/lib/gamification/powerups";
 import { generateExercise } from "@/lib/questions/generate";
 import { isAnswerCorrect } from "@/lib/questions/validate";
+import { stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
 import { t } from "@/lib/i18n/translate";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import type { AnswerInput, ExerciseDefinition, GeneratedExercise } from "@/types/exercises";
@@ -96,7 +97,11 @@ export default function DailyChallengeScreen() {
   const [checked, setChecked] = useState(false);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
 
+  // Sound from the challenge (or the previous try) is cut the moment it's checked, replaced or left.
+  useEffect(() => stopAllScheduledAudio, [dailyExercise?.id]);
+
   function goBackToMap() {
+    stopAllScheduledAudio();
     router.replace("/(main)/map");
   }
 
@@ -116,6 +121,7 @@ export default function DailyChallengeScreen() {
   }
 
   function handleNextChallenge() {
+    stopAllScheduledAudio();
     const pool = getUnlockedExercisePool(progress);
     const definition = pickFreshDefinition(pool, stored?.generated.id);
     const next: GeneratedExercise | null = definition ? generateExercise(definition, "pl") : null;

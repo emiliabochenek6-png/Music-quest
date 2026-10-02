@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ScrollView, Text, View, StyleSheet } from "react-native";
 import { router } from "expo-router";
 import { DarkButton } from "@/components/exercises/DarkButton";
@@ -8,6 +8,7 @@ import { ScreenHeader } from "@/components/ui/ScreenHeader";
 import { usePlan } from "@/context/PlanContext";
 import { getWorldContent } from "@/data/lessons";
 import { WORLDS, getWorldById } from "@/data/worlds";
+import { stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
 import { t } from "@/lib/i18n/translate";
 import type { TranslationKey } from "@/lib/i18n/translate";
 import { placementQuestionLine, placementResultLine } from "@/lib/plan/soltekLines";
@@ -50,7 +51,12 @@ export default function PlacementScreen() {
   const usedIds = useRef(new Set<string>());
   const totalEstimate = worldIds.length * 2;
 
+  // Whatever the previous question was still playing (a melody, a click track) stops
+  // the instant the next question appears or the screen is left.
+  useEffect(() => stopAllScheduledAudio, [exercise?.id]);
+
   function loadQuestion(next: PlacementState): PlacementState {
+    stopAllScheduledAudio();
     // A world whose question can't be built is recorded as "do nauki" and skipped,
     // never an infinite loop.
     let current = next;
@@ -86,6 +92,7 @@ export default function PlacementScreen() {
   }
 
   function startFromBeginning() {
+    stopAllScheduledAudio();
     startWithGame();
     router.replace("/(main)/map");
   }
@@ -121,7 +128,13 @@ export default function PlacementScreen() {
     const world = worldId ? getWorldById(worldId) : undefined;
     return (
       <View style={styles.root}>
-        <ScreenHeader title={`Pytanie ${state.answered + 1}`} onBack={() => setStage("intro")} />
+        <ScreenHeader
+          title={`Pytanie ${state.answered + 1}`}
+          onBack={() => {
+            stopAllScheduledAudio();
+            setStage("intro");
+          }}
+        />
         <View style={styles.barWrap}>
           <View style={styles.barTrack}>
             <View style={[styles.barFill, { width: `${Math.min(100, (state.answered / totalEstimate) * 100)}%` }]} />
