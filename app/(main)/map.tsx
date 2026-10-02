@@ -58,7 +58,7 @@ export default function MapScreen() {
   const { status } = useSubscription();
   const { state: gamification } = useGamification();
   const { profile, isLoading: isProfileLoading, setHasSeenSoltekGreeting } = useProfile();
-  const { plan, isLoading: isPlanLoading, chooseOriginal, setView } = usePlan();
+  const { plan, isLoading: isPlanLoading, startWithGame, setView } = usePlan();
   const [sideMenuOpen, setSideMenuOpen] = useState(false);
   // Not loading AND not-yet-seen — reading `profile` before it's finished
   // loading would show the modal for a returning player too, for the one
@@ -82,7 +82,7 @@ export default function MapScreen() {
       return () => setMapFocused(false);
     }, [])
   );
-  const showPlanPrompt = mapFocused && !planPromptHidden && !isProfileLoading && !isPlanLoading && profile.hasSeenSoltekGreeting && plan.mode === "unset";
+  const showPlanPrompt = mapFocused && !planPromptHidden && !isProfileLoading && !isPlanLoading && profile.hasSeenSoltekGreeting && plan.mode === "unset" && !plan.promptSeen;
 
   function handleSelectWorld(world: WorldDefinition) {
     const state = resolveNodeState(world, progress, status, gamification.lessonStars);
@@ -143,7 +143,7 @@ export default function MapScreen() {
             setPlanPromptHidden(true);
             router.push("/(main)/placement");
           }}
-          onStartFromBeginning={() => chooseOriginal()}
+          onStartFromBeginning={startWithGame}
         />
       )}
     </View>

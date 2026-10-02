@@ -36,6 +36,9 @@ export interface PlanState {
    * "Tryb zabawy" (the game: the original world map and its bosses) or
    * "plan" = "Tryb nauki" / "Twój plan" (the personal path, lesson by lesson). */
   view: "fun" | "plan";
+  /** True once the player has answered the first-run question ("Zrób test" / "Zacznij od gry"):
+   * choosing the game must not create a plan, so "Tryb nauki" keeps offering the placement test. */
+  promptSeen: boolean;
 }
 
 const DEFAULT_PLAN: PlanState = {
@@ -48,6 +51,7 @@ const DEFAULT_PLAN: PlanState = {
   reviewLog: {},
   today: null,
   view: "fun",
+  promptSeen: false,
 };
 
 interface PlanContextValue {
@@ -55,6 +59,8 @@ interface PlanContextValue {
   isLoading: boolean;
   /** "Chcę zacząć od początku": every lesson, in curriculum order. */
   chooseOriginal: (minutesPerDay?: number) => void;
+  /** "Zacznij od gry": opens "Tryb zabawy" WITHOUT making a plan — "Tryb nauki" still shows the "Zrób test poziomujący" button until the test is done. */
+  startWithGame: () => void;
   /** Builds the personal path from a finished placement test. */
   applyPlacement: (levels: Record<string, PlacementLevel>, minutesPerDay?: number) => void;
   setMinutesPerDay: (minutes: number) => void;
@@ -157,6 +163,7 @@ export function PlanProvider({ children }: { children: ReactNode }) {
       plan,
       isLoading,
       chooseOriginal: (minutesPerDay = plan.minutesPerDay) => startPlan("original", null, minutesPerDay),
+      startWithGame: () => persist({ ...plan, view: "fun", promptSeen: true }),
       applyPlacement: (levels, minutesPerDay = plan.minutesPerDay) => startPlan("personal", levels, minutesPerDay),
       setMinutesPerDay: (minutes) => {
         const base: PlanState = { ...plan, minutesPerDay: minutes };

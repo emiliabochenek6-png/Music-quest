@@ -40,7 +40,7 @@ const LEVEL_COLOR: Record<PlacementLevel, string> = { 0: theme.colors.warning, 1
  * per-world levels into a personal study path (lib/plan/personalPath.ts)
  * and lets the player pick a daily pace before starting the plan. */
 export default function PlacementScreen() {
-  const { plan, applyPlacement, chooseOriginal } = usePlan();
+  const { plan, applyPlacement, startWithGame } = usePlan();
   const worldIds = useMemo(() => testableWorldIds(WORLDS, getWorldContent), []);
   const [stage, setStage] = useState<Stage>("intro");
   const [state, setState] = useState<PlacementState>(() => startPlacement(worldIds));
@@ -86,7 +86,7 @@ export default function PlacementScreen() {
   }
 
   function startFromBeginning() {
-    chooseOriginal(minutesPerDay);
+    startWithGame();
     router.replace("/(main)/map");
   }
 
