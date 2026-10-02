@@ -2,6 +2,7 @@ import { Fragment } from "react";
 import { ScrollView, View, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Defs, LinearGradient, Path, Stop } from "react-native-svg";
+import { TourTarget } from "@/components/guide/TourTarget";
 import { WORLD_NODE_ROW_WIDTH, WORLD_NODE_SIZE, WorldNode } from "@/components/map/WorldNode";
 import { WORLDS } from "@/data/worlds";
 import { resolveNodeState } from "@/lib/progression/resolveNodeState";
@@ -100,9 +101,9 @@ export function WorldMap({ progress, subscription, lessonStars, onSelectWorld }:
           const labelSide: "left" | "right" = Math.sin(index * 1.15) >= 0 ? "left" : "right";
           const left = labelSide === "right" ? nodeX(index) - WORLD_NODE_SIZE / 2 : nodeX(index) - (WORLD_NODE_ROW_WIDTH - WORLD_NODE_SIZE / 2);
           return (
-            <View key={world.id} style={{ position: "absolute", left, top: nodeY(index) - WORLD_NODE_SIZE / 2 }}>
+            <TourTarget key={world.id} id={index === 0 ? "firstWorld" : undefined} style={{ position: "absolute", left, top: nodeY(index) - WORLD_NODE_SIZE / 2 }}>
               <WorldNode world={world} state={state} labelSide={labelSide} onPress={onSelectWorld} />
-            </View>
+            </TourTarget>
           );
         })}
       </View>

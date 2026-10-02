@@ -12,6 +12,8 @@ import { ModeSwitch } from "@/components/plan/ModeSwitch";
 import { PlanPath } from "@/components/plan/PlanPath";
 import { PlanPromptModal } from "@/components/plan/PlanPromptModal";
 import { GameGuide } from "@/components/guide/GameGuide";
+import { TourTarget } from "@/components/guide/TourTarget";
+import { useTourTarget } from "@/lib/guide/tourTargets";
 import { SoltekWelcomeModal } from "@/components/SoltekWelcomeModal";
 import { useGamification } from "@/context/GamificationContext";
 import { usePlan } from "@/context/PlanContext";
@@ -61,6 +63,7 @@ export default function MapScreen() {
   const { profile, isLoading: isProfileLoading, setHasSeenSoltekGreeting, setHasSeenGuide } = useProfile();
   // The tour can also be replayed from the side menu.
   const [guideReplay, setGuideReplay] = useState(false);
+  const menuTargetRef = useTourTarget("menu");
   const { plan, isLoading: isPlanLoading, startWithGame, setView } = usePlan();
   const [sideMenuOpen, setSideMenuOpen] = useState(false);
   // Not loading AND not-yet-seen — reading `profile` before it's finished
@@ -110,6 +113,8 @@ export default function MapScreen() {
       />
       <View style={styles.glowBlob} />
       <Pressable
+        ref={menuTargetRef}
+        collapsable={false}
         onPress={() => setSideMenuOpen(true)}
         accessibilityRole="button"
         accessibilityLabel="Menu"
@@ -121,7 +126,9 @@ export default function MapScreen() {
       <Image source={LOGO_ICON} style={[styles.logoIcon, { top: insets.top + 8 }]} accessibilityLabel="Music Quest" />
       <Text style={[styles.title, { top: insets.top + 16 }]}>Music Quest</Text>
       <View style={[styles.headerBarWrap, { top: insets.top + 56 }]}>
-        <GamificationHeaderBar />
+        <TourTarget id="headerBar" style={{ alignSelf: "flex-start" }}>
+          <GamificationHeaderBar />
+        </TourTarget>
       </View>
       {plan.view === "plan" ? (
         <PlanPath />

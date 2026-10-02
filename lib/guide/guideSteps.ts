@@ -1,7 +1,5 @@
 import type { IconName } from "@/components/icons/icons";
 import type { SoltekExpression } from "@/components/SoltekMascot";
-import { MAX_LEVEL } from "@/lib/gamification/rank";
-import { POWER_UP_COSTS } from "@/lib/gamification/powerups";
 
 export interface GuideStep {
   id: string;
@@ -10,58 +8,75 @@ export interface GuideStep {
   /** What Soltek says: short, in plain words, written for a child. */
   message: string;
   expression: SoltekExpression;
+  /** The spot on screen to highlight (see lib/guide/tourTargets.ts); no target = a card in the middle of the screen. */
+  target?: "modeSwitch" | "firstWorld" | "headerBar" | "tabMisje" | "tabKalendarz" | "menu";
 }
 
-/** The short tour of the whole game for a new player, in order. Shown once
- * after Soltek's welcome (and again from the side menu's "Przewodnik po grze"). */
+/** The tour of the whole game for a new player: Soltek points at the real
+ * places on screen ("Kliknij tutaj…"). Shown once after Soltek's welcome
+ * and again from the side menu's "Przewodnik po grze". A step whose spot
+ * isn't on screen (e.g. the world map while "Tryb nauki" is showing) falls back to a card in the middle. */
 export const GUIDE_STEPS: readonly GuideStep[] = [
   {
     id: "witaj",
     icon: "kraina_wioska_nut",
     title: "Witaj w Music Quest!",
-    message: "Uczysz się tu muzyki krok po kroku: czytania nut, rytmu, słuchu i śpiewu. Ja będę Ci pomagać. Pokażę Ci w minutę, jak to działa!",
+    message: "Pokażę Ci na ekranie, gdzie co jest. Klikaj w podświetlone miejsca albo naciskaj „Dalej”. To zajmie tylko minutę!",
     expression: "glowny",
   },
   {
     id: "tryby",
     icon: "tryb_zabawy",
     title: "Dwa tryby",
-    message: "„Tryb zabawy” to gra: mapa krain, poziomy i walki z bossami. „Tryb nauki” to Twój plan: lekcje dzień po dniu, z powtórkami. Przełączasz je u góry mapy.",
+    message: "Kliknij tutaj, żeby przełączać tryby. „Tryb zabawy” to gra: mapa krain i bossowie. „Tryb nauki” to Twój plan: lekcje dzień po dniu, z powtórkami.",
     expression: "radosny",
+    target: "modeSwitch",
   },
   {
-    id: "poziomy",
+    id: "krainy",
     icon: "kraina_klodka",
     title: "Krainy i poziomy",
-    message: "Każda kraina zaczyna się od poziomu 1. Następny poziom otwiera się, gdy zdobędziesz w poprzednim minimum 2 gwiazdki. Na końcu krainy czeka boss!",
+    message: "Kliknij krainę, żeby wejść do jej poziomów. Zaczynasz od poziomu 1. Następny otworzy się, gdy zdobędziesz minimum 2 gwiazdki (od 1 do 3, im mniej błędów, tym więcej). Pomyłki nic nie kosztują!",
     expression: "zachecajacy",
+    target: "firstWorld",
   },
   {
-    id: "gwiazdki",
-    icon: "ui_odznaka",
-    title: "Gwiazdki i błędy",
-    message: "Za poziom dostajesz od 1 do 3 gwiazdek: im mniej błędów, tym więcej. Pomyłka nic nie kosztuje, więc próbuj śmiało i powtarzaj poziomy, jeśli chcesz lepszy wynik.",
-    expression: "radosny",
-  },
-  {
-    id: "nagrody",
+    id: "pasek",
     icon: "hud_ranga_gwiazda",
-    title: "XP, levele i nutki",
-    message: `Za dobre odpowiedzi zbierasz XP i nutki. XP zamieniają się w levele (jest ich ${MAX_LEVEL}), a za nowe levele dostajesz jeszcze więcej nutek. Za nutki kupisz w Sklepie Soltka zamrożenie passy (${POWER_UP_COSTS.streakFreeze} nutek).`,
-    expression: "zachecajacy",
+    title: "Passa, nutki i level",
+    message: "Tutaj widzisz passę (dni ćwiczeń z rzędu), nutki i swój level. Za dobre odpowiedzi dostajesz XP i nutki. Kliknij level, żeby zobaczyć nagrody!",
+    expression: "radosny",
+    target: "headerBar",
   },
   {
-    id: "passa",
-    icon: "hud_seria_ogien",
-    title: "Passa i misje",
-    message: "Ćwicz codziennie, a Twoja passa będzie rosła. Każdego dnia czekają na Ciebie 3 misje i wyzwanie dnia, czyli pytanie z lekcji, które już zrobiłaś albo zrobiłeś.",
+    id: "misje",
+    icon: "nav_misje",
+    title: "Misje dnia",
+    message: "Kliknij tutaj po codzienne misje i wyzwanie dnia. Każdego dnia czekają 3 misje, a wyzwanie to pytanie z lekcji, które już zrobiłaś albo zrobiłeś.",
+    expression: "zachecajacy",
+    target: "tabMisje",
+  },
+  {
+    id: "kalendarz",
+    icon: "nav_kalendarz",
+    title: "Kalendarz i odznaki",
+    message: "Tutaj sprawdzisz, ile dni ćwiczysz z rzędu, swoje odznaki i kalendarz. Wracaj codziennie, żeby passa rosła!",
     expression: "radosny",
+    target: "tabKalendarz",
+  },
+  {
+    id: "menu",
+    icon: "hud_menu",
+    title: "Zasady i przewodnik",
+    message: "Kliknij tutaj, żeby przeczytać zasady gry albo obejrzeć ten przewodnik jeszcze raz.",
+    expression: "zachecajacy",
+    target: "menu",
   },
   {
     id: "start",
     icon: "tryb_nauki",
     title: "Zaczynamy!",
-    message: "Na początek mogę zrobić z Tobą krótki test i ułożyć Twój własny plan nauki. Możesz też od razu zacząć grać. Gotowy?",
+    message: "Na początek mogę zrobić z Tobą krótki test i ułożyć Twój plan nauki. Możesz też od razu zacząć grać. Gotowy?",
     expression: "glowny",
   },
 ];

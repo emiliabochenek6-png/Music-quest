@@ -2,6 +2,7 @@ import { Pressable, Text, View, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router, usePathname } from "expo-router";
 import { AppIcon } from "@/components/icons/AppIcon";
+import { useTourTarget } from "@/lib/guide/tourTargets";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 
 const TABS = [
@@ -40,24 +41,37 @@ export function BottomTabBar() {
       {TABS.map((tab) => {
         const isActive = pathname === tab.matches;
         return (
-          <Pressable
-            key={tab.href}
-            onPress={() => router.replace(tab.href)}
-            accessibilityRole="button"
-            accessibilityLabel={tab.label}
-            accessibilityState={{ selected: isActive }}
-            style={styles.item}
-          >
-            <View style={[styles.iconWrap, isActive && { backgroundColor: theme.colors.accentSoft }]}>
-              <AppIcon name={tab.icon} size={22} />
-            </View>
-            <Text style={[styles.label, { color: isActive ? theme.colors.primary : theme.colors.muted }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8}>
-              {tab.label}
-            </Text>
-          </Pressable>
+          <TabButton key={tab.href} tab={tab} isActive={isActive} />
         );
       })}
     </View>
+  );
+}
+
+const TOUR_IDS: Partial<Record<(typeof TABS)[number]["href"], string>> = {
+  "/(main)/daily-challenge": "tabMisje",
+  "/(main)/calendar": "tabKalendarz",
+};
+
+function TabButton({ tab, isActive }: { tab: (typeof TABS)[number]; isActive: boolean }) {
+  const targetRef = useTourTarget(TOUR_IDS[tab.href]);
+  return (
+    <Pressable
+      ref={targetRef}
+      collapsable={false}
+      onPress={() => router.replace(tab.href)}
+      accessibilityRole="button"
+      accessibilityLabel={tab.label}
+      accessibilityState={{ selected: isActive }}
+      style={styles.item}
+    >
+      <View style={[styles.iconWrap, isActive && { backgroundColor: theme.colors.accentSoft }]}>
+        <AppIcon name={tab.icon} size={22} />
+      </View>
+      <Text style={[styles.label, { color: isActive ? theme.colors.primary : theme.colors.muted }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8}>
+        {tab.label}
+      </Text>
+    </Pressable>
   );
 }
 

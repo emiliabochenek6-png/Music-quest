@@ -1,6 +1,7 @@
 import { Pressable, Text, View, StyleSheet } from "react-native";
 import { AppIcon } from "@/components/icons/AppIcon";
 import type { IconName } from "@/components/icons/icons";
+import { useTourTarget } from "@/lib/guide/tourTargets";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 
 interface ModeSwitchProps {
@@ -12,8 +13,9 @@ interface ModeSwitchProps {
  * a game: explore the worlds, beat the bosses) and "Tryb nauki" ("Twój plan": the personal path: the
  * lessons picked for you, day by day, with reviews). */
 export function ModeSwitch({ view, onChange }: ModeSwitchProps) {
+  const targetRef = useTourTarget("modeSwitch");
   return (
-    <View style={styles.track} accessibilityRole="tablist">
+    <View ref={targetRef} collapsable={false} style={styles.track} accessibilityRole="tablist">
       <Segment icon="tryb_zabawy" label="Tryb zabawy" active={view === "fun"} onPress={() => onChange("fun")} />
       <Segment icon="tryb_nauki" label="Tryb nauki" active={view === "plan"} onPress={() => onChange("plan")} />
     </View>

@@ -5,7 +5,7 @@ import { GUIDE_STEPS } from "@/lib/guide/guideSteps";
 describe("new-player guide", () => {
   it("is short, with unique steps", () => {
     expect(GUIDE_STEPS.length).toBeGreaterThanOrEqual(5);
-    expect(GUIDE_STEPS.length).toBeLessThanOrEqual(8);
+    expect(GUIDE_STEPS.length).toBeLessThanOrEqual(10);
     expect(new Set(GUIDE_STEPS.map((step) => step.id)).size).toBe(GUIDE_STEPS.length);
   });
 
@@ -17,8 +17,17 @@ describe("new-player guide", () => {
     }
   });
 
-  it("mentions the rule that a level opens with 2 stars, and ends by offering the start", () => {
-    expect(GUIDE_STEPS.some((step) => /2 gwiazdki/.test(step.message))).toBe(true);
+  it("points at real spots with a 'click here' style message and has no two steps on one spot", () => {
+    const pointing = GUIDE_STEPS.filter((step) => step.target);
+    expect(pointing.length).toBeGreaterThanOrEqual(5);
+    expect(new Set(pointing.map((step) => step.target)).size).toBe(pointing.length);
+    expect(pointing.filter((step) => /Kliknij|Tutaj/.test(step.message)).length).toBe(pointing.length);
+  });
+
+  it("explains that a level opens with 2 stars, and starts and ends with a centred card", () => {
+    expect(GUIDE_STEPS.some((step) => /minimum 2 gwiazdki/.test(step.message))).toBe(true);
+    expect(GUIDE_STEPS[0].target).toBeUndefined();
     expect(GUIDE_STEPS[GUIDE_STEPS.length - 1].id).toBe("start");
+    expect(GUIDE_STEPS[GUIDE_STEPS.length - 1].target).toBeUndefined();
   });
 });
