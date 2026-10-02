@@ -27,7 +27,9 @@
  * (2023). The organ is NOT a recording of real pipes but the Aeolus pipe-organ
  * emulator (Fons Adriaensen), sampled by FreePats. "talerze" is the University
  * of Iowa file 18crash.stick.normal.mf (a suspended 18" crash cymbal, struck
- * with a stick; same terms as the other Iowa files above). Keys match the `instrument_*` icon names
+ * with a stick; same terms as the other Iowa files above), and "gitara" is
+ * Guitar.mf.sulB.B3.stereo.aif (a plucked B3 on the B string; the first 2.6 s,
+ * mono 22.05 kHz, faded out) from the same Iowa collection. Keys match the `instrument_*` icon names
  * (components/icons/icons.ts) minus that prefix. */
 export const INSTRUMENT_SAMPLES = {
   skrzypce: require("@/assets/audio/instruments/skrzypce.wav"),
@@ -50,6 +52,7 @@ export const INSTRUMENT_SAMPLES = {
   kotly: require("@/assets/audio/instruments/kotly.wav"),
   organy: require("@/assets/audio/instruments/organy.wav"),
   talerze: require("@/assets/audio/instruments/talerze.wav"),
+  gitara: require("@/assets/audio/instruments/gitara.wav"),
 } as const;
 
 export type InstrumentSampleName = keyof typeof INSTRUMENT_SAMPLES;

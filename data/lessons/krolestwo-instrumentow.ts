@@ -262,7 +262,7 @@ export const KROLESTWO_INSTRUMENTOW_CONTENT: WorldContent = {
           body: "Są też instrumenty ze strunami, które szarpiemy palcami: harfa (kilkadziesiąt strun) i gitara (zwykle sześć strun). Nie gra się na nich smyczkiem, tylko dotykając strun.",
           instrumentExamples: [
             { imageId: "instrument_harfa", label: "Harfa", audioSource: SOUND.harfa },
-            { imageId: "instrument_gitara", label: "Gitara" },
+            { imageId: "instrument_gitara", label: "Gitara", audioSource: SOUND.gitara },
           ],
         },
       ],
@@ -279,6 +279,7 @@ export const KROLESTWO_INSTRUMENTOW_CONTENT: WorldContent = {
         fact("ki-l6-e10", 1, "Który z tych instrumentów NIE ma klawiszy?", ["Akordeon", "Organy", "Gitara"], 2, "Gitara — gra się na niej, szarpiąc struny.", { optionImageIds: ["instrument_akordeon", "instrument_organy", "instrument_gitara"] }),
         fact("ki-l6-e11", 1, "Posłuchaj: długi, uroczysty dźwięk jak w kościele. Który instrument gra?", ["Akordeon", "Organy", "Gitara"], 1, "To organy — dźwięk robi powietrze w piszczałkach.", { referenceAudioSource: SOUND.organy }),
         fact("ki-l6-e12", 1, "Posłuchaj: ciepły dźwięk z „oddychaniem” miecha. Który to instrument?", ["Organy", "Fortepian", "Akordeon"], 2, "To akordeon — dźwięk powstaje, gdy powietrze z miecha wprawia w drganie metalowe języczki.", { referenceAudioSource: SOUND.akordeon }),
+        fact("ki-l6-e14", 1, "Posłuchaj: szarpnięta struna o ciepłym, drewnianym brzmieniu. Który instrument gra?", ["Harfa", "Gitara", "Skrzypce"], 1, "To gitara — struny szarpie się palcami, a pudło z drewna nadaje dźwiękowi ciepło.", { referenceAudioSource: SOUND.gitara }),
         fact("ki-l6-e13", 1, "Posłuchaj: krótki dźwięk, który zaraz cichnie. Który instrument gra?", ["Fortepian", "Harfa", "Organy"], 0, "To fortepian — młoteczek uderza w strunę, więc dźwięk jest wyraźny i zaraz cichnie.", { referenceAudioSource: NOTE_SAMPLES.C4 }),
       ],
     },
