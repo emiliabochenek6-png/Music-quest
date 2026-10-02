@@ -434,6 +434,13 @@ export type ExerciseSpec =
        * only adds the pacing click (and the rhythmic playback), see
        * SolfegePhraseSingingExercise.tsx's own doc. Needs `rhythm`. */
       withMetronome?: boolean;
+      /** Like `withMetronome`, but with NO recording at all (Zaczarowany
+       * Solfeż levels 12 and 14): the microphone is never used or asked
+       * for. "Śpiewaj z metronomem" plays the count-in + click track while
+       * the staff highlight walks through the notes in time, the player
+       * sings along on their own, and the exercise counts as done when the
+       * phrase ends (a selfReported answer — nothing to grade). */
+      metronomeOnly?: boolean;
       /** Optional real recording of the phrase (a bundled audio file, same
        * convention as the rhythm types' own referenceAudioSource) — played
        * by 🔊 instead of the synthesized piano phrase when set (and not in
@@ -969,6 +976,7 @@ export type GeneratedExercise =
       isFragment?: boolean;
       gradeRhythm?: boolean;
       withMetronome?: boolean;
+      metronomeOnly?: boolean;
       referenceAudioSource?: number;
       bpm?: number;
       toleranceCents: number;

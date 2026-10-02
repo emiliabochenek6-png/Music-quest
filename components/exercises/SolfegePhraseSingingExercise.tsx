@@ -184,7 +184,10 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
   const isRhythmGraded = exercise.gradeRhythm === true;
   // "Nagranie, potem metronom" (exercise.withMetronome): the pacing click
   // plays during the take even when rhythm itself isn't graded.
-  const usesMetronome = isRhythmGraded || exercise.withMetronome === true;
+  const usesMetronome = isRhythmGraded || exercise.withMetronome === true || exercise.metronomeOnly === true;
+  // "Śpiewaj z metronomem" (exercise.metronomeOnly): no recording at all —
+  // see startMetronomeOnlyTake. The mic switch does not apply here.
+  const noRecording = exercise.metronomeOnly === true;
   const { slow, micEnabled, setMicEnabled } = useSolfegeHelp();
   // The 🐌 switch slows the reference phrase's note spacing and the pacing
   // metronome alike — safe for the metronome because grading never reads
@@ -273,6 +276,13 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
   // standalone toggle below AND by startRecording's own automatic
   // metronome, so the SAME dot visibly pulses in time either way.
   const [metronomePlay, setMetronomePlay] = useState({ token: 0, totalBeats: 0 });
+  // metronomeOnly exercises only: a take is "running" from the first
+  // count-in click until the phrase's last note ends, with the staff
+  // highlight (metronomeHighlight, null during the count-in) walking
+  // through the notes on timers — see startMetronomeOnlyTake.
+  const [metronomeRunning, setMetronomeRunning] = useState(false);
+  const [metronomeHighlight, setMetronomeHighlight] = useState<number | null>(null);
+  const metronomeTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const stopTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // See SolfegeNoteSingingExercise's own identical guard for why.
   const isMountedRef = useRef(true);
@@ -393,6 +403,7 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
   useEffect(() => {
     return () => {
       if (stopTimerRef.current) clearTimeout(stopTimerRef.current);
+      metronomeTimersRef.current.forEach(clearTimeout);
       // Cancels any of the metronome's own still-pending clicks if the
       // player navigates away mid-recording — harmless, cheap no-op when
       // nothing's actually scheduled.
@@ -427,7 +438,7 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
     // whole point of the exercise. The button is also visually disabled
     // below; this guards a tap that lands in the gap right as recording
     // starts.
-    if (phase === "recording") return;
+    if (phase === "recording" || metronomeRunning) return;
     stopAllScheduledAudio();
     // A real recording of the phrase, when the content ships one — not in
     // slow mode (slowing a recording would also lower its pitch).
@@ -463,6 +474,54 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
     if (checked) return;
     setPhase("recorded");
     onAnswerChange({ type: "solfege-phrase-singing", detectedFrequenciesHz: exercise.notes.map(() => null), selfReported: true });
+  }
+
+  function stopMetronomeOnlyTake() {
+    metronomeTimersRef.current.forEach(clearTimeout);
+    metronomeTimersRef.current = [];
+    stopAllScheduledAudio();
+    setMetronomeRunning(false);
+    setMetronomeHighlight(null);
+  }
+
+  // "Śpiewaj z metronomem": count-in clicks, then one click per beat of
+  // the phrase, while the staff highlight steps to each note when its
+  // written value begins — the player sings along on their own. Nothing is
+  // recorded or graded: when the phrase ends the exercise counts as done
+  // (a selfReported answer, same as the mic-off path).
+  function startMetronomeOnlyTake() {
+    if (checked || metronomeRunning) return;
+    stopAllScheduledAudio();
+    setStandaloneMetronomeOn(false);
+    const beatMs = 60000 / effectiveBpm;
+    const rhythmValues: RhythmNoteValue[] = exercise.rhythm ?? exercise.notes.map(() => "quarter");
+    const noteBeats = rhythmValues.map((value) => NOTE_VALUE_BEATS[value]);
+    const totalBeats = METRONOME_COUNT_IN_BEATS + noteBeats.reduce((sum, beats) => sum + beats, 0);
+    playMetronome({ bpm: effectiveBpm, beatsPerMeasure: 1, measureCount: totalBeats });
+    setMetronomePlay((prev) => ({ token: prev.token + 1, totalBeats }));
+    setMetronomeRunning(true);
+    setMetronomeHighlight(null);
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    let cursorBeats = METRONOME_COUNT_IN_BEATS;
+    noteBeats.forEach((beats, index) => {
+      timers.push(
+        setTimeout(() => {
+          if (isMountedRef.current) setMetronomeHighlight(index);
+        }, cursorBeats * beatMs)
+      );
+      cursorBeats += beats;
+    });
+    timers.push(
+      setTimeout(() => {
+        if (!isMountedRef.current) return;
+        metronomeTimersRef.current = [];
+        setMetronomeRunning(false);
+        setMetronomeHighlight(null);
+        setPhase("recorded");
+        onAnswerChange({ type: "solfege-phrase-singing", detectedFrequenciesHz: exercise.notes.map(() => null), selfReported: true });
+      }, cursorBeats * beatMs)
+    );
+    metronomeTimersRef.current = timers;
   }
 
   async function finishTake() {
@@ -652,7 +711,7 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
   // no-op while actually recording, where startRecording's own automatic
   // metronome already owns the click track (see that function's own doc).
   function toggleStandaloneMetronome() {
-    if (phase === "recording") return;
+    if (phase === "recording" || metronomeRunning) return;
     stopAllScheduledAudio();
     if (standaloneMetronomeOn) {
       setStandaloneMetronomeOn(false);
@@ -692,7 +751,16 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
     : null;
 
   let status: { message: string; tone: "info" | "warning" } | null = null;
-  if (phase === "permission-denied" && micEnabled) {
+  if (noRecording) {
+    const key: TranslationKey = metronomeRunning
+      ? "lesson.solfegeMetronomeOnlyRunning"
+      : isSelfReported
+        ? checked
+          ? "lesson.solfegeMetronomeOnlyChecked"
+          : "lesson.solfegeMetronomeOnlyDone"
+        : "lesson.solfegeMetronomeOnlyHint";
+    status = { message: t(key, locale), tone: "info" };
+  } else if (phase === "permission-denied" && micEnabled) {
     status = { message: t("lesson.solfegePermissionDenied", locale), tone: "warning" };
   } else if (phase === "requesting-permission") {
     status = { message: t("lesson.solfegeRequestingPermission", locale), tone: "info" };
@@ -727,7 +795,9 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
   // the generic instruction instead — listing out ITS OWN syllables in
   // that same phrasing would just repeat what the highlighted staff
   // notation already shows.
-  const promptText = exercise.isFragment
+  const promptText = noRecording
+    ? t("lesson.solfegePhraseMetronomeOnlyPrompt", locale)
+    : exercise.isFragment
     ? t("lesson.solfegePhraseSingFragmentPrompt", locale)
     : t("lesson.solfegePhraseSingPrompt", locale, { syllables: exercise.solfegeSyllables.join(" - ") });
   // Exactly two notes means this exercise genuinely IS one interval (level
@@ -775,7 +845,7 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
           ariaLabel={promptText}
           keySignature={0}
           meter={exercise.meter ?? "4/4"}
-          highlightedIndex={isRecording ? highlightedIndex : undefined}
+          highlightedIndex={isRecording ? highlightedIndex : metronomeHighlight ?? undefined}
           locale={locale}
           solfegeLabels={exercise.solfegeSyllables}
         />
@@ -784,13 +854,13 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
           notes={exercise.notes}
           locale={locale}
           labels={exercise.solfegeSyllables}
-          highlightedIndex={isRecording ? highlightedIndex : undefined}
+          highlightedIndex={isRecording ? highlightedIndex : metronomeHighlight ?? undefined}
         />
       )}
 
-      <DarkButton label="🔊" onPress={playExample} variant="secondary" size={72} fontSize={34} disabled={isRecording} />
+      <DarkButton label="🔊" onPress={playExample} variant="secondary" size={72} fontSize={34} disabled={isRecording || metronomeRunning} />
 
-      <SolfegeHelpBar disabled={isRecording} locale={locale} />
+      <SolfegeHelpBar showMic={!noRecording} disabled={isRecording || metronomeRunning} locale={locale} />
 
       {usesMetronome && (
         <View style={{ alignItems: "center", gap: theme.spacing(0.5) }}>
@@ -803,9 +873,11 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
             onPress={toggleStandaloneMetronome}
             active={standaloneMetronomeOn}
           />
-          <Text style={{ fontSize: theme.fontSize.body * 0.7, color: theme.colors.muted, textAlign: "center" }}>
-            {t("lesson.solfegeMetronomeDotHint", locale)}
-          </Text>
+          {!noRecording && (
+            <Text style={{ fontSize: theme.fontSize.body * 0.7, color: theme.colors.muted, textAlign: "center" }}>
+              {t("lesson.solfegeMetronomeDotHint", locale)}
+            </Text>
+          )}
         </View>
       )}
 
@@ -846,10 +918,20 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
       )}
 
       <View style={{ width: "100%", gap: theme.spacing(1.25) }}>
-        {!isRecording && !micEnabled && (
+        {noRecording && !metronomeRunning && (
+          <DarkButton
+            label={t(isSelfReported ? "lesson.solfegeMetronomeOnlyAgain" : "lesson.solfegeMetronomeOnlyStart", locale)}
+            onPress={startMetronomeOnlyTake}
+            disabled={checked}
+          />
+        )}
+        {noRecording && metronomeRunning && (
+          <DarkButton label={t("lesson.solfegeMetronomeOnlyStop", locale)} onPress={stopMetronomeOnlyTake} variant="secondary" />
+        )}
+        {!noRecording && !isRecording && !micEnabled && (
           <DarkButton label={t("lesson.solfegeNoMicButton", locale)} onPress={confirmSungWithoutMic} disabled={checked || isSelfReported} />
         )}
-        {!isRecording && micEnabled && (
+        {!noRecording && !isRecording && micEnabled && (
           <DarkButton
             label={hasResult ? t("lesson.solfegeRetry", locale) : t("lesson.solfegeRecordButton", locale)}
             onPress={startRecording}

@@ -1423,7 +1423,7 @@ export function generateExercise(definition: ExerciseDefinition, locale: Locale,
       // Fixed, authored content (the notes themselves come straight from
       // the spec, not rolled) — no randomness here, so unlike solfege-
       // note-singing there's nothing to exclude/re-roll.
-      const { notes, rhythm, meter, isFragment, gradeRhythm, withMetronome, referenceAudioSource, bpm, toleranceCents } = definition.spec;
+      const { notes, rhythm, meter, isFragment, gradeRhythm, withMetronome, metronomeOnly, referenceAudioSource, bpm, toleranceCents } = definition.spec;
       return {
         id: definition.id,
         type: "solfege-phrase-singing",
@@ -1434,8 +1434,9 @@ export function generateExercise(definition: ExerciseDefinition, locale: Locale,
         isFragment,
         gradeRhythm,
         withMetronome,
+        metronomeOnly,
         referenceAudioSource,
-        bpm: gradeRhythm || withMetronome ? bpm ?? DEFAULT_SOLFEGE_RHYTHM_BPM : bpm,
+        bpm: gradeRhythm || withMetronome || metronomeOnly ? bpm ?? DEFAULT_SOLFEGE_RHYTHM_BPM : bpm,
         toleranceCents: toleranceCents ?? DEFAULT_SOLFEGE_TOLERANCE_CENTS,
       };
     }
