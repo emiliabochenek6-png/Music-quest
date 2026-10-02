@@ -1,24 +1,19 @@
 import { describe, expect, it } from "@jest/globals";
 import { calendarSoltekComment } from "@/lib/gamification/soltekComments";
+import { STREAK_COMMENTS, STREAK_RESTART_COMMENTS } from "@/lib/gamification/streakComments";
 
 describe("calendarSoltekComment", () => {
-  it("celebrates a week-plus streak by name, including the actual day count", () => {
-    expect(calendarSoltekComment(10, 10)).toContain("10 dni z rzędu");
+  it("uses one of the 100 streak comments while a streak is running", () => {
+    const text = calendarSoltekComment(10, "2026-10-05");
+    const matches = STREAK_COMMENTS.some((comment) => comment.replace("{dni}", "10 dni") === text);
+    expect(matches).toBe(true);
   });
 
-  it("encourages continuing a short but real streak", () => {
-    expect(calendarSoltekComment(3, 5)).toMatch(/nie przerywaj/i);
+  it("uses a 'starting from the beginning' comment when there is no streak", () => {
+    expect(STREAK_RESTART_COMMENTS).toContain(calendarSoltekComment(0, "2026-10-05"));
   });
 
-  it("nudges toward starting a new streak when this month had activity but the streak broke", () => {
-    expect(calendarSoltekComment(0, 4)).toMatch(/nową passę/i);
-  });
-
-  it("invites a first session when nothing has been logged this month at all", () => {
-    expect(calendarSoltekComment(0, 0)).toMatch(/zaczynajmy/i);
-  });
-
-  it("prioritizes a long streak over this month's own activity count", () => {
-    expect(calendarSoltekComment(7, 0)).toContain("7 dni z rzędu");
+  it("keeps the same comment for the whole day", () => {
+    expect(calendarSoltekComment(4, "2026-10-05")).toBe(calendarSoltekComment(4, "2026-10-05"));
   });
 });

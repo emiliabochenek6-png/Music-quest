@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Animated, Easing, Pressable, ScrollView, Text, View, StyleSheet } from "react-native";
+import { Animated, Easing, Pressable, ScrollView, Text, View, StyleSheet, useWindowDimensions } from "react-native";
+import { useLocalSearchParams } from "expo-router";
 import Svg, { Circle, Path } from "react-native-svg";
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -78,6 +79,13 @@ export function PlanPath() {
   const { state: gamification } = useGamification();
   const [daysShown, setDaysShown] = useState(DAYS_SHOWN_STEP);
   const todayISO = todayISODate();
+  // Coming back from a lesson (see the lesson screen's goBackToLevels) the
+  // trail opens scrolled to the lesson just left, not at the very top.
+  const { focusLessonId } = useLocalSearchParams<{ focusLessonId?: string }>();
+  const { height: windowHeight } = useWindowDimensions();
+  const scrollRef = useRef<ScrollView>(null);
+  const [trailTop, setTrailTop] = useState<number | null>(null);
+  const scrolledToRef = useRef<string | null>(null);
 
   const view = useMemo(
     () =>
@@ -139,6 +147,13 @@ export function PlanPath() {
     return { items, height: y + 90 };
   }, [visibleDays, progress.completedLessonIds]);
 
+  const focusNode = trail.items.find((item): item is TrailLesson => item.kind === "lesson" && item.lessonId === focusLessonId);
+  useEffect(() => {
+    if (!focusLessonId || !focusNode || trailTop === null || scrolledToRef.current === focusLessonId) return;
+    scrolledToRef.current = focusLessonId;
+    scrollRef.current?.scrollTo({ y: Math.max(0, trailTop + focusNode.cy - windowHeight * 0.4), animated: false });
+  }, [focusLessonId, focusNode, trailTop, windowHeight]);
+
   if (isLoading) return null;
 
   const contentStyle = { paddingTop: insets.top + 176, paddingBottom: insets.bottom + 40, alignItems: "center" as const, gap: theme.spacing(2) };
@@ -170,7 +185,7 @@ export function PlanPath() {
       : { message: `Idzie Ci świetnie! Zostało ${left} ${left === 1 ? "lekcja" : "lekcji"} do mety.`, expression: "radosny" as const };
 
   return (
-    <ScrollView style={styles.scroll} contentContainerStyle={contentStyle} showsVerticalScrollIndicator={false}>
+    <ScrollView ref={scrollRef} style={styles.scroll} contentContainerStyle={contentStyle} showsVerticalScrollIndicator={false}>
       {/* Hero: Soltek + progress ring + stats */}
       <View style={[styles.hero, { width: TRAIL_WIDTH + 24 }]}>
         <View style={styles.heroTop}>
@@ -223,7 +238,7 @@ export function PlanPath() {
           <Text style={[styles.muted, { textAlign: "center" }]}>Zostają powtórki w rosnących odstępach i wyzwanie dnia — wiedza ma zostać na długo.</Text>
         </View>
       ) : (
-        <View style={{ width: TRAIL_WIDTH, height: trail.height }}>
+        <View style={{ width: TRAIL_WIDTH, height: trail.height }} onLayout={(event) => setTrailTop(event.nativeEvent.layout.y)}>
           <Svg width={TRAIL_WIDTH} height={trail.height} style={StyleSheet.absoluteFill}>
             {lessonNodes.map((node, index) => {
               if (index === 0) return null;

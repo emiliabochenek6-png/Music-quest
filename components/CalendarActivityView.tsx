@@ -74,7 +74,7 @@ export function CalendarActivityView() {
         </View>
       </View>
 
-      <SoltekMascot size="sm" expression={state.streakDays >= 1 ? "radosny" : "zachecajacy"} message={calendarSoltekComment(state.streakDays, activeDaysThisMonth)} />
+      <SoltekMascot size="sm" expression={state.streakDays >= 1 ? "radosny" : "zachecajacy"} message={calendarSoltekComment(state.streakDays, todayISO)} />
 
       <View style={styles.statsRow}>
         <StatTile icon="⏱" value={`${minutesThisMonth}`} unit="min" label="w tym miesiącu" />

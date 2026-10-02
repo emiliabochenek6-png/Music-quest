@@ -24,6 +24,7 @@ import { useSessionTimer } from "@/hooks/useSessionTimer";
 import { stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
 import { todayISODate } from "@/lib/gamification/activity";
 import { NUTKI_REWARDS } from "@/lib/gamification/powerups";
+import { streakComment } from "@/lib/gamification/streakComments";
 import { getRankForXp } from "@/lib/gamification/rank";
 import { AppIcon } from "@/components/icons/AppIcon";
 import { LevelBar } from "@/components/LevelBar";
@@ -274,7 +275,7 @@ function LessonScreenBody() {
     // A lesson opened from the study plan returns to the plan (the map in
     // "Tryb nauki"), never to the world's level list.
     if (learningMode) {
-      router.replace("/(main)/map");
+      router.replace({ pathname: "/(main)/map", params: { focusLessonId: lessonId } });
       return;
     }
     // Carries the lesson just left back to the levels screen (its own
@@ -546,7 +547,7 @@ function LessonScreenBody() {
           accentHex={world.accentColor}
           backgroundColor={screenBackgroundColor}
           // Opened from the study plan → back to the plan (map in "Tryb nauki"), not the world's level list.
-          onExit={fromPlan ? () => router.replace("/(main)/map") : goBackToLevels}
+          onExit={fromPlan ? () => router.replace({ pathname: "/(main)/map", params: { focusLessonId: lessonId } }) : goBackToLevels}
           exitLabel={fromPlan ? "Wróć do planu" : t("lesson.backToLevels", "pl")}
           nextTodayLessonLabel={nextTodayLessonId ? describeLesson(nextTodayLessonId) : null}
           onNextTodayLesson={
@@ -901,7 +902,7 @@ function LessonSummary({
             Wykonałeś wszystkie zaplanowane lekcje na dziś{todayLessonCount > 1 ? ` (${todayLessonCount})` : ""}.
           </Text>
           <Text style={{ color: theme.colors.muted, fontSize: 12.5, textAlign: "center" }}>
-            {streakDays > 1 ? `🔥 Passa: ${streakDays} dni z rzędu. Do zobaczenia jutro!` : "🔥 Zaczynasz passę. Wróć jutro, a będzie już 2 dni z rzędu!"}
+            {`🔥 ${streakComment(todayISODate(), streakDays)}`}
           </Text>
         </View>
       )}
