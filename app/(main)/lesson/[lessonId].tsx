@@ -542,6 +542,12 @@ function LessonScreenBody() {
   const fromPlan = learningMode;
   const gained = { xp: gamificationState.xp - startRewards.current.xp, nutki: gamificationState.nutki - startRewards.current.nutki };
 
+  function playInFunMode() {
+    stopAllScheduledAudio();
+    setView("fun");
+    router.replace("/(main)/map");
+  }
+
   // "Tryb nauki": only today's lessons can be done today — anything planned for another day waits for it.
   if (learningMode && !isFinished && plan.today?.dateISO === todayISODate() && !todayPlanIds.includes(lessonId) && !planCompletedIds.has(lessonId)) {
     return (
@@ -553,7 +559,9 @@ function LessonScreenBody() {
             Wróć w dniu, na który jest zaplanowana, żeby ją ukończyć. Dziś robisz tylko lekcje z planu na dziś.
           </Text>
           <View style={{ marginTop: theme.spacing(2), width: "100%" }}>
-            <DarkButton label="Wróć do planu" onPress={goBackToLevels} />
+            <DarkButton label="Pograj w Tryb zabawy" onPress={playInFunMode} />
+            <View style={{ height: theme.spacing(1) }} />
+            <DarkButton label="Wróć do planu" onPress={goBackToLevels} variant="secondary" />
           </View>
         </View>
       </View>
@@ -596,6 +604,7 @@ function LessonScreenBody() {
           level={getRankForXp(gamificationState.xp).rank}
           streakDays={gamificationState.streakDays}
           todayLessonCount={todayPlanIds.length}
+          onPlayFunMode={fromPlan ? playInFunMode : undefined}
         />
         <WorldCompleteModal
           visible={showWorldComplete}
@@ -864,7 +873,9 @@ function LessonSummary({
   level,
   streakDays,
   todayLessonCount,
+  onPlayFunMode,
 }: {
+  onPlayFunMode?: () => void;
   gainedXp: number;
   gainedNutki: number;
   level: number;
@@ -946,7 +957,9 @@ function LessonSummary({
             <DarkButton label="Przejdź do następnej lekcji dnia ›" onPress={onNextTodayLesson} />
           </>
         )}
-        <DarkButton label={exitLabel} onPress={onExit} variant={onNextTodayLesson ? "secondary" : "primary"} />
+        {/* Today's plan is finished: instead of waiting for tomorrow, offer the game. */}
+        {todayPlanDone && onPlayFunMode && <DarkButton label="Pograj w Tryb zabawy" onPress={onPlayFunMode} />}
+        <DarkButton label={exitLabel} onPress={onExit} variant={onNextTodayLesson || (todayPlanDone && onPlayFunMode) ? "secondary" : "primary"} />
       </View>
     </View>
   );

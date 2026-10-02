@@ -77,7 +77,7 @@ function iconFor(mapIconId: string | undefined) {
  * "Tryb zabawy" stays the world map. */
 export function PlanPath() {
   const insets = useSafeAreaInsets();
-  const { plan, isLoading, planCompletedIds } = usePlan();
+  const { plan, isLoading, planCompletedIds, setView } = usePlan();
   const { progress } = useProgress();
   const { state: gamification } = useGamification();
   const [daysShown, setDaysShown] = useState(DAYS_SHOWN_STEP);
@@ -214,6 +214,8 @@ export function PlanPath() {
       {lessonsDoneToday && (
         <View style={[styles.congrats, { width: TRAIL_WIDTH + 24 }]}>
           <GlyphText style={styles.congratsText}>🎉 Gratulacje! Wszystkie zaplanowane lekcje na dziś zrobione.</GlyphText>
+          <Text style={styles.congratsSub}>Chcesz jeszcze pograć? Tryb zabawy czeka.</Text>
+          <DarkButton label="Pograj w Tryb zabawy" onPress={() => setView("fun")} />
         </View>
       )}
 
@@ -278,13 +280,19 @@ export function PlanPath() {
       {view.days.length > daysShown && <DarkButton label={`Pokaż kolejne dni (${view.days.length - daysShown} więcej)`} onPress={() => setDaysShown((n) => n + DAYS_SHOWN_STEP)} variant="secondary" />}
       {lockedNode && (
         <InfoModal
-          title="Ta lekcja jeszcze czeka"
+          title={lessonsDoneToday ? "Na dziś plan zrobiony!" : "Ta lekcja jeszcze czeka"}
           message={
-            lockedNode.dateISO === addDays(todayISO, 1)
-              ? "Wróć jutro, żeby ukończyć tę lekcję. W Trybie nauki każdego dnia robisz tylko lekcje zaplanowane na ten dzień."
-              : `Ta lekcja jest zaplanowana na ${WEEKDAYS[weekdayOf(lockedNode.dateISO)]}, ${formatShortPolishDate(lockedNode.dateISO)}. Wróć wtedy, żeby ją ukończyć.`
+            (lessonsDoneToday ? "Dzisiejsze lekcje z planu masz już za sobą. " : "") +
+            (lockedNode.dateISO === addDays(todayISO, 1)
+              ? "Wróć jutro, żeby ukończyć tę lekcję: w Trybie nauki każdego dnia robisz tylko lekcje zaplanowane na ten dzień. A na razie możesz pograć w Tryb zabawy!"
+              : `Ta lekcja jest zaplanowana na ${WEEKDAYS[weekdayOf(lockedNode.dateISO)]}, ${formatShortPolishDate(lockedNode.dateISO)}. Wróć wtedy, żeby ją ukończyć. A na razie możesz pograć w Tryb zabawy!`)
           }
           buttonLabel="Rozumiem"
+          secondaryLabel="Pograj w Tryb zabawy"
+          onSecondary={() => {
+            setLockedNode(null);
+            setView("fun");
+          }}
           onClose={() => setLockedNode(null)}
         />
       )}
@@ -429,6 +437,7 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius.md,
     padding: theme.spacing(1.5),
   },
+  congratsSub: { color: theme.colors.muted, fontSize: 12.5, textAlign: "center" },
   congratsText: { color: theme.colors.success, fontWeight: "800", fontSize: 14, textAlign: "center" },
   reviewCard: {
     backgroundColor: theme.colors.surface,
