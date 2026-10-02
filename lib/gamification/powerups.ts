@@ -35,9 +35,10 @@ export const NUTKI_REWARDS = {
 export const MAX_STREAK_FREEZES = 2;
 
 /** What each power-up costs — see app/(main)/power-ups.tsx,
- * the one screen that spends these. A freeze is about three lessons of
- * "Tryb nauki" (~20 nutki each), so it takes a day or two of real study. */
+ * the one screen that spends these. A freeze is deliberately a real
+ * investment (~10 lessons of "Tryb nauki"): level-up nutki are paid on top
+ * of the per-answer ones, so a cheaper price made streaks free to protect. */
 export const POWER_UP_COSTS = {
-  streakFreeze: 60,
+  streakFreeze: 200,
   heartRefill: 10,
 } as const;
