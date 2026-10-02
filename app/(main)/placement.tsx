@@ -108,8 +108,8 @@ export default function PlacementScreen() {
             <Bullet text="Z wyniku ułożymy ścieżkę: pominiesz to, co umiesz, i zaplanujemy resztę na ok. 3 miesiące." />
           </View>
           <View style={{ gap: theme.spacing(1.25), width: "100%" }}>
-            <DarkButton label="📚 Zaczynamy test z Soltkiem" onPress={begin} />
-            <DarkButton label="🎮 Zacznij od gry (tryb zabawy)" onPress={startFromBeginning} variant="secondary" />
+            <DarkButton label="Zaczynamy test z Soltkiem" onPress={begin} />
+            <DarkButton label="Zacznij od gry (tryb zabawy)" onPress={startFromBeginning} variant="secondary" />
           </View>
         </ScrollView>
       </View>
@@ -210,7 +210,7 @@ export default function PlacementScreen() {
             router.replace("/(main)/map");
           }}
         />
-        <DarkButton label="🎮 Zacznij od gry (tryb zabawy)" onPress={startFromBeginning} variant="secondary" />
+        <DarkButton label="Zacznij od gry (tryb zabawy)" onPress={startFromBeginning} variant="secondary" />
       </ScrollView>
     </View>
   );

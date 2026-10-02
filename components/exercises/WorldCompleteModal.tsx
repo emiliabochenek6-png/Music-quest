@@ -1,6 +1,8 @@
 import { Modal, Pressable, Text, View, StyleSheet } from "react-native";
 import { Confetti } from "@/components/exercises/Confetti";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
+import { AppIcon } from "@/components/icons/AppIcon";
+import { GlyphText } from "@/components/icons/GlyphText";
 
 interface WorldCompleteModalProps {
   visible: boolean;
@@ -45,9 +47,9 @@ export function WorldCompleteModal({ visible, worldName, nextWorldName, isPerfec
         {visible && <Confetti />}
         <View style={[styles.card, { borderColor: `${accentHex}55`, shadowColor: accentHex }]}>
           <Pressable onPress={onClose} accessibilityRole="button" accessibilityLabel="Zamknij" hitSlop={12} style={styles.closeButton}>
-            <Text style={styles.closeIcon}>✕</Text>
+            <GlyphText style={styles.closeIcon}>✕</GlyphText>
           </Pressable>
-          <Text style={{ fontSize: 48 }}>🏆</Text>
+          <GlyphText style={{ fontSize: 48 }}>🏆</GlyphText>
           <Text style={{ fontSize: theme.fontSize.heading, fontWeight: "800", color: theme.colors.ink, textAlign: "center" }}>
             Gratulacje!
           </Text>
@@ -56,7 +58,7 @@ export function WorldCompleteModal({ visible, worldName, nextWorldName, isPerfec
           </Text>
           {isPerfectWorld && (
             <View style={[styles.perfectWorldBadge, { borderColor: `${accentHex}88` }]}>
-              <Text style={{ fontSize: 20 }}>🌟</Text>
+              <GlyphText style={{ fontSize: 20 }}>🌟</GlyphText>
               <Text style={{ fontSize: 13, fontWeight: "800", color: theme.colors.ink, textAlign: "center", marginTop: 2 }}>
                 Perfekcyjna Kraina!
               </Text>
@@ -67,10 +69,13 @@ export function WorldCompleteModal({ visible, worldName, nextWorldName, isPerfec
           )}
           {nextWorldName && (
             <View style={[styles.nextWorldBadge, { borderColor: `${accentHex}55` }]}>
-              <Text style={{ fontSize: 13, color: theme.colors.ink, textAlign: "center" }}>
-                🔓 Kolejna kraina została odblokowana:{"\n"}
-                <Text style={{ fontWeight: "700" }}>{nextWorldName}</Text>
-              </Text>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                <AppIcon name="ui_klodka_otwarta" size={26} />
+                <Text style={{ fontSize: 13, color: theme.colors.ink, textAlign: "center", flexShrink: 1 }}>
+                  Kolejna kraina została odblokowana:{"\n"}
+                  <Text style={{ fontWeight: "700" }}>{nextWorldName}</Text>
+                </Text>
+              </View>
             </View>
           )}
         </View>

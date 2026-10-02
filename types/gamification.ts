@@ -28,6 +28,34 @@ export interface DayActivity {
   minutesSpent: number;
   lessonIdsCompleted: string[];
   dailyChallengeCompleted: boolean;
+  /** Per-day counters the daily missions read (see lib/gamification/
+   * dailyMissions.ts). Optional: a day saved before missions got
+   * variety simply has none, which reads as all zeros. */
+  stats?: DayStats;
+}
+
+/** What was done on one day, split by mode so a "play-mode" mission and a
+ * "plan" mission can each count only their own. Every field is a running
+ * total for the day; a missing field means 0. */
+export interface DayStats {
+  /** Lessons finished in "Tryb nauki" (opened from the study plan). */
+  planLessons?: number;
+  /** Lessons finished in "Tryb zabawy" (opened from the world map). */
+  funLessons?: number;
+  /** Spaced-repetition reviews finished. */
+  reviews?: number;
+  /** Correct answers in "Tryb nauki" lessons and reviews. */
+  planCorrect?: number;
+  /** Correct answers in "Tryb zabawy" lessons. */
+  funCorrect?: number;
+  /** Lessons finished with 3 stars, in the plan / in the game. */
+  planStars3?: number;
+  funStars3?: number;
+  /** Lessons finished with no mistake at all, in the plan / in the game. */
+  planPerfect?: number;
+  funPerfect?: number;
+  /** Boss lessons finished (game mode). */
+  bosses?: number;
 }
 
 /** Today's daily-challenge exercise, generated once and then persisted

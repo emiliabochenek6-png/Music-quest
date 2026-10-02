@@ -1,4 +1,4 @@
-import type { DayActivity, GamificationState } from "@/types/gamification";
+import type { DayActivity, DayStats, GamificationState } from "@/types/gamification";
 
 /** Today's date as a stable, timezone-LOCAL "YYYY-MM-DD" key — the same
  * key `GamificationState.activityLog`/`lastActiveDateISO` use
@@ -23,6 +23,18 @@ export interface ActivityDelta {
   minutesSpent?: number;
   lessonIdCompleted?: string;
   dailyChallengeCompleted?: boolean;
+  /** Amounts to ADD to the day's own counters (see DayStats). */
+  stats?: DayStats;
+}
+
+/** Adds two sets of per-day counters, key by key. */
+export function addDayStats(a: DayStats | undefined, b: DayStats | undefined): DayStats | undefined {
+  if (!a && !b) return undefined;
+  const sum: DayStats = { ...(a ?? {}) };
+  for (const [key, value] of Object.entries(b ?? {}) as [keyof DayStats, number | undefined][]) {
+    sum[key] = (sum[key] ?? 0) + (value ?? 0);
+  }
+  return sum;
 }
 
 const EMPTY_DAY: DayActivity = { minutesSpent: 0, lessonIdsCompleted: [], dailyChallengeCompleted: false };
@@ -86,6 +98,8 @@ export function applyActivity(
     lessonIdsCompleted,
     dailyChallengeCompleted: existing.dailyChallengeCompleted || (delta.dailyChallengeCompleted ?? false),
   };
+  const stats = addDayStats(existing.stats, delta.stats);
+  if (stats) merged.stats = stats;
   const { streakDays, freezeConsumed } = nextStreakDays(state.lastActiveDateISO, state.streakDays, dateISO, state.streakFreezes);
   return {
     lastActiveDateISO: dateISO,

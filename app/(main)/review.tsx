@@ -16,6 +16,10 @@ import { isAnswerCorrect } from "@/lib/questions/validate";
 import { stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import type { AnswerInput } from "@/types/exercises";
+import { GlyphText } from "@/components/icons/GlyphText";
+
+const REVIEW_XP_PER_CORRECT = 5;
+const NUTKI_PER_CORRECT_IN_REVIEW = 2;
 
 /** One spaced-repetition review round: 5 quick questions from an already
  * finished lesson (see lib/plan/spacedRepetition.ts). Doesn't touch hearts,
@@ -25,7 +29,7 @@ import type { AnswerInput } from "@/types/exercises";
 export default function ReviewScreen() {
   const { lessonId, worldId } = useLocalSearchParams<{ lessonId: string; worldId: string }>();
   const { plan, onReviewFinished } = usePlan();
-  const { recordActivity } = useGamification();
+  const { recordActivity, awardXp, addNutki } = useGamification();
   const lesson = getWorldContent(worldId)?.lessons.find((l) => l.id === lessonId);
   const definitions = useMemo(() => (lesson ? pickReviewExercises(lesson) : []), [lessonId]);
   const [index, setIndex] = useState(0);
@@ -49,7 +53,12 @@ export default function ReviewScreen() {
     const correct = isAnswerCorrect(exercise, answer);
     setChecked(true);
     setIsCorrect(correct);
-    if (correct) setCorrectCount((n) => n + 1);
+    if (correct) {
+      setCorrectCount((n) => n + 1);
+      // Same economy as a study-plan lesson: no hearts, XP and nutki for each correct answer (XP a bit lower than a fresh lesson's).
+      awardXp(REVIEW_XP_PER_CORRECT);
+      addNutki(NUTKI_PER_CORRECT_IN_REVIEW);
+    }
   }
 
   function next() {
@@ -63,7 +72,10 @@ export default function ReviewScreen() {
     }
     const fraction = definitions.length > 0 ? correctCount / definitions.length : 1;
     onReviewFinished(lessonId, fraction);
-    recordActivity(todayISODate(), { minutesSpent: Math.max(1, Math.round((Date.now() - startedAt.current) / 60000)) });
+    recordActivity(todayISODate(), {
+      minutesSpent: Math.max(1, Math.round((Date.now() - startedAt.current) / 60000)),
+      stats: { reviews: 1, planCorrect: correctCount },
+    });
     setFinished(true);
   }
 
@@ -86,7 +98,7 @@ export default function ReviewScreen() {
       <View style={styles.root}>
         <ScreenHeader title="Powtórka" onBack={goBack} />
         <View style={styles.center}>
-          <Text style={{ fontSize: 48 }}>{fraction >= 0.6 ? "🎉" : "💪"}</Text>
+          <GlyphText style={{ fontSize: 48 }}>{fraction >= 0.6 ? "🎉" : "💪"}</GlyphText>
           <Text style={styles.heading}>
             {correctCount}/{definitions.length} dobrych odpowiedzi
           </Text>
@@ -117,7 +129,7 @@ export default function ReviewScreen() {
       <View style={styles.footer}>
         {checked && (
           <Text style={{ textAlign: "center", fontWeight: "700", color: isCorrect ? theme.colors.success : theme.colors.warning, fontSize: theme.fontSize.body }}>
-            {isCorrect ? "Dobrze!" : "Nie tym razem — to część powtórki."}
+            {isCorrect ? `Dobrze! +${REVIEW_XP_PER_CORRECT} XP · +${NUTKI_PER_CORRECT_IN_REVIEW} nutki` : "Nie tym razem — to część powtórki."}
           </Text>
         )}
         <DarkButton label={checked ? (index + 1 < definitions.length ? "Dalej" : "Zakończ") : "Sprawdź"} onPress={checked ? next : check} disabled={!checked && !hasAnswerToCheck(answer)} />

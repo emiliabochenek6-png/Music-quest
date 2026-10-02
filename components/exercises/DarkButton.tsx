@@ -1,5 +1,8 @@
-import { Pressable, Text, StyleSheet } from "react-native";
+import { Pressable, Text, View, StyleSheet } from "react-native";
 import type { GestureResponderEvent } from "react-native";
+import { AppIcon } from "@/components/icons/AppIcon";
+import type { IconName } from "@/components/icons/icons";
+import { splitLeadingGlyph } from "@/components/icons/emojiIcons";
 import { useExerciseAccentColor } from "@/context/ExerciseAccentContext";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 
@@ -15,6 +18,8 @@ interface DarkButtonProps {
   /** Forces a fixed square tap target instead of the default text-sized
    * pill — pairs with `fontSize` for icon-only buttons. */
   size?: number;
+  /** A small icon shown AFTER the label (e.g. a price in nutki). */
+  trailingIcon?: IconName;
 }
 
 /** components/ui/Button's own twin for exercise/map/lesson screens — same
@@ -24,10 +29,13 @@ interface DarkButtonProps {
  * fill with no border or glow, secondary is the outlined "ghost" twin. No
  * shadow/glow on either — Duolingo's own surfaces are flat sticker fills,
  * never gradients or glass effects. */
-export function DarkButton({ label, onPress, variant = "primary", disabled = false, fontSize, size }: DarkButtonProps) {
+export function DarkButton({ label, onPress, variant = "primary", disabled = false, fontSize, size, trailingIcon }: DarkButtonProps) {
   const isPrimary = variant === "primary";
   const textColor = isPrimary ? "#FFFFFF" : theme.colors.accent;
   const accentOverride = useExerciseAccentColor();
+  // A label that starts with an emoji ("🔊", "⏹ Stop") shows the app's own icon instead.
+  const glyph = splitLeadingGlyph(label);
+  const glyphSize = Math.round((fontSize ?? theme.fontSize.body) * 1.4);
 
   return (
     <Pressable
@@ -49,9 +57,27 @@ export function DarkButton({ label, onPress, variant = "primary", disabled = fal
         },
       ]}
     >
-      <Text style={{ color: textColor, fontSize: fontSize ?? theme.fontSize.body, fontWeight: "700" }} allowFontScaling maxFontSizeMultiplier={1.4}>
-        {label}
-      </Text>
+      {glyph ? (
+        <View style={{ flexDirection: "row", alignItems: "center", gap: glyph.rest ? 8 : 0 }}>
+          <AppIcon name={glyph.icon} size={glyphSize} />
+          {glyph.rest ? (
+            <Text style={{ color: textColor, fontSize: fontSize ?? theme.fontSize.body, fontWeight: "700" }} allowFontScaling maxFontSizeMultiplier={1.4}>
+              {glyph.rest}
+            </Text>
+          ) : null}
+        </View>
+      ) : trailingIcon ? (
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+          <Text style={{ color: textColor, fontSize: fontSize ?? theme.fontSize.body, fontWeight: "700" }} allowFontScaling maxFontSizeMultiplier={1.4}>
+            {label}
+          </Text>
+          <AppIcon name={trailingIcon} size={glyphSize} />
+        </View>
+      ) : (
+        <Text style={{ color: textColor, fontSize: fontSize ?? theme.fontSize.body, fontWeight: "700" }} allowFontScaling maxFontSizeMultiplier={1.4}>
+          {label}
+        </Text>
+      )}
     </Pressable>
   );
 }

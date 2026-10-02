@@ -5,6 +5,7 @@ import { t } from "@/lib/i18n/translate";
 import type { TranslationKey } from "@/lib/i18n/translate";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import type { WorldDefinition, WorldNodeState } from "@/types/content";
+import { GlyphText } from "@/components/icons/GlyphText";
 
 interface WorldNodeProps {
   world: WorldDefinition;
@@ -43,7 +44,7 @@ const PREMIUM_COLOR = "#FF9600";
 
 function WorldMapIcon({ mapIconId, size }: { mapIconId: string; size: number }) {
   const entry = WORLD_ICON[mapIconId];
-  if (!entry) return <Text style={styles.icon}>🎵</Text>;
+  if (!entry) return <GlyphText style={styles.icon}>🎵</GlyphText>;
   return <AppIcon name={entry.icon} size={size} />;
 }
 

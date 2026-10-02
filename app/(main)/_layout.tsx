@@ -25,6 +25,7 @@ export default function MainLayout() {
       <Stack.Screen name="lesson/[lessonId]" options={{ presentation: "card" }} />
       <Stack.Screen name="daily-challenge" options={{ presentation: "card" }} />
       <Stack.Screen name="calendar" />
+      <Stack.Screen name="levels" />
       <Stack.Screen name="placement" />
       <Stack.Screen name="plan" />
       <Stack.Screen name="review" />

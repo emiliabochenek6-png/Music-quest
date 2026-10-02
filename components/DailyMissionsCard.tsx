@@ -6,6 +6,7 @@ import { todayISODate } from "@/lib/gamification/activity";
 import { computeDailyMissions } from "@/lib/gamification/dailyMissions";
 import { getTodayStatus } from "@/lib/plan/today";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
+import { GlyphText } from "@/components/icons/GlyphText";
 
 interface DailyMissionsCardProps {
   /** The daily-challenge exercise's own fixed XP bonus — see
@@ -30,16 +31,17 @@ export function DailyMissionsCard({ challengeXpReward }: DailyMissionsCardProps)
   const today = todayISODate();
   const challengeCompletedToday = state.dailyChallenge?.dateISO === today && state.dailyChallenge.completed;
   const planStatus = getTodayStatus(plan.today, today, progress.completedLessonIds, plan.reviewLog);
-  const missions = computeDailyMissions(state.activityLog[today], challengeCompletedToday, challengeXpReward, planStatus);
+  const offer = { hasPlan: plan.mode !== "unset", lessons: planStatus.lessons.length, reviews: planStatus.reviews.length };
+  const missions = computeDailyMissions(today, state.activityLog[today], challengeCompletedToday, challengeXpReward, offer);
 
   return (
     <View style={styles.card}>
-      <Text style={styles.title}>Dzisiejsze misje</Text>
+      <Text style={styles.title}>Dzisiejsze misje · {missions.filter((mission) => mission.completed).length}/{missions.length}</Text>
       <View style={{ gap: theme.spacing(1.5) }}>
         {missions.map((mission) => (
           <View key={mission.id} style={styles.row}>
             <View style={[styles.iconWrap, mission.completed && { backgroundColor: theme.colors.accentSoft }]}>
-              <Text style={{ fontSize: 18 }}>{mission.completed ? "✅" : mission.icon}</Text>
+              <GlyphText style={{ fontSize: 18 }}>{mission.completed ? "✅" : mission.icon}</GlyphText>
             </View>
             <View style={{ flex: 1, gap: 4 }}>
               <View style={styles.labelRow}>

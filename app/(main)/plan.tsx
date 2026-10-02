@@ -2,6 +2,8 @@ import { useMemo, useState } from "react";
 import { Pressable, ScrollView, Text, View, StyleSheet } from "react-native";
 import { router } from "expo-router";
 import { DarkButton } from "@/components/exercises/DarkButton";
+import { AppIcon } from "@/components/icons/AppIcon";
+import type { IconName } from "@/components/icons/icons";
 import { PlanTodayCard, describeLesson } from "@/components/plan/PlanTodayCard";
 import { ScreenHeader } from "@/components/ui/ScreenHeader";
 import { usePlan } from "@/context/PlanContext";
@@ -16,6 +18,7 @@ import { getLessonInfo } from "@/lib/plan/lessonIndex";
 import { buildSchedule, groupByWeek } from "@/lib/plan/schedule";
 import { REVIEW_INTERVAL_DAYS } from "@/lib/plan/spacedRepetition";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
+import { GlyphText } from "@/components/icons/GlyphText";
 
 const WEEKDAYS = ["nd", "pn", "wt", "śr", "cz", "pt", "sb"];
 
@@ -65,7 +68,7 @@ export default function PlanScreen() {
         ) : (
           <>
             <View style={styles.card}>
-              <Text style={styles.cardTitle}>{plan.mode === "personal" ? "🧭 Ścieżka dopasowana testem" : "▶ Pełna ścieżka od początku"}</Text>
+              <GlyphText style={styles.cardTitle}>{plan.mode === "personal" ? "🧭 Ścieżka dopasowana testem" : "▶ Pełna ścieżka od początku"}</GlyphText>
               <View style={styles.barTrack}>
                 <View style={[styles.barFill, { width: `${percent}%` }]} />
               </View>
@@ -87,8 +90,8 @@ export default function PlanScreen() {
 
             <View style={styles.card}>
               <Text style={styles.cardTitle}>Jak działa Twój plan</Text>
-              <Step n="🎮" title="Tryb zabawy" text="Gra: mapa krain, lekcje w dowolnej kolejności i walki z bossami. Postępy z obu trybów liczą się razem." />
-              <Step n="📚" title="Tryb nauki (Twój plan)" text="Ścieżka lekcji ułożona dla Ciebie, dzień po dniu, z powtórkami. Przełączasz tryby na mapie, u góry." />
+              <Step icon="tryb_zabawy" title="Tryb zabawy" text="Gra: mapa krain, lekcje w dowolnej kolejności i walki z bossami. Postępy z obu trybów liczą się razem." />
+              <Step icon="tryb_nauki" title="Tryb nauki (Twój plan)" text="Ścieżka lekcji ułożona dla Ciebie, dzień po dniu, z powtórkami. Przełączasz tryby na mapie, u góry." />
               <Step n="1" title="Codziennie nowa nauka" text={`Z ścieżki bierzemy następne lekcje, tyle, ile mieści się w ${plan.minutesPerDay} minutach. Pracujesz 6 dni w tygodniu, niedziela to dzień odpoczynku (tylko powtórki).`} />
               <Step n="2" title="Powtórki w odstępach" text={`Po każdej ukończonej lekcji wracamy do niej po ${REVIEW_INTERVAL_DAYS.join(", ")} dniach — kolejny odstęp dopiero po dobrej powtórce. Dziennie najwyżej 3 krótkie powtórki (5 pytań).`} />
               <Step n="3" title="Misje dnia" text="W zakładce Misje codziennie dostajesz: lekcje z planu, powtórki, wyzwanie dnia i ćwiczenie przez 10 minut." />
@@ -170,12 +173,18 @@ export default function PlanScreen() {
   );
 }
 
-function Step({ n, title, text }: { n: string; title: string; text: string }) {
+function Step({ n, icon, title, text }: { n?: string; icon?: IconName; title: string; text: string }) {
   return (
     <View style={{ flexDirection: "row", gap: 10 }}>
-      <View style={styles.stepBadge}>
-        <Text style={styles.stepBadgeText}>{n}</Text>
-      </View>
+      {icon ? (
+        <View style={{ width: 28, alignItems: "center" }}>
+          <AppIcon name={icon} size={28} />
+        </View>
+      ) : (
+        <View style={styles.stepBadge}>
+          <Text style={styles.stepBadgeText}>{n}</Text>
+        </View>
+      )}
       <View style={{ flex: 1 }}>
         <Text style={styles.weekTitle}>{title}</Text>
         <Text style={styles.muted}>{text}</Text>

@@ -9,6 +9,7 @@ import { useGamification } from "@/context/GamificationContext";
 import { useSubscription } from "@/context/SubscriptionContext";
 import { POWER_UP_COSTS } from "@/lib/gamification/powerups";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
+import { GlyphText } from "@/components/icons/GlyphText";
 
 /**
  * Nutki's own spend screen — reached by tapping the 🎵 pill in
@@ -44,7 +45,7 @@ export default function PowerUpShopScreen() {
       {feedback && <Text style={styles.feedback}>{feedback}</Text>}
       <ScrollView contentContainerStyle={styles.list}>
         <ShopCard
-          icon={<Text style={styles.cardIconText}>❄️</Text>}
+          icon={<GlyphText style={styles.cardIconText}>❄️</GlyphText>}
           title="Zamrożenie passy"
           description="Chroni Twoją passę, jeśli ominiesz jeden dzień ćwiczeń — zużywa się samo, kiedy będzie potrzebne."
           cost={POWER_UP_COSTS.streakFreeze}
@@ -92,7 +93,7 @@ function ShopCard({
         </View>
       </View>
       <Text style={styles.cardDescription}>{description}</Text>
-      <DarkButton label={`Kup za ${cost} 🎵`} onPress={onBuy} disabled={disabled} />
+      <DarkButton label={`Kup za ${cost}`} trailingIcon="hud_nutki_waluta" onPress={onBuy} disabled={disabled} />
     </View>
   );
 }

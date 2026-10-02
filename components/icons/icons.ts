@@ -364,6 +364,201 @@ export const ICONS = {
 <circle cx="32" cy="32" r="7.5" fill="#FFF4E6" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
 <path d="M14 24 A19 19 0 0 1 24 14" fill="none" stroke="#FFFFFF" stroke-opacity="0.6" stroke-width="3" stroke-linecap="round"/>
 </svg>`,
+  tryb_zabawy: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+<path d="M15 21 H49 C57 21 61 30 59 41 C57.5 50 52 51.5 48 47 L43.5 42 H20.5 L16 47 C12 51.5 6.5 50 5 41 C3 30 7 21 15 21 Z" fill="#8B7CF6" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M20.5 42 H43.5 L48 47 C52 51.5 57.5 50 59 41 C59.5 38 59.5 35 59 32 C57 40 52 42 43.5 42 Z" fill="#6A5BD6" opacity="0.6"/>
+<path d="M17 26 H21 V30 H25 V34 H21 V38 H17 V34 H13 V30 H17 Z" fill="#FFF4E6" stroke="#4A2C1D" stroke-width="2.2" stroke-linejoin="round"/>
+<circle cx="44" cy="29" r="3.8" fill="#FFC94A" stroke="#4A2C1D" stroke-width="2.2"/>
+<circle cx="50.5" cy="35" r="3.8" fill="#F0625A" stroke="#4A2C1D" stroke-width="2.2"/>
+<rect x="28" y="30" width="3.6" height="2.8" rx="1.2" fill="#FFF4E6" stroke="#4A2C1D" stroke-width="1.4"/>
+<rect x="33.4" y="30" width="3.6" height="2.8" rx="1.2" fill="#FFF4E6" stroke="#4A2C1D" stroke-width="1.4"/>
+<ellipse cx="13" cy="25.5" rx="2.4" ry="4.4" transform="rotate(35 13 25.5)" fill="#FFFFFF" fill-opacity="0.5"/>
+<path d="M32 4 L34.2 9.4 L40 9.9 L35.6 13.7 L37 19.4 L32 16.3 L27 19.4 L28.4 13.7 L24 9.9 L29.8 9.4 Z" fill="#FFC94A" stroke="#4A2C1D" stroke-width="2" stroke-linejoin="round"/>
+</svg>`,
+
+  tryb_nauki: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+<path d="M4 24 V52 C15 48.5 25 49 32 54 C39 49 49 48.5 60 52 V24 Z" fill="#3E7CC9" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M32 22 C25 17.5 15 17.5 7 21 V47.5 C15.5 44.5 25 45 32 50 Z" fill="#FFF4E6" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M32 22 C39 17.5 49 17.5 57 21 V47.5 C48.5 44.5 39 45 32 50 Z" fill="#FFFFFF" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M32 22 V50" fill="none" stroke="#4A2C1D" stroke-width="2.6" stroke-linecap="round"/>
+<path d="M12 27.5 C17 26 22 26.3 27 28.5 M12 33.5 C17 32 22 32.3 27 34.5 M12 39.5 C17 38 22 38.3 27 40.5" fill="none" stroke="#C9B8A0" stroke-width="2.2" stroke-linecap="round"/>
+<path d="M37 28.5 C42 26.3 47 26 52 27.5 M37 34.5 C42 32.3 47 32 52 33.5" fill="none" stroke="#C9B8A0" stroke-width="2.2" stroke-linecap="round"/>
+<ellipse cx="44.5" cy="40" rx="3.2" ry="2.5" transform="rotate(-18 44.5 40)" fill="#4A2C1D"/>
+<path d="M47.5 39 V30" fill="none" stroke="#4A2C1D" stroke-width="2.2" stroke-linecap="round"/>
+<path d="M47.5 30 Q51 30.5 51 34" fill="none" stroke="#4A2C1D" stroke-width="2.2" stroke-linecap="round"/>
+<path d="M32 3 L34.4 8.8 L40.5 9.4 L35.9 13.4 L37.3 19.4 L32 16.2 L26.7 19.4 L28.1 13.4 L23.5 9.4 L29.6 8.8 Z" fill="#FFC94A" stroke="#4A2C1D" stroke-width="2" stroke-linejoin="round"/>
+</svg>`,
+  ui_glosnik: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+<path d="M8 25 H20 L35 12 V52 L20 39 H8 Z" fill="#8B7CF6" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M20 25 L35 12 V30 L20 30 Z" fill="#A99CFA"/>
+<path d="M8 25 H20 L35 12 V52 L20 39 H8 Z" fill="none" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M42 23 Q48 32 42 41" fill="none" stroke="#4A2C1D" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M48 15 Q60 32 48 49" fill="none" stroke="#4A2C1D" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>
+<ellipse cx="14" cy="29" rx="2" ry="1.4" fill="#FFFFFF" fill-opacity="0.6"/>
+</svg>`,
+
+  ui_stop: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+<rect x="12" y="12" width="40" height="40" rx="9" fill="#F0625A" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M12 40 Q12 52 24 52 H40 Q52 52 52 40 Z" fill="#D9473F"/>
+<rect x="12" y="12" width="40" height="40" rx="9" fill="none" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M18 22 Q19 17 24 17" fill="none" stroke="#FFFFFF" stroke-opacity="0.6" stroke-width="3" stroke-linecap="round"/>
+</svg>`,
+
+  ui_ptaszek: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+<circle cx="32" cy="32" r="25" fill="#4CC27A" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M12 40 A22 22 0 0 0 52 40 Q32 48 12 40 Z" fill="#35A862"/>
+<circle cx="32" cy="32" r="25" fill="none" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M19.5 33 L28 41.5 L45 23" fill="none" stroke="#4A2C1D" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M19.5 33 L28 41.5 L45 23" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17 20 Q20 14 26 12" fill="none" stroke="#FFFFFF" stroke-opacity="0.55" stroke-width="3" stroke-linecap="round"/>
+</svg>`,
+
+  ui_konfetti: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+<path d="M7 57 L20 21 L43 44 Z" fill="#FFC94A" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M13.5 39 L26 37 L22 49 Z" fill="#F0625A"/>
+<path d="M28 41 L33 34 L40 41 Z" fill="#8B7CF6"/>
+<path d="M7 57 L20 21 L43 44 Z" fill="none" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M30 15 Q33 22 40 20" fill="none" stroke="#4A90D9" stroke-width="3" stroke-linecap="round"/>
+<path d="M44 28 Q50 24 52 17" fill="none" stroke="#F0625A" stroke-width="3" stroke-linecap="round"/>
+<circle cx="48" cy="9" r="3.2" fill="#4CC27A" stroke="#4A2C1D" stroke-width="2"/>
+<circle cx="57" cy="30" r="3" fill="#8B7CF6" stroke="#4A2C1D" stroke-width="2"/>
+<rect x="33" y="5" width="6" height="6" rx="1.2" transform="rotate(25 36 8)" fill="#F0625A" stroke="#4A2C1D" stroke-width="2"/>
+<path d="M54 44 Q54.6 46.6 57.2 47.2 Q54.6 47.8 54 50.4 Q53.4 47.8 50.8 47.2 Q53.4 46.6 54 44 Z" fill="#FFC94A"/>
+</svg>`,
+
+  ui_puchar: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+<path d="M20 12 H10 C10 24 15 29 22 30" fill="none" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M44 12 H54 C54 24 49 29 42 30" fill="none" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M18 7 H46 V26 C46 37 40 43 32 43 C24 43 18 37 18 26 Z" fill="#FFC94A" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M46 7 V26 C46 37 40 43 32 43 C38 40 41 34 41 26 V7 Z" fill="#F0A92E"/>
+<path d="M18 7 H46 V26 C46 37 40 43 32 43 C24 43 18 37 18 26 Z" fill="none" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="28.5" y="43" width="7" height="8" fill="#F0A92E" stroke="#4A2C1D" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M17 57 V52 Q17 50.5 18.5 50.5 H45.5 Q47 50.5 47 52 V57 Z" fill="#8B5A2B" stroke="#4A2C1D" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round"/>
+<ellipse cx="24.5" cy="20" rx="2.4" ry="6" transform="rotate(8 24.5 20)" fill="#FFFFFF" fill-opacity="0.6"/>
+</svg>`,
+
+  ui_cel: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+<circle cx="30" cy="34" r="25" fill="#F0625A" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="30" cy="34" r="17" fill="#FFF4E6" stroke="#4A2C1D" stroke-width="2.4"/>
+<circle cx="30" cy="34" r="9.5" fill="#F0625A" stroke="#4A2C1D" stroke-width="2.4"/>
+<circle cx="30" cy="34" r="3.6" fill="#FFC94A" stroke="#4A2C1D" stroke-width="2"/>
+<path d="M31 33 L54 10" fill="none" stroke="#4A2C1D" stroke-width="5.4" stroke-linecap="round"/>
+<path d="M31 33 L54 10" fill="none" stroke="#C9A06A" stroke-width="2.4" stroke-linecap="round"/>
+<path d="M50 5 L50 14 L59 14 L58 6 Z" fill="#4A90D9" stroke="#4A2C1D" stroke-width="2.4" stroke-linejoin="round"/>
+</svg>`,
+
+  ui_powtorka: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+<path d="M12 33 A20 20 0 0 1 46 19" fill="none" stroke="#4A2C1D" stroke-width="9" stroke-linecap="round"/>
+<path d="M52 31 A20 20 0 0 1 18 45" fill="none" stroke="#4A2C1D" stroke-width="9" stroke-linecap="round"/>
+<path d="M12 33 A20 20 0 0 1 46 19" fill="none" stroke="#4A90D9" stroke-width="4.6" stroke-linecap="round"/>
+<path d="M52 31 A20 20 0 0 1 18 45" fill="none" stroke="#4CC27A" stroke-width="4.6" stroke-linecap="round"/>
+<path d="M40 8 L54 14 L44 26 Z" fill="#4A90D9" stroke="#4A2C1D" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M24 56 L10 50 L20 38 Z" fill="#4CC27A" stroke="#4A2C1D" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+</svg>`,
+
+  ui_lekcja: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+<path d="M12 6 H48 Q52 6 52 10 V52 Q52 56 48 56 H12 Z" fill="#4A90D9" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M12 6 V56 H8 Q4 56 4 52 V10 Q4 6 8 6 Z" fill="#2F6FB5" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="19" y="14" width="26" height="14" rx="3" fill="#FFF4E6" stroke="#4A2C1D" stroke-width="2.4"/>
+<path d="M24 21 H40" stroke="#4A2C1D" stroke-width="2.4" stroke-linecap="round"/>
+<path d="M20 38 H44 M20 45 H36" fill="none" stroke="#FFFFFF" stroke-opacity="0.75" stroke-width="2.6" stroke-linecap="round"/>
+<path d="M12 6 H48 Q52 6 52 10 V52 Q52 56 48 56 H12 Z" fill="none" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+</svg>`,
+
+  ui_meta: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+<path d="M14 6 V58" fill="none" stroke="#4A2C1D" stroke-width="5.4" stroke-linecap="round"/>
+<path d="M14 6 V58" fill="none" stroke="#C9A06A" stroke-width="2.4" stroke-linecap="round"/>
+<path d="M16 9 H54 L46 21 L54 33 H16 Z" fill="#FFFFFF" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M16 9 H28 V21 H16 Z M40 9 H52 L46 21 H40 Z M28 21 H40 V33 H28 Z M16 21 V33 H28 Z" fill="#4A2C1D" opacity="0"/>
+<rect x="16" y="9" width="8" height="8" fill="#4A2C1D"/><rect x="32" y="9" width="8" height="8" fill="#4A2C1D"/>
+<rect x="24" y="17" width="8" height="8" fill="#4A2C1D"/><rect x="40" y="17" width="8" height="8" fill="#4A2C1D"/>
+<rect x="16" y="25" width="8" height="8" fill="#4A2C1D"/><rect x="32" y="25" width="8" height="8" fill="#4A2C1D"/>
+<path d="M16 9 H54 L46 21 L54 33 H16 Z" fill="none" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+</svg>`,
+
+  ui_korona: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+<path d="M6 48 L9 18 L22 31 L32 10 L42 31 L55 18 L58 48 Z" fill="#FFC94A" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M6 48 L58 48 L58 54 Q58 56 56 56 H8 Q6 56 6 54 Z" fill="#F0A92E" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="9" cy="17" r="3.6" fill="#F0625A" stroke="#4A2C1D" stroke-width="2"/>
+<circle cx="32" cy="9" r="3.6" fill="#4A90D9" stroke="#4A2C1D" stroke-width="2"/>
+<circle cx="55" cy="17" r="3.6" fill="#F0625A" stroke="#4A2C1D" stroke-width="2"/>
+<circle cx="32" cy="40" r="3.4" fill="#F0625A" stroke="#4A2C1D" stroke-width="2"/>
+<path d="M13 40 L12 30" stroke="#FFFFFF" stroke-opacity="0.6" stroke-width="3" stroke-linecap="round"/>
+</svg>`,
+
+  ui_kompas: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+<circle cx="32" cy="32" r="26" fill="#FFF4E6" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="32" cy="32" r="20" fill="#4A90D9" stroke="#4A2C1D" stroke-width="2.4"/>
+<path d="M32 12 V16 M32 48 V52 M12 32 H16 M48 32 H52" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round"/>
+<path d="M44 20 L36 36 L28 28 Z" fill="#F0625A" stroke="#4A2C1D" stroke-width="2.4" stroke-linejoin="round"/>
+<path d="M20 44 L28 28 L36 36 Z" fill="#FFFFFF" stroke="#4A2C1D" stroke-width="2.4" stroke-linejoin="round"/>
+<circle cx="32" cy="32" r="2.6" fill="#4A2C1D"/>
+</svg>`,
+
+  ui_platek: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+<circle cx="32" cy="32" r="26" fill="#BFE6FA" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<g stroke="#4A2C1D" stroke-width="5" stroke-linecap="round"><path d="M32 12 V52"/><path d="M14.7 22 L49.3 42"/><path d="M14.7 42 L49.3 22"/></g>
+<g stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round"><path d="M32 12 V52"/><path d="M14.7 22 L49.3 42"/><path d="M14.7 42 L49.3 22"/></g>
+<circle cx="32" cy="32" r="5" fill="#FFFFFF" stroke="#4A2C1D" stroke-width="2.4"/>
+</svg>`,
+
+  ui_zlamane_serce: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+<path d="M32 56 C13 43 6 31 9.5 21 C13 11.5 25.5 10 32 19.5 C38.5 10 51 11.5 54.5 21 C58 31 51 43 32 56 Z" fill="#F0625A" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M29 14 L36 26 L27 33 L35 43 L30 55" fill="none" stroke="#4A2C1D" stroke-width="3.4" stroke-linejoin="round" stroke-linecap="round"/>
+<ellipse cx="18.5" cy="24" rx="3.6" ry="6" transform="rotate(-35 18.5 24)" fill="#FFFFFF" fill-opacity="0.5"/>
+</svg>`,
+
+  ui_odznaka: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+<path d="M18 36 L10 58 L22 52 L28 58 L33 40 Z" fill="#4A90D9" stroke="#4A2C1D" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M46 36 L54 58 L42 52 L36 58 L31 40 Z" fill="#F0625A" stroke="#4A2C1D" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="32" cy="26" r="20" fill="#FFC94A" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="32" cy="26" r="13" fill="#FFE18A" stroke="#4A2C1D" stroke-width="2.4"/>
+<path d="M32 17 L34.8 23 L41 23.6 L36.4 27.8 L37.8 34 L32 30.8 L26.2 34 L27.6 27.8 L23 23.6 L29.2 23 Z" fill="#F0A92E" stroke="#4A2C1D" stroke-width="1.8" stroke-linejoin="round"/>
+<path d="M17 18 Q20 11 27 8.5" fill="none" stroke="#FFFFFF" stroke-opacity="0.65" stroke-width="3" stroke-linecap="round"/>
+</svg>`,
+
+  ui_koperta: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+<rect x="6" y="14" width="52" height="38" rx="6" fill="#FFF4E6" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M7 18 L32 38 L57 18" fill="none" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M7 50 L24 33 M57 50 L40 33" fill="none" stroke="#4A2C1D" stroke-width="2.6" stroke-linecap="round"/>
+<circle cx="52" cy="14" r="8" fill="#F0625A" stroke="#4A2C1D" stroke-width="2.6"/>
+<path d="M52 10 V15" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round"/><circle cx="52" cy="18" r="1.3" fill="#FFFFFF"/>
+</svg>`,
+
+  ui_iskry: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+<path d="M26 8 Q28.5 24 44 26 Q28.5 28 26 44 Q23.5 28 8 26 Q23.5 24 26 8 Z" fill="#FFC94A" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M47 32 Q48.4 40 56 41 Q48.4 42 47 50 Q45.6 42 38 41 Q45.6 40 47 32 Z" fill="#FFE18A" stroke="#4A2C1D" stroke-width="2.4" stroke-linejoin="round"/>
+<path d="M49 7 Q49.7 11 53.5 11.5 Q49.7 12 49 16 Q48.3 12 44.5 11.5 Q48.3 11 49 7 Z" fill="#FFF4E6" stroke="#4A2C1D" stroke-width="1.8" stroke-linejoin="round"/>
+</svg>`,
+
+  ui_zamknij: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+<circle cx="32" cy="32" r="25" fill="#F0625A" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M22 22 L42 42 M42 22 L22 42" fill="none" stroke="#4A2C1D" stroke-width="9" stroke-linecap="round"/>
+<path d="M22 22 L42 42 M42 22 L22 42" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round"/>
+</svg>`,
+
+  ui_start: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+<circle cx="32" cy="32" r="25" fill="#4CC27A" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M26 20 L46 32 L26 44 Z" fill="#FFFFFF" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M17 22 Q20 16 26 13" fill="none" stroke="#FFFFFF" stroke-opacity="0.55" stroke-width="3" stroke-linecap="round"/>
+</svg>`,
+
+  ui_zegar: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+<rect x="27" y="4" width="10" height="6" rx="2" fill="#8B7CF6" stroke="#4A2C1D" stroke-width="2.4"/>
+<circle cx="32" cy="35" r="23" fill="#FFF4E6" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="32" cy="35" r="17" fill="#FFFFFF" stroke="#4A2C1D" stroke-width="2"/>
+<path d="M32 35 V24 M32 35 L40 40" fill="none" stroke="#4A2C1D" stroke-width="3.4" stroke-linecap="round"/>
+<circle cx="32" cy="35" r="2.4" fill="#F0625A"/>
+</svg>`,
+
+  ui_klodka_otwarta: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+<path d="M20 28 V19 A12 12 0 0 1 44 15" fill="none" stroke="#4A2C1D" stroke-width="8" stroke-linecap="round"/>
+<path d="M20 28 V19 A12 12 0 0 1 44 15" fill="none" stroke="#C0C7D0" stroke-width="3.6" stroke-linecap="round"/>
+<rect x="10" y="28" width="44" height="30" rx="7" fill="#FFC94A" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M10 46 Q10 58 17 58 H47 Q54 58 54 46 Z" fill="#F0A92E"/>
+<rect x="10" y="28" width="44" height="30" rx="7" fill="none" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="32" cy="41" r="4.4" fill="#4A2C1D"/><path d="M32 43 V50" stroke="#4A2C1D" stroke-width="3.4" stroke-linecap="round"/>
+</svg>`,
 } as const;
 
 export type IconName = keyof typeof ICONS;

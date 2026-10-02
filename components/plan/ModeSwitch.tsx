@@ -1,4 +1,6 @@
 import { Pressable, Text, View, StyleSheet } from "react-native";
+import { AppIcon } from "@/components/icons/AppIcon";
+import type { IconName } from "@/components/icons/icons";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 
 interface ModeSwitchProps {
@@ -12,13 +14,13 @@ interface ModeSwitchProps {
 export function ModeSwitch({ view, onChange }: ModeSwitchProps) {
   return (
     <View style={styles.track} accessibilityRole="tablist">
-      <Segment label="🎮 Tryb zabawy" active={view === "fun"} onPress={() => onChange("fun")} />
-      <Segment label="📚 Tryb nauki" active={view === "plan"} onPress={() => onChange("plan")} />
+      <Segment icon="tryb_zabawy" label="Tryb zabawy" active={view === "fun"} onPress={() => onChange("fun")} />
+      <Segment icon="tryb_nauki" label="Tryb nauki" active={view === "plan"} onPress={() => onChange("plan")} />
     </View>
   );
 }
 
-function Segment({ label, active, onPress }: { label: string; active: boolean; onPress: () => void }) {
+function Segment({ icon, label, active, onPress }: { icon: IconName; label: string; active: boolean; onPress: () => void }) {
   return (
     <Pressable
       onPress={onPress}
@@ -26,6 +28,7 @@ function Segment({ label, active, onPress }: { label: string; active: boolean; o
       accessibilityState={{ selected: active }}
       style={[styles.segment, active && styles.segmentActive]}
     >
+      <AppIcon name={icon} size={24} />
       <Text style={[styles.segmentText, active && styles.segmentTextActive]}>{label}</Text>
     </Pressable>
   );
@@ -43,10 +46,12 @@ const styles = StyleSheet.create({
   },
   segment: {
     flex: 1,
-    minHeight: 36,
+    minHeight: 40,
     borderRadius: 19,
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    gap: 6,
     paddingHorizontal: 10,
   },
   segmentActive: {

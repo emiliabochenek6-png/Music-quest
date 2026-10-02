@@ -7,6 +7,7 @@ import { t } from "@/lib/i18n/translate";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import type { Locale } from "@/types/locale";
 import type { GeneratedExercise } from "@/types/exercises";
+import { GlyphText } from "@/components/icons/GlyphText";
 
 interface MultipleChoiceNotationExerciseProps {
   exercise: Extract<GeneratedExercise, { type: "multiple-choice-notation" }>;
@@ -52,7 +53,7 @@ export function MultipleChoiceNotationExercise({ exercise, selectedOptionId, onS
           borderColor: theme.colors.border,
         }}
       >
-        <Text style={{ fontSize: 20 }}>🔊</Text>
+        <GlyphText style={{ fontSize: 20 }}>🔊</GlyphText>
       </Pressable>
       <View style={{ width: "100%", flexDirection: "row", flexWrap: "wrap", gap: theme.spacing(1.5), justifyContent: "center" }}>
         {exercise.options.map((option) => (

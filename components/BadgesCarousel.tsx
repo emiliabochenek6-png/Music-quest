@@ -5,6 +5,7 @@ import { useGamification } from "@/context/GamificationContext";
 import { useProgress } from "@/context/ProgressContext";
 import { BADGES, getEarnedBadgeIds } from "@/lib/gamification/badges";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
+import { GlyphText } from "@/components/icons/GlyphText";
 
 const CHIP_WIDTH = 132;
 const CHIP_GAP = 10;
@@ -45,7 +46,7 @@ export function BadgesCarousel() {
   return (
     <View>
       <View style={styles.headerRow}>
-        <Text style={styles.title}>🏅 Odznaki</Text>
+        <GlyphText style={styles.title}>🏅 Odznaki</GlyphText>
         <View style={styles.arrowsRow}>
           <Pressable
             onPress={() => scrollBy(-SCROLL_STEP)}
@@ -83,7 +84,7 @@ export function BadgesCarousel() {
           const earned = earnedBadgeIds.has(badge.id);
           return (
             <View key={badge.id} style={[styles.chip, !earned && styles.chipLocked]}>
-              <Text style={[styles.chipIcon, !earned && styles.chipIconLocked]}>{badge.icon}</Text>
+              <GlyphText style={[styles.chipIcon, !earned && styles.chipIconLocked]}>{badge.icon}</GlyphText>
               <Text style={styles.chipTitle} numberOfLines={2}>
                 {badge.title}
               </Text>

@@ -2,6 +2,7 @@ import { Text, View, StyleSheet } from "react-native";
 import { t } from "@/lib/i18n/translate";
 import type { TranslationKey } from "@/lib/i18n/translate";
 import { useTheme } from "@/theme/ThemeProvider";
+import { GlyphText } from "@/components/icons/GlyphText";
 
 const BENEFIT_KEYS: TranslationKey[] = [
   "paywall.benefit.allWorlds",
@@ -19,7 +20,7 @@ export function PaywallBenefitsList() {
     <View style={{ gap: theme.spacing(1.5) }}>
       {BENEFIT_KEYS.map((key) => (
         <View key={key} style={styles.row}>
-          <Text style={{ fontSize: theme.fontSize.body }}>✓</Text>
+          <GlyphText style={{ fontSize: theme.fontSize.body }}>✓</GlyphText>
           <Text style={{ fontSize: theme.fontSize.body, color: theme.colors.ink, flex: 1 }}>{t(key)}</Text>
         </View>
       ))}

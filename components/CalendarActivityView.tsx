@@ -7,6 +7,7 @@ import { useGamification } from "@/context/GamificationContext";
 import { todayISODate } from "@/lib/gamification/activity";
 import { calendarSoltekComment } from "@/lib/gamification/soltekComments";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
+import { GlyphText } from "@/components/icons/GlyphText";
 
 const WEEKDAY_LABELS = ["pon", "wt", "śr", "czw", "pt", "sob", "nd"];
 
@@ -132,7 +133,7 @@ export function CalendarActivityView() {
 function StatTile({ icon, value, unit, label }: { icon: string; value: string; unit?: string; label: string }) {
   return (
     <View style={styles.statTile}>
-      <Text style={styles.statIcon}>{icon}</Text>
+      <GlyphText style={styles.statIcon}>{icon}</GlyphText>
       <Text style={styles.statValue} numberOfLines={1}>
         {value}
         {unit && <Text style={styles.statUnit}> {unit}</Text>}

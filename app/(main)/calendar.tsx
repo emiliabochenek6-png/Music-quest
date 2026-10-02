@@ -3,6 +3,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BottomTabBar } from "@/components/BottomTabBar";
 import { CalendarActivityView } from "@/components/CalendarActivityView";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
+import { GlyphText } from "@/components/icons/GlyphText";
 
 /**
  * The activity calendar's own full screen — back in BottomTabBar's own
@@ -14,7 +15,7 @@ export default function CalendarScreen() {
 
   return (
     <View style={[styles.root, { paddingTop: insets.top + 16 }]}>
-      <Text style={styles.title}>📅 Kalendarz aktywności</Text>
+      <GlyphText style={styles.title}>📅 Kalendarz aktywności</GlyphText>
       <View style={styles.content}>
         <CalendarActivityView />
       </View>

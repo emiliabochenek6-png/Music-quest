@@ -1,6 +1,7 @@
 import type { IconName } from "@/components/icons/icons";
 import { POWER_UP_COSTS } from "@/lib/gamification/powerups";
 import { HEART_REGEN_MS, MAX_HEARTS, MIN_STARS_TO_ADVANCE_WORLD } from "@/types/gamification";
+import { MAX_LEVEL } from "@/lib/gamification/rank";
 
 export interface Rule {
   /** Stable key for looking a rule up from somewhere other than the full
@@ -26,13 +27,13 @@ export const RULES: Rule[] = [
     id: "hearts",
     icon: { name: "hud_serce" },
     title: "Serca",
-    body: `Masz ${MAX_HEARTS} serc. Błędna odpowiedź kosztuje 1 serce. Gdy zabraknie serc, nie możesz ćwiczyć dalej, dopóki jedno się nie odnowi (1 serce co ${HEART_REGEN_HOURS} godziny) — albo masz Premium, gdzie serca są bez limitu. Serca możesz też uzupełnić od razu za nutki w Sklepie Soltka.`,
+    body: `Masz ${MAX_HEARTS} serc. Błędna odpowiedź kosztuje 1 serce. Gdy zabraknie serc, nie możesz ćwiczyć dalej, dopóki jedno się nie odnowi (1 serce co ${HEART_REGEN_HOURS} godziny) — albo masz Premium, gdzie serca są bez limitu. Serca możesz też uzupełnić od razu za nutki w Sklepie Soltka. W trybie nauki (Twój plan) serc nie ma — błąd nic nie kosztuje.`,
   },
   {
     id: "rank",
     icon: { name: "hud_ranga_gwiazda" },
-    title: "XP i ranga",
-    body: "Za każdą poprawną odpowiedź dostajesz punkty doświadczenia (XP). Za ukończenie lekcji bez ani jednego błędu — dodatkowy bonus. Im więcej XP zbierzesz, tym wyższa Twoja ranga — a Soltek ogłasza każdy awans osobiście.",
+    title: "XP i levele",
+    body: `Za każdą poprawną odpowiedź dostajesz punkty doświadczenia (XP). Za ukończenie lekcji bez ani jednego błędu — dodatkowy bonus. XP zamieniają się w levele: jest ich ${MAX_LEVEL}, a każdy kolejny trudniej zdobyć niż poprzedni — pierwsze wpadają po kilku dobrych odpowiedziach, ostatnie wymagają prawdziwej wytrwałości. Za każdy 5. level Soltek urządza świętowanie, a co kilkanaście levelów dostajesz nowy tytuł. W trybie nauki dodatkowo dostajesz 2 nutki za każdą poprawną odpowiedź.`,
   },
   {
     id: "streak",

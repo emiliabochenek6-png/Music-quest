@@ -25,6 +25,10 @@ import { useSessionTimer } from "@/hooks/useSessionTimer";
 import { stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
 import { todayISODate } from "@/lib/gamification/activity";
 import { NUTKI_REWARDS } from "@/lib/gamification/powerups";
+import { getRankForXp } from "@/lib/gamification/rank";
+import { AppIcon } from "@/components/icons/AppIcon";
+import { LevelBar } from "@/components/LevelBar";
+import { Confetti } from "@/components/exercises/Confetti";
 import { didWorldJustUnlock } from "@/lib/progression/resolveNodeState";
 import { computeLessonStars, computeLessonStarsProgress } from "@/lib/gamification/stars";
 import { computeIntervalTimedTestStars } from "@/lib/questions/intervalTimedTest";
@@ -34,11 +38,14 @@ import { t } from "@/lib/i18n/translate";
 import type { TranslationKey } from "@/lib/i18n/translate";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import type { AnswerInput, ExerciseDefinition } from "@/types/exercises";
+import { GlyphText } from "@/components/icons/GlyphText";
 
 /** +10 XP per exercise answered correctly on the first (and only —
  * see handleCheck's own doc) attempt, +20 on top for a lesson finished
  * with zero mistakes at all. */
 const XP_PER_CORRECT_ANSWER = 10;
+/** Nutki ("nuty") a correct answer pays in "Tryb nauki". */
+const NUTKI_PER_CORRECT_IN_LEARNING_MODE = 2;
 const XP_PERFECT_LESSON_BONUS = 20;
 /** Roughly 1 in 3 checks — see showSoltek's own doc for why this isn't
  * every check. */
@@ -148,12 +155,18 @@ export default function LessonScreen() {
 }
 
 function LessonScreenBody() {
-  const { lessonId, worldId } = useLocalSearchParams<{ lessonId: string; worldId: string }>();
+  const { lessonId, worldId, mode } = useLocalSearchParams<{ lessonId: string; worldId: string; mode?: string }>();
+  // "Tryb nauki" (opened from the study plan): no hearts — nothing is lost for
+  // a mistake and nothing blocks the next question — and every correct
+  // answer pays NUTKI_PER_CORRECT_IN_LEARNING_MODE nutki on top of the XP.
+  const learningMode = mode === "plan";
   const insets = useSafeAreaInsets();
   const { progress, markLessonCompleted, markWorldCompleted } = useProgress();
   const { plan, onLessonCompleted } = usePlan();
   const { state: gamificationState, getHeartsInfo, loseHeart, gainHearts, awardXp, addNutki, recordLessonStars, recordActivity } =
     useGamification();
+  // XP/nutki the player had when this lesson started — the summary shows the difference.
+  const startRewards = useRef({ xp: gamificationState.xp, nutki: gamificationState.nutki });
   const introModeEnabled = gamificationState.introModeEnabledByWorld[worldId] ?? true;
   const nutkiMultiplier = introModeEnabled ? 1 : NUTKI_MULTIPLIER_WHEN_INTRO_DISABLED;
   const { status: subscriptionStatus } = useSubscription();
@@ -361,7 +374,7 @@ function LessonScreenBody() {
         setEncouragementMessageIndex(1 + Math.floor(Math.random() * ENCOURAGEMENT_MESSAGE_COUNT));
       }
       setConsecutiveCorrect(0);
-      loseHeart();
+      if (!learningMode) loseHeart();
       const failCountForThisExercise = (failCounts[definition.id] ?? 0) + 1;
       setFailCounts((current) => ({ ...current, [definition.id]: failCountForThisExercise }));
       if (failCountForThisExercise < MAX_ATTEMPTS_PER_EXERCISE) {
@@ -369,7 +382,8 @@ function LessonScreenBody() {
       }
     } else {
       awardXp(XP_PER_CORRECT_ANSWER);
-      gainHearts(HEARTS_PER_CORRECT_ANSWER);
+      if (learningMode) addNutki(NUTKI_PER_CORRECT_IN_LEARNING_MODE);
+      else gainHearts(HEARTS_PER_CORRECT_ANSWER);
       setCorrectCount((n) => n + 1);
       const nextStreak = consecutiveCorrect + 1;
       setConsecutiveCorrect(nextStreak);
@@ -428,7 +442,7 @@ function LessonScreenBody() {
       // shows its own right/wrong feedback above; only moving PAST it is
       // blocked.
       const heartsInfo = getHeartsInfo();
-      if (heartsInfo.hearts <= 0) {
+      if (!learningMode && heartsInfo.hearts <= 0) {
         setOutOfHeartsMs(heartsInfo.msUntilNextHeart);
         setShowOutOfHearts(true);
         return;
@@ -481,7 +495,17 @@ function LessonScreenBody() {
         addNutki(NUTKI_REWARDS.perfectLesson * nutkiMultiplier);
       }
       recordLessonStars(currentLesson.id, earnedStars);
-      recordActivity(todayISODate(), { minutesSpent: getElapsedMinutes(), lessonIdCompleted: currentLesson.id });
+      // Feeds the daily missions: what was done today, split by mode.
+      const modeStats = learningMode
+        ? { planLessons: 1, planCorrect: originalExerciseCount, planStars3: earnedStars === 3 ? 1 : 0, planPerfect: isPerfectRun ? 1 : 0 }
+        : {
+            funLessons: 1,
+            funCorrect: originalExerciseCount,
+            funStars3: earnedStars === 3 ? 1 : 0,
+            funPerfect: isPerfectRun ? 1 : 0,
+            bosses: currentLesson.isBoss ? 1 : 0,
+          };
+      recordActivity(todayISODate(), { minutesSpent: getElapsedMinutes(), lessonIdCompleted: currentLesson.id, stats: modeStats });
       setIsFinished(true);
     }
   }
@@ -525,7 +549,8 @@ function LessonScreenBody() {
   const doneIncludingThis = new Set([...progress.completedLessonIds, lessonId]);
   const nextTodayLessonId = todayPlanIds.find((id) => id !== lessonId && !doneIncludingThis.has(id)) ?? null;
   const todayPlanDone = todayPlanIds.includes(lessonId) && nextTodayLessonId === null;
-  const fromPlan = plan.view === "plan" && plan.pathLessonIds.includes(lessonId);
+  const fromPlan = learningMode;
+  const gained = { xp: gamificationState.xp - startRewards.current.xp, nutki: gamificationState.nutki - startRewards.current.nutki };
 
   if (isFinished) {
     return (
@@ -546,11 +571,16 @@ function LessonScreenBody() {
             nextTodayLessonId
               ? () => {
                   const info = getLessonInfo(nextTodayLessonId);
-                  if (info) router.replace({ pathname: "/(main)/lesson/[lessonId]", params: { lessonId: nextTodayLessonId, worldId: info.worldId } });
+                  if (info) router.replace({ pathname: "/(main)/lesson/[lessonId]", params: { lessonId: nextTodayLessonId, worldId: info.worldId, mode: "plan" } });
                 }
               : undefined
           }
           todayPlanDone={todayPlanDone}
+          gainedXp={gained.xp}
+          gainedNutki={gained.nutki}
+          level={getRankForXp(gamificationState.xp).rank}
+          streakDays={gamificationState.streakDays}
+          todayLessonCount={todayPlanIds.length}
         />
         <WorldCompleteModal
           visible={showWorldComplete}
@@ -644,6 +674,7 @@ function LessonScreenBody() {
             ]}
           />
         </View>
+        <LevelBar xp={gamificationState.xp} />
         <LiveStarIndicator
           correctSoFar={correctCount}
           totalExercises={originalExerciseCount}
@@ -653,7 +684,7 @@ function LessonScreenBody() {
 
       {isReviewRound && (
         <View style={[styles.reviewBanner, { borderColor: world.accentColor }]}>
-          <Text style={[styles.reviewBannerText, { color: world.accentColor }]}>🔁 {t("lesson.reviewRoundBanner", "pl")}</Text>
+          <GlyphText style={[styles.reviewBannerText, { color: world.accentColor }]}>🔁 {t("lesson.reviewRoundBanner", "pl")}</GlyphText>
         </View>
       )}
 
@@ -693,6 +724,11 @@ function LessonScreenBody() {
       </ScrollView>
 
       <View style={{ paddingHorizontal: 24, paddingBottom: insets.bottom + 16 }}>
+        {checked && learningMode && isCorrect && (
+          <Text style={{ textAlign: "center", color: theme.colors.success, fontWeight: "800", marginBottom: theme.spacing(0.75) }}>
+            +{XP_PER_CORRECT_ANSWER} XP · +{NUTKI_PER_CORRECT_IN_LEARNING_MODE} nutki
+          </Text>
+        )}
         {checked && (
           <View style={{ marginBottom: theme.spacing(1.5) }}>
             {showSoltek ? (
@@ -814,7 +850,17 @@ function LessonSummary({
   onNextTodayLesson,
   todayPlanDone,
   exitLabel,
+  gainedXp,
+  gainedNutki,
+  level,
+  streakDays,
+  todayLessonCount,
 }: {
+  gainedXp: number;
+  gainedNutki: number;
+  level: number;
+  streakDays: number;
+  todayLessonCount: number;
   exitLabel: string;
   nextTodayLessonLabel: string | null;
   onNextTodayLesson?: () => void;
@@ -839,14 +885,14 @@ function LessonSummary({
         { backgroundColor, paddingTop: insets.top, paddingBottom: insets.bottom },
       ]}
     >
-      <Text style={{ fontSize: 56 }}>{isPerfect ? "🎉" : "✅"}</Text>
+      <GlyphText style={{ fontSize: 56 }}>{isPerfect ? "🎉" : "✅"}</GlyphText>
       <Text style={{ fontSize: theme.fontSize.heading, fontWeight: "800", color: theme.colors.ink }}>
         {t("lesson.lessonComplete", "pl")}
       </Text>
       <AnimatedSummaryStars stars={stars} />
       {isPerfect && (
         <View style={[styles.perfectBadge, { borderColor: theme.colors.success }]}>
-          <Text style={{ color: theme.colors.success, fontWeight: "700", fontSize: 13 }}>✨ Perfekcyjnie!</Text>
+          <GlyphText style={{ color: theme.colors.success, fontWeight: "700", fontSize: 13 }}>✨ Perfekcyjnie!</GlyphText>
         </View>
       )}
       <Text style={{ color: theme.colors.muted }}>
@@ -854,13 +900,36 @@ function LessonSummary({
           ? `Poprawnych: ${timedTestResult.correctCount}, błędnych: ${timedTestResult.totalCount - timedTestResult.correctCount}`
           : `${totalExercises - mistakeCount}/${totalExercises} poprawnie za pierwszym razem`}
       </Text>
+      {(gainedXp > 0 || gainedNutki > 0) && (
+        <View style={styles.rewardRow}>
+          <View style={styles.rewardPill}>
+            <AppIcon name="hud_ranga_gwiazda" size={18} />
+            <Text style={styles.rewardPillText}>+{gainedXp} XP</Text>
+          </View>
+          {gainedNutki > 0 && (
+            <View style={styles.rewardPill}>
+              <AppIcon name="hud_nutki_waluta" size={18} />
+              <Text style={styles.rewardPillText}>+{gainedNutki} nutek</Text>
+            </View>
+          )}
+          <View style={styles.rewardPill}>
+            <Text style={styles.rewardPillText}>Level {level}</Text>
+          </View>
+        </View>
+      )}
       {todayPlanDone && (
-        <View style={[styles.perfectBadge, { borderColor: theme.colors.success, paddingHorizontal: 14, paddingVertical: 10 }]}>
-          <Text style={{ color: theme.colors.success, fontWeight: "800", fontSize: 14, textAlign: "center" }}>
-            🎉 Gratulacje! Wykonałeś wszystkie zaplanowane lekcje na dziś.
+        <View style={[styles.dayDone, { borderColor: theme.colors.success }]}>
+          <GlyphText style={{ fontSize: 34 }}>🏆</GlyphText>
+          <Text style={{ color: theme.colors.success, fontWeight: "800", fontSize: 17, textAlign: "center" }}>Dzień zaliczony!</Text>
+          <Text style={{ color: theme.colors.ink, fontWeight: "700", fontSize: 13.5, textAlign: "center" }}>
+            Wykonałeś wszystkie zaplanowane lekcje na dziś{todayLessonCount > 1 ? ` (${todayLessonCount})` : ""}.
+          </Text>
+          <Text style={{ color: theme.colors.muted, fontSize: 12.5, textAlign: "center" }}>
+            {streakDays > 1 ? `🔥 Passa: ${streakDays} dni z rzędu. Do zobaczenia jutro!` : "🔥 Zaczynasz passę. Wróć jutro, a będzie już 2 dni z rzędu!"}
           </Text>
         </View>
       )}
+      {todayPlanDone && <Confetti count={40} />}
       <View style={{ marginTop: theme.spacing(2), width: "100%", gap: theme.spacing(1.25) }}>
         {onNextTodayLesson && nextTodayLessonLabel && (
           <>
@@ -1016,6 +1085,27 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 24,
     gap: 12,
+  },
+  rewardRow: { flexDirection: "row", flexWrap: "wrap", justifyContent: "center", gap: 8 },
+  rewardPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    borderRadius: 999,
+    backgroundColor: theme.colors.surfaceMuted,
+  },
+  rewardPillText: { color: theme.colors.ink, fontWeight: "800", fontSize: 13 },
+  dayDone: {
+    alignItems: "center",
+    gap: 4,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderRadius: 18,
+    borderWidth: 2,
+    backgroundColor: theme.colors.surface,
+    maxWidth: 360,
   },
   perfectBadge: {
     borderWidth: theme.borderWidth,

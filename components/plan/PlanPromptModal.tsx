@@ -27,8 +27,8 @@ export function PlanPromptModal({ visible, onTakeTest, onStartFromBeginning }: P
             message="Mamy dwa tryby. „Tryb zabawy” to gra: mapa krain i walki z bossami. „Tryb nauki” to Twój plan: zrobię z Tobą krótki test (ok. 8–10 minut) i ułożę Ci własną ścieżkę lekcji na ok. 3 miesiące, z powtórkami. Od czego zaczynamy?"
           />
           <View style={{ gap: theme.spacing(1.25), width: "100%" }}>
-            <DarkButton label="📚 Zrób test z Soltkiem (tryb nauki)" onPress={onTakeTest} />
-            <DarkButton label="🎮 Zacznij od gry (tryb zabawy)" onPress={onStartFromBeginning} variant="secondary" />
+            <DarkButton label="Zrób test z Soltkiem (tryb nauki)" onPress={onTakeTest} />
+            <DarkButton label="Zacznij od gry (tryb zabawy)" onPress={onStartFromBeginning} variant="secondary" />
           </View>
           <Text style={styles.footnote}>Tryby przełączasz w każdej chwili na mapie; plan znajdziesz też w Ustawieniach → Tryb nauki.</Text>
         </View>

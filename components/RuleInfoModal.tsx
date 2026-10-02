@@ -2,6 +2,7 @@ import { Modal, Pressable, Text, View, StyleSheet } from "react-native";
 import { AppIcon } from "@/components/icons/AppIcon";
 import type { Rule } from "@/lib/gamification/rulesText";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
+import { GlyphText } from "@/components/icons/GlyphText";
 
 interface RuleInfoModalProps {
   visible: boolean;
@@ -34,7 +35,7 @@ export function RuleInfoModal({ visible, rule, onClose }: RuleInfoModalProps) {
             {"name" in rule.icon ? <AppIcon name={rule.icon.name} size={32} /> : <Text style={styles.emojiIcon}>{rule.icon.emoji}</Text>}
             <Text style={styles.title}>{rule.title}</Text>
             <Pressable onPress={onClose} accessibilityRole="button" accessibilityLabel="Zamknij" hitSlop={10} style={styles.closeButton}>
-              <Text style={styles.closeIcon}>✕</Text>
+              <GlyphText style={styles.closeIcon}>✕</GlyphText>
             </Pressable>
           </View>
           <Text style={styles.body}>{rule.body}</Text>

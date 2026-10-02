@@ -1,3 +1,4 @@
+import { addDayStats } from "@/lib/gamification/activity";
 import { deriveHearts } from "@/lib/gamification/hearts";
 import { sanitizeGamificationState } from "@/types/gamification";
 import type { ProgressState } from "@/types/content";
@@ -34,6 +35,7 @@ function mergeActivityLogs(a: Record<string, DayActivity>, b: Record<string, Day
       minutesSpent: dayA.minutesSpent + dayB.minutesSpent,
       lessonIdsCompleted: Array.from(new Set([...dayA.lessonIdsCompleted, ...dayB.lessonIdsCompleted])),
       dailyChallengeCompleted: dayA.dailyChallengeCompleted || dayB.dailyChallengeCompleted,
+      ...(addDayStats(dayA.stats, dayB.stats) ? { stats: addDayStats(dayA.stats, dayB.stats) } : {}),
     };
   }
   return merged;

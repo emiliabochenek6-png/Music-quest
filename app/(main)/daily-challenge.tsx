@@ -10,7 +10,6 @@ import { ExerciseRenderer, hasAnswerToCheck } from "@/components/exercises/Exerc
 import { SoltekMascot } from "@/components/SoltekMascot";
 import { useGamification } from "@/context/GamificationContext";
 import { useProgress } from "@/context/ProgressContext";
-import { useSubscription } from "@/context/SubscriptionContext";
 import { useSessionTimer } from "@/hooks/useSessionTimer";
 import { todayISODate } from "@/lib/gamification/activity";
 import { getUnlockedExercisePool, pickDailyChallengeDefinition } from "@/lib/dailyChallenge/pickDailyChallenge";
@@ -20,6 +19,7 @@ import { isAnswerCorrect } from "@/lib/questions/validate";
 import { t } from "@/lib/i18n/translate";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import type { AnswerInput, ExerciseDefinition, GeneratedExercise } from "@/types/exercises";
+import { GlyphText } from "@/components/icons/GlyphText";
 
 // Passed into DailyMissionsCard as its own challengeXpReward prop below,
 // so that card's "Wykonaj wyzwanie dnia" mission labels its reward with
@@ -61,7 +61,6 @@ function pickFreshDefinition(pool: readonly ExerciseDefinition[], avoidId?: stri
 export default function DailyChallengeScreen() {
   const insets = useSafeAreaInsets();
   const { progress } = useProgress();
-  const { status: subscription } = useSubscription();
   const { state: gamification, isLoading: gamificationLoading, awardXp, addNutki, recordActivity, setDailyChallenge } = useGamification();
   const { getElapsedMinutes } = useSessionTimer("daily-challenge");
 
@@ -83,7 +82,7 @@ export default function DailyChallengeScreen() {
   // then and does nothing further.
   useEffect(() => {
     if (stored || gamificationLoading) return;
-    const pool = getUnlockedExercisePool(progress, subscription, gamification.lessonStars);
+    const pool = getUnlockedExercisePool(progress);
     const definition = pickDailyChallengeDefinition(pool);
     if (!definition) {
       setNoContentAvailable(true);
@@ -117,7 +116,7 @@ export default function DailyChallengeScreen() {
   }
 
   function handleNextChallenge() {
-    const pool = getUnlockedExercisePool(progress, subscription, gamification.lessonStars);
+    const pool = getUnlockedExercisePool(progress);
     const definition = pickFreshDefinition(pool, stored?.generated.id);
     const next: GeneratedExercise | null = definition ? generateExercise(definition, "pl") : null;
     if (next) {
@@ -153,7 +152,7 @@ export default function DailyChallengeScreen() {
 
       {alreadyCompletedToday ? (
         <View style={styles.centerFill}>
-          <Text style={{ fontSize: 48 }}>✅</Text>
+          <GlyphText style={{ fontSize: 48 }}>✅</GlyphText>
           <Text style={{ fontSize: theme.fontSize.heading, fontWeight: "800", color: theme.colors.ink, textAlign: "center", marginTop: 12 }}>
             Dzisiejsze wyzwanie zrobione
           </Text>
@@ -212,9 +211,9 @@ function Header({ onBack }: { onBack: () => void }) {
       <Pressable onPress={onBack} accessibilityRole="button" accessibilityLabel="Wstecz" hitSlop={12} style={styles.backButton}>
         <Text style={styles.backIcon}>‹</Text>
       </Pressable>
-      <Text style={styles.headerTitle} numberOfLines={1}>
+      <GlyphText style={styles.headerTitle} numberOfLines={1}>
         🎯 Misje dnia
-      </Text>
+      </GlyphText>
     </View>
   );
 }

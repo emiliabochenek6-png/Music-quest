@@ -7,6 +7,7 @@ import { t } from "@/lib/i18n/translate";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import type { Locale } from "@/types/locale";
 import type { GeneratedExercise } from "@/types/exercises";
+import { GlyphText } from "@/components/icons/GlyphText";
 
 interface LineOrSpaceChoiceExerciseProps {
   exercise: Extract<GeneratedExercise, { type: "line-or-space-choice" }>;
@@ -46,7 +47,7 @@ export function LineOrSpaceChoiceExercise({ exercise, selectedAnswer, onSelect, 
           borderColor: theme.colors.border,
         }}
       >
-        <Text style={{ fontSize: 20 }}>🔊</Text>
+        <GlyphText style={{ fontSize: 20 }}>🔊</GlyphText>
       </Pressable>
       <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center", gap: theme.spacing(2) }}>
         <OptionButton

@@ -1,8 +1,6 @@
 import { getWorldContent } from "@/data/lessons";
 import { WORLDS } from "@/data/worlds";
-import { resolveLessonNodeState } from "@/lib/progression/resolveLessonNodeState";
-import { resolveNodeState } from "@/lib/progression/resolveNodeState";
-import type { ProgressState, SubscriptionStatus } from "@/types/content";
+import type { ProgressState } from "@/types/content";
 import type { ExerciseDefinition, ExerciseType } from "@/types/exercises";
 
 /** Exercise types left out of the daily-challenge pool — not because
@@ -22,49 +20,34 @@ const EXCLUDED_TYPES: ReadonlySet<ExerciseType> = new Set<ExerciseType>([
   "rhythm-notation-tap",
 ]);
 
-/** A completed lesson's own exercises are entered into the pool this many
- * times each, vs. once for a lesson that's merely available/in-progress —
- * uniform random selection over a pool built this way then naturally
- * favors already-learned material more often than brand-new material,
- * without needing a separate weighted-random implementation or a second
- * pool type. This is the daily challenge's actual "review" lever: recently
- * finished content resurfaces more, not exclusively. */
-const REVIEW_WEIGHT = 3;
-
-/** Every ExerciseDefinition across every world/lesson the player has
- * already unlocked (available OR completed — a finished lesson's own
- * content still fairly counts as "known," and re-testing it is exactly
- * the kind of light review a daily challenge is for), short excluded
- * multi-step types. Completed lessons' exercises are repeated
- * REVIEW_WEIGHT times each (see that constant's own doc) so the daily
- * challenge leans toward reviewing what's already been learned rather
- * than picking uniformly across "just unlocked" and "long finished"
- * content alike. Reuses the SAME resolveNodeState/resolveLessonNodeState
- * this app's own map/levels screens already gate navigation with, so the
- * pool can never include content the player couldn't otherwise reach —
- * including resolveNodeState's own __DEV__ bypass (unlock-everything in
- * a dev build), which is fine here for the same reason it's fine on the
- * map itself. */
-export function getUnlockedExercisePool(
-  progress: ProgressState,
-  subscription: SubscriptionStatus,
-  lessonStars: Readonly<Record<string, 1 | 2 | 3>>
-): ExerciseDefinition[] {
+/** The daily challenge draws ONLY from lessons the player has finished —
+ * whether they did them in "Tryb zabawy" or in "Tryb nauki" makes no
+ * difference, both record into the same `completedLessonIds`. So the
+ * challenge is always a fair question about something already learned,
+ * never about a lesson not yet seen. A brand-new player with nothing
+ * finished yet gets the very first lesson of the first world, so the tab
+ * is never empty. Short excluded multi-step types (see EXCLUDED_TYPES).
+ *
+ * Lessons are looked up by id straight from the content, with no
+ * unlock-state gating: a finished lesson is by definition reachable. */
+export function getUnlockedExercisePool(progress: ProgressState): ExerciseDefinition[] {
   const pool: ExerciseDefinition[] = [];
+  const addLesson = (lesson: { exercises: readonly ExerciseDefinition[] }) => {
+    for (const exercise of lesson.exercises) {
+      if (!EXCLUDED_TYPES.has(exercise.type)) pool.push(exercise);
+    }
+  };
   for (const world of WORLDS) {
-    const worldState = resolveNodeState(world, progress, subscription, lessonStars);
-    if (worldState !== "available" && worldState !== "completed") continue;
     const content = getWorldContent(world.id);
     if (!content) continue;
     for (const lesson of content.lessons) {
-      const lessonState = resolveLessonNodeState(lesson, content.lessons, progress.completedLessonIds);
-      if (lessonState !== "available" && lessonState !== "completed") continue;
-      const weight = lessonState === "completed" ? REVIEW_WEIGHT : 1;
-      for (const exercise of lesson.exercises) {
-        if (EXCLUDED_TYPES.has(exercise.type)) continue;
-        for (let i = 0; i < weight; i++) pool.push(exercise);
-      }
+      if (progress.completedLessonIds.has(lesson.id)) addLesson(lesson);
     }
+  }
+  if (pool.length === 0) {
+    const firstContent = WORLDS.length > 0 ? getWorldContent(WORLDS[0].id) : undefined;
+    const firstLesson = firstContent?.lessons.find((lesson) => lesson.order === 1);
+    if (firstLesson) addLesson(firstLesson);
   }
   return pool;
 }

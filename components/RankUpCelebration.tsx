@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef } from "react";
 import { Animated, Easing, Modal, Pressable, Text, View, StyleSheet } from "react-native";
+import { Confetti } from "@/components/exercises/Confetti";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { AppIcon } from "@/components/icons/AppIcon";
 import { SoltekMascot } from "@/components/SoltekMascot";
@@ -9,6 +10,8 @@ interface RankUpCelebrationProps {
   visible: boolean;
   rank: number | null;
   rankName: string | null;
+  /** Nutki paid out with this level (shown as a reward chip). */
+  nutki?: number;
   onClose: () => void;
 }
 
@@ -28,25 +31,32 @@ const SPARKLE_COUNT = 10;
  * WorldCompleteModal already makes for its own celebration — this can
  * appear over ANY screen's own theme, so it doesn't try to blend with
  * whatever's underneath. */
-export function RankUpCelebration({ visible, rank, rankName, onClose }: RankUpCelebrationProps) {
+export function RankUpCelebration({ visible, rank, rankName, nutki = 0, onClose }: RankUpCelebrationProps) {
   return (
     <Modal visible={visible} transparent={false} animationType="fade" onRequestClose={onClose}>
       <View style={styles.root}>
+        {visible && <Confetti count={36} />}
         <Pressable style={StyleSheet.absoluteFill} onPress={onClose} accessibilityRole="button" accessibilityLabel="Zamknij" />
         <View style={styles.content} pointerEvents="box-none">
           <View style={styles.starStage}>
             {visible && <SparkleBurst count={SPARKLE_COUNT} />}
             <ShimmeringStar />
           </View>
-          <Text style={styles.title}>Kolejna ranga odblokowana!</Text>
+          <Text style={styles.title}>Nowy level!</Text>
           {rank !== null && rankName && (
             <Text style={styles.rankLine}>
-              Ranga {rank}: <Text style={styles.rankName}>{rankName}</Text>
+              Level {rank}: <Text style={styles.rankName}>{rankName}</Text>
             </Text>
+          )}
+          {nutki > 0 && (
+            <View style={styles.rewardChip}>
+              <AppIcon name="hud_nutki_waluta" size={22} />
+              <Text style={styles.rewardChipText}>+{nutki} nutek w nagrodę</Text>
+            </View>
           )}
           {rankName && (
             <View style={{ marginTop: 20, width: "100%", maxWidth: 320 }}>
-              <SoltekMascot expression="radosny" message={`Brawo! Awansowałeś do rangi „${rankName}”. Tak trzymaj!`} />
+              <SoltekMascot expression="radosny" message={`Brawo! Osiągnąłeś level ${rank} — „${rankName}”. Tak trzymaj!`} />
             </View>
           )}
           <View style={{ marginTop: 20, width: "100%", maxWidth: 260 }}>
@@ -150,14 +160,9 @@ function SparklePiece({ sparkle }: { sparkle: Sparkle }) {
   const scale = progress.interpolate({ inputRange: [0, 0.2, 1], outputRange: [0.3, 1, 0.5] });
 
   return (
-    <Animated.Text
-      style={[
-        styles.sparkle,
-        { fontSize: sparkle.size, opacity, transform: [{ translateX }, { translateY }, { scale }] },
-      ]}
-    >
-      ✨
-    </Animated.Text>
+    <Animated.View style={[styles.sparkle, { opacity, transform: [{ translateX }, { translateY }, { scale }] }]}>
+      <AppIcon name="ui_iskry" size={sparkle.size + 8} />
+    </Animated.View>
   );
 }
 
@@ -214,6 +219,19 @@ const styles = StyleSheet.create({
     color: theme.colors.muted,
     textAlign: "center",
   },
+  rewardChip: {
+    marginTop: 14,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 999,
+    backgroundColor: theme.colors.surface,
+    borderWidth: 2,
+    borderColor: "#facc15",
+  },
+  rewardChipText: { fontSize: 15, fontWeight: "800", color: theme.colors.ink },
   rankName: {
     color: "#facc15",
     fontWeight: "800",

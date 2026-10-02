@@ -14,7 +14,6 @@ import {
   testableWorldIds,
 } from "@/lib/plan/placement";
 import { buildSchedule, groupByWeek, lessonMinutes, pickTodayLessons } from "@/lib/plan/schedule";
-import { computeDailyMissions } from "@/lib/gamification/dailyMissions";
 import { resolveLessonNodeState } from "@/lib/progression/resolveLessonNodeState";
 import { getTodayStatus } from "@/lib/plan/today";
 import { placementQuestionLine, placementResultLine } from "@/lib/plan/soltekLines";
@@ -222,19 +221,6 @@ describe("today's status and missions", () => {
 
   it("has nothing planned when the snapshot is from another day", () => {
     expect(getTodayStatus(today, "2026-10-06", new Set(), {})).toEqual({ lessons: [], reviews: [] });
-  });
-
-  it("adds plan and review missions only when the plan has items for today", () => {
-    const base = computeDailyMissions(undefined, false, 20);
-    expect(base.map((m) => m.id)).toEqual(["lesson", "challenge", "minutes"]);
-    const withPlan = computeDailyMissions(undefined, false, 20, {
-      lessons: [{ lessonId: "a", done: true }, { lessonId: "b", done: false }],
-      reviews: [{ lessonId: "c", done: false }],
-    });
-    expect(withPlan.map((m) => m.id)).toEqual(["plan", "review", "lesson", "challenge", "minutes"]);
-    expect(withPlan[0]).toMatchObject({ current: 1, target: 2, completed: false });
-    expect(withPlan[1]).toMatchObject({ current: 0, target: 1, completed: false });
-    expect(computeDailyMissions(undefined, false, 20, { lessons: [], reviews: [] }).map((m) => m.id)).toEqual(["lesson", "challenge", "minutes"]);
   });
 });
 

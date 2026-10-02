@@ -5,6 +5,7 @@ import { AppIcon } from "@/components/icons/AppIcon";
 import type { IconName } from "@/components/icons/icons";
 import { RuleInfoModal } from "@/components/RuleInfoModal";
 import { useGamification } from "@/context/GamificationContext";
+import { usePlan } from "@/context/PlanContext";
 import { useSubscription } from "@/context/SubscriptionContext";
 import { getRankForXp } from "@/lib/gamification/rank";
 import { getRuleById } from "@/lib/gamification/rulesText";
@@ -21,6 +22,8 @@ import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 export function GamificationHeaderBar() {
   const { state, getHeartsInfo, isLoading } = useGamification();
   const { status: subscription } = useSubscription();
+  // "Tryb nauki" has no hearts — the pill is hidden while that view is showing.
+  const { plan } = usePlan();
   // Which "Zasady gry" entry the last-tapped HUD pill (serca/passa/
   // ranga) should open — null closes RuleInfoModal. The nutki pill
   // deliberately doesn't set this: it already has its own destination
@@ -33,16 +36,18 @@ export function GamificationHeaderBar() {
 
   return (
     <View style={styles.row}>
-      <Pressable onPress={() => setOpenRuleId("hearts")} accessibilityRole="button" accessibilityLabel="Zasady: Serca">
-        <Pill icon="hud_serce" label={subscription.isActive ? "∞" : String(heartsInfo.hearts)} />
-      </Pressable>
+      {plan.view !== "plan" && (
+        <Pressable onPress={() => setOpenRuleId("hearts")} accessibilityRole="button" accessibilityLabel="Zasady: Serca">
+          <Pill icon="hud_serce" label={subscription.isActive ? "∞" : String(heartsInfo.hearts)} />
+        </Pressable>
+      )}
       <Pressable onPress={() => setOpenRuleId("streak")} accessibilityRole="button" accessibilityLabel="Zasady: Passa">
         <Pill icon="hud_seria_ogien" label={String(state.streakDays)} />
       </Pressable>
       <Pressable onPress={() => router.push("/(main)/power-ups")} accessibilityRole="button" accessibilityLabel="Sklep Soltka">
         <Pill icon="hud_nutki_waluta" label={String(state.nutki)} />
       </Pressable>
-      <Pressable onPress={() => setOpenRuleId("rank")} accessibilityRole="button" accessibilityLabel="Zasady: XP i ranga">
+      <Pressable onPress={() => router.push("/(main)/levels")} accessibilityRole="button" accessibilityLabel="Twoje levele">
         <RankPill xp={state.xp} />
       </Pressable>
       <RuleInfoModal visible={openRuleId !== null} rule={openRuleId ? (getRuleById(openRuleId) ?? null) : null} onClose={() => setOpenRuleId(null)} />
@@ -77,12 +82,12 @@ function RankPill({ xp }: { xp: number }) {
     <View style={styles.rankPill}>
       <View style={styles.rankHeaderRow}>
         <AppIcon name="hud_ranga_gwiazda" size={16} />
-        <Text style={styles.pillLabel}>Ranga {rank.rank}</Text>
+        <Text style={styles.pillLabel}>Level {rank.rank}</Text>
       </View>
       <View style={styles.rankTrack}>
         <View style={[styles.rankFill, { width: `${fraction * 100}%` }]} />
       </View>
-      <Text style={styles.rankXpLabel}>{span === null ? "maks. ranga" : `${rank.xpIntoRank}/${span} XP`}</Text>
+      <Text style={styles.rankXpLabel}>{span === null ? "maks. level" : `${rank.xpIntoRank}/${span} XP`}</Text>
     </View>
   );
 }

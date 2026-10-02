@@ -1,5 +1,7 @@
-import { Pressable, Text, StyleSheet } from "react-native";
+import { Pressable, Text, View, StyleSheet } from "react-native";
 import type { GestureResponderEvent } from "react-native";
+import { AppIcon } from "@/components/icons/AppIcon";
+import { splitLeadingGlyph } from "@/components/icons/emojiIcons";
 import { useTheme } from "@/theme/ThemeProvider";
 
 interface ButtonProps {
@@ -20,6 +22,7 @@ export function Button({ label, onPress, variant = "primary", disabled = false }
   const theme = useTheme();
   const isPrimary = variant === "primary";
   const textColor = isPrimary ? "#FFFFFF" : theme.colors.accent;
+  const glyph = splitLeadingGlyph(label);
 
   return (
     <Pressable
@@ -40,13 +43,20 @@ export function Button({ label, onPress, variant = "primary", disabled = false }
         },
       ]}
     >
-      <Text
-        style={{ color: textColor, fontSize: theme.fontSize.body, fontWeight: "700" }}
-        allowFontScaling
-        maxFontSizeMultiplier={1.4}
-      >
-        {label}
-      </Text>
+      {glyph ? (
+        <View style={{ flexDirection: "row", alignItems: "center", gap: glyph.rest ? 8 : 0 }}>
+          <AppIcon name={glyph.icon} size={Math.round(theme.fontSize.body * 1.4)} />
+          {glyph.rest ? (
+            <Text style={{ color: textColor, fontSize: theme.fontSize.body, fontWeight: "700" }} allowFontScaling maxFontSizeMultiplier={1.4}>
+              {glyph.rest}
+            </Text>
+          ) : null}
+        </View>
+      ) : (
+        <Text style={{ color: textColor, fontSize: theme.fontSize.body, fontWeight: "700" }} allowFontScaling maxFontSizeMultiplier={1.4}>
+          {label}
+        </Text>
+      )}
     </Pressable>
   );
 }

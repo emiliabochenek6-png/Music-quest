@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Modal, Text, View, StyleSheet } from "react-native";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
+import { GlyphText } from "@/components/icons/GlyphText";
 
 interface OutOfHeartsModalProps {
   visible: boolean;
@@ -50,7 +51,7 @@ export function OutOfHeartsModal({ visible, msUntilNextHeart, onExit, onGoPremiu
     <Modal visible={visible} transparent={false} animationType="fade" onRequestClose={onExit}>
       <View style={styles.backdrop}>
         <View style={styles.card}>
-          <Text style={{ fontSize: 48 }}>💔</Text>
+          <GlyphText style={{ fontSize: 48 }}>💔</GlyphText>
           <Text style={{ fontSize: theme.fontSize.heading, fontWeight: "800", color: theme.colors.ink, textAlign: "center" }}>
             Zabrakło Ci serc
           </Text>

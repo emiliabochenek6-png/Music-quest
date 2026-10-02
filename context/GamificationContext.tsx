@@ -7,7 +7,8 @@ import type { ActivityDelta } from "@/lib/gamification/activity";
 import { deriveHearts, gainHearts as addHearts, loseHeart as deductHeart } from "@/lib/gamification/hearts";
 import type { HeartsInfo } from "@/lib/gamification/hearts";
 import { NUTKI_REWARDS, POWER_UP_COSTS } from "@/lib/gamification/powerups";
-import { getRankForXp, getRankName } from "@/lib/gamification/rank";
+import { getTitleUnlockedAt, getRankForXp, getRankName, isLevelUpWorthCelebrating } from "@/lib/gamification/rank";
+import { nutkiForLevelRange } from "@/lib/gamification/levelRewards";
 import { mergeGamificationState } from "@/lib/sync/mergeState";
 import { useCloudSync } from "@/lib/sync/useCloudSync";
 import { readJson, STORAGE_KEYS, writeJson } from "@/lib/storage";
@@ -23,6 +24,17 @@ import type { DailyChallengeState, GamificationState } from "@/types/gamificatio
 export interface PendingRankUp {
   rank: number;
   name: string;
+  /** Nutki paid out for every level crossed in this one award. */
+  nutki: number;
+}
+
+/** A small, non-blocking "Level N!" banner (see components/LevelUpToast.tsx)
+ * shown for every level that does NOT get the full-screen celebration. */
+export interface LevelUpToastInfo {
+  level: number;
+  nutki: number;
+  /** Set when this level also unlocks a new title. */
+  newTitle: string | null;
 }
 
 interface GamificationContextValue {
@@ -37,6 +49,8 @@ interface GamificationContextValue {
   getHeartsInfo: () => HeartsInfo;
   pendingRankUp: PendingRankUp | null;
   clearPendingRankUp: () => void;
+  levelUpToast: LevelUpToastInfo | null;
+  clearLevelUpToast: () => void;
   awardXp: (amount: number) => void;
   /** No-op for a premium subscriber — see SubscriptionContext's own
    * status.isActive, checked here so no call site needs to guard this
@@ -96,6 +110,7 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<GamificationState>(INITIAL_GAMIFICATION_STATE);
   const [isLoading, setIsLoading] = useState(true);
   const [pendingRankUp, setPendingRankUp] = useState<PendingRankUp | null>(null);
+  const [levelUpToast, setLevelUpToast] = useState<LevelUpToastInfo | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -139,14 +154,25 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
     // it's actually used today).
     const prevRank = getRankForXp(state.xp).rank;
     const nextRank = getRankForXp(state.xp + amount).rank;
+    // Every level reached pays nutki (see lib/gamification/levelRewards.ts),
+    // added in the SAME update as the XP so the two can never drift apart.
+    const levelNutki = nextRank > prevRank ? nutkiForLevelRange(prevRank, nextRank) : 0;
     setState((prev) => {
-      const next: GamificationState = { ...prev, xp: prev.xp + amount };
+      const next: GamificationState = { ...prev, xp: prev.xp + amount, nutki: prev.nutki + levelNutki };
       void writeJson(STORAGE_KEYS.gamification, next);
       return next;
     });
-    if (nextRank > prevRank) {
-      setPendingRankUp({ rank: nextRank, name: getRankName(nextRank) });
+    if (nextRank <= prevRank) return;
+    // Full-screen celebration only every 5th level (see isLevelUpWorthCelebrating) — the other levels get a small toast instead.
+    if (isLevelUpWorthCelebrating(prevRank, nextRank)) {
+      setPendingRankUp({ rank: nextRank, name: getRankName(nextRank), nutki: levelNutki });
+    } else {
+      setLevelUpToast({ level: nextRank, nutki: levelNutki, newTitle: getTitleUnlockedAt(nextRank) });
     }
+  }
+
+  function clearLevelUpToast() {
+    setLevelUpToast(null);
   }
 
   function clearPendingRankUp() {
@@ -265,6 +291,8 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
         getHeartsInfo,
         pendingRankUp,
         clearPendingRankUp,
+        levelUpToast,
+        clearLevelUpToast,
         awardXp,
         loseHeart,
         gainHearts,

@@ -2,6 +2,7 @@ import { Modal, Text, View, StyleSheet } from "react-native";
 import { Button } from "@/components/ui/Button";
 import { SoltekMascot } from "@/components/SoltekMascot";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
+import { GlyphText } from "@/components/icons/GlyphText";
 
 interface SoltekWelcomeModalProps {
   visible: boolean;
@@ -22,7 +23,7 @@ export function SoltekWelcomeModal({ visible, onDismiss }: SoltekWelcomeModalPro
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onDismiss}>
       <View style={styles.backdrop}>
         <View style={styles.card}>
-          <Text style={styles.title}>🎵 Poznaj Soltka!</Text>
+          <GlyphText style={styles.title}>🎵 Poznaj Soltka!</GlyphText>
           <SoltekMascot
             size="lg"
             expression="glowny"

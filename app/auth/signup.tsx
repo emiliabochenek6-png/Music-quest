@@ -6,6 +6,7 @@ import { DarkButton } from "@/components/exercises/DarkButton";
 import { useAuth } from "@/context/AuthContext";
 import { translateAuthError } from "@/lib/supabase/authErrors";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
+import { GlyphText } from "@/components/icons/GlyphText";
 
 type Status = { kind: "idle" } | { kind: "submitting" } | { kind: "error"; message: string } | { kind: "confirm-email" };
 
@@ -68,7 +69,7 @@ export default function SignupScreen() {
 
       {status.kind === "confirm-email" ? (
         <View style={styles.container}>
-          <Text style={{ fontSize: 48 }}>📬</Text>
+          <GlyphText style={{ fontSize: 48 }}>📬</GlyphText>
           <Text style={styles.title}>Sprawdź swój e-mail</Text>
           <Text style={styles.subtitle}>
             Wysłaliśmy link potwierdzający na {email}. Kliknij go, żeby dokończyć zakładanie konta — potem po prostu zaloguj się w

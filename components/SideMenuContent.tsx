@@ -1,6 +1,7 @@
 import { Pressable, Text, View, StyleSheet } from "react-native";
 import { GameRulesContent } from "@/components/GameRulesContent";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
+import { GlyphText } from "@/components/icons/GlyphText";
 
 /** The side menu's own content — just "Zasady gry" now that Kalendarz
  * aktywności is back on BottomTabBar (see that component's own doc) and
@@ -9,7 +10,7 @@ export function SideMenuContent({ onClose }: { onClose: () => void }) {
   return (
     <View style={{ flex: 1 }}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>📖 Zasady gry</Text>
+        <GlyphText style={styles.headerTitle}>📖 Zasady gry</GlyphText>
         <CloseButton onPress={onClose} />
       </View>
       <GameRulesContent />
@@ -20,7 +21,7 @@ export function SideMenuContent({ onClose }: { onClose: () => void }) {
 function CloseButton({ onPress }: { onPress: () => void }) {
   return (
     <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel="Zamknij" hitSlop={10}>
-      <Text style={styles.closeIcon}>✕</Text>
+      <GlyphText style={styles.closeIcon}>✕</GlyphText>
     </Pressable>
   );
 }

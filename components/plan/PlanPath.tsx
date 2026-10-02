@@ -15,11 +15,12 @@ import { useProgress } from "@/context/ProgressContext";
 import { getWorldContent } from "@/data/lessons";
 import { getWorldById } from "@/data/worlds";
 import { todayISODate } from "@/lib/gamification/activity";
-import { formatShortPolishDate, weekdayOf } from "@/lib/plan/dates";
+import { daysBetween, formatShortPolishDate, weekdayOf } from "@/lib/plan/dates";
 import { getLessonInfo } from "@/lib/plan/lessonIndex";
 import { buildPathView } from "@/lib/plan/pathView";
 import { getTodayStatus } from "@/lib/plan/today";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
+import { GlyphText } from "@/components/icons/GlyphText";
 
 const WEEKDAYS = ["niedziela", "poniedziałek", "wtorek", "środa", "czwartek", "piątek", "sobota"];
 const capitalize = (word: string) => word.charAt(0).toUpperCase() + word.slice(1);
@@ -30,7 +31,9 @@ const AMPLITUDE = 74;
 const NODE_SIZE = 66;
 const BOSS_NODE_SIZE = 88;
 const NODE_SPACING_Y = 112;
-const DAY_BANNER_HEIGHT = 46;
+/** Height of the day banner itself, and the slot it reserves: the slot is taller so the pulsing node's START bubble (which sits above its circle) never runs into the banner. */
+const DAY_BANNER_BOX = 38;
+const DAY_BANNER_HEIGHT = 74;
 const TOP_PADDING = 8;
 const DAYS_SHOWN_STEP = 5;
 
@@ -145,7 +148,7 @@ export function PlanPath() {
       <ScrollView style={styles.scroll} contentContainerStyle={contentStyle} showsVerticalScrollIndicator={false}>
         <View style={[styles.card, { width: TRAIL_WIDTH + 24 }]}>
           <SoltekMascot size="md" expression="zachecajacy" message="W trybie nauki znajdziesz „Twój plan”: własną ścieżkę lekcji, dzień po dniu, z powtórkami. Zrobimy najpierw krótki test, żeby ją dopasować?" />
-          <DarkButton label="📚 Zrób test z Soltkiem" onPress={() => router.push("/(main)/placement")} />
+          <DarkButton label="Zrób test z Soltkiem" onPress={() => router.push("/(main)/placement")} />
         </View>
       </ScrollView>
     );
@@ -156,9 +159,13 @@ export function PlanPath() {
   const lastDay = view.days.length > 0 ? view.days[view.days.length - 1].dateISO : null;
   const lessonNodes = trail.items.filter((item): item is TrailLesson => item.kind === "lesson");
   const banners = trail.items.filter((item): item is TrailBanner => item.kind === "banner");
+  // Two or more days since the last activity: a warm welcome back, no guilt.
+  const cameBackAfterBreak = view.doneCount > 0 && gamification.lastActiveDateISO !== null && daysBetween(gamification.lastActiveDateISO, todayISO) >= 2;
   const soltekLine = lessonsDoneToday
     ? { message: "Gratulacje! Dzisiejsze lekcje zrobione. Do jutra — albo zajrzyj do powtórek!", expression: "radosny" as const }
-    : view.doneCount === 0
+    : cameBackAfterBreak
+      ? { message: "Miło Cię znowu widzieć! Nic się nie stało — plan czeka dokładnie tam, gdzie skończyłeś. Zaczynamy od najbliższej lekcji.", expression: "zachecajacy" as const }
+      : view.doneCount === 0
       ? { message: "Zaczynamy Twój plan! Dotknij pulsującej lekcji, żeby wystartować.", expression: "zachecajacy" as const }
       : { message: `Idzie Ci świetnie! Zostało ${left} ${left === 1 ? "lekcja" : "lekcji"} do mety.`, expression: "radosny" as const };
 
@@ -175,7 +182,7 @@ export function PlanPath() {
               <StatChip icon="⏱" text={`${plan.minutesPerDay} min/dzień`} />
               <StatChip icon="🔥" text={`${gamification.streakDays} dni`} />
             </View>
-            {lastDay && <Text style={styles.muted}>🏁 Meta nowej nauki: ok. {formatShortPolishDate(lastDay)}</Text>}
+            {lastDay && <GlyphText style={styles.muted}>🏁 Meta nowej nauki: ok. {formatShortPolishDate(lastDay)}</GlyphText>}
           </View>
         </View>
         <SoltekMascot size="sm" expression={soltekLine.expression} message={soltekLine.message} />
@@ -186,14 +193,14 @@ export function PlanPath() {
 
       {lessonsDoneToday && (
         <View style={[styles.congrats, { width: TRAIL_WIDTH + 24 }]}>
-          <Text style={styles.congratsText}>🎉 Gratulacje! Wykonałeś wszystkie zaplanowane lekcje na dziś.</Text>
+          <GlyphText style={styles.congratsText}>🎉 Gratulacje! Wykonałeś wszystkie zaplanowane lekcje na dziś.</GlyphText>
         </View>
       )}
 
       {status.reviews.length > 0 && (
         <View style={[styles.reviewCard, { width: TRAIL_WIDTH + 24 }]}>
           <View style={styles.reviewHead}>
-            <Text style={{ fontSize: 22 }}>🔁</Text>
+            <GlyphText style={{ fontSize: 22 }}>🔁</GlyphText>
             <View style={{ flex: 1 }}>
               <Text style={styles.cardTitle}>Powtórki na dziś</Text>
               <Text style={styles.muted}>Krótkie przypomnienie, żeby wiedza została na długo</Text>
@@ -201,7 +208,7 @@ export function PlanPath() {
           </View>
           {status.reviews.map((item) => (
             <Pressable key={item.lessonId} disabled={item.done} onPress={() => openReview(item.lessonId)} accessibilityRole="button" style={styles.reviewRow}>
-              <Text style={{ fontSize: 16 }}>{item.done ? "✅" : "▶"}</Text>
+              <GlyphText style={{ fontSize: 16 }}>{item.done ? "✅" : "▶"}</GlyphText>
               <Text style={[styles.reviewLabel, item.done && styles.done]}>{describeLesson(item.lessonId)}</Text>
               {!item.done && <Text style={styles.reviewGo}>Powtórz</Text>}
             </Pressable>
@@ -211,7 +218,7 @@ export function PlanPath() {
 
       {view.days.length === 0 ? (
         <View style={[styles.card, { width: TRAIL_WIDTH + 24, alignItems: "center" }]}>
-          <Text style={{ fontSize: 44 }}>🏆</Text>
+          <GlyphText style={{ fontSize: 44 }}>🏆</GlyphText>
           <Text style={styles.cardTitle}>Cała ścieżka przerobiona!</Text>
           <Text style={[styles.muted, { textAlign: "center" }]}>Zostają powtórki w rosnących odstępach i wyzwanie dnia — wiedza ma zostać na długo.</Text>
         </View>
@@ -243,7 +250,7 @@ export function PlanPath() {
           ))}
 
           <View style={[styles.finish, { top: trail.height - 70 }]}>
-            <Text style={{ fontSize: 30 }}>🏁</Text>
+            <GlyphText style={{ fontSize: 30 }}>🏁</GlyphText>
           </View>
         </View>
       )}
@@ -294,13 +301,13 @@ function TrailNode({ node }: { node: TrailLesson }) {
         ]}
       >
         {node.done ? (
-          <Text style={styles.nodeCheck}>✓</Text>
+          <GlyphText style={styles.nodeCheck}>✓</GlyphText>
         ) : BossPortrait ? (
           <BossPortrait size={size - 14} />
         ) : node.iconName ? (
           <AppIcon name={node.iconName} size={34} />
         ) : null}
-        {node.isBoss && <Text style={styles.crown}>👑</Text>}
+        {node.isBoss && <GlyphText style={styles.crown}>👑</GlyphText>}
       </Pressable>
       {node.isCurrent && (
         <View style={styles.startBubble}>
@@ -348,9 +355,7 @@ function ProgressRing({ percent }: { percent: number }) {
 function StatChip({ icon, text }: { icon: string; text: string }) {
   return (
     <View style={styles.chip}>
-      <Text style={styles.chipText}>
-        {icon} {text}
-      </Text>
+      <GlyphText style={styles.chipText}>{`${icon} ${text}`}</GlyphText>
     </View>
   );
 }
@@ -406,7 +411,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: TRAIL_WIDTH / 2 - 92,
     width: 184,
-    height: DAY_BANNER_HEIGHT - 8,
+    height: DAY_BANNER_BOX,
     borderRadius: 18,
     backgroundColor: theme.colors.surface,
     borderWidth: theme.borderWidth,

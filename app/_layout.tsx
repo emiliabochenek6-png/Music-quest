@@ -4,6 +4,7 @@ import { setAudioModeAsync } from "expo-audio";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Platform } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { LevelUpToast } from "@/components/LevelUpToast";
 import { RankUpCelebration } from "@/components/RankUpCelebration";
 import { AuthProvider } from "@/context/AuthContext";
 import { GamificationProvider, useGamification } from "@/context/GamificationContext";
@@ -35,7 +36,7 @@ import { configurePurchases } from "@/lib/subscriptions/purchases";
  * (a lesson step, the daily challenge) is what actually called awardXp —
  * see RankUpCelebration's own doc. */
 function AppShell() {
-  const { pendingRankUp, clearPendingRankUp } = useGamification();
+  const { pendingRankUp, clearPendingRankUp, levelUpToast, clearLevelUpToast } = useGamification();
   return (
     <>
       <Stack screenOptions={{ headerShown: false }}>
@@ -43,10 +44,12 @@ function AppShell() {
         <Stack.Screen name="auth" />
         <Stack.Screen name="paywall" options={{ presentation: "modal" }} />
       </Stack>
+      <LevelUpToast toast={levelUpToast} onClose={clearLevelUpToast} />
       <RankUpCelebration
         visible={pendingRankUp !== null}
         rank={pendingRankUp?.rank ?? null}
         rankName={pendingRankUp?.name ?? null}
+        nutki={pendingRankUp?.nutki ?? 0}
         onClose={clearPendingRankUp}
       />
     </>

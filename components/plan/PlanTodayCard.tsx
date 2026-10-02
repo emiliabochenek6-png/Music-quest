@@ -1,6 +1,7 @@
 import { Pressable, Text, View, StyleSheet } from "react-native";
 import { router } from "expo-router";
 import { DarkButton } from "@/components/exercises/DarkButton";
+import { AppIcon } from "@/components/icons/AppIcon";
 import { useProgress } from "@/context/ProgressContext";
 import { usePlan } from "@/context/PlanContext";
 import { getWorldById } from "@/data/worlds";
@@ -10,6 +11,7 @@ import type { TranslationKey } from "@/lib/i18n/translate";
 import { getLessonInfo } from "@/lib/plan/lessonIndex";
 import { getTodayStatus } from "@/lib/plan/today";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
+import { GlyphText } from "@/components/icons/GlyphText";
 
 /** "Lekcja 3 · Wioska Nut" — a plan row's own label. */
 export function describeLesson(lessonId: string): string {
@@ -22,7 +24,7 @@ export function describeLesson(lessonId: string): string {
 export function openLesson(lessonId: string) {
   const info = getLessonInfo(lessonId);
   if (!info) return;
-  router.push({ pathname: "/(main)/lesson/[lessonId]", params: { lessonId, worldId: info.worldId } });
+  router.push({ pathname: "/(main)/lesson/[lessonId]", params: { lessonId, worldId: info.worldId, mode: "plan" } });
 }
 
 export function openReview(lessonId: string) {
@@ -44,7 +46,10 @@ export function PlanTodayCard({ showFullPlanLink = true }: { showFullPlanLink?: 
   if (plan.mode === "unset") {
     return (
       <View style={styles.card}>
-        <Text style={styles.title}>📚 Tryb nauki · Twój plan</Text>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+          <AppIcon name="tryb_nauki" size={26} />
+          <Text style={styles.title}>Tryb nauki · Twój plan</Text>
+        </View>
         <Text style={styles.muted}>Zrób test poziomujący albo zacznij od początku — wtedy codziennie dostaniesz zaplanowane lekcje i powtórki.</Text>
         <DarkButton label="Wybierz, jak zacząć" onPress={() => router.push("/(main)/placement")} />
       </View>
@@ -59,7 +64,7 @@ export function PlanTodayCard({ showFullPlanLink = true }: { showFullPlanLink?: 
   return (
     <View style={styles.card}>
       <View style={styles.titleRow}>
-        <Text style={styles.title}>🗓 Plan na dziś</Text>
+        <GlyphText style={styles.title}>🗓 Plan na dziś</GlyphText>
         {showFullPlanLink && (
           <Pressable onPress={() => router.push("/(main)/plan")} accessibilityRole="button" hitSlop={8}>
             <Text style={styles.link}>Cały plan ›</Text>
@@ -69,7 +74,7 @@ export function PlanTodayCard({ showFullPlanLink = true }: { showFullPlanLink?: 
       {nothingPlanned && <Text style={styles.muted}>Na dziś nic nie zaplanowano — dzisiaj tylko wyzwanie dnia. 🎉</Text>}
       {status.lessons.map((item) => (
         <View key={`l-${item.lessonId}`} style={styles.row}>
-          <Text style={{ fontSize: 18 }}>{item.done ? "✅" : "📘"}</Text>
+          <GlyphText style={{ fontSize: 18 }}>{item.done ? "✅" : "📘"}</GlyphText>
           <View style={{ flex: 1 }}>
             <Text style={[styles.rowLabel, item.done && styles.done]}>{describeLesson(item.lessonId)}</Text>
             <Text style={styles.muted}>nowa lekcja · ok. {getLessonInfo(item.lessonId)?.minutes ?? 8} min</Text>
@@ -79,7 +84,7 @@ export function PlanTodayCard({ showFullPlanLink = true }: { showFullPlanLink?: 
       ))}
       {status.reviews.map((item) => (
         <View key={`r-${item.lessonId}`} style={styles.row}>
-          <Text style={{ fontSize: 18 }}>{item.done ? "✅" : "🔁"}</Text>
+          <GlyphText style={{ fontSize: 18 }}>{item.done ? "✅" : "🔁"}</GlyphText>
           <View style={{ flex: 1 }}>
             <Text style={[styles.rowLabel, item.done && styles.done]}>{describeLesson(item.lessonId)}</Text>
             <Text style={styles.muted}>powtórka · 5 pytań, ok. 3 min</Text>

@@ -13,6 +13,7 @@ import { t } from "@/lib/i18n/translate";
 import type { TranslationKey } from "@/lib/i18n/translate";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import type { LessonDefinition } from "@/types/exercises";
+import { GlyphText } from "@/components/icons/GlyphText";
 
 // Same mapIconId -> icon table as components/map/WorldNode.tsx's own
 // WORLD_ICON — kept as a separate copy here rather than a shared import
@@ -38,7 +39,7 @@ const WORLD_ICON: Record<string, { icon: IconName }> = {
 
 function WorldCardIcon({ mapIconId }: { mapIconId: string }) {
   const entry = WORLD_ICON[mapIconId];
-  if (!entry) return <Text style={{ fontSize: 26 }}>🎵</Text>;
+  if (!entry) return <GlyphText style={{ fontSize: 26 }}>🎵</GlyphText>;
   return <AppIcon name={entry.icon} size={32} />;
 }
 
