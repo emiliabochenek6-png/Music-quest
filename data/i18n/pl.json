@@ -146,7 +146,7 @@
   "lesson.solfegePhraseMetronomeOnlyPrompt": "Sprawdź siebie: posłuchaj nagrania, a potem zaśpiewaj tę melodię razem z metronomem — nuta po nucie.",
   "lesson.solfegeMetronomeOnlyHint": "Najpierw posłuchaj nagrania (🔊). Potem naciśnij „Śpiewaj z metronomem” i śpiewaj razem ze stuknięciami — zielona nuta pokazuje, gdzie jesteś.",
   "lesson.solfegeMetronomeOnlyRunning": "Odliczanie… potem śpiewaj nutę zaznaczoną na zielono.",
-  "lesson.solfegeMetronomeOnlyDone": "Jak poszło? Jeśli udało się zaśpiewać równo z metronomem, naciśnij „Sprawdź”. Jeśli nie — spróbuj jeszcze raz.",
+  "lesson.solfegeMetronomeOnlyDone": "Jak poszło? Jeśli udało się zaśpiewać równo z metronomem, naciśnij „Dalej”. Jeśli nie — spróbuj jeszcze raz.",
   "lesson.solfegeMetronomeOnlyChecked": "Sprawdzone — dobra robota! 🎶",
   "lesson.solfegeMetronomeOnlyStart": "▶ Śpiewaj z metronomem",
   "lesson.solfegeMetronomeOnlyAgain": "▶ Jeszcze raz z metronomem",

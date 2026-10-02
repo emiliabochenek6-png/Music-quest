@@ -833,6 +833,12 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
         )}
       </Text>
 
+      {exercise.sourceLabel && (
+        <Text style={{ fontSize: theme.fontSize.body * 0.85, fontWeight: "700", color: theme.colors.primary, textAlign: "center" }}>
+          {exercise.sourceLabel}
+        </Text>
+      )}
+
       {intervalLabel && (
         <Text style={{ fontSize: theme.fontSize.body * 0.85, fontWeight: "700", color: theme.colors.primary, textAlign: "center" }}>
           {t("lesson.solfegeIntervalLabel", locale, { interval: intervalLabel })}

@@ -370,6 +370,19 @@ function LessonScreenBody() {
     }
   }
 
+  // "Sprawdź siebie" exercises (Zaczarowany Solfeż's metronome-only levels):
+  // nothing is recorded, so there is nothing to grade — the bottom button
+  // reads "Dalej" and moves straight on, with no right/wrong feedback. The
+  // exercise still counts as done (XP + correct tally); it just never
+  // touches hearts, streaks or the mistake count.
+  const isSelfCheckExercise = exercise.type === "solfege-phrase-singing" && exercise.metronomeOnly === true;
+  function handleSelfCheckContinue() {
+    stopAllScheduledAudio();
+    awardXp(XP_PER_CORRECT_ANSWER);
+    setCorrectCount((n) => n + 1);
+    advanceOrFinish();
+  }
+
   // TS can't carry the `!world || !content || !lesson` narrowing above
   // into these nested function declarations (a known control-flow-
   // analysis gap for hoisted `function` closures) — re-bind them here,
@@ -674,8 +687,8 @@ function LessonScreenBody() {
           </View>
         )}
         <DarkButton
-          label={checked ? t("lesson.continue", "pl") : t("lesson.checkAnswer", "pl")}
-          onPress={checked ? handleContinue : handleCheck}
+          label={checked || isSelfCheckExercise ? t("lesson.continue", "pl") : t("lesson.checkAnswer", "pl")}
+          onPress={isSelfCheckExercise ? handleSelfCheckContinue : checked ? handleContinue : handleCheck}
           disabled={!checked && !hasAnswerToCheck(answer)}
         />
       </View>

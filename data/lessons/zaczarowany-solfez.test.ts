@@ -54,6 +54,7 @@ describe("Zaczarowany Solfeż content", () => {
         const spec = definition.spec;
         if (spec.type !== "solfege-phrase-singing") throw new Error(`${definition.id}: unexpected type`);
         expect(spec.withMetronome).toBe(true);
+        expect(spec.sourceLabel).toBeTruthy();
         // Levels 12 and 14 are metronome-only (no recording); 13 records.
         expect(spec.metronomeOnly === true).toBe(lesson.id !== "zs-melodie-2-dluzsze-frazy");
         expect(spec.bpm).toBeDefined();

@@ -441,6 +441,10 @@ export type ExerciseSpec =
        * sings along on their own, and the exercise counts as done when the
        * phrase ends (a selfReported answer — nothing to grade). */
       metronomeOnly?: boolean;
+      /** Where the phrase comes from, shown under the prompt (e.g. a
+       * fragment of a named tune, or "własne ćwiczenie") — plain Polish
+       * display text authored with the content. */
+      sourceLabel?: string;
       /** Optional real recording of the phrase (a bundled audio file, same
        * convention as the rhythm types' own referenceAudioSource) — played
        * by 🔊 instead of the synthesized piano phrase when set (and not in
@@ -977,6 +981,7 @@ export type GeneratedExercise =
       gradeRhythm?: boolean;
       withMetronome?: boolean;
       metronomeOnly?: boolean;
+      sourceLabel?: string;
       referenceAudioSource?: number;
       bpm?: number;
       toleranceCents: number;
