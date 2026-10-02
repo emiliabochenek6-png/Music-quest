@@ -18,7 +18,7 @@ import type { WorldContent } from "@/types/exercises";
  * the lessons' own `order` is 1-4, ahead of the singing lessons' 5-11
  * (their ids are unchanged, so saved progress still applies).
  *
- * The last five lessons (zs-melodie-1..5, orders 12-16) are short real
+ * The last five lessons (zs-melodie-1..5, orders 12-16), followed by the world's boss lesson zs-boss-falszomir (order 17: a mix — four listening exercises, then six metronome melodies covering triads, intervals, the dominant seventh and inversions) are short real
  * melodies and solfèges in "nagranie, potem metronom" form
  * (solfege-phrase-singing with `withMetronome`): 🔊 plays the phrase with
  * its written rhythm (synthesized piano, or a real recording if a
@@ -964,6 +964,65 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
           type: "solfege-phrase-singing",
           difficulty: 5,
           spec: { type: "solfege-phrase-singing", notes: ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5", "C5", "B4", "A4", "G4", "F4", "E4", "D4", "C4", "C4"], rhythm: ["quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "whole"], meter: "4/4", isFragment: true, sourceLabel: "Własne dłuższe solfeże (nie fragment utworu): gama w górę i w dół", withMetronome: true, metronomeOnly: true, bpm: 60, toleranceCents: 65 },
+        },
+      ],
+    },
+    {
+      id: "zs-boss-falszomir",
+      order: 17,
+      difficulty: 6,
+      isBoss: true,
+      bossName: "Fałszomir",
+      pianoKeyboardReference: { range: ["C4", "C5"] },
+      introSlides: [
+        {
+          body: "Fałszomir wraca! Ten, który wszędzie szuka fałszywych nut, chce zagłuszyć całą Zaczarowaną Krainę. Pokonaj go: czeka na Ciebie mieszanka wszystkiego, czego się tu nauczyłeś — słuchanie sylab, interwały, trójdźwięki, przewroty, dominanta i melodie.",
+          bossPortrait: true,
+        },
+        {
+          body: "Najpierw cztery zadania na słuch: posłuchaj akordów i dźwięków, a potem wskaż sylaby (do, re, mi…). Potem sześć krótkich melodii: posłuchaj nagrania i zaśpiewaj razem z metronomem — to zadania „Sprawdź siebie”, mikrofon nie jest potrzebny. Możesz słuchać i próbować tyle razy, ile chcesz, a przełącznik „🐌 Wolno” zwalnia tempo.",
+        },
+      ],
+      exercises: [
+        { id: "zs-boss-e1", type: "solfege-syllable-choice", difficulty: 6, spec: { type: "solfege-syllable-choice", notePool: ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"] } },
+        { id: "zs-boss-e2", type: "solfege-syllable-choice", difficulty: 6, spec: { type: "solfege-syllable-choice", notePool: ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"], length: 2 } },
+        { id: "zs-boss-e3", type: "solfege-syllable-choice", difficulty: 6, spec: { type: "solfege-syllable-choice", notePool: ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"], length: 3 } },
+        { id: "zs-boss-e4", type: "solfege-syllable-choice", difficulty: 6, spec: { type: "solfege-syllable-choice", notePool: ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"], length: 3 } },
+        {
+          id: "zs-boss-e5",
+          type: "solfege-phrase-singing",
+          difficulty: 6,
+          spec: { type: "solfege-phrase-singing", notes: ["C4", "E4", "G4", "C5", "C5", "G4", "E4", "C4"], rhythm: ["quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter"], meter: "4/4", isFragment: true, sourceLabel: "Mieszanka: trójdźwięk C-dur w górę i w dół", withMetronome: true, metronomeOnly: true, bpm: 60, toleranceCents: 65 },
+        },
+        {
+          id: "zs-boss-e6",
+          type: "solfege-phrase-singing",
+          difficulty: 6,
+          spec: { type: "solfege-phrase-singing", notes: ["C4", "E4", "C4", "G4", "C4", "C5"], rhythm: ["quarter", "quarter", "quarter", "quarter", "half", "half"], meter: "4/4", isFragment: true, sourceLabel: "Mieszanka: interwały od „do” — tercja, kwinta, oktawa", withMetronome: true, metronomeOnly: true, bpm: 60, toleranceCents: 65 },
+        },
+        {
+          id: "zs-boss-e7",
+          type: "solfege-phrase-singing",
+          difficulty: 6,
+          spec: { type: "solfege-phrase-singing", notes: ["G4", "B4", "D5", "F5", "F5", "D5", "B4", "G4"], rhythm: ["quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter"], meter: "4/4", isFragment: true, sourceLabel: "Mieszanka: dominanta septymowa (sol–si–re–fa) w górę i w dół", withMetronome: true, metronomeOnly: true, bpm: 60, toleranceCents: 65 },
+        },
+        {
+          id: "zs-boss-e8",
+          type: "solfege-phrase-singing",
+          difficulty: 6,
+          spec: { type: "solfege-phrase-singing", notes: ["C4", "E4", "G4", "E4", "G4", "C5", "G4", "C5", "E5"], rhythm: ["quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter"], meter: "3/4", isFragment: true, sourceLabel: "Mieszanka: przewroty trójdźwięku C-dur", withMetronome: true, metronomeOnly: true, bpm: 66, toleranceCents: 65 },
+        },
+        {
+          id: "zs-boss-e9",
+          type: "solfege-phrase-singing",
+          difficulty: 6,
+          spec: { type: "solfege-phrase-singing", notes: ["C4", "E4", "G4", "C5", "B4", "C5", "B4", "A4", "G4", "E4", "F4", "D4", "C4"], rhythm: ["quarter", "quarter", "quarter", "quarter", "eighth", "eighth", "eighth", "eighth", "quarter", "quarter", "quarter", "quarter", "half"], meter: "4/4", isFragment: true, sourceLabel: "Mieszanka: własne solfeże z ósemkami", withMetronome: true, metronomeOnly: true, bpm: 66, toleranceCents: 65 },
+        },
+        {
+          id: "zs-boss-e10",
+          type: "solfege-phrase-singing",
+          difficulty: 6,
+          spec: { type: "solfege-phrase-singing", notes: ["C4", "E4", "G4", "C5", "G4", "A4", "F4", "D4", "E4", "D4", "C4"], rhythm: ["quarter", "quarter", "quarter", "half", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter"], meter: "3/4", isFragment: true, sourceLabel: "Finał: własne solfeże w metrum 3/4", withMetronome: true, metronomeOnly: true, bpm: 66, toleranceCents: 65 },
         },
       ],
     },
