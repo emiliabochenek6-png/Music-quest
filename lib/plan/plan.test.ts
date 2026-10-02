@@ -16,6 +16,7 @@ import { buildSchedule, groupByWeek, lessonMinutes, pickTodayLessons } from "@/l
 import { computeDailyMissions } from "@/lib/gamification/dailyMissions";
 import { resolveLessonNodeState } from "@/lib/progression/resolveLessonNodeState";
 import { getTodayStatus } from "@/lib/plan/today";
+import { placementQuestionLine, placementResultLine } from "@/lib/plan/soltekLines";
 import { afterReview, backfillReviewLog, dueReviewIds, newReviewEntry, pickReviewExercises, REVIEW_INTERVAL_DAYS } from "@/lib/plan/spacedRepetition";
 
 describe("plan dates", () => {
@@ -279,5 +280,23 @@ describe("end-to-end placement scenarios", () => {
       const lessons = getWorldContent(world.id)!.lessons;
       if (strongLevels[world.id] === 2) expect(strongPath.some((entry) => entry.lessonId === lessons[lessons.length - 1].id)).toBe(true);
     }
+  });
+});
+
+describe("Soltek's placement lines", () => {
+  it("opens, marks the halfway point and the end, and never says whether an answer was right", () => {
+    expect(placementQuestionLine(0, 24, "Wioska Nut").message).toContain("Wioska Nut");
+    expect(placementQuestionLine(12, 24, "Pasmo Interwałów").message).toContain("Połowa");
+    expect(placementQuestionLine(23, 24, "Zaczarowany Solfeż").message).toContain("koniec");
+    for (let answered = 1; answered < 24; answered++) {
+      const message = placementQuestionLine(answered, 24, "X").message.toLowerCase();
+      expect(message).not.toMatch(/dobrze|źle|brawo|poprawn|błęd/);
+    }
+  });
+
+  it("describes the result by how much of the path was skipped", () => {
+    expect(placementResultLine(0, 12, 208, 208).message).toContain("od podstaw");
+    expect(placementResultLine(10, 12, 62, 208).message).toContain("62 z 208");
+    expect(placementResultLine(2, 12, 150, 208).message).toContain("150 z 208");
   });
 });

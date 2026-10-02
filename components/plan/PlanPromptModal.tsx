@@ -1,5 +1,6 @@
 import { Modal, Pressable, Text, View, StyleSheet } from "react-native";
 import { DarkButton } from "@/components/exercises/DarkButton";
+import { SoltekMascot } from "@/components/SoltekMascot";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 
 interface PlanPromptModalProps {
@@ -15,17 +16,18 @@ interface PlanPromptModalProps {
  * on. */
 export function PlanPromptModal({ visible, onTakeTest, onStartFromBeginning }: PlanPromptModalProps) {
   return (
-    <Modal visible={visible} transparent animationType="fade" onRequestClose={() => {}}>
+    <Modal visible={visible} transparent animationType="none" onRequestClose={() => {}}>
       <View style={styles.backdrop}>
         <View style={styles.card}>
-          <Text style={styles.emoji}>🧭</Text>
           <Text style={styles.title}>Jak chcesz zacząć?</Text>
-          <Text style={styles.body}>
-            Możesz zrobić krótki test poziomujący (ok. 8–10 minut). Ułożymy z niego Twoją własną ścieżkę: pominiesz to, co już umiesz, i dostaniesz plan
-            na ok. 3 miesiące z codziennymi misjami i powtórkami.
-          </Text>
+          <SoltekMascot
+            size="lg"
+            expression="glowny"
+            frameless
+            message="Zrobię z Tobą krótki test (ok. 8–10 minut) i ułożę Ci własną ścieżkę — pominiesz to, co już umiesz, i dostaniesz plan na ok. 3 miesiące. Albo zaczniemy od samego początku. Jak wolisz?"
+          />
           <View style={{ gap: theme.spacing(1.25), width: "100%" }}>
-            <DarkButton label="🧭 Zrób test poziomujący" onPress={onTakeTest} />
+            <DarkButton label="🦊 Zrób test z Soltkiem" onPress={onTakeTest} />
             <DarkButton label="▶ Chcę zacząć od początku" onPress={onStartFromBeginning} variant="secondary" />
           </View>
           <Text style={styles.footnote}>Zawsze możesz zmienić decyzję w Ustawieniach → Twój plan.</Text>

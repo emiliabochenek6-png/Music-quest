@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Image, Pressable, Text, View, StyleSheet, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { BottomTabBar } from "@/components/BottomTabBar";
 import { GamificationHeaderBar } from "@/components/GamificationHeaderBar";
 import { AppIcon } from "@/components/icons/AppIcon";
@@ -61,7 +61,23 @@ export default function MapScreen() {
   const showSoltekWelcome = !isProfileLoading && !profile.hasSeenSoltekGreeting;
   // First-run choice of study path (test-based or from the beginning) —
   // only after the Soltek greeting, so the two never stack.
-  const showPlanPrompt = !isProfileLoading && !isPlanLoading && profile.hasSeenSoltekGreeting && plan.mode === "unset";
+  // Only while the map itself is the focused screen: a Modal is drawn above
+  // EVERYTHING, so without this it stayed on top of the placement screen
+  // pushed from its own "Zrób test" button. Coming back to the map without
+  // having chosen shows it again.
+  // `planPromptHidden` is set the moment "Zrób test" is pressed (don't wait
+  // for the navigation's own blur event) and cleared whenever the map is
+  // focused again, so backing out of the test without choosing re-asks.
+  const [mapFocused, setMapFocused] = useState(true);
+  const [planPromptHidden, setPlanPromptHidden] = useState(false);
+  useFocusEffect(
+    useCallback(() => {
+      setMapFocused(true);
+      setPlanPromptHidden(false);
+      return () => setMapFocused(false);
+    }, [])
+  );
+  const showPlanPrompt = mapFocused && !planPromptHidden && !isProfileLoading && !isPlanLoading && profile.hasSeenSoltekGreeting && plan.mode === "unset";
 
   function handleSelectWorld(world: WorldDefinition) {
     const state = resolveNodeState(world, progress, status, gamification.lessonStars);
@@ -105,7 +121,17 @@ export default function MapScreen() {
       </SideMenu>
 
       <SoltekWelcomeModal visible={showSoltekWelcome} onDismiss={() => setHasSeenSoltekGreeting(true)} />
-      <PlanPromptModal visible={showPlanPrompt} onTakeTest={() => router.push("/(main)/placement")} onStartFromBeginning={() => chooseOriginal()} />
+{/* Mounted only while it should be showing — a closing RN-web Modal can linger in the DOM until its fade animation ends (and never ends if the page is hidden), which kept it on top of the placement screen. */}
+      {showPlanPrompt && (
+        <PlanPromptModal
+          visible
+          onTakeTest={() => {
+            setPlanPromptHidden(true);
+            router.push("/(main)/placement");
+          }}
+          onStartFromBeginning={() => chooseOriginal()}
+        />
+      )}
     </View>
   );
 }

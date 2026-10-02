@@ -3,12 +3,14 @@ import { ScrollView, Text, View, StyleSheet } from "react-native";
 import { router } from "expo-router";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { ExerciseRenderer, hasAnswerToCheck } from "@/components/exercises/ExerciseRenderer";
+import { SoltekMascot } from "@/components/SoltekMascot";
 import { ScreenHeader } from "@/components/ui/ScreenHeader";
 import { usePlan } from "@/context/PlanContext";
 import { getWorldContent } from "@/data/lessons";
 import { WORLDS, getWorldById } from "@/data/worlds";
 import { t } from "@/lib/i18n/translate";
 import type { TranslationKey } from "@/lib/i18n/translate";
+import { placementQuestionLine, placementResultLine } from "@/lib/plan/soltekLines";
 import { LEVEL_HINT, LEVEL_LABEL, MIN_PLAN_WEEKS, PACE_OPTIONS, STUDY_DAYS_PER_WEEK } from "@/lib/plan/labels";
 import { buildPath } from "@/lib/plan/personalPath";
 import {
@@ -93,19 +95,20 @@ export default function PlacementScreen() {
       <View style={styles.root}>
         <ScreenHeader title="Test poziomujący" onBack={() => (router.canGoBack() ? router.back() : router.replace("/(main)/map"))} />
         <ScrollView contentContainerStyle={styles.content}>
-          <Text style={styles.emoji}>🧭</Text>
-          <Text style={styles.heading}>Sprawdźmy, od czego zacząć</Text>
-          <Text style={styles.body}>
-            Zadamy Ci po 1–2 pytania z każdej krainy (razem ok. {totalEstimate - 2}–{totalEstimate}, ok. 8–10 minut). Jeśli odpowiesz dobrze, następne będzie
-            trudniejsze; jeśli nie — łatwiejsze.
-          </Text>
+          <SoltekMascot
+            size="lg"
+            expression="glowny"
+            frameless
+            message={`Cześć, tu Soltek! Zadam Ci po 1–2 pytania z każdej krainy (razem ok. ${totalEstimate - 2}–${totalEstimate}, ok. 8–10 minut). Jeśli pójdzie dobrze, następne będzie trudniejsze; jeśli nie — łatwiejsze.`}
+          />
+          <Text style={styles.heading}>Test poziomujący z Soltkiem</Text>
           <View style={styles.bullets}>
             <Bullet text="Nic nie tracisz: bez serc, punktów i ocen." />
             <Bullet text="Nie wiesz? Naciśnij „Nie wiem” — zamiast zgadywać." />
             <Bullet text="Z wyniku ułożymy ścieżkę: pominiesz to, co umiesz, i zaplanujemy resztę na ok. 3 miesiące." />
           </View>
           <View style={{ gap: theme.spacing(1.25), width: "100%" }}>
-            <DarkButton label="Zaczynamy test" onPress={begin} />
+            <DarkButton label="🦊 Zaczynamy test z Soltkiem" onPress={begin} />
             <DarkButton label="▶ Zacznij od początku (bez testu)" onPress={startFromBeginning} variant="secondary" />
           </View>
         </ScrollView>
@@ -124,6 +127,10 @@ export default function PlacementScreen() {
             <View style={[styles.barFill, { width: `${Math.min(100, (state.answered / totalEstimate) * 100)}%` }]} />
           </View>
           {world && <Text style={styles.worldTag}>{t(world.nameKey as TranslationKey)}</Text>}
+          {world && (() => {
+            const line = placementQuestionLine(state.answered, totalEstimate, t(world.nameKey as TranslationKey));
+            return <SoltekMascot size="sm" expression={line.expression} message={line.message} />;
+          })()}
         </View>
         <ScrollView contentContainerStyle={styles.questionArea} keyboardShouldPersistTaps="handled">
           <ExerciseRenderer key={exercise.id} exercise={exercise} answer={answer} onAnswerChange={setAnswer} checked={false} isCorrect={null} locale="pl" />
@@ -147,10 +154,18 @@ export default function PlacementScreen() {
   const totalWeeks = Math.max(weeks, MIN_PLAN_WEEKS);
   const personalHours = Math.round(minutesOf(personal) / 60);
   const originalHours = Math.round(minutesOf(original) / 60);
+  const masteredWorlds = worldIds.filter((id) => levels[id] === 2).length;
+  const resultLine = placementResultLine(masteredWorlds, worldIds.length, personal.length, original.length);
   return (
     <View style={styles.root}>
       <ScreenHeader title="Twój wynik" onBack={() => setStage("intro")} />
       <ScrollView contentContainerStyle={styles.content}>
+        <SoltekMascot
+          size="lg"
+          expression={resultLine.expression}
+          frameless
+          message={resultLine.message}
+        />
         <Text style={styles.heading}>Twoja ścieżka jest gotowa</Text>
         <View style={styles.card}>
           {WORLDS.map((world) => {
