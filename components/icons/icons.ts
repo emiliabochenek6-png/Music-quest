@@ -197,6 +197,27 @@ export const ICONS = {
 <path d="M56 49 Q56.54 51.46 59 52 Q56.54 52.54 56 55 Q55.46 52.54 53 52 Q55.46 51.46 56 49 Z" fill="#FFF4E6"/>
 </svg>`,
 
+  kraina_krolestwo_instrumentow: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+<path d="M6 57 L58 30" fill="none" stroke="#4A2C1D" stroke-width="5.5" stroke-linecap="round"/>
+<path d="M6 57 L58 30" fill="none" stroke="#F3D9A8" stroke-width="2.2" stroke-linecap="round"/>
+<path d="M6 57 L13 53.4" fill="none" stroke="#4A2C1D" stroke-width="5.5" stroke-linecap="round"/>
+<path d="M6 57 L13 53.4" fill="none" stroke="#8B5A2B" stroke-width="2.4" stroke-linecap="round"/>
+<path d="M32 21 C24 21 20.5 25 21.5 30 C22 33 24.5 34 24.5 36 C24.5 38 20.5 40 20.5 46 C20.5 54 25.5 58 32 58 C38.5 58 43.5 54 43.5 46 C43.5 40 39.5 38 39.5 36 C39.5 34 42 33 42.5 30 C43.5 25 40 21 32 21 Z" fill="#D98A45" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M32 39 C38 39 43 39.5 43.5 46 C43.5 54 38.5 58 32 58 C25.5 58 20.5 54 20.5 46 C20.5 39.5 26 39 32 39 Z" fill="#B8692E" opacity="0.55"/>
+<rect x="30" y="12" width="4" height="22" rx="1.5" fill="#5B3A29" stroke="#4A2C1D" stroke-width="2.2" stroke-linejoin="round"/>
+<path d="M27 42.5 C26 45 28 46.5 27 50" fill="none" stroke="#4A2C1D" stroke-width="2.2" stroke-linecap="round"/>
+<path d="M37 42.5 C38 45 36 46.5 37 50" fill="none" stroke="#4A2C1D" stroke-width="2.2" stroke-linecap="round"/>
+<rect x="27.5" y="47" width="9" height="2.4" rx="1" fill="#FFF4E6" stroke="#4A2C1D" stroke-width="1.4"/>
+<path d="M30 52 H34 L33.2 56.6 H30.8 Z" fill="#4A2C1D"/>
+<path d="M23.5 11.5 L22 2.5 L27.5 7 L32 1.5 L36.5 7 L42 2.5 L40.5 11.5 Z" fill="#FFC94A" stroke="#4A2C1D" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="22" cy="3" r="1.6" fill="#E8674F" stroke="#4A2C1D" stroke-width="1.2"/>
+<circle cx="32" cy="2.2" r="1.6" fill="#E8674F" stroke="#4A2C1D" stroke-width="1.2"/>
+<circle cx="42" cy="3" r="1.6" fill="#E8674F" stroke="#4A2C1D" stroke-width="1.2"/>
+<path d="M26.5 23.5 C23.5 25 22.8 28 23.5 30" fill="none" stroke="#FFFFFF" stroke-opacity="0.6" stroke-width="2.4" stroke-linecap="round"/>
+<path d="M54 12 Q54.9 16.1 59 17 Q54.9 17.9 54 22 Q53.1 17.9 49 17 Q53.1 16.1 54 12 Z" fill="#FFC94A" stroke="#4A2C1D" stroke-width="1.8" stroke-linejoin="round"/>
+<path d="M10 20 Q10.6 22.7 13.3 23.3 Q10.6 23.9 10 26.6 Q9.4 23.9 6.7 23.3 Q9.4 22.7 10 20 Z" fill="#FFC94A"/>
+</svg>`,
+
   nav_kalendarz: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
 <rect x="8" y="13" width="48" height="44" rx="9" fill="#FFF4E6" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
 <path d="M8 22 A9 9 0 0 1 17 13 H47 A9 9 0 0 1 56 22 V27 H8 Z" fill="#E8674F"/>
