@@ -28,7 +28,7 @@ function Segment({ icon, label, active, onPress }: { icon: IconName; label: stri
       accessibilityState={{ selected: active }}
       style={[styles.segment, active && styles.segmentActive]}
     >
-      <AppIcon name={icon} size={22} />
+      <AppIcon name={icon} size={20} />
       <Text numberOfLines={1} style={[styles.segmentText, active && styles.segmentTextActive]}>
         {label}
       </Text>
@@ -38,6 +38,8 @@ function Segment({ icon, label, active, onPress }: { icon: IconName; label: stri
 
 const styles = StyleSheet.create({
   track: {
+    width: "100%",
+    maxWidth: 360,
     flexDirection: "row",
     backgroundColor: theme.colors.surface,
     borderWidth: theme.borderWidth,
@@ -54,14 +56,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 4,
-    paddingHorizontal: 6,
+    paddingHorizontal: 4,
   },
   segmentActive: {
     backgroundColor: theme.colors.primary,
   },
   segmentText: {
     flexShrink: 1,
-    fontSize: 12.5,
+    fontSize: 12,
     fontWeight: "800",
     color: theme.colors.muted,
   },
