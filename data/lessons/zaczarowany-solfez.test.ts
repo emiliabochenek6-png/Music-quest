@@ -1,6 +1,8 @@
 import { describe, expect, it } from "@jest/globals";
 import { ZACZAROWANY_SOLFEZ_CONTENT } from "@/data/lessons/zaczarowany-solfez";
 import { generateExercise, getExerciseSignature } from "@/lib/questions/generate";
+import { meterQuarterNoteBeats } from "@/lib/rhythm/meter";
+import { NOTE_VALUE_BEATS } from "@/lib/rhythm/valueBeats";
 
 describe("Zaczarowany Solfeż content", () => {
   it("numbers lessons 1..N with no gaps, so strictly-sequential unlocking never skips one", () => {
@@ -40,6 +42,30 @@ describe("Zaczarowany Solfeż content", () => {
           const octave = Number(note.slice(-1));
           expect(octave >= 3 && octave <= 6).toBe(true);
         }
+      }
+    }
+  });
+
+  it("short-melody levels (withMetronome) fill whole measures, no note crossing a barline", () => {
+    const melodyLessons = ZACZAROWANY_SOLFEZ_CONTENT.lessons.filter((lesson) => lesson.id.startsWith("zs-melodie-"));
+    expect(melodyLessons).toHaveLength(3);
+    for (const lesson of melodyLessons) {
+      for (const definition of lesson.exercises) {
+        const spec = definition.spec;
+        if (spec.type !== "solfege-phrase-singing") throw new Error(`${definition.id}: unexpected type`);
+        expect(spec.withMetronome).toBe(true);
+        expect(spec.bpm).toBeDefined();
+        expect(spec.bpm as number).toBeLessThanOrEqual(72);
+        expect(spec.rhythm).toHaveLength(spec.notes.length);
+        const measureBeats = meterQuarterNoteBeats(spec.meter ?? "4/4");
+        let cursor = 0;
+        for (const value of spec.rhythm as (keyof typeof NOTE_VALUE_BEATS)[]) {
+          const beats = NOTE_VALUE_BEATS[value];
+          // A note must end inside the measure it starts in.
+          expect(Math.floor(cursor / measureBeats)).toBe(Math.floor((cursor + beats - 1e-9) / measureBeats));
+          cursor += beats;
+        }
+        expect(cursor % measureBeats).toBe(0);
       }
     }
   });

@@ -18,6 +18,17 @@ import type { WorldContent } from "@/types/exercises";
  * the lessons' own `order` is 1-4, ahead of the singing lessons' 5-11
  * (their ids are unchanged, so saved progress still applies).
  *
+ * The last three lessons (zs-melodie-1..3, orders 12-14) are short real
+ * melodies and solfèges in "nagranie, potem metronom" form
+ * (solfege-phrase-singing with `withMetronome`): 🔊 plays the phrase with
+ * its written rhythm (synthesized piano, or a real recording if a
+ * `referenceAudioSource` is ever supplied), then "Nagraj" plays only a
+ * count-in + metronome click while the player sings. Pitch-only grading,
+ * C major, quarter/half/whole/eighth values only (no dotted notes — those
+ * belong to Gaj Grupowania/Szczyt Dyktand), tempo <= 72 bpm. The tunes
+ * (Panie Janie, Hot cross buns, Mary had a little lamb, Au clair de la
+ * lune, Oda do radości) are traditional/public-domain, set in C major.
+ *
  * The singing lessons use two exercise types, both graded the same underlying way (record via
  * expo-audio's useAudioRecorder, analyze with lib/audio/pitchDetection.ts's
  * autocorrelation estimator, compare octave-folded — see lib/music/
@@ -665,6 +676,177 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
           type: "solfege-phrase-singing",
           difficulty: 5,
           spec: { type: "solfege-phrase-singing", notes: ["F5", "D5", "B4", "G4"], isFragment: true, toleranceCents: 45 },
+        },
+      ],
+    },
+    {
+      id: "zs-melodie-1-kroki",
+      order: 12,
+      difficulty: 3,
+      pianoKeyboardReference: { range: ["C4", "C5"] },
+      introSlides: [
+        {
+          body: "Czas na prawdziwe melodie! W tym poziomie zaśpiewasz krótkie fragmenty znanych piosenek, zapisane w C-dur — używasz tylko dźwięków, które już znasz: do, re, mi, fa, sol.",
+        },
+        {
+          body: "Każde zadanie ma dwa kroki. Najpierw posłuchaj nagrania — naciśnij 🔊 (tyle razy, ile chcesz) i śledź nuty na pięciolinii. Potem naciśnij „Nagraj”: usłyszysz tylko metronom, czyli równe stuknięcia. Dwa pierwsze to odliczanie, a przy trzecim zaczynasz śpiewać razem z nim.",
+        },
+        {
+          body: "Za szybko? Włącz przełącznik „🐌 Wolno” — i nagranie, i metronom zwolnią. Nie chcesz używać mikrofonu? Wyłącz go przełącznikiem: wtedy po prostu zaśpiewasz na głos i naciśniesz „Zaśpiewane”. Kropka metronomu pozwala też najpierw sprawdzić samo tempo.",
+        },
+      ],
+      exercises: [
+        {
+          id: "zs-m1-e1",
+          type: "solfege-phrase-singing",
+          difficulty: 3,
+          spec: { type: "solfege-phrase-singing", notes: ["C4", "D4", "E4", "C4", "C4", "D4", "E4", "C4"], rhythm: ["quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter"], meter: "4/4", isFragment: true, withMetronome: true, bpm: 60, toleranceCents: 70 },
+        },
+        {
+          id: "zs-m1-e2",
+          type: "solfege-phrase-singing",
+          difficulty: 3,
+          spec: { type: "solfege-phrase-singing", notes: ["E4", "F4", "G4", "E4", "F4", "G4"], rhythm: ["quarter", "quarter", "half", "quarter", "quarter", "half"], meter: "4/4", isFragment: true, withMetronome: true, bpm: 60, toleranceCents: 70 },
+        },
+        {
+          id: "zs-m1-e3",
+          type: "solfege-phrase-singing",
+          difficulty: 3,
+          spec: { type: "solfege-phrase-singing", notes: ["E4", "D4", "C4", "E4", "D4", "C4"], rhythm: ["quarter", "quarter", "half", "quarter", "quarter", "half"], meter: "4/4", isFragment: true, withMetronome: true, bpm: 60, toleranceCents: 70 },
+        },
+        {
+          id: "zs-m1-e4",
+          type: "solfege-phrase-singing",
+          difficulty: 3,
+          spec: { type: "solfege-phrase-singing", notes: ["C4", "C4", "C4", "C4", "D4", "D4", "D4", "D4", "E4", "D4", "C4"], rhythm: ["eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "quarter", "quarter", "half"], meter: "4/4", isFragment: true, withMetronome: true, bpm: 60, toleranceCents: 70 },
+        },
+        {
+          id: "zs-m1-e5",
+          type: "solfege-phrase-singing",
+          difficulty: 3,
+          spec: { type: "solfege-phrase-singing", notes: ["E4", "D4", "C4", "D4", "E4", "E4", "E4"], rhythm: ["quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "half"], meter: "4/4", isFragment: true, withMetronome: true, bpm: 60, toleranceCents: 70 },
+        },
+        {
+          id: "zs-m1-e6",
+          type: "solfege-phrase-singing",
+          difficulty: 3,
+          spec: { type: "solfege-phrase-singing", notes: ["C4", "C4", "C4", "D4", "E4", "D4"], rhythm: ["quarter", "quarter", "quarter", "quarter", "half", "half"], meter: "4/4", isFragment: true, withMetronome: true, bpm: 60, toleranceCents: 70 },
+        },
+      ],
+    },
+    {
+      id: "zs-melodie-2-dluzsze-frazy",
+      order: 13,
+      difficulty: 3,
+      pianoKeyboardReference: { range: ["C4", "C5"] },
+      introSlides: [
+        {
+          body: "Kolejne melodie są odrobinę dłuższe, a niektóre mają skoki o jeden dźwięk w górę lub w dół — za to wszystko nadal mieści się w C-dur. Ostatnie dwa zadania to krótkie solfeże ułożone specjalnie do ćwiczeń.",
+        },
+        {
+          body: "Każde zadanie ma dwa kroki. Najpierw posłuchaj nagrania — naciśnij 🔊 (tyle razy, ile chcesz) i śledź nuty na pięciolinii. Potem naciśnij „Nagraj”: usłyszysz tylko metronom, czyli równe stuknięcia. Dwa pierwsze to odliczanie, a przy trzecim zaczynasz śpiewać razem z nim.",
+        },
+        {
+          body: "Wskazówka: zanim zaśpiewasz, spróbuj „zanucić w myślach” całą frazę razem z nagraniem. Zauważ, gdzie melodia idzie w górę, a gdzie w dół — nuty na pięciolinii pokazują to dokładnie tak jak ona brzmi.",
+        },
+        {
+          body: "Za szybko? Włącz przełącznik „🐌 Wolno” — i nagranie, i metronom zwolnią. Nie chcesz używać mikrofonu? Wyłącz go przełącznikiem: wtedy po prostu zaśpiewasz na głos i naciśniesz „Zaśpiewane”. Kropka metronomu pozwala też najpierw sprawdzić samo tempo.",
+        },
+      ],
+      exercises: [
+        {
+          id: "zs-m2-e1",
+          type: "solfege-phrase-singing",
+          difficulty: 3,
+          spec: { type: "solfege-phrase-singing", notes: ["C4", "E4", "D4", "D4", "C4"], rhythm: ["quarter", "quarter", "quarter", "quarter", "whole"], meter: "4/4", isFragment: true, withMetronome: true, bpm: 60, toleranceCents: 70 },
+        },
+        {
+          id: "zs-m2-e2",
+          type: "solfege-phrase-singing",
+          difficulty: 3,
+          spec: { type: "solfege-phrase-singing", notes: ["E4", "E4", "F4", "G4", "G4", "F4", "E4", "D4"], rhythm: ["quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter"], meter: "4/4", isFragment: true, withMetronome: true, bpm: 66, toleranceCents: 70 },
+        },
+        {
+          id: "zs-m2-e3",
+          type: "solfege-phrase-singing",
+          difficulty: 4,
+          spec: { type: "solfege-phrase-singing", notes: ["E4", "E4", "F4", "G4", "G4", "F4", "E4", "D4", "C4", "C4", "D4", "E4"], rhythm: ["quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter"], meter: "4/4", isFragment: true, withMetronome: true, bpm: 66, toleranceCents: 70 },
+        },
+        {
+          id: "zs-m2-e4",
+          type: "solfege-phrase-singing",
+          difficulty: 3,
+          spec: { type: "solfege-phrase-singing", notes: ["D4", "D4", "D4", "E4", "G4", "G4"], rhythm: ["quarter", "quarter", "half", "quarter", "quarter", "half"], meter: "4/4", isFragment: true, withMetronome: true, bpm: 60, toleranceCents: 70 },
+        },
+        {
+          id: "zs-m2-e5",
+          type: "solfege-phrase-singing",
+          difficulty: 4,
+          spec: { type: "solfege-phrase-singing", notes: ["G4", "E4", "G4", "E4", "C4", "D4", "E4"], rhythm: ["quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "half"], meter: "4/4", isFragment: true, withMetronome: true, bpm: 60, toleranceCents: 70 },
+        },
+        {
+          id: "zs-m2-e6",
+          type: "solfege-phrase-singing",
+          difficulty: 4,
+          spec: { type: "solfege-phrase-singing", notes: ["C4", "E4", "G4", "E4"], rhythm: ["half", "quarter", "half", "quarter"], meter: "3/4", isFragment: true, withMetronome: true, bpm: 66, toleranceCents: 70 },
+        },
+      ],
+    },
+    {
+      id: "zs-melodie-3-cala-gama",
+      order: 14,
+      difficulty: 4,
+      pianoKeyboardReference: { range: ["C4", "C5"] },
+      introSlides: [
+        {
+          body: "Ostatni poziom z melodiami: teraz sięgasz po całą gamę, od do do do wyżej. Zobaczysz pary ósemek (dwa szybsze dźwięki w jednym uderzeniu metronomu), schodzenie w dół i na końcu — całą gamę w górę z metronomem.",
+        },
+        {
+          body: "Każde zadanie ma dwa kroki. Najpierw posłuchaj nagrania — naciśnij 🔊 (tyle razy, ile chcesz) i śledź nuty na pięciolinii. Potem naciśnij „Nagraj”: usłyszysz tylko metronom, czyli równe stuknięcia. Dwa pierwsze to odliczanie, a przy trzecim zaczynasz śpiewać razem z nim.",
+        },
+        {
+          body: "Para ósemek to dwa dźwięki w czasie jednego stuknięcia metronomu — śpiewasz je trochę szybciej niż ćwierćnuty. Jeśli to za szybko, włącz „🐌 Wolno” i ćwicz powoli.",
+        },
+        {
+          body: "Za szybko? Włącz przełącznik „🐌 Wolno” — i nagranie, i metronom zwolnią. Nie chcesz używać mikrofonu? Wyłącz go przełącznikiem: wtedy po prostu zaśpiewasz na głos i naciśniesz „Zaśpiewane”. Kropka metronomu pozwala też najpierw sprawdzić samo tempo.",
+        },
+      ],
+      exercises: [
+        {
+          id: "zs-m3-e1",
+          type: "solfege-phrase-singing",
+          difficulty: 4,
+          spec: { type: "solfege-phrase-singing", notes: ["C4", "D4", "E4", "F4", "G4", "G4", "E4", "D4", "C4"], rhythm: ["eighth", "eighth", "eighth", "eighth", "quarter", "quarter", "quarter", "quarter", "half"], meter: "4/4", isFragment: true, withMetronome: true, bpm: 60, toleranceCents: 65 },
+        },
+        {
+          id: "zs-m3-e2",
+          type: "solfege-phrase-singing",
+          difficulty: 4,
+          spec: { type: "solfege-phrase-singing", notes: ["C5", "B4", "A4", "G4", "F4", "E4", "D4", "C4"], rhythm: ["quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter"], meter: "4/4", isFragment: true, withMetronome: true, bpm: 60, toleranceCents: 65 },
+        },
+        {
+          id: "zs-m3-e3",
+          type: "solfege-phrase-singing",
+          difficulty: 4,
+          spec: { type: "solfege-phrase-singing", notes: ["C4", "D4", "E4", "D4", "C4"], rhythm: ["half", "quarter", "quarter", "quarter", "quarter"], meter: "3/4", isFragment: true, withMetronome: true, bpm: 66, toleranceCents: 65 },
+        },
+        {
+          id: "zs-m3-e4",
+          type: "solfege-phrase-singing",
+          difficulty: 4,
+          spec: { type: "solfege-phrase-singing", notes: ["G4", "A4", "G4", "E4", "F4", "E4", "D4", "C4"], rhythm: ["quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter"], meter: "4/4", isFragment: true, withMetronome: true, bpm: 66, toleranceCents: 65 },
+        },
+        {
+          id: "zs-m3-e5",
+          type: "solfege-phrase-singing",
+          difficulty: 4,
+          spec: { type: "solfege-phrase-singing", notes: ["E4", "F4", "G4", "A4", "G4", "E4", "D4", "D4", "C4"], rhythm: ["eighth", "eighth", "eighth", "eighth", "quarter", "quarter", "quarter", "quarter", "half"], meter: "4/4", isFragment: true, withMetronome: true, bpm: 66, toleranceCents: 65 },
+        },
+        {
+          id: "zs-m3-e6",
+          type: "solfege-phrase-singing",
+          difficulty: 4,
+          spec: { type: "solfege-phrase-singing", notes: ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"], rhythm: ["quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter"], meter: "4/4", withMetronome: true, bpm: 60, toleranceCents: 65 },
         },
       ],
     },

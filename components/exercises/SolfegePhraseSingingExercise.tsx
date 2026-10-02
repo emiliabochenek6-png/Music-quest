@@ -7,7 +7,7 @@ import { LessonIntroStaff } from "@/components/exercises/LessonIntro";
 import { MelodicDictationStaff } from "@/components/exercises/MelodicDictationStaff";
 import { MetronomeIndicator } from "@/components/exercises/MetronomeIndicator";
 import { SolfegeHelpBar } from "@/components/exercises/SolfegeHelpBar";
-import { decodeAudioFileToPcm, playMelody } from "@/lib/audio/player";
+import { decodeAudioFileToPcm, playMelody, playSample } from "@/lib/audio/player";
 import {
   analyzeFreeRhythmicPhrase,
   analyzeFreeSungPhrase,
@@ -18,7 +18,7 @@ import {
   segmentsFromLiveVoicedAnalysis,
   type LiveVoicedAnalysisState,
 } from "@/lib/audio/pitchDetection";
-import { STANDALONE_METRONOME_MEASURES, metronomeBeatTimesMs, playMetronome, stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
+import { STANDALONE_METRONOME_MEASURES, metronomeBeatTimesMs, playMelodicRhythm, playMetronome, stopAllScheduledAudio } from "@/lib/audio/rhythmPlayer";
 import { hasConfirmedMicrophonePermission, markMicrophonePermissionConfirmed, SOLFEGE_RECORDING_OPTIONS } from "@/lib/audio/solfegeRecording";
 import { decodeWavPcm, decodeWavPcmFrames, parseWavHeader, type WavHeader } from "@/lib/audio/wavDecoder";
 import { isWebLiveRecordingAvailable, startWebLiveRecording, type WebLiveRecording } from "@/lib/audio/webLiveRecorder";
@@ -182,6 +182,9 @@ type Phase = "idle" | "requesting-permission" | "permission-denied" | "recording
  */
 export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange, checked, locale }: SolfegePhraseSingingExerciseProps) {
   const isRhythmGraded = exercise.gradeRhythm === true;
+  // "Nagranie, potem metronom" (exercise.withMetronome): the pacing click
+  // plays during the take even when rhythm itself isn't graded.
+  const usesMetronome = isRhythmGraded || exercise.withMetronome === true;
   const { slow, micEnabled, setMicEnabled } = useSolfegeHelp();
   // The 🐌 switch slows the reference phrase's note spacing and the pacing
   // metronome alike — safe for the metronome because grading never reads
@@ -425,6 +428,28 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
     // below; this guards a tap that lands in the gap right as recording
     // starts.
     if (phase === "recording") return;
+    stopAllScheduledAudio();
+    // A real recording of the phrase, when the content ships one — not in
+    // slow mode (slowing a recording would also lower its pitch).
+    if (exercise.referenceAudioSource !== undefined && !slow) {
+      playSample(exercise.referenceAudioSource, 1);
+      return;
+    }
+    // "Nagranie" for withMetronome content: the phrase with its real
+    // rhythm (each note held for its written value) at the exercise's own
+    // tempo — what the take is then sung against, minus the piano.
+    if (exercise.withMetronome && exercise.rhythm) {
+      const beatMs = 60000 / effectiveBpm;
+      let cursorMs = 0;
+      const phrase = exercise.notes.map((note, index) => {
+        const durationMs = NOTE_VALUE_BEATS[exercise.rhythm![index]] * beatMs;
+        const item = { note: parseScientific(note), onsetMs: cursorMs, durationMs };
+        cursorMs += durationMs;
+        return item;
+      });
+      playMelodicRhythm(phrase);
+      return;
+    }
     playMelody(
       exercise.notes.map((note) => parseScientific(note)),
       { gapSeconds: slow ? SLOW_PHRASE_GAP_SECONDS : 0.15 }
@@ -515,6 +540,10 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
           } else {
             detectedFrequenciesHz = analyzeFreeSungPhrase(decoded.samples, decoded.sampleRate, {
               noteCount: exercise.notes.length,
+              // Only non-empty when the pacing metronome played (see
+              // usesMetronome) — keeps its clicks, bleeding into the mic,
+              // from being mistaken for sung notes.
+              excludeAroundSeconds: clickExclusionSecondsRef.current,
             });
           }
         }
@@ -596,7 +625,7 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
     // already uses). Recording keeps going on its own MAX_RECORD_MS/
     // manual-stop schedule regardless of how long the metronome itself
     // runs for.
-    if (isRhythmGraded) {
+    if (usesMetronome) {
       const bpm = effectiveBpm;
       const rhythmValues: RhythmNoteValue[] = exercise.rhythm ?? exercise.notes.map(() => "quarter");
       const totalNoteBeats = rhythmValues.reduce((sum, value) => sum + NOTE_VALUE_BEATS[value], 0);
@@ -763,7 +792,7 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
 
       <SolfegeHelpBar disabled={isRecording} locale={locale} />
 
-      {isRhythmGraded && (
+      {usesMetronome && (
         <View style={{ alignItems: "center", gap: theme.spacing(0.5) }}>
           <MetronomeIndicator
             playToken={metronomePlay.token}

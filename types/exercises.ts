@@ -427,6 +427,18 @@ export type ExerciseSpec =
        * level; content omitting it would just fall back to plain quarter
        * notes, making every note equally "correct" length). */
       gradeRhythm?: boolean;
+      /** "Nagranie, potem metronom" mode (Zaczarowany Solfeż's short-melody
+       * levels): 🔊 plays the phrase WITH its real rhythm at `bpm`, then a
+       * take is sung against nothing but the count-in + metronome click.
+       * Grading stays pitch-only unless `gradeRhythm` is also set — this
+       * only adds the pacing click (and the rhythmic playback), see
+       * SolfegePhraseSingingExercise.tsx's own doc. Needs `rhythm`. */
+      withMetronome?: boolean;
+      /** Optional real recording of the phrase (a bundled audio file, same
+       * convention as the rhythm types' own referenceAudioSource) — played
+       * by 🔊 instead of the synthesized piano phrase when set (and not in
+       * slow mode, since slowing a recording would shift its pitch). */
+      referenceAudioSource?: number;
       /** Metronome tempo, beats per minute, ONE beat = one quarter note's
        * length (so a half note is two beats, an eighth is half a beat) —
        * only meaningful when `gradeRhythm` is true, played as an audible
@@ -956,6 +968,8 @@ export type GeneratedExercise =
       meter?: Meter;
       isFragment?: boolean;
       gradeRhythm?: boolean;
+      withMetronome?: boolean;
+      referenceAudioSource?: number;
       bpm?: number;
       toleranceCents: number;
     };
