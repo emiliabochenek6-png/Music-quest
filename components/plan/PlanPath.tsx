@@ -282,7 +282,7 @@ export function PlanPath() {
           message={
             lockedNode.dateISO === addDays(todayISO, 1)
               ? "Wróć jutro, żeby ukończyć tę lekcję. W Trybie nauki każdego dnia robisz tylko lekcje zaplanowane na ten dzień."
-              : `Ta lekcja jest zaplanowana na ${capitalize(WEEKDAYS[weekdayOf(lockedNode.dateISO)])}, ${formatShortPolishDate(lockedNode.dateISO)}. Wróć wtedy, żeby ją ukończyć.`
+              : `Ta lekcja jest zaplanowana na ${WEEKDAYS[weekdayOf(lockedNode.dateISO)]}, ${formatShortPolishDate(lockedNode.dateISO)}. Wróć wtedy, żeby ją ukończyć.`
           }
           buttonLabel="Rozumiem"
           onClose={() => setLockedNode(null)}
