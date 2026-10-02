@@ -1,8 +1,10 @@
 import { Pressable, Text, View } from "react-native";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { OptionButton } from "@/components/exercises/OptionButton";
+import { SolfegeHelpBar } from "@/components/exercises/SolfegeHelpBar";
 import { clearScheduledAudio, playSolfegeEarPrompt, stopAllActiveSamples } from "@/lib/audio/player";
 import { parseScientific } from "@/lib/music/notes";
+import { useSolfegeHelp } from "@/lib/solfege/helpPreferences";
 import { t } from "@/lib/i18n/translate";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import type { Locale } from "@/types/locale";
@@ -30,13 +32,14 @@ interface SolfegeSyllableChoiceExerciseProps {
  * clears it.
  */
 export function SolfegeSyllableChoiceExercise({ exercise, answer, onAnswerChange, checked, locale }: SolfegeSyllableChoiceExerciseProps) {
+  const { slow } = useSolfegeHelp();
   const length = exercise.targetNotes.length;
   const selected: (string | null)[] = Array.from({ length }, (_, index) => answer?.selectedSyllables[index] ?? null);
 
   function play(withCadence: boolean) {
     stopAllActiveSamples();
     clearScheduledAudio();
-    playSolfegeEarPrompt(exercise.targetNotes.map(parseScientific), { withCadence });
+    playSolfegeEarPrompt(exercise.targetNotes.map(parseScientific), { withCadence, slow });
   }
 
   function emit(next: (string | null)[]) {
@@ -70,6 +73,8 @@ export function SolfegeSyllableChoiceExercise({ exercise, answer, onAnswerChange
         <DarkButton label="🔊" onPress={() => play(true)} variant="secondary" size={84} fontSize={42} />
         <DarkButton label={t("lesson.solfegeSyllableReplayNotes", locale)} onPress={() => play(false)} variant="secondary" />
       </View>
+
+      {length > 1 && <SolfegeHelpBar showMic={false} locale={locale} />}
 
       {length > 1 && (
         <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center", gap: theme.spacing(1.5) }}>

@@ -6,6 +6,7 @@ import { DarkButton } from "@/components/exercises/DarkButton";
 import { LessonIntroStaff } from "@/components/exercises/LessonIntro";
 import { MelodicDictationStaff } from "@/components/exercises/MelodicDictationStaff";
 import { MetronomeIndicator } from "@/components/exercises/MetronomeIndicator";
+import { SolfegeHelpBar } from "@/components/exercises/SolfegeHelpBar";
 import { decodeAudioFileToPcm, playMelody } from "@/lib/audio/player";
 import {
   analyzeFreeRhythmicPhrase,
@@ -25,6 +26,7 @@ import { getIntervalDisplayName, intervalSemitones } from "@/lib/music/intervals
 import { describeStaffPosition } from "@/lib/music/staff";
 import { classifyPitchMatch, noteToFrequency, octaveFoldedCentsDifference, parseScientific } from "@/lib/music/notes";
 import { nearestSolfegeReading, type SolfegeTunerReading } from "@/lib/music/solfege";
+import { SOLFEGE_SLOW_TEMPO_FACTOR, useSolfegeHelp } from "@/lib/solfege/helpPreferences";
 import { NOTE_VALUE_BEATS } from "@/lib/rhythm/valueBeats";
 import { t } from "@/lib/i18n/translate";
 import type { TranslationKey } from "@/lib/i18n/translate";
@@ -67,6 +69,10 @@ const TUNER_IN_TUNE_CENTS = 20;
  * doc) cares when the count-in ends or how long it lasts. */
 const METRONOME_COUNT_IN_BEATS = 2;
 const DEFAULT_METRONOME_BPM = 66;
+/** Note-to-note gap of the reference phrase in 🐌 slow mode — with the
+ * melodic samples' own 0.3s length that is ~0.75s per note, about 60% of
+ * the normal 0.45s step. */
+const SLOW_PHRASE_GAP_SECONDS = 0.45;
 
 type LiveHint = { index: number; quality: "match" | "flat" | "sharp" | "far" };
 
@@ -176,6 +182,12 @@ type Phase = "idle" | "requesting-permission" | "permission-denied" | "recording
  */
 export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange, checked, locale }: SolfegePhraseSingingExerciseProps) {
   const isRhythmGraded = exercise.gradeRhythm === true;
+  const { slow, micEnabled, setMicEnabled } = useSolfegeHelp();
+  // The 🐌 switch slows the reference phrase's note spacing and the pacing
+  // metronome alike — safe for the metronome because grading never reads
+  // it (see analyzeFreeRhythmicPhrase's own doc).
+  const baseBpm = exercise.bpm ?? DEFAULT_METRONOME_BPM;
+  const effectiveBpm = slow ? Math.round(baseBpm * SOLFEGE_SLOW_TEMPO_FACTOR) : baseBpm;
   const [phase, setPhase] = useState<Phase>("idle");
   // Which note of the scale the player should be singing RIGHT NOW —
   // only meaningful while phase === "recording" (see the JSX below, which
@@ -415,8 +427,17 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
     if (phase === "recording") return;
     playMelody(
       exercise.notes.map((note) => parseScientific(note)),
-      { gapSeconds: 0.15 }
+      { gapSeconds: slow ? SLOW_PHRASE_GAP_SECONDS : 0.15 }
     );
+  }
+
+  // The no-microphone path (🎤 switched off): nothing is recorded or
+  // graded, the player sings along on their own and confirms — validate.ts
+  // accepts a selfReported answer as correct.
+  function confirmSungWithoutMic() {
+    if (checked) return;
+    setPhase("recorded");
+    onAnswerChange({ type: "solfege-phrase-singing", detectedFrequenciesHz: exercise.notes.map(() => null), selfReported: true });
   }
 
   async function finishTake() {
@@ -576,7 +597,7 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
     // manual-stop schedule regardless of how long the metronome itself
     // runs for.
     if (isRhythmGraded) {
-      const bpm = exercise.bpm ?? DEFAULT_METRONOME_BPM;
+      const bpm = effectiveBpm;
       const rhythmValues: RhythmNoteValue[] = exercise.rhythm ?? exercise.notes.map(() => "quarter");
       const totalNoteBeats = rhythmValues.reduce((sum, value) => sum + NOTE_VALUE_BEATS[value], 0);
       const totalBeats = METRONOME_COUNT_IN_BEATS + totalNoteBeats;
@@ -609,7 +630,7 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
       return;
     }
     setStandaloneMetronomeOn(true);
-    const bpm = exercise.bpm ?? DEFAULT_METRONOME_BPM;
+    const bpm = effectiveBpm;
     playMetronome({ bpm, beatsPerMeasure: 1, measureCount: STANDALONE_METRONOME_MEASURES });
     setMetronomePlay((prev) => ({ token: prev.token + 1, totalBeats: STANDALONE_METRONOME_MEASURES }));
   }
@@ -626,7 +647,8 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
       if (!pitchOk) return false;
       return isRhythmGraded ? rhythmCorrectAnswer?.[index] === true : true;
     }).length ?? 0;
-  const allMissed = hasResult && detectedFrequenciesHz !== null && detectedFrequenciesHz.every((f) => f === null);
+  const isSelfReported = answer?.selfReported === true;
+  const allMissed = hasResult && !isSelfReported && detectedFrequenciesHz !== null && detectedFrequenciesHz.every((f) => f === null);
   // Only present for content authored with real rhythm values (levels
   // 2-4's own "fragmenty utworów") — see exercise.rhythm's own doc. When
   // present, the fragment renders as real rhythmic notation via
@@ -641,7 +663,7 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
     : null;
 
   let status: { message: string; tone: "info" | "warning" } | null = null;
-  if (phase === "permission-denied") {
+  if (phase === "permission-denied" && micEnabled) {
     status = { message: t("lesson.solfegePermissionDenied", locale), tone: "warning" };
   } else if (phase === "requesting-permission") {
     status = { message: t("lesson.solfegeRequestingPermission", locale), tone: "info" };
@@ -660,6 +682,10 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
     status = { message: t(isRhythmGraded ? "lesson.solfegePhraseRhythmRecording" : "lesson.solfegePhraseRecording", locale), tone: "warning" };
   } else if (phase === "analyzing") {
     status = { message: t("lesson.solfegeAnalyzing", locale), tone: "info" };
+  } else if (!micEnabled && !isRecording && !isSelfReported) {
+    status = { message: t("lesson.solfegeNoMicHint", locale), tone: "info" };
+  } else if (isSelfReported) {
+    status = { message: t(checked ? "lesson.solfegeNoMicChecked" : "lesson.solfegeNoMicDone", locale), tone: "info" };
   } else if (allMissed) {
     status = { message: t("lesson.solfegeNoPitchDetected", locale), tone: "warning" };
   } else if (hasResult && checked) {
@@ -735,11 +761,13 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
 
       <DarkButton label="🔊" onPress={playExample} variant="secondary" size={72} fontSize={34} disabled={isRecording} />
 
+      <SolfegeHelpBar disabled={isRecording} locale={locale} />
+
       {isRhythmGraded && (
         <View style={{ alignItems: "center", gap: theme.spacing(0.5) }}>
           <MetronomeIndicator
             playToken={metronomePlay.token}
-            bpm={exercise.bpm ?? DEFAULT_METRONOME_BPM}
+            bpm={effectiveBpm}
             beatsPerMeasure={1}
             totalBeats={metronomePlay.totalBeats}
             size={44}
@@ -789,11 +817,24 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
       )}
 
       <View style={{ width: "100%", gap: theme.spacing(1.25) }}>
-        {!isRecording && (
+        {!isRecording && !micEnabled && (
+          <DarkButton label={t("lesson.solfegeNoMicButton", locale)} onPress={confirmSungWithoutMic} disabled={checked || isSelfReported} />
+        )}
+        {!isRecording && micEnabled && (
           <DarkButton
             label={hasResult ? t("lesson.solfegeRetry", locale) : t("lesson.solfegeRecordButton", locale)}
             onPress={startRecording}
             disabled={checked || phase === "requesting-permission" || phase === "analyzing"}
+          />
+        )}
+        {phase === "permission-denied" && micEnabled && (
+          <DarkButton
+            label={t("lesson.solfegePracticeWithoutMic", locale)}
+            onPress={() => {
+              setMicEnabled(false);
+              setPhase("idle");
+            }}
+            variant="secondary"
           />
         )}
         {isRecording && <DarkButton label={t("lesson.solfegeStopButton", locale)} onPress={finishTake} variant="secondary" />}

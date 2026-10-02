@@ -773,9 +773,9 @@ export function hasAnswerToCheck(answer: AnswerInput | null): boolean {
     case "solfege-syllable-choice":
       return answer.selectedSyllables.length > 0 && answer.selectedSyllables.every((syllable) => syllable !== null);
     case "solfege-note-singing":
-      return answer.detectedFrequencyHz !== null;
+      return answer.selfReported === true || answer.detectedFrequencyHz !== null;
     case "solfege-phrase-singing":
-      return answer.detectedFrequenciesHz.some((frequencyHz) => frequencyHz !== null);
+      return answer.selfReported === true || answer.detectedFrequenciesHz.some((frequencyHz) => frequencyHz !== null);
     default:
       return true;
   }

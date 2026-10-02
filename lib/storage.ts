@@ -6,6 +6,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export const STORAGE_KEYS = {
   profile: "master-quest.profile",
   gamification: "master-quest.gamification",
+  solfegeHelp: "master-quest.solfege-help",
 } as const;
 
 export async function readJson<T>(key: string): Promise<T | null> {

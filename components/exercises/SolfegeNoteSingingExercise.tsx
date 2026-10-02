@@ -3,6 +3,7 @@ import { Text, View } from "react-native";
 import { File } from "expo-file-system";
 import { getRecordingPermissionsAsync, requestRecordingPermissionsAsync, useAudioRecorder } from "expo-audio";
 import { DarkButton } from "@/components/exercises/DarkButton";
+import { SolfegeHelpBar } from "@/components/exercises/SolfegeHelpBar";
 import { StaffNotation } from "@/components/exercises/StaffNotation";
 import { decodeAudioFileToPcm, playNote } from "@/lib/audio/player";
 import { analyzeSungPitch } from "@/lib/audio/pitchDetection";
@@ -13,6 +14,7 @@ import {
   SOLFEGE_RECORD_SAMPLE_RATE,
 } from "@/lib/audio/solfegeRecording";
 import { decodeWavPcm } from "@/lib/audio/wavDecoder";
+import { useSolfegeHelp } from "@/lib/solfege/helpPreferences";
 import { classifyPitchMatch, noteToFrequency, parseScientific } from "@/lib/music/notes";
 import { t } from "@/lib/i18n/translate";
 import type { TranslationKey } from "@/lib/i18n/translate";
@@ -67,6 +69,7 @@ type Phase = "idle" | "requesting-permission" | "permission-denied" | "recording
  * stacking on top of each other.
  */
 export function SolfegeNoteSingingExercise({ exercise, answer, onAnswerChange, checked, locale }: SolfegeNoteSingingExerciseProps) {
+  const { micEnabled, setMicEnabled } = useSolfegeHelp();
   const [phase, setPhase] = useState<Phase>("idle");
   // Set only when something in the record/save pipeline genuinely
   // failed — a plain-language reason shown in place of the usual result,
@@ -122,6 +125,15 @@ export function SolfegeNoteSingingExercise({ exercise, answer, onAnswerChange, c
     // starts.
     if (phase === "recording") return;
     playNote(parseScientific(exercise.targetNote));
+  }
+
+  // The no-microphone path (🎤 switched off): nothing is recorded or
+  // graded, the player sings on their own and confirms — validate.ts
+  // accepts a selfReported answer as correct.
+  function confirmSungWithoutMic() {
+    if (checked) return;
+    setPhase("recorded");
+    onAnswerChange({ type: "solfege-note-singing", detectedFrequencyHz: null, selfReported: true });
   }
 
   async function finishTake() {
@@ -238,9 +250,10 @@ export function SolfegeNoteSingingExercise({ exercise, answer, onAnswerChange, c
   const isRecording = phase === "recording";
   const hasResult = phase === "recorded";
   const detectedFrequencyHz = answer?.detectedFrequencyHz ?? null;
+  const isSelfReported = answer?.selfReported === true;
 
   let status: { message: string; tone: "info" | "warning" } | null = null;
-  if (phase === "permission-denied") {
+  if (phase === "permission-denied" && micEnabled) {
     status = { message: t("lesson.solfegePermissionDenied", locale), tone: "warning" };
   } else if (phase === "requesting-permission") {
     status = { message: t("lesson.solfegeRequestingPermission", locale), tone: "info" };
@@ -248,6 +261,10 @@ export function SolfegeNoteSingingExercise({ exercise, answer, onAnswerChange, c
     status = { message: t("lesson.solfegeRecording", locale), tone: "warning" };
   } else if (phase === "analyzing") {
     status = { message: t("lesson.solfegeAnalyzing", locale), tone: "info" };
+  } else if (!micEnabled && !isSelfReported) {
+    status = { message: t("lesson.solfegeNoMicHint", locale), tone: "info" };
+  } else if (isSelfReported) {
+    status = { message: t(checked ? "lesson.solfegeNoMicChecked" : "lesson.solfegeNoMicDone", locale), tone: "info" };
   } else if (hasResult && issue) {
     status = { message: issue, tone: "warning" };
   } else if (hasResult && detectedFrequencyHz === null) {
@@ -279,6 +296,8 @@ export function SolfegeNoteSingingExercise({ exercise, answer, onAnswerChange, c
 
       <DarkButton label="🔊" onPress={playExample} variant="secondary" size={72} fontSize={34} disabled={isRecording} />
 
+      <SolfegeHelpBar showSlow={false} disabled={isRecording} locale={locale} />
+
       {status && (
         <Text
           style={{
@@ -293,11 +312,24 @@ export function SolfegeNoteSingingExercise({ exercise, answer, onAnswerChange, c
       )}
 
       <View style={{ width: "100%", gap: theme.spacing(1.25) }}>
-        {!isRecording && (
+        {!isRecording && !micEnabled && (
+          <DarkButton label={t("lesson.solfegeNoMicButton", locale)} onPress={confirmSungWithoutMic} disabled={checked || isSelfReported} />
+        )}
+        {!isRecording && micEnabled && (
           <DarkButton
             label={hasResult ? t("lesson.solfegeRetry", locale) : t("lesson.solfegeRecordButton", locale)}
             onPress={startRecording}
             disabled={checked || phase === "requesting-permission" || phase === "analyzing"}
+          />
+        )}
+        {phase === "permission-denied" && micEnabled && (
+          <DarkButton
+            label={t("lesson.solfegePracticeWithoutMic", locale)}
+            onPress={() => {
+              setMicEnabled(false);
+              setPhase("idle");
+            }}
+            variant="secondary"
           />
         )}
         {isRecording && <DarkButton label={t("lesson.solfegeStopButton", locale)} onPress={finishTake} variant="secondary" />}

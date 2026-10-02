@@ -988,27 +988,29 @@ const EAR_CADENCE_CHORDS: readonly (readonly string[])[] = [
  * note rings long (NOTE_SAMPLES); a sequence uses the short melodic
  * samples with a fixed step so each note is heard distinctly. One
  * scheduled track, so replaying never drifts between chords and notes. */
-export function playSolfegeEarPrompt(notes: readonly Note[], options: { withCadence?: boolean } = {}): void {
+export function playSolfegeEarPrompt(notes: readonly Note[], options: { withCadence?: boolean; slow?: boolean } = {}): void {
   const withCadence = options.withCadence ?? true;
+  // Slow mode (the 🐌 switch) stretches every spacing by 1/0.6.
+  const stretch = options.slow ? 1 / 0.6 : 1;
   const chordVelocity = 0.3;
   const noteVelocity = 0.7;
   const sustained = notes.length === 1;
   const anchorMs = schedulerNow();
   const noteSet = sustained ? NOTE_SAMPLES : MELODY_NOTE_SAMPLES;
-  const cadenceMs = withCadence ? (EAR_CADENCE_CHORDS.length * EAR_CADENCE_STEP_SECONDS + EAR_CADENCE_TO_NOTE_SECONDS) * 1000 : 0;
+  const cadenceMs = withCadence ? (EAR_CADENCE_CHORDS.length * EAR_CADENCE_STEP_SECONDS + EAR_CADENCE_TO_NOTE_SECONDS) * 1000 * stretch : 0;
 
   const events: { source: number; delayMs: number; velocity: number; playbackRate: number }[] = [];
   if (withCadence) {
     EAR_CADENCE_CHORDS.forEach((chord, index) => {
       chord.forEach((name) => {
         const { source, playbackRate } = resolveSample(NOTE_SAMPLES, parseScientific(name));
-        events.push({ source, delayMs: index * EAR_CADENCE_STEP_SECONDS * 1000, velocity: chordVelocity, playbackRate });
+        events.push({ source, delayMs: index * EAR_CADENCE_STEP_SECONDS * 1000 * stretch, velocity: chordVelocity, playbackRate });
       });
     });
   }
   notes.forEach((note, index) => {
     const { source, playbackRate } = resolveSample(noteSet, note);
-    events.push({ source, delayMs: cadenceMs + index * EAR_SEQUENCE_STEP_SECONDS * 1000, velocity: noteVelocity, playbackRate });
+    events.push({ source, delayMs: cadenceMs + index * EAR_SEQUENCE_STEP_SECONDS * 1000 * stretch, velocity: noteVelocity, playbackRate });
   });
 
   const playScheduled = () => {

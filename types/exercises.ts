@@ -1032,10 +1032,20 @@ export type AnswerInput =
       /** One slot per heard note, filled left to right; null = not yet chosen. */
       selectedSyllables: (string | null)[];
     }
-  | { type: "solfege-note-singing"; detectedFrequencyHz: number | null }
+  | {
+      type: "solfege-note-singing";
+      detectedFrequencyHz: number | null;
+      /** True when the player sang without the microphone and just
+       * confirmed it (see lib/solfege/helpPreferences.ts's micEnabled) —
+       * validate.ts accepts it as correct, since nothing was recorded to
+       * grade. */
+      selfReported?: boolean;
+    }
   | {
       type: "solfege-phrase-singing";
       detectedFrequenciesHz: (number | null)[];
+      /** Same self-confirmed, no-microphone flag as solfege-note-singing's own. */
+      selfReported?: boolean;
       /** Only meaningful (and only ever set) when exercise.gradeRhythm is
        * true — parallel to detectedFrequenciesHz, one "was this note held
        * for roughly its own RELATIVE rhythmic length" verdict per note.

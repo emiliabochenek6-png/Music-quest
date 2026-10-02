@@ -240,7 +240,8 @@ export function isAnswerCorrect(exercise: GeneratedExercise, answer: AnswerInput
       return selectedSyllables.length === exercise.solfegeSyllables.length && selectedSyllables.every((syllable, index) => syllable === exercise.solfegeSyllables[index]);
     }
     case "solfege-note-singing": {
-      const { detectedFrequencyHz } = answer as { detectedFrequencyHz: number | null };
+      const { detectedFrequencyHz, selfReported } = answer as { detectedFrequencyHz: number | null; selfReported?: boolean };
+      if (selfReported) return true;
       if (detectedFrequencyHz === null) return false;
       const targetHz = noteToFrequency(parseScientific(exercise.targetNote));
       return Math.abs(octaveFoldedCentsDifference(detectedFrequencyHz, targetHz)) <= exercise.toleranceCents;
@@ -251,10 +252,12 @@ export function isAnswerCorrect(exercise: GeneratedExercise, answer: AnswerInput
       // elsewhere in this app, since demanding every single one of 8 sung
       // notes land within tolerance would make an otherwise-solid attempt
       // fail over one missed note.
-      const { detectedFrequenciesHz, rhythmCorrect } = answer as {
+      const { detectedFrequenciesHz, rhythmCorrect, selfReported } = answer as {
         detectedFrequenciesHz: (number | null)[];
         rhythmCorrect?: (boolean | null)[];
+        selfReported?: boolean;
       };
+      if (selfReported) return true;
       if (detectedFrequenciesHz.length !== exercise.notes.length) return false;
       const correctCount = detectedFrequenciesHz.filter((frequencyHz, index) => {
         if (frequencyHz === null) return false;

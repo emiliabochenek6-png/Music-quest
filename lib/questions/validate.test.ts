@@ -176,4 +176,19 @@ describe("isAnswerCorrect", () => {
     expect(isAnswerCorrect(exercise, { type: "solfege-syllable-choice", selectedSyllables: ["mi", "do"] })).toBe(false);
     expect(isAnswerCorrect(exercise, { type: "solfege-syllable-choice", selectedSyllables: ["do", null] })).toBe(false);
   });
+
+  it("accepts a self-reported (no-microphone) solfege singing answer as correct", () => {
+    const note: GeneratedExercise = { id: "n", type: "solfege-note-singing", targetNote: "C4", solfegeSyllable: "do", toleranceCents: 70 };
+    expect(isAnswerCorrect(note, { type: "solfege-note-singing", detectedFrequencyHz: null, selfReported: true })).toBe(true);
+    expect(isAnswerCorrect(note, { type: "solfege-note-singing", detectedFrequencyHz: null })).toBe(false);
+    const phrase: GeneratedExercise = {
+      id: "p",
+      type: "solfege-phrase-singing",
+      notes: ["C4", "D4"],
+      solfegeSyllables: ["do", "re"],
+      toleranceCents: 70,
+    };
+    expect(isAnswerCorrect(phrase, { type: "solfege-phrase-singing", detectedFrequenciesHz: [null, null], selfReported: true })).toBe(true);
+    expect(isAnswerCorrect(phrase, { type: "solfege-phrase-singing", detectedFrequenciesHz: [null, null] })).toBe(false);
+  });
 });
