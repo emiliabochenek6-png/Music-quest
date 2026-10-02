@@ -271,6 +271,12 @@ function LessonScreenBody() {
 
   function goBackToLevels() {
     stopAllScheduledAudio();
+    // A lesson opened from the study plan returns to the plan (the map in
+    // "Tryb nauki"), never to the world's level list.
+    if (learningMode) {
+      router.replace("/(main)/map");
+      return;
+    }
     // Carries the lesson just left back to the levels screen (its own
     // LessonPath reads this to scroll straight there — see that file's
     // own doc) instead of that screen's default "jump to the first
