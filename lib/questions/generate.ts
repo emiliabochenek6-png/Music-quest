@@ -1025,15 +1025,17 @@ export function generateExercise(definition: ExerciseDefinition, locale: Locale,
       // Authored content, not procedurally generated — options keep their
       // authored order (not shuffled), since the author picked specific,
       // deliberately-ordered distractors.
-      const { prompt, hint, options, correctOptionIndex, explanation } = definition.spec;
+      const { prompt, hint, options, correctOptionIndex, explanation, imageId, optionImageIds, referenceAudioSource } = definition.spec;
       return {
         id: definition.id,
         type: "key-fact-choice",
         prompt,
         hint,
-        options: options.map((label, index) => ({ id: String(index), label })),
+        options: options.map((label, index) => ({ id: String(index), label, imageId: optionImageIds?.[index] })),
         correctOptionId: String(correctOptionIndex),
         explanation,
+        imageId,
+        referenceAudioSource,
       };
     }
     case "key-signature-names-choice": {

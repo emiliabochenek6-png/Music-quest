@@ -35,6 +35,8 @@ export type RhythmRestValue = "quarterRest" | "eighthRest" | "sixteenthRest";
 export interface MultipleChoiceOption {
   id: string;
   label: string;
+  /** Optional illustration key (see key-fact-choice's own optionImageIds). */
+  imageId?: string;
 }
 
 /** A drawn point in the SAME coordinate space as lib/music/staffGeometry's
@@ -292,6 +294,16 @@ export type ExerciseSpec =
       options: string[];
       correctOptionIndex: number;
       explanation?: string;
+      /** Königreich-der-Instrumente additions (all optional, so Labirynt
+       * Tonacji's own questions are unaffected): an illustration shown
+       * above the prompt (a key of components/icons/icons.ts's ICONS, e.g.
+       * "instrument_flet"), per-option illustrations (parallel to
+       * `options`; omit an entry or the whole array for text-only
+       * options), and a recording the 🔊 button plays (same convention as
+       * the rhythm types' own referenceAudioSource). */
+      imageId?: string;
+      optionImageIds?: (string | undefined)[];
+      referenceAudioSource?: number;
     }
   | { type: "key-signature-names-choice"; fifthsRange: [number, number] }
   | { type: "circle-neighbor-key-choice"; fifthsRange: [number, number] }
@@ -810,6 +822,8 @@ export type GeneratedExercise =
       options: MultipleChoiceOption[];
       correctOptionId: string;
       explanation?: string;
+      imageId?: string;
+      referenceAudioSource?: number;
     }
   | { id: string; type: "key-signature-names-choice"; fifths: number; options: MultipleChoiceOption[]; correctOptionId: string }
   | {

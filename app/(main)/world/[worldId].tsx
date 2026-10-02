@@ -23,6 +23,7 @@ const WORLD_ICON: Record<string, { icon: IconName }> = {
   note: { icon: "kraina_wioska_nut" },
   metronome: { icon: "kraina_miasto_rytmu" },
   "bar-line": { icon: "kraina_przystan_taktow" },
+  instruments: { icon: "kraina_krolestwo_instrumentow" },
   interval: { icon: "kraina_pasmo_interwalow" },
   chord: { icon: "kraina_zatoka_trojdzwiekow" },
   inversion: { icon: "kraina_jaskinia_akordow" },

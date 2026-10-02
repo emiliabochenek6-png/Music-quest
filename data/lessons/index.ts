@@ -2,6 +2,7 @@ import { CYTADELA_DOMINANT_CONTENT } from "@/data/lessons/cytadela-dominant";
 import { FABRYKA_BUDOWANIA_CONTENT } from "@/data/lessons/fabryka-budowania";
 import { GAJ_GRUPOWANIA_CONTENT } from "@/data/lessons/gaj-grupowania";
 import { JASKINIA_AKORDOW_CONTENT } from "@/data/lessons/jaskinia-akordow";
+import { KROLESTWO_INSTRUMENTOW_CONTENT } from "@/data/lessons/krolestwo-instrumentow";
 import { LABIRYNT_TONACJI_CONTENT } from "@/data/lessons/labirynt-tonacji";
 import { MIASTO_RYTMU_CONTENT } from "@/data/lessons/miasto-rytmu";
 import { PASMO_INTERWALOW_CONTENT } from "@/data/lessons/pasmo-interwalow";
@@ -25,6 +26,7 @@ const WORLD_CONTENT: Record<string, WorldContent> = {
   "wioska-nut": WIOSKA_NUT_CONTENT,
   "miasto-rytmu": MIASTO_RYTMU_CONTENT,
   "przystan-taktow": PRZYSTAN_TAKTOW_CONTENT,
+  "krolestwo-instrumentow": KROLESTWO_INSTRUMENTOW_CONTENT,
   "pasmo-interwalow": PASMO_INTERWALOW_CONTENT,
   "zatoka-trojdzwiekow": ZATOKA_TROJDZWIEKOW_CONTENT,
   "jaskinia-akordow": JASKINIA_AKORDOW_CONTENT,
