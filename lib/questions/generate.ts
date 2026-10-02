@@ -1,5 +1,6 @@
 import {
   getIntervalDisplayName,
+  isEasyToRead,
   intervalSemitones,
   NAMED_INTERVAL_SEMITONES,
   noteAtInterval,
@@ -205,6 +206,27 @@ function randomNoteInRange(range: [string, string]): Note {
   const highMidi = noteToMidi(parseScientific(range[1]));
   const midi = lowMidi + Math.floor(Math.random() * (highMidi - lowMidi + 1));
   return midiToNote(midi);
+}
+
+/** Like randomNoteInRange, but spells the starting note (sharp or flat for a
+ * black key) so that every note of the chord built from it is easy to read —
+ * no E♯, B♯, C♭, F♭ or double accidentals (see isEasyToRead). `notesOf` builds
+ * the chord from a candidate root. If no spelling works in 60 tries, falls
+ * back to a plain random note (the callers' own spelling fallback still applies). */
+function randomEasyRoot(range: [string, string], notesOf: (root: Note) => Note[]): Note {
+  for (let attempt = 0; attempt < 60; attempt++) {
+    const note = randomNoteInRange(range);
+    const spellings = note.accidental === 1 ? [note, flatAlternateSpelling(note)] : [note];
+    const easy = spellings.filter((candidate) => {
+      try {
+        return notesOf(candidate).every(isEasyToRead);
+      } catch {
+        return false;
+      }
+    });
+    if (easy.length > 0) return easy[Math.floor(Math.random() * easy.length)];
+  }
+  return randomNoteInRange(range);
 }
 
 /** Every natural (accidental-less) note within `range`, inclusive — "
@@ -680,7 +702,7 @@ export function generateExercise(definition: ExerciseDefinition, locale: Locale,
         const correctOptionIds: string[] = [];
         for (let position = 0; position < sequenceLength; position++) {
           const quality = qualities[Math.floor(Math.random() * qualities.length)];
-          const root = randomNoteInRange(noteRange);
+          const root = randomEasyRoot(noteRange, (candidate) => { const t = buildTriad(candidate, quality); return [t.root, t.third, t.fifth]; });
           let triad: Triad;
           try {
             triad = buildTriad(root, quality);
@@ -766,7 +788,7 @@ export function generateExercise(definition: ExerciseDefinition, locale: Locale,
         // retry-with-the-flat-spelling fallback pickRandomIntervalNotePair
         // already relies on for a single interval, just applied to a
         // triad's two stacked thirds instead.
-        const root = randomNoteInRange(noteRange);
+        const root = randomEasyRoot(noteRange, (candidate) => { const t = buildTriad(candidate, quality); return [t.root, t.third, t.fifth]; });
         let triad: Triad;
         try {
           triad = buildTriad(root, quality);
@@ -801,7 +823,7 @@ export function generateExercise(definition: ExerciseDefinition, locale: Locale,
         for (let position = 0; position < sequenceLength; position++) {
           const quality = qualities[Math.floor(Math.random() * qualities.length)];
           const inversion = inversions[Math.floor(Math.random() * inversions.length)];
-          const root = randomNoteInRange(noteRange);
+          const root = randomEasyRoot(noteRange, (candidate) => { const t = buildTriad(candidate, quality); return [t.root, t.third, t.fifth]; });
           let triad: Triad;
           try {
             triad = buildTriad(root, quality);
@@ -834,7 +856,7 @@ export function generateExercise(definition: ExerciseDefinition, locale: Locale,
 
         // Same double-accidental fallback as triad-quality-choice's own
         // case (see its own doc) — reused verbatim rather than re-derived.
-        const root = randomNoteInRange(noteRange);
+        const root = randomEasyRoot(noteRange, (candidate) => { const t = buildTriad(candidate, quality); return [t.root, t.third, t.fifth]; });
         let triad: Triad;
         try {
           triad = buildTriad(root, quality);
@@ -878,7 +900,7 @@ export function generateExercise(definition: ExerciseDefinition, locale: Locale,
         const correctOptionIds: string[] = [];
         for (let position = 0; position < sequenceLength; position++) {
           const inversion = inversions[Math.floor(Math.random() * inversions.length)];
-          const root = randomNoteInRange(noteRange);
+          const root = randomEasyRoot(noteRange, (candidate) => { const c = buildDominantSeventh(candidate); return [c.root, c.third, c.fifth, c.seventh]; });
           let chord: ReturnType<typeof buildDominantSeventh>;
           try {
             chord = buildDominantSeventh(root);
@@ -914,7 +936,7 @@ export function generateExercise(definition: ExerciseDefinition, locale: Locale,
 
         // Same double-accidental fallback as triad-quality-choice's own
         // case (see its own doc) — reused verbatim rather than re-derived.
-        const root = randomNoteInRange(noteRange);
+        const root = randomEasyRoot(noteRange, (candidate) => { const c = buildDominantSeventh(candidate); return [c.root, c.third, c.fifth, c.seventh]; });
         let chord: ReturnType<typeof buildDominantSeventh>;
         try {
           chord = buildDominantSeventh(root);
@@ -1189,7 +1211,7 @@ export function generateExercise(definition: ExerciseDefinition, locale: Locale,
       const qualities = allowedQualities ?? ALL_TRIAD_QUALITIES;
       return generateWithoutRepeat(() => {
         const quality = qualities[Math.floor(Math.random() * qualities.length)];
-        const root = randomNoteInRange(noteRange);
+        const root = randomEasyRoot(noteRange, (candidate) => { const t = buildTriad(candidate, quality); return [t.root, t.third, t.fifth]; });
         let triad: Triad;
         try {
           triad = buildTriad(root, quality);
@@ -1224,7 +1246,7 @@ export function generateExercise(definition: ExerciseDefinition, locale: Locale,
       return generateWithoutRepeat(() => {
         const quality = qualities[Math.floor(Math.random() * qualities.length)];
         const inversion = inversions[Math.floor(Math.random() * inversions.length)];
-        const root = randomNoteInRange(noteRange);
+        const root = randomEasyRoot(noteRange, (candidate) => { const t = buildTriad(candidate, quality); return [t.root, t.third, t.fifth]; });
         let triad: Triad;
         try {
           triad = buildTriad(root, quality);
@@ -1262,7 +1284,7 @@ export function generateExercise(definition: ExerciseDefinition, locale: Locale,
       const inversions = allowedInversions ?? (["root"] as const);
       return generateWithoutRepeat(() => {
         const inversion = inversions[Math.floor(Math.random() * inversions.length)];
-        const root = randomNoteInRange(noteRange);
+        const root = randomEasyRoot(noteRange, (candidate) => { const c = buildDominantSeventh(candidate); return [c.root, c.third, c.fifth, c.seventh]; });
         let chord: ReturnType<typeof buildDominantSeventh>;
         try {
           chord = buildDominantSeventh(root);

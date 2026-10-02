@@ -96,13 +96,13 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
           id: "mr-l2-e4",
           type: "rhythm-echo",
           difficulty: 3,
-          spec: { type: "rhythm-echo", onsetsMs: [0, 300, 750], showStandaloneMetronome: false },
+          spec: { type: "rhythm-echo", onsetsMs: [0, 450, 1350], showStandaloneMetronome: false },
         },
         {
           id: "mr-l2-e5",
           type: "rhythm-echo",
           difficulty: 3,
-          spec: { type: "rhythm-echo", onsetsMs: [0, 300, 750, 1050], showStandaloneMetronome: false },
+          spec: { type: "rhythm-echo", onsetsMs: [0, 450, 900, 1800], showStandaloneMetronome: false },
         },
         {
           id: "mr-l2-e6",
@@ -246,7 +246,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
       difficulty: 2,
       introSlides: [
         {
-          body: "Pauza to cisza o określonej długości — tak samo ważna jak dźwięk. Pauza ćwierćnutowa trwa jedno uderzenie ciszy, pauza ósemkowa pół uderzenia. Synkopa to przesunięcie akcentu na słabszą część taktu — uderzenie tam, gdzie normalnie byłaby cisza lub słabsza część taktu. To uczy precyzji nie tylko w uderzaniu, ale i w kontrolowaniu ciszy.",
+          body: "Pauza to cisza o określonej długości — tak samo ważna jak dźwięk. Pauza ćwierćnutowa trwa jedno uderzenie ciszy, pauza ósemkowa pół uderzenia. Synkopa to przesunięcie akcentu na słabszą część taktu — uderzenie tam, gdzie normalnie byłaby cisza lub słabsza część taktu. W tej lekcji ćwiczysz pauzy, a prawdziwe synkopy zagrasz dopiero w lekcjach 7 i 9. To uczy precyzji nie tylko w uderzaniu, ale i w kontrolowaniu ciszy.",
           noteValueReference: [
             { value: "quarterRest", caption: "pauza ćwierćnutowa — 1 uderzenie ciszy" },
             { value: "eighthRest", caption: "pauza ósemkowa — 1/2 uderzenia ciszy" },
@@ -348,7 +348,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
       difficulty: 2,
       introSlides: [
         {
-          body: "Teraz połączymy wszystko: zobaczysz zapisany rytm na pięciolinii (nuty i pauzy) i musisz wystukać go dokładnie tak, jak jest napisany — bez podpowiedzi z odsłuchu.",
+          body: "Teraz połączymy wszystko: zobaczysz zapisany rytm (nuty i pauzy) i musisz wystukać go dokładnie tak, jak jest napisany. Możesz go sobie odsłuchać.",
         },
       ],
       exercises: [
@@ -423,7 +423,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
           body: "Tempo to szybkość pulsu — jak szybko biją „kroki” muzyki. Wolne tempo brzmi spokojnie, jak spacer. Szybkie tempo brzmi żwawo, jak bieg. Ten sam rytm zagrany wolno i szybko wciąż jest tym samym rytmem — zmienia się tylko to, jak szybko go wystukujesz.",
         },
         {
-          body: "Na początku usłyszysz kilka pulsów „na rozbieg” — to jeszcze nie liczy się do wyniku. Dołącz do nich stukaniem i zostań w rytmie, gdy zacznie się liczyć naprawdę.",
+          body: "Na początku usłyszysz kilka pulsów „na rozbieg” — to jeszcze nie liczy się do wyniku. Dołącz do nich stukaniem i zostań w rytmie, gdy zacznie się liczyć naprawdę. W niektórych zadaniach stukasz tylko na „raz”, czyli na mocne uderzenie na początku każdego taktu.",
         },
       ],
       exercises: [
@@ -473,7 +473,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
       difficulty: 3,
       introSlides: [
         {
-          body: "Czas połączyć to, co już umiesz: szesnastki z lekcji 3 i synkopy z lekcji 4 — czasem w jednym takcie. Słuchaj i patrz uważnie, gdzie w rytmie jest cisza, a gdzie dźwięk.",
+          body: "Czas połączyć to, co już umiesz: szesnastki z lekcji 3 i pauzy z lekcji 4 — czasem w jednym takcie. Słuchaj i patrz uważnie, gdzie w rytmie jest cisza, a gdzie dźwięk.",
         },
       ],
       exercises: [
@@ -605,7 +605,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
           body: "Puls i rytm to nie to samo. Puls to stałe, równe tło — jak tykanie zegara, zawsze takie samo. Rytm to wzór różnych długości dźwięków, który GRASZ na tym tle — czasem szybciej, czasem wolniej niż sam puls.",
         },
         {
-          body: "W tej lekcji na przemian: raz stukasz czysty puls, raz powtarzasz usłyszany rytm. Posłuchaj różnicy między nimi.",
+          body: "W tej lekcji na przemian: raz stukasz czysty puls, raz powtarzasz usłyszany rytm. Posłuchaj różnicy między nimi. W niektórych zadaniach stukasz tylko na „raz”, czyli na mocne uderzenie na początku każdego taktu.",
         },
       ],
       exercises: [
@@ -633,7 +633,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
           id: "mr-l8-e6",
           type: "rhythm-echo",
           difficulty: 3,
-          spec: { type: "rhythm-echo", onsetsMs: [0, 200, 400, 700, 1100, 1300, 1700, 2100, 2300], showStandaloneMetronome: false },
+          spec: { type: "rhythm-echo", onsetsMs: [0, 200, 400, 800, 1200, 1400, 1800, 2200, 2400], showStandaloneMetronome: false },
         },
       ],
     },
@@ -652,7 +652,8 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
       difficulty: 3,
       introSlides: [
         {
-          body: "Znasz już synkopy, które zaczynają się po krótkiej ciszy w środku taktu. Teraz cisza pojawia się na samym początku — na „raz”, tam gdzie zwykle słyszysz pierwsze uderzenie. Musisz poczuć puls, nawet gdy on sam milczy.",
+          body: "Znasz już pauzy w środku taktu. Teraz cisza pojawia się na samym początku — na „raz”, tam gdzie zwykle słyszysz pierwsze uderzenie. Musisz poczuć puls, nawet gdy on sam milczy. Do pauzy ósemkowej i ćwierćnutowej dochodzi tu pauza szesnastkowa.",
+          noteValueReference: [{ value: "sixteenthRest", caption: "pauza szesnastkowa — 1/4 uderzenia ciszy" }],
         },
       ],
       exercises: [
@@ -841,7 +842,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
       difficulty: 2,
       introSlides: [
         {
-          body: "Znasz już 4/4 i 3/4 z lekcji 1. Teraz poćwicz rozpoznawanie ich ze słuchu w różnych tempach — od bardzo wolnych do bardzo szybkich. Licz uderzenia w grupach: cztery, albo trzy.",
+          body: "Znasz już 4/4 i 3/4 z lekcji 1. Teraz poćwicz rozpoznawanie ich ze słuchu, w różnych nagraniach. Licz uderzenia w grupach: cztery, albo trzy.",
         },
       ],
       exercises: [
@@ -894,7 +895,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
       difficulty: 2,
       introSlides: [
         {
-          body: "Te dyktanda są dłuższe niż wcześniej — trzy takty zamiast dwóch. Wartości nut znasz już wszystkie, ale musisz zapamiętać więcej naraz, zanim zaczniesz wystukiwać.",
+          body: "Te zapisy są dłuższe niż wcześniej — trzy takty zamiast dwóch. Wartości nut znasz już wszystkie, teraz wystukujesz dłuższy kawałek bez przerwy.",
         },
       ],
       exercises: [
@@ -1120,7 +1121,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
           difficulty: 2,
           spec: {
             type: "rhythm-echo",
-            onsetsMs: [0, 400, 700, 1000, 1300, 1800, 2100, 2400, 2900, 3200],
+            onsetsMs: [0, 450, 750, 1050, 1350, 1800, 2100, 2400, 2850, 3150],
             showStandaloneMetronome: false,
           },
         },
@@ -1130,7 +1131,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
           difficulty: 3,
           spec: {
             type: "rhythm-echo",
-            onsetsMs: [0, 250, 500, 750, 1000, 1350, 1600, 1850, 2100, 2450, 2700],
+            onsetsMs: [0, 250, 500, 750, 1000, 1500, 1750, 2000, 2250, 2750, 3000],
             showStandaloneMetronome: false,
           },
         },
@@ -1150,7 +1151,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
           difficulty: 3,
           spec: {
             type: "rhythm-echo",
-            onsetsMs: [0, 200, 400, 600, 900, 1100, 1400, 1600, 1900, 2100, 2400, 2700],
+            onsetsMs: [0, 200, 400, 600, 1000, 1200, 1600, 1800, 2200, 2400, 2800, 3200],
             showStandaloneMetronome: false,
           },
         },
@@ -1160,7 +1161,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
           difficulty: 3,
           spec: {
             type: "rhythm-echo",
-            onsetsMs: [0, 250, 400, 650, 900, 1050, 1350, 1550, 1800, 2150, 2400, 2650],
+            onsetsMs: [0, 250, 500, 750, 1000, 1250, 1750, 2000, 2250, 2750, 3000, 3250],
             showStandaloneMetronome: false,
           },
         },
@@ -1255,7 +1256,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
       bossName: "Arytmik",
       introSlides: [
         {
-          body: "Arytmik miesza rytmy, jak chce — przyspiesza, zwalnia, gubi uderzenia. Żeby go pokonać, pokaż, że Twój zmysł rytmu jest silniejszy niż jego chaos: puls, metrum, echo, układanki i dyktanda, wszystko naraz.",
+          body: "Arytmik miesza rytmy, jak chce — przyspiesza, zwalnia, gubi uderzenia. Żeby go pokonać, pokaż, że Twój zmysł rytmu jest silniejszy niż jego chaos: puls, metrum, układanki i dyktanda, wszystko naraz.",
           bossPortrait: true,
         },
       ],

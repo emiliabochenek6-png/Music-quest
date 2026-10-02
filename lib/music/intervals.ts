@@ -155,13 +155,28 @@ export function pickRandomIntervalNotePair(range: [Note, Note], allowedSemitones
       `pickRandomIntervalNotePair: no note pair ${semitones} semitones apart fits within the given range`
     );
   }
-  const { root, ascending } = candidates[Math.floor(Math.random() * candidates.length)];
-  const direction = ascending ? 1 : -1;
-  const sharpRoot = midiToNote(root);
-  try {
-    return [sharpRoot, noteAtInterval(sharpRoot, semitones, direction)];
-  } catch {
-    const flatRoot = flatAlternateSpelling(sharpRoot);
-    return [flatRoot, noteAtInterval(flatRoot, semitones, direction)];
-  }
+  const spell = (root: number, ascending: boolean): [Note, Note] => {
+    const direction = ascending ? 1 : -1;
+    const sharpRoot = midiToNote(root);
+    try {
+      return [sharpRoot, noteAtInterval(sharpRoot, semitones, direction)];
+    } catch {
+      const flatRoot = flatAlternateSpelling(sharpRoot);
+      return [flatRoot, noteAtInterval(flatRoot, semitones, direction)];
+    }
+  };
+  // Prefer pairs a child can read: no E♯, B♯, C♭ or F♭ and no double accidentals
+  // (all correct, but needlessly hard). They only appear when nothing simpler fits.
+  const spelled = candidates.map(({ root, ascending }) => spell(root, ascending));
+  const simple = spelled.filter((pair) => pair.every(isEasyToRead));
+  const pool = simple.length > 0 ? simple : spelled;
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+/** False for the rare spellings E♯, B♯, C♭, F♭ and any double accidental. */
+export function isEasyToRead(note: Note): boolean {
+  if (Math.abs(note.accidental) > 1) return false;
+  if (note.accidental === 1 && (note.letter === "E" || note.letter === "B")) return false;
+  if (note.accidental === -1 && (note.letter === "C" || note.letter === "F")) return false;
+  return true;
 }

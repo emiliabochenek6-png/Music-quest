@@ -3,6 +3,8 @@ import { isValidIntervalTimedTest } from "./intervalTimedTest";
 import { isValidPulseTap } from "./pulseTap";
 import { isValidRhythmEcho } from "./rhythmEcho";
 import { areEnharmonicallyEqual, noteToFrequency, octaveFoldedCentsDifference, parseScientific } from "@/lib/music/notes";
+import type { Accidental } from "@/lib/music/notes";
+import { staffStepToNote } from "@/lib/music/staff";
 import { deriveBeamGroups } from "@/lib/rhythm/beamGrouping";
 import { NOTE_VALUE_BEATS, REST_VALUE_BEATS, REST_VALUES } from "@/lib/rhythm/valueBeats";
 import type { AnswerInput, GeneratedExercise, Meter, RhythmNoteValue, RhythmRestValue } from "@/types/exercises";
@@ -138,7 +140,15 @@ export function isAnswerCorrect(exercise: GeneratedExercise, answer: AnswerInput
       );
     case "interval-build-staff-choice": {
       const { selectedStep, selectedAccidental } = answer as { selectedStep: number | null; selectedAccidental: number };
-      return selectedStep === exercise.targetStep && selectedAccidental === exercise.targetAccidental;
+      if (selectedStep === exercise.targetStep && selectedAccidental === exercise.targetAccidental) return true;
+      // The tritone has two equally correct spellings (augmented fourth / diminished fifth,
+      // e.g. F♯ or G♭ above C): both are accepted, any other interval needs the exact spelling.
+      if (exercise.intervalName.includes("tryton") && selectedStep !== null) {
+        const selected = staffStepToNote(selectedStep, selectedAccidental as Accidental);
+        const target = staffStepToNote(exercise.targetStep, exercise.targetAccidental);
+        return areEnharmonicallyEqual(selected, target);
+      }
+      return false;
     }
     case "beam-grouping-choice":
       return exercise.correctOptionIndex === (answer as { selectedIndex: number }).selectedIndex;

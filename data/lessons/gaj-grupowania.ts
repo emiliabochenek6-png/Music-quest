@@ -198,7 +198,7 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
       difficulty: 2,
       introSlides: [
         {
-          body: "W metrum ósemkowym (3/8, 6/8, 9/8, 12/8) miarą jest ćwierćnuta z kropką — trzy ósemki. Ósemki grupujemy belkami po trzy, jedna belka na jeden puls.",
+          body: "W metrum ósemkowym (6/8, 9/8, 12/8) miarą jest ćwierćnuta z kropką — trzy ósemki. Ósemki grupujemy belkami po trzy, jedna belka na jeden puls. W 3/8 jest tylko jeden taki puls, więc łączymy belką trzy ósemki całego taktu.",
           groupingExamples: [
             {
               sequence: ["eighth", "eighth", "eighth", "eighth", "eighth", "eighth"],
@@ -341,7 +341,7 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
       difficulty: 3,
       introSlides: [
         {
-          body: "W metrum 2/2 (alla breve) miarą jest półnuta. Odpowiednikiem 'dwóch szesnastek + ósemki' jest tu 'dwie ósemki + ćwierćnuta' — mieszczą się w wartości jednej półnuty. Ósemki łączy belka, ćwierćnuta stoi osobno — nigdy nie ma belki ani chorągiewki.",
+          body: "W metrum 2/2 (alla breve) miarą jest półnuta. Odpowiednikiem 'dwóch szesnastek + ósemki' jest tu 'dwie ósemki + ćwierćnuta' — mieszczą się w wartości jednej półnuty. Ósemki łączy belka, ćwierćnuta stoi osobno — nie ma belki ani chorągiewki. W 2/2 w tej lekcji ósemki łączymy po cztery, na każdą półnutę.",
           groupingExamples: [
             {
               sequence: ["eighth", "eighth", "quarter", "eighth", "eighth", "quarter"],
@@ -625,7 +625,7 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
           ],
         },
         {
-          body: "Pauza, która sama wypełnia cały puls, zawsze stoi osobno — nigdy nie wchodzi w belkę z sąsiednią grupą, tak jak żadna pojedyncza nuta wypełniająca cały puls nigdy nie ma belki.",
+          body: "Pauza, która sama wypełnia cały puls, stoi osobno i nie wchodzi w belkę z sąsiednią grupą, tak jak pojedyncza nuta wypełniająca cały puls nie ma belki. Uwaga: w tej grze belka przechodzi nad pauzą wewnątrz grupy (w niektórych podręcznikach zapisuje się to inaczej).",
           groupingExamples: [
             {
               sequence: ["half", "quarterRest", "quarter"],
@@ -761,7 +761,7 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
           ],
         },
         {
-          body: "Dwie triole pod rząd to dwie oddzielne belki, każda ze swoją własną '3' — nigdy jedna belka przez obie, tak samo jak zwykła belka nigdy nie przekracza granicy pulsu.",
+          body: "W tej lekcji dwie triole pod rząd mają dwie oddzielne belki, każda ze swoją własną '3' (jedna belka przez obie byłaby sekstolą). Zwykła belka też zwykle nie przekracza granicy pulsu.",
           groupingExamples: [
             {
               sequence: ["eighthTriplet", "eighthTriplet", "eighthTriplet", "eighthTriplet", "eighthTriplet", "eighthTriplet"],
@@ -949,7 +949,7 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
             options: [
               { groups: [[0], [1, 2], [3, 4, 5]] },
               { groups: [[0], [1], [2], [3, 4, 5]] },
-              { groups: [[0], [1, 2, 3], [4, 5]] },
+              { groups: [[0], [1], [2, 3, 4], [5]] },
             ],
             correctOptionIndex: 0,
           },
@@ -1145,13 +1145,13 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
           ],
         },
         {
-          body: "Triola nigdy nie łączy się belką z sąsiednią ćwierćnutą ani z żadną pojedynczą wartością spoza niej — zawsze zostaje własną, zamkniętą grupą trzech.",
+          body: "Triola zwykle nie łączy się belką z sąsiednią ćwierćnutą ani z żadną pojedynczą wartością spoza niej — zostaje własną, zamkniętą grupą trzech.",
           groupingExamples: [
             {
               sequence: ["quarter", "eighthTriplet", "eighthTriplet", "eighthTriplet"],
               groups: [[0], [1, 2, 3]],
               meter: "2/4",
-              label: "Triola nigdy nie łączy się belką z sąsiednią ćwierćnutą",
+              label: "Triola zwykle nie łączy się belką z sąsiednią ćwierćnutą",
             },
           ],
         },
@@ -1427,7 +1427,7 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
       difficulty: 6,
       introSlides: [
         {
-          body: "5/4 najczęściej grupuje się jako 3+2 (trzy ćwierćnuty, potem dwie) — ten sam podział, który już znasz z 5/8, tylko teraz jednostką jest ćwierćnuta, nie ósemka.",
+          body: "5/4 najczęściej grupuje się jako 3+2 (trzy ćwierćnuty, potem dwie) — ten sam podział, który już znasz z 5/8, tylko teraz jednostką jest ćwierćnuta, nie ósemka. W tej lekcji belkujemy całą grupę 3+2 (jedna belka na grupę).",
           groupingExamples: [
             {
               sequence: ["eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth"],
@@ -1438,7 +1438,7 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
           ],
         },
         {
-          body: "7/4 najczęściej grupuje się jako 2+2+3 — dokładnie jak 7/8, tylko w ćwierćnutach zamiast w ósemkach.",
+          body: "7/4 najczęściej grupuje się jako 2+2+3 — dokładnie jak 7/8, tylko w ćwierćnutach zamiast w ósemkach. W tej lekcji belkujemy całą grupę 2+2+3 (jedna belka na grupę).",
           groupingExamples: [
             {
               sequence: ["eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth"],

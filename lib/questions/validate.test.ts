@@ -192,3 +192,31 @@ describe("isAnswerCorrect", () => {
     expect(isAnswerCorrect(phrase, { type: "solfege-phrase-singing", detectedFrequenciesHz: [null, null] })).toBe(false);
   });
 });
+
+describe("interval-build-staff-choice: tritone spellings", () => {
+  const tritone = {
+    id: "t",
+    type: "interval-build-staff-choice",
+    rootNote: "C4",
+    rootDisplayName: "C",
+    intervalName: "tryton (4<)",
+    direction: "up",
+    targetStep: 3, // A4 (E4 = step 0)
+    targetAccidental: 1, // A#
+    targetDisplayName: "ais",
+    allowDoubleAccidentals: false,
+    clickableSteps: [],
+  } as unknown as Parameters<typeof isAnswerCorrect>[0];
+
+  it("accepts the augmented fourth and the diminished fifth for a tritone", () => {
+    expect(isAnswerCorrect(tritone, { type: "interval-build-staff-choice", selectedStep: 3, selectedAccidental: 1 })).toBe(true);
+    expect(isAnswerCorrect(tritone, { type: "interval-build-staff-choice", selectedStep: 4, selectedAccidental: -1 })).toBe(true);
+    expect(isAnswerCorrect(tritone, { type: "interval-build-staff-choice", selectedStep: 3, selectedAccidental: 0 })).toBe(false);
+  });
+
+  it("still needs the exact spelling for other intervals", () => {
+    const fourth = { ...(tritone as object), intervalName: "kwarta czysta (4)", targetAccidental: 0 } as unknown as Parameters<typeof isAnswerCorrect>[0];
+    expect(isAnswerCorrect(fourth, { type: "interval-build-staff-choice", selectedStep: 3, selectedAccidental: 0 })).toBe(true);
+    expect(isAnswerCorrect(fourth, { type: "interval-build-staff-choice", selectedStep: 4, selectedAccidental: -2 })).toBe(false);
+  });
+});

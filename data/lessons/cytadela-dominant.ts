@@ -12,7 +12,7 @@ import type { WorldContent } from "@/types/exercises";
  *
  *   postać zasadnicza (D⁷) — bas: pryma (V stopień gamy), brak cyfr lub "7"
  *   I przewrót (D⁶₅, kwintsekstakord) — bas: tercja (VII stopień gamy)
- *   II przewrót (D⁴₃, tercekwartakord) — bas: kwinta (II stopień gamy)
+ *   II przewrót (D⁴₃, tercjakwartakord) — bas: kwinta (II stopień gamy)
  *   III przewrót (D², sekundakord) — bas: septyma (IV stopień gamy)
  *
  * `noteRange` for every dominant-seventh-inversion-choice exercise here is
@@ -83,15 +83,15 @@ export const CYTADELA_DOMINANT_CONTENT: WorldContent = {
       ],
     },
     {
-      id: "cd-poziom-2-tercekwartakord",
+      id: "cd-poziom-2-tercjakwartakord",
       order: 2,
       difficulty: 3,
       introSlides: [
         {
-          body: "Drugi przewrót to tercekwartakord (D⁴₃): w basie ląduje kwinta akordu, czyli II stopień gamy. Pryma, tercja i septyma przenoszą się o oktawę wyżej, zachowując swoją kolejność.",
+          body: "Drugi przewrót to tercjakwartakord (D⁴₃): w basie ląduje kwinta akordu, czyli II stopień gamy. Pryma, tercja i septyma przenoszą się o oktawę wyżej, zachowując swoją kolejność.",
           triadExamples: [
             { notes: ["C4", "E4", "G4", "Bb4"], label: "postać zasadnicza (D⁷)", degrees: [1, 3, 5, 7] },
-            { notes: ["G4", "Bb4", "C5", "E5"], label: "tercekwartakord (D⁴₃) — II przewrót", degrees: [5, 7, 1, 3] },
+            { notes: ["G4", "Bb4", "C5", "E5"], label: "tercjakwartakord (D⁴₃) — II przewrót", degrees: [5, 7, 1, 3] },
           ],
         },
       ],
@@ -117,7 +117,7 @@ export const CYTADELA_DOMINANT_CONTENT: WorldContent = {
           ],
         },
         {
-          body: "Podsumowanie: popatrz, który dźwięk akordu jest najniższy (w basie). Pryma → postać zasadnicza. Tercja → kwintsekstakord. Kwinta → tercekwartakord. Septyma → sekundakord.",
+          body: "Podsumowanie: popatrz, który dźwięk akordu jest najniższy (w basie). Pryma → postać zasadnicza. Tercja → kwintsekstakord. Kwinta → tercjakwartakord. Septyma → sekundakord.",
         },
       ],
       exercises: [
@@ -135,11 +135,11 @@ export const CYTADELA_DOMINANT_CONTENT: WorldContent = {
       difficulty: 4,
       introSlides: [
         {
-          body: "Teraz wszystkie cztery postacie na raz: postać zasadnicza, kwintsekstakord, tercekwartakord i sekundakord — te same cztery dźwięki, przełożone na cztery różne sposoby.",
+          body: "Teraz wszystkie cztery postacie na raz: postać zasadnicza, kwintsekstakord, tercjakwartakord i sekundakord — te same cztery dźwięki, przełożone na cztery różne sposoby.",
           triadExamples: [
             { notes: ["C4", "E4", "G4", "Bb4"], label: "postać zasadnicza (D⁷)", degrees: [1, 3, 5, 7] },
             { notes: ["E4", "G4", "Bb4", "C5"], label: "kwintsekstakord (D⁶₅)", degrees: [3, 5, 7, 1] },
-            { notes: ["G4", "Bb4", "C5", "E5"], label: "tercekwartakord (D⁴₃)", degrees: [5, 7, 1, 3] },
+            { notes: ["G4", "Bb4", "C5", "E5"], label: "tercjakwartakord (D⁴₃)", degrees: [5, 7, 1, 3] },
             { notes: ["Bb4", "C5", "E5", "G5"], label: "sekundakord (D²)", degrees: [7, 1, 3, 5] },
           ],
         },
@@ -179,7 +179,7 @@ export const CYTADELA_DOMINANT_CONTENT: WorldContent = {
       difficulty: 5,
       introSlides: [
         {
-          body: "Podsumowanie: wszystkie cztery postacie dominanty septymowej, wymieszane, częściowo tylko ze słuchu. Pryma na dole — postać zasadnicza. Tercja na dole — kwintsekstakord. Kwinta na dole — tercekwartakord. Septyma na dole — sekundakord.",
+          body: "Podsumowanie: wszystkie cztery postacie dominanty septymowej, wymieszane, częściowo tylko ze słuchu. Pryma na dole — postać zasadnicza. Tercja na dole — kwintsekstakord. Kwinta na dole — tercjakwartakord. Septyma na dole — sekundakord.",
         },
       ],
       exercises: [
@@ -233,11 +233,11 @@ export const CYTADELA_DOMINANT_CONTENT: WorldContent = {
       difficulty: 4,
       introSlides: [
         {
-          body: "Każdy przewrót to inny dźwięk akordu w basie: w postaci zasadniczej — pryma, w kwintsekstakordzie — tercja, w tercekwartakordzie — kwinta, w sekundakordzie — septyma. W tej lekcji zobaczysz dominantę septymową w postaci zasadniczej i będziesz szukać, który dźwięk musi wylądować w basie, żeby powstał dany przewrót — albo odwrotnie: mając dany bas, nazwiesz przewrót.",
+          body: "Każdy przewrót to inny dźwięk akordu w basie: w postaci zasadniczej — pryma, w kwintsekstakordzie — tercja, w tercjakwartakordzie — kwinta, w sekundakordzie — septyma. W tej lekcji zobaczysz dominantę septymową w postaci zasadniczej i będziesz szukać, który dźwięk musi wylądować w basie, żeby powstał dany przewrót — albo odwrotnie: mając dany bas, nazwiesz przewrót.",
           triadExamples: [
             { notes: ["C4", "E4", "G4", "Bb4"], label: "postać zasadnicza — w basie pryma (C)", degrees: [1, 3, 5, 7] },
             { notes: ["E4", "G4", "Bb4", "C5"], label: "kwintsekstakord — w basie tercja (E)", degrees: [3, 5, 7, 1] },
-            { notes: ["G4", "Bb4", "C5", "E5"], label: "tercekwartakord — w basie kwinta (G)", degrees: [5, 7, 1, 3] },
+            { notes: ["G4", "Bb4", "C5", "E5"], label: "tercjakwartakord — w basie kwinta (G)", degrees: [5, 7, 1, 3] },
             { notes: ["Bb4", "C5", "E5", "G5"], label: "sekundakord — w basie septyma (B)", degrees: [7, 1, 3, 5] },
           ],
         },
@@ -262,11 +262,11 @@ export const CYTADELA_DOMINANT_CONTENT: WorldContent = {
           difficulty: 4,
           spec: {
             type: "triad-fact-choice",
-            prompt: "Masz dominantę septymową zbudowaną na dźwięku C: C-E-G-B. Który dźwięk musi wylądować w basie, żeby powstał tercekwartakord (II przewrót)?",
-            hint: "Tercekwartakord to II przewrót — w basie ląduje kwinta.",
+            prompt: "Masz dominantę septymową zbudowaną na dźwięku C: C-E-G-B. Który dźwięk musi wylądować w basie, żeby powstał tercjakwartakord (II przewrót)?",
+            hint: "Tercjakwartakord to II przewrót — w basie ląduje kwinta.",
             options: ["C", "E", "G", "B"],
             correctOptionIndex: 2,
-            explanation: "W tercekwartakordzie (II przewrót) w basie jest kwinta akordu — tutaj G.",
+            explanation: "W tercjakwartakordzie (II przewrót) w basie jest kwinta akordu — tutaj G.",
           },
         },
         {
@@ -290,7 +290,7 @@ export const CYTADELA_DOMINANT_CONTENT: WorldContent = {
             type: "triad-fact-choice",
             prompt: "Masz dominantę septymową zbudowaną na dźwięku G: G-H-D-F (pryma-tercja-kwinta-septyma). W basie jest H. Jak nazywa się ten przewrót?",
             hint: "H to tercja tego akordu.",
-            options: ["postać zasadnicza", "kwintsekstakord", "tercekwartakord", "sekundakord"],
+            options: ["postać zasadnicza", "kwintsekstakord", "tercjakwartakord", "sekundakord"],
             correctOptionIndex: 1,
             explanation: "H to tercja akordu zbudowanego na G — tercja w basie to kwintsekstakord (I przewrót).",
           },
@@ -303,9 +303,9 @@ export const CYTADELA_DOMINANT_CONTENT: WorldContent = {
             type: "triad-fact-choice",
             prompt: "Masz dominantę septymową zbudowaną na dźwięku G: G-H-D-F. W basie jest D. Jak nazywa się ten przewrót?",
             hint: "D to kwinta tego akordu.",
-            options: ["postać zasadnicza", "kwintsekstakord", "tercekwartakord", "sekundakord"],
+            options: ["postać zasadnicza", "kwintsekstakord", "tercjakwartakord", "sekundakord"],
             correctOptionIndex: 2,
-            explanation: "D to kwinta akordu zbudowanego na G — kwinta w basie to tercekwartakord (II przewrót).",
+            explanation: "D to kwinta akordu zbudowanego na G — kwinta w basie to tercjakwartakord (II przewrót).",
           },
         },
         {
@@ -316,7 +316,7 @@ export const CYTADELA_DOMINANT_CONTENT: WorldContent = {
             type: "triad-fact-choice",
             prompt: "Masz dominantę septymową zbudowaną na dźwięku G: G-H-D-F. W basie jest F. Jak nazywa się ten przewrót?",
             hint: "F to septyma tego akordu.",
-            options: ["postać zasadnicza", "kwintsekstakord", "tercekwartakord", "sekundakord"],
+            options: ["postać zasadnicza", "kwintsekstakord", "tercjakwartakord", "sekundakord"],
             correctOptionIndex: 3,
             explanation: "F to septyma akordu zbudowanego na G — septyma w basie to sekundakord (III przewrót).",
           },
@@ -338,7 +338,7 @@ export const CYTADELA_DOMINANT_CONTENT: WorldContent = {
           triadExamples: [
             { notes: ["C4", "E4", "G4", "Bb4"], label: "postać zasadnicza — C-E-G-B", degrees: [1, 3, 5, 7] },
             { notes: ["E4", "G4", "Bb4", "C5"], label: "kwintsekstakord — E-G-B-C", degrees: [3, 5, 7, 1] },
-            { notes: ["G4", "Bb4", "C5", "E5"], label: "tercekwartakord — G-B-C-E", degrees: [5, 7, 1, 3] },
+            { notes: ["G4", "Bb4", "C5", "E5"], label: "tercjakwartakord — G-B-C-E", degrees: [5, 7, 1, 3] },
             { notes: ["Bb4", "C5", "E5", "G5"], label: "sekundakord — B-C-E-G", degrees: [7, 1, 3, 5] },
           ],
         },
@@ -363,11 +363,11 @@ export const CYTADELA_DOMINANT_CONTENT: WorldContent = {
           difficulty: 4,
           spec: {
             type: "triad-fact-choice",
-            prompt: "Jak zapisane są (od najniższego dźwięku) nuty tercekwartakordu zbudowanego na dźwięku C?",
-            hint: "Tercekwartakord to II przewrót — zaczyna się od kwinty akordu.",
+            prompt: "Jak zapisane są (od najniższego dźwięku) nuty tercjakwartakordu zbudowanego na dźwięku C?",
+            hint: "Tercjakwartakord to II przewrót — zaczyna się od kwinty akordu.",
             options: ["C-E-G-B", "E-G-B-C", "G-B-C-E", "B-C-E-G"],
             correctOptionIndex: 2,
-            explanation: "Tercekwartakord zaczyna się od kwinty (G), potem septyma (B), pryma (C), na końcu tercja o oktawę wyżej (E).",
+            explanation: "Tercjakwartakord zaczyna się od kwinty (G), potem septyma (B), pryma (C), na końcu tercja o oktawę wyżej (E).",
           },
         },
         {
@@ -402,11 +402,11 @@ export const CYTADELA_DOMINANT_CONTENT: WorldContent = {
           difficulty: 4,
           spec: {
             type: "triad-fact-choice",
-            prompt: "Jak zapisane są (od najniższego dźwięku) nuty tercekwartakordu zbudowanego na dźwięku G?",
-            hint: "Tercekwartakord to II przewrót — zaczyna się od kwinty akordu.",
+            prompt: "Jak zapisane są (od najniższego dźwięku) nuty tercjakwartakordu zbudowanego na dźwięku G?",
+            hint: "Tercjakwartakord to II przewrót — zaczyna się od kwinty akordu.",
             options: ["G-H-D-F", "H-D-F-G", "D-F-G-H", "F-G-H-D"],
             correctOptionIndex: 2,
-            explanation: "Tercekwartakord zaczyna się od kwinty (D), potem septyma (F), pryma (G), na końcu tercja o oktawę wyżej (H).",
+            explanation: "Tercjakwartakord zaczyna się od kwinty (D), potem septyma (F), pryma (G), na końcu tercja o oktawę wyżej (H).",
           },
         },
         {
@@ -475,11 +475,11 @@ export const CYTADELA_DOMINANT_CONTENT: WorldContent = {
           difficulty: 5,
           spec: {
             type: "triad-fact-choice",
-            prompt: "Masz dominantę septymową zbudowaną na dźwięku F: F-A-C-Es. Który dźwięk musi wylądować w basie, żeby powstał tercekwartakord (II przewrót)?",
-            hint: "Tercekwartakord to II przewrót — w basie ląduje kwinta.",
+            prompt: "Masz dominantę septymową zbudowaną na dźwięku F: F-A-C-Es. Który dźwięk musi wylądować w basie, żeby powstał tercjakwartakord (II przewrót)?",
+            hint: "Tercjakwartakord to II przewrót — w basie ląduje kwinta.",
             options: ["F", "A", "C", "Es"],
             correctOptionIndex: 2,
-            explanation: "W tercekwartakordzie w basie jest kwinta akordu — tutaj C.",
+            explanation: "W tercjakwartakordzie w basie jest kwinta akordu — tutaj C.",
           },
         },
         {
@@ -514,11 +514,11 @@ export const CYTADELA_DOMINANT_CONTENT: WorldContent = {
           difficulty: 5,
           spec: {
             type: "triad-fact-choice",
-            prompt: "Masz dominantę septymową zbudowaną na dźwięku D: D-Fis-A-C. Który dźwięk musi wylądować w basie, żeby powstał tercekwartakord (II przewrót)?",
-            hint: "Tercekwartakord to II przewrót — w basie ląduje kwinta.",
+            prompt: "Masz dominantę septymową zbudowaną na dźwięku D: D-Fis-A-C. Który dźwięk musi wylądować w basie, żeby powstał tercjakwartakord (II przewrót)?",
+            hint: "Tercjakwartakord to II przewrót — w basie ląduje kwinta.",
             options: ["D", "Fis", "A", "C"],
             correctOptionIndex: 2,
-            explanation: "W tercekwartakordzie w basie jest kwinta akordu — tutaj A.",
+            explanation: "W tercjakwartakordzie w basie jest kwinta akordu — tutaj A.",
           },
         },
       ],
@@ -560,9 +560,9 @@ export const CYTADELA_DOMINANT_CONTENT: WorldContent = {
       difficulty: 5,
       introSlides: [
         {
-          body: "Ten sam pomysł co w poprzedniej lekcji, ale teraz mogą pojawić się WSZYSTKIE postacie — nie tylko postać zasadnicza i kwintsekstakord, ale też tercekwartakord i sekundakord.",
+          body: "Ten sam pomysł co w poprzedniej lekcji, ale teraz mogą pojawić się WSZYSTKIE postacie — nie tylko postać zasadnicza i kwintsekstakord, ale też tercjakwartakord i sekundakord.",
           triadExamples: [
-            { notes: ["G4", "Bb4", "C5", "E5"], label: "tercekwartakord", degrees: [5, 7, 1, 3] },
+            { notes: ["G4", "Bb4", "C5", "E5"], label: "tercjakwartakord", degrees: [5, 7, 1, 3] },
             { notes: ["Bb4", "C5", "E5", "G5"], label: "sekundakord", degrees: [7, 1, 3, 5] },
           ],
         },

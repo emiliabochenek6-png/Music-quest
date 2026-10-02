@@ -35,7 +35,7 @@ export function buildDominantSeventh(root: Note): SeventhChord {
 /** Which chord tone sits in the bass — same idea as triads.ts's own
  * TriadInversion, one step further since a seventh chord has four tones
  * to invert through instead of three. Polish names match real music-
- * theory terminology: kwintsekstakord (bass = third), tercekwartakord
+ * theory terminology: kwintsekstakord (bass = third), tercjakwartakord
  * (bass = fifth), sekundakord (bass = seventh). */
 export type SeventhChordInversion = "root" | "first" | "second" | "third";
 
@@ -60,7 +60,7 @@ const SEVENTH_INVERSION_NAME: Record<Locale, Record<SeventhChordInversion, strin
   pl: {
     root: "postać zasadnicza (D⁷)",
     first: "kwintsekstakord (D⁶₅, I przewrót)",
-    second: "tercekwartakord (D⁴₃, II przewrót)",
+    second: "tercjakwartakord (D⁴₃, II przewrót)",
     third: "sekundakord (D², III przewrót)",
   },
 };

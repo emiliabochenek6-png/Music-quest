@@ -2,7 +2,7 @@ import { ScrollView, Text, View } from "react-native";
 import Svg, { Ellipse, G, Line, Text as SvgText } from "react-native-svg";
 import { describeStaffPosition, ledgerLineSteps } from "@/lib/music/staff";
 import { getNoteDisplayName } from "@/lib/music/names";
-import { enumerateChromaticRange, formatScientific, noteToMidi, parseScientific, type Note } from "@/lib/music/notes";
+import { diatonicIndexToLetter, enumerateChromaticRange, formatScientific, letterDiatonicIndex, noteToMidi, parseScientific, type Note } from "@/lib/music/notes";
 import { STAFF_LINE_STEPS, VIEW_HEIGHT, stepToY } from "@/lib/music/staffGeometry";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import type { Locale } from "@/types/locale";
@@ -154,6 +154,10 @@ export function ChromaticKeyboardReference({ range, locale }: ChromaticKeyboardR
                 }}
               >
                 <Text style={{ fontSize: 9, fontWeight: "700", color: "#ffffff" }}>{getNoteDisplayName(n, locale)}</Text>
+                {/* The same black key also has a flat name (cis = des), and the exercises use both. */}
+                <Text style={{ fontSize: 9, fontWeight: "700", color: "rgba(255,255,255,0.85)" }}>
+                  {getNoteDisplayName({ letter: diatonicIndexToLetter(letterDiatonicIndex(n.letter) + 1), accidental: -1, octave: n.octave }, locale)}
+                </Text>
                 <Text style={{ fontSize: 8, color: "rgba(255,255,255,0.6)" }}>{noteToMidi(n) - startMidi}</Text>
               </View>
             ))}

@@ -496,14 +496,14 @@ export const FABRYKA_BUDOWANIA_CONTENT: WorldContent = {
       ],
     },
     {
-      id: "fb-poziom-19-tercekwartakord-septymowy",
+      id: "fb-poziom-19-tercjakwartakord-septymowy",
       order: 19,
       difficulty: 3,
       introSlides: [
         {
-          body: "Teraz tercekwartakord (D⁴₃, II przewrót): w basie stoi już kwinta akordu — Ty dobudowujesz septymę, prymę (o oktawę wyżej) i tercję.",
+          body: "Teraz tercjakwartakord (D⁴₃, II przewrót): w basie stoi już kwinta akordu — Ty dobudowujesz septymę, prymę (o oktawę wyżej) i tercję.",
           triadExamples: [
-            { notes: ["G4", "Bb4", "C5", "E5"], label: "tercekwartakord (D⁴₃) — w basie kwinta (G)", degrees: [5, 7, 1, 3] },
+            { notes: ["G4", "Bb4", "C5", "E5"], label: "tercjakwartakord (D⁴₃) — w basie kwinta (G)", degrees: [5, 7, 1, 3] },
           ],
         },
       ],
@@ -543,7 +543,7 @@ export const FABRYKA_BUDOWANIA_CONTENT: WorldContent = {
       difficulty: 4,
       introSlides: [
         {
-          body: "Podsumowanie budowania dominanty septymowej — wszystkie cztery postacie wymieszane: zasadnicza, kwintsekstakord, tercekwartakord i sekundakord.",
+          body: "Podsumowanie budowania dominanty septymowej — wszystkie cztery postacie wymieszane: zasadnicza, kwintsekstakord, tercjakwartakord i sekundakord.",
         },
       ],
       exercises: [

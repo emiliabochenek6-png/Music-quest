@@ -529,7 +529,7 @@ export interface LessonTheorySlide {
    * bottom-to-top order with its scale-degree role. For a triad, root
    * position is [1,3,5], sekstakord (I przewrót) [3,5,1], kwartsekstakord
    * (II przewrót) [5,1,3]. For a dominant seventh chord, root position is
-   * [1,3,5,7], kwintsekstakord [3,5,7,1], tercekwartakord [5,7,1,3],
+   * [1,3,5,7], kwintsekstakord [3,5,7,1], tercjakwartakord [5,7,1,3],
    * sekundakord [7,1,3,5]. */
   triadExamples?: { notes: string[]; label: string; degrees?: number[] }[];
   /** Zaczarowany Solfeż's own intro-slide illustration: one single-note

@@ -27,10 +27,7 @@ export const SZCZYT_DYKTAND_CONTENT: WorldContent = {
           body: 'Metrum i takt widać od razu, zanim jeszcze cokolwiek zapiszesz — Twoja notacja rośnie w miarę dodawania kolejnych wartości. Pomyłka? "Cofnij ostatnią wartość" usuwa ostatni krok.',
         },
         {
-          body: "Uwaga: jedno pojedyncze usłyszane uderzenie może być zarówno ćwierćnutą, jak i ósemką — o tym, jaka to naprawdę wartość, decyduje tempo i odstęp do następnego dźwięku, nie samo \"jedno stuknięcie\".",
-        },
-        {
-          body: 'Gdy w Twojej odpowiedzi pojawią się sąsiadujące ósemki lub szesnastki, użyj przycisku "Grupuj": klikasz dwie sąsiednie takie nuty, żeby połączyć je belką (tak jak w prawdziwej notacji) — kliknięcie tej samej pary ponownie je rozdziela. To też część oceny, obok samego rytmu.',
+          body: "Uwaga: jedno pojedyncze usłyszane uderzenie może być zarówno ćwierćnutą, jak i półnutą — o tym, jaka to naprawdę wartość, decyduje tempo i odstęp do następnego dźwięku, nie samo \"jedno stuknięcie\".",
         },
       ],
       exercises: [
@@ -48,6 +45,9 @@ export const SZCZYT_DYKTAND_CONTENT: WorldContent = {
       difficulty: 2,
       introSlides: [
         { body: "Wchodzimy wyżej: dochodzą pary ósemek, a takt zmienia się na 3/4 — trzy uderzenia ćwierćnutowe w każdym takcie zamiast czterech." },
+        {
+          body: 'Gdy w Twojej odpowiedzi pojawią się sąsiadujące ósemki lub szesnastki, użyj przycisku "Grupuj": klikasz dwie sąsiednie takie nuty, żeby połączyć je belką (tak jak w prawdziwej notacji) — kliknięcie tej samej pary ponownie je rozdziela. To też część oceny, obok samego rytmu.',
+        },
       ],
       exercises: [
         { id: "sd-l2-e1", type: "rhythm-value-dictation", difficulty: 2, spec: { type: "rhythm-value-dictation", bpm: 78, meter: "3/4", allowedValues: ["quarter", "half", "eighth", "quarterRest"], sequence: ["quarter", "eighth", "eighth", "quarter"] } },
@@ -149,14 +149,14 @@ export const SZCZYT_DYKTAND_CONTENT: WorldContent = {
       difficulty: 7,
       introSlides: [
         {
-          body: "Kolejny odcinek wspinaczki: dochodzą ćwierćnuta z kropką, ósemka z kropką i szesnastka, a wysokości sięgają teraz od dolnej linii (E4) aż po górną linię pięciolinii (F5).",
+          body: "Kolejny odcinek wspinaczki: dochodzą ćwierćnuta z kropką, ósemka z kropką i szesnastka, a wysokości sięgają teraz od dolnej linii (E4) aż po górną linię pięciolinii (F5). Uwaga: ćwierćnuta z kropką może zacząć się w środku taktu — wtedy akcent wypada na słabszą część, czyli powstaje synkopa.",
         },
       ],
       exercises: [
         { id: "sd-l8-e1", type: "melodic-rhythmic-dictation", difficulty: 7, spec: { type: "melodic-rhythmic-dictation", bpm: 84, key: 0, meter: "3/4", allowedValues: ["quarter", "half", "dottedHalf", "eighth", "dottedQuarter", "dottedEighth", "sixteenth"], notes: [{ pitch: "E4", value: "dottedEighth" }, { pitch: "F4", value: "sixteenth" }, { pitch: "G4", value: "quarter" }, { pitch: "C5", value: "quarter" }, { pitch: "F5", value: "dottedHalf" }] } },
         { id: "sd-l8-e2", type: "melodic-rhythmic-dictation", difficulty: 7, spec: { type: "melodic-rhythmic-dictation", bpm: 85, key: 0, meter: "4/4", allowedValues: ["quarter", "half", "dottedHalf", "eighth", "dottedQuarter", "dottedEighth", "sixteenth"], notes: [{ pitch: "F5", value: "quarter" }, { pitch: "D5", value: "eighth" }, { pitch: "C5", value: "eighth" }, { pitch: "A4", value: "dottedQuarter" }, { pitch: "E4", value: "eighth" }] } },
         { id: "sd-l8-e3", type: "melodic-rhythmic-dictation", difficulty: 8, spec: { type: "melodic-rhythmic-dictation", bpm: 85, key: 0, meter: "4/4", allowedValues: ["quarter", "half", "dottedHalf", "eighth", "dottedQuarter", "dottedEighth", "sixteenth"], notes: [{ pitch: "G4", value: "sixteenth" }, { pitch: "F#4", value: "sixteenth" }, { pitch: "G4", value: "eighth" }, { pitch: "B4", value: "dottedQuarter" }, { pitch: "D5", value: "dottedQuarter" }, { pitch: "F5", value: "half" }, { pitch: "F5", value: "half" }] } },
-        { id: "sd-l8-e4", type: "melodic-rhythmic-dictation", difficulty: 8, spec: { type: "melodic-rhythmic-dictation", bpm: 86, key: -1, meter: "3/4", allowedValues: ["quarter", "half", "dottedHalf", "eighth", "dottedQuarter", "dottedEighth", "sixteenth"], notes: [{ pitch: "E4", value: "quarter" }, { pitch: "Bb4", value: "dottedQuarter" }, { pitch: "A4", value: "eighth" }, { pitch: "F5", value: "quarter" }, { pitch: "C5", value: "half" }] } },
+        { id: "sd-l8-e4", type: "melodic-rhythmic-dictation", difficulty: 8, spec: { type: "melodic-rhythmic-dictation", bpm: 86, key: -1, meter: "3/4", allowedValues: ["quarter", "half", "dottedHalf", "eighth", "dottedQuarter", "dottedEighth", "sixteenth"], notes: [{ pitch: "F4", value: "quarter" }, { pitch: "Bb4", value: "dottedQuarter" }, { pitch: "A4", value: "eighth" }, { pitch: "F5", value: "quarter" }, { pitch: "C5", value: "half" }] } },
         { id: "sd-l8-e5", type: "melodic-rhythmic-dictation", difficulty: 8, spec: { type: "melodic-rhythmic-dictation", bpm: 87, key: 0, meter: "4/4", allowedValues: ["quarter", "half", "dottedHalf", "eighth", "dottedQuarter", "dottedEighth", "sixteenth"], notes: [{ pitch: "C5", value: "dottedEighth" }, { pitch: "D5", value: "sixteenth" }, { pitch: "E5", value: "quarter" }, { pitch: "F5", value: "dottedQuarter" }, { pitch: "C5", value: "eighth" }] } },
         { id: "sd-l8-e6", type: "melodic-rhythmic-dictation", difficulty: 8, spec: { type: "melodic-rhythmic-dictation", bpm: 88, key: 0, meter: "3/4", allowedValues: ["quarter", "half", "dottedHalf", "eighth", "dottedQuarter", "dottedEighth", "sixteenth"], notes: [{ pitch: "E4", value: "eighth" }, { pitch: "G4", value: "eighth" }, { pitch: "B4", value: "dottedQuarter" }, { pitch: "D5", value: "eighth" }, { pitch: "F5", value: "dottedHalf" }] } },
       ],
@@ -176,7 +176,7 @@ export const SZCZYT_DYKTAND_CONTENT: WorldContent = {
         { id: "sd-l9-e3", type: "melodic-rhythmic-dictation", difficulty: 9, spec: { type: "melodic-rhythmic-dictation", bpm: 94, key: 0, meter: "3/4", allowedValues: ["quarter", "half", "dottedHalf", "eighth", "dottedQuarter", "dottedEighth", "sixteenth", "whole"], notes: [{ pitch: "E4", value: "eighth" }, { pitch: "G4", value: "eighth" }, { pitch: "Bb4", value: "quarter" }, { pitch: "D5", value: "dottedEighth" }, { pitch: "E5", value: "sixteenth" }, { pitch: "F5", value: "dottedHalf" }] } },
         { id: "sd-l9-e4", type: "melodic-rhythmic-dictation", difficulty: 9, spec: { type: "melodic-rhythmic-dictation", bpm: 94, key: 0, meter: "4/4", allowedValues: ["quarter", "half", "dottedHalf", "eighth", "dottedQuarter", "dottedEighth", "sixteenth", "whole"], notes: [{ pitch: "C5", value: "whole" }, { pitch: "A4", value: "half" }, { pitch: "F#4", value: "quarter" }, { pitch: "G4", value: "eighth" }, { pitch: "F4", value: "eighth" }] } },
         { id: "sd-l9-e5", type: "melodic-rhythmic-dictation", difficulty: 9, spec: { type: "melodic-rhythmic-dictation", bpm: 95, key: 0, meter: "4/4", allowedValues: ["quarter", "half", "dottedHalf", "eighth", "dottedQuarter", "dottedEighth", "sixteenth", "whole"], notes: [{ pitch: "E4", value: "dottedEighth" }, { pitch: "F4", value: "sixteenth" }, { pitch: "G4", value: "dottedEighth" }, { pitch: "A4", value: "sixteenth" }, { pitch: "B4", value: "quarter" }, { pitch: "D5", value: "quarter" }, { pitch: "F5", value: "whole" }] } },
-        { id: "sd-l9-e6", type: "melodic-rhythmic-dictation", difficulty: 9, spec: { type: "melodic-rhythmic-dictation", bpm: 96, key: 0, meter: "9/8", allowedValues: ["quarter", "half", "dottedHalf", "eighth", "dottedQuarter", "dottedEighth", "sixteenth", "whole"], notes: [{ pitch: "F5", value: "half" }, { pitch: "D5", value: "dottedQuarter" }, { pitch: "Bb4", value: "eighth" }, { pitch: "G4", value: "eighth" }, { pitch: "F#4", value: "eighth" }, { pitch: "E4", value: "whole" }] } },
+        { id: "sd-l9-e6", type: "melodic-rhythmic-dictation", difficulty: 9, spec: { type: "melodic-rhythmic-dictation", bpm: 96, key: 0, meter: "9/8", allowedValues: ["quarter", "half", "dottedHalf", "eighth", "dottedQuarter", "dottedEighth", "sixteenth", "whole"], notes: [{ pitch: "F5", value: "dottedQuarter" }, { pitch: "D5", value: "dottedQuarter" }, { pitch: "Bb4", value: "dottedQuarter" }, { pitch: "F#4", value: "dottedHalf" }, { pitch: "E4", value: "dottedQuarter" }] } },
       ],
     },
     {
@@ -199,7 +199,7 @@ export const SZCZYT_DYKTAND_CONTENT: WorldContent = {
         { id: "sd-l10-e2", type: "rhythm-value-dictation", difficulty: 9, spec: { type: "rhythm-value-dictation", bpm: 97, meter: "5/8", allowedValues: ["dottedQuarter", "eighth"], sequence: ["eighth", "eighth", "dottedQuarter"] } },
         { id: "sd-l10-e3", type: "rhythm-value-dictation", difficulty: 9, spec: { type: "rhythm-value-dictation", bpm: 97, meter: "5/8", allowedValues: ["quarter", "eighth"], sequence: ["quarter", "quarter", "eighth"] } },
         { id: "sd-l10-e4", type: "rhythm-value-dictation", difficulty: 9, spec: { type: "rhythm-value-dictation", bpm: 98, meter: "5/8", allowedValues: ["quarter", "eighth"], sequence: ["eighth", "eighth", "eighth", "quarter"] } },
-        { id: "sd-l10-e5", type: "rhythm-value-dictation", difficulty: 9, spec: { type: "rhythm-value-dictation", bpm: 98, meter: "7/8", allowedValues: ["dottedQuarter", "eighth"], sequence: ["dottedQuarter", "dottedQuarter", "eighth"] } },
+        { id: "sd-l10-e5", type: "rhythm-value-dictation", difficulty: 9, spec: { type: "rhythm-value-dictation", bpm: 98, meter: "7/8", allowedValues: ["dottedQuarter", "quarter"], sequence: ["quarter", "quarter", "dottedQuarter"] } },
         { id: "sd-l10-e6", type: "rhythm-value-dictation", difficulty: 9, spec: { type: "rhythm-value-dictation", bpm: 99, meter: "7/8", allowedValues: ["quarter", "eighth"], sequence: ["quarter", "quarter", "quarter", "eighth"] } },
         { id: "sd-l10-e7", type: "rhythm-value-dictation", difficulty: 9, spec: { type: "rhythm-value-dictation", bpm: 100, meter: "7/8", allowedValues: ["dottedQuarter", "quarter", "eighth"], sequence: ["eighth", "eighth", "dottedQuarter", "quarter"] } },
       ],
@@ -220,7 +220,7 @@ export const SZCZYT_DYKTAND_CONTENT: WorldContent = {
         { id: "sd-l11-e1", type: "melodic-rhythmic-dictation", difficulty: 9, spec: { type: "melodic-rhythmic-dictation", bpm: 76, key: 0, meter: "5/8", allowedValues: ["dottedQuarter", "eighth"], notes: [{ pitch: "C5", value: "dottedQuarter" }, { pitch: "B4", value: "eighth" }, { pitch: "A4", value: "eighth" }] } },
         { id: "sd-l11-e2", type: "melodic-rhythmic-dictation", difficulty: 9, spec: { type: "melodic-rhythmic-dictation", bpm: 77, key: 0, meter: "5/8", allowedValues: ["dottedQuarter", "eighth"], notes: [{ pitch: "G4", value: "eighth" }, { pitch: "A4", value: "eighth" }, { pitch: "B4", value: "dottedQuarter" }] } },
         { id: "sd-l11-e3", type: "melodic-rhythmic-dictation", difficulty: 9, spec: { type: "melodic-rhythmic-dictation", bpm: 78, key: 0, meter: "5/8", allowedValues: ["quarter", "eighth"], notes: [{ pitch: "E4", value: "quarter" }, { pitch: "G4", value: "quarter" }, { pitch: "B4", value: "eighth" }] } },
-        { id: "sd-l11-e4", type: "melodic-rhythmic-dictation", difficulty: 10, spec: { type: "melodic-rhythmic-dictation", bpm: 78, key: 0, meter: "7/8", allowedValues: ["dottedQuarter", "eighth"], notes: [{ pitch: "C5", value: "dottedQuarter" }, { pitch: "B4", value: "dottedQuarter" }, { pitch: "A4", value: "eighth" }] } },
+        { id: "sd-l11-e4", type: "melodic-rhythmic-dictation", difficulty: 10, spec: { type: "melodic-rhythmic-dictation", bpm: 78, key: 0, meter: "7/8", allowedValues: ["dottedQuarter", "quarter"], notes: [{ pitch: "C5", value: "quarter" }, { pitch: "B4", value: "quarter" }, { pitch: "A4", value: "dottedQuarter" }] } },
         { id: "sd-l11-e5", type: "melodic-rhythmic-dictation", difficulty: 10, spec: { type: "melodic-rhythmic-dictation", bpm: 79, key: 0, meter: "7/8", allowedValues: ["quarter", "eighth"], notes: [{ pitch: "G4", value: "quarter" }, { pitch: "A4", value: "quarter" }, { pitch: "B4", value: "quarter" }, { pitch: "C5", value: "eighth" }] } },
         { id: "sd-l11-e6", type: "melodic-rhythmic-dictation", difficulty: 10, spec: { type: "melodic-rhythmic-dictation", bpm: 80, key: 1, meter: "7/8", allowedValues: ["quarter", "eighth"], notes: [{ pitch: "E4", value: "eighth" }, { pitch: "F#4", value: "eighth" }, { pitch: "G4", value: "quarter" }, { pitch: "A4", value: "quarter" }, { pitch: "B4", value: "eighth" }] } },
         { id: "sd-l11-e7", type: "melodic-rhythmic-dictation", difficulty: 10, spec: { type: "melodic-rhythmic-dictation", bpm: 81, key: 0, meter: "7/8", allowedValues: ["dottedQuarter", "quarter", "eighth"], notes: [{ pitch: "C5", value: "dottedQuarter" }, { pitch: "A4", value: "eighth" }, { pitch: "G4", value: "eighth" }, { pitch: "E4", value: "quarter" }] } },
@@ -311,8 +311,8 @@ export const SZCZYT_DYKTAND_CONTENT: WorldContent = {
       ],
     },
     {
-      // Boss lekcja — Baran Bazgroł. Jak inne bossy tej sesji: mix
-      // świeżych zadań w stylu/trudności poziomów 10-15, obejmujący
+      // Boss lekcja — Baran Bazgroł. Jak inne bossy: mieszanka zadań
+      // z poprzednich poziomów (10-15), obejmująca
       // wszystko, co ta kraina dodała: nieparzyste metra, długie frazy,
       // szeroki zakres, szybkie tempo, bogatsze tonacje.
       id: "sd-poziom-16-boss-bazgrol",

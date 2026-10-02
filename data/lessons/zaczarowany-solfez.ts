@@ -195,7 +195,7 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
           body: "Wskazówka: „do” brzmi jak miejsce, w którym można odpocząć. „Mi” jest od niego dość daleko, a „re” — tuż obok. Jeśli się pogubisz, kliknij „Tylko dźwięk” i posłuchaj jeszcze raz.",
         },
         {
-          body: "Od teraz zdarzą się też dwa dźwięki z rzędu. Wskaż ich nazwy po kolei: kliknij pierwszą sylabę, potem drugą. Pomyłkę poprawisz, dotykając pola z sylabą.",
+          body: "Dwa dźwięki z rzędu znasz już z poprzedniej lekcji — tu zdarzają się częściej. Wskaż ich nazwy po kolei: kliknij pierwszą sylabę, potem drugą. Pomyłkę poprawisz, dotykając pola z sylabą.",
         },
       ],
       exercises: [
@@ -532,7 +532,7 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
       pianoKeyboardReference: { range: ["C4", "E5"] },
       introSlides: [
         {
-          body: "Trójdźwięk to trzy dźwięki ułożone jeden nad drugim w tercjach — zaśpiewasz je po kolei, od najniższego do najwyższego, jak małą melodię. Zaśpiewasz pięć trójdźwięków zbudowanych na wybranych stopniach gamy C-dur — niektóre brzmią jasno (durowe), inne smutniej (molowe).",
+          body: "Trójdźwięk to trzy dźwięki ułożone jeden nad drugim w tercjach — zaśpiewasz je po kolei, od najniższego do najwyższego, jak małą melodię. Zaśpiewasz pięć trójdźwięków zbudowanych na wybranych stopniach gamy C-dur — niektóre brzmią jasno (durowe), inne smutniej (molowe). Jeśli dźwięki są dla Ciebie za wysokie, możesz śpiewać oktawę niżej — aplikacja to rozpozna.",
           triadExamples: [
             { notes: ["C4", "E4", "G4"], label: "I stopień — C-dur (durowy)", degrees: [1, 3, 5] },
             { notes: ["D4", "F4", "A4"], label: "II stopień — d-moll (molowy)", degrees: [1, 3, 5] },
@@ -636,7 +636,7 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
       pianoKeyboardReference: { range: ["G4", "F5"] },
       introSlides: [
         {
-          body: "Ostatni poziom śpiewania akordów: dominanta septymowa, krok po kroku. To trójdźwięk dominanty (który już znasz — sol-si-re), z dodatkowym, czwartym dźwiękiem na górze — septymą. Zbudujesz ten akord po kolei, dźwięk po dźwięku.",
+          body: "Ostatni poziom śpiewania akordów: dominanta septymowa, krok po kroku. To trójdźwięk dominanty (który już znasz — sol-si-re), z dodatkowym, czwartym dźwiękiem na górze — septymą. Zbudujesz ten akord po kolei, dźwięk po dźwięku. Jeśli dźwięki są dla Ciebie za wysokie, możesz śpiewać oktawę niżej — aplikacja to rozpozna.",
           triadExamples: [
             { notes: ["G4", "B4"], label: "krok 1: pryma + tercja", degrees: [1, 3] },
             { notes: ["G4", "B4", "D5"], label: "krok 2: + kwinta (już znane D)", degrees: [1, 3, 5] },
@@ -652,31 +652,31 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
           id: "zs-l7-e1",
           type: "solfege-phrase-singing",
           difficulty: 5,
-          spec: { type: "solfege-phrase-singing", notes: ["G4", "B4"], isFragment: true, toleranceCents: 45 },
+          spec: { type: "solfege-phrase-singing", notes: ["G4", "B4"], isFragment: true, toleranceCents: 60 },
         },
         {
           id: "zs-l7-e2",
           type: "solfege-phrase-singing",
           difficulty: 5,
-          spec: { type: "solfege-phrase-singing", notes: ["G4", "B4", "D5"], isFragment: true, toleranceCents: 45 },
+          spec: { type: "solfege-phrase-singing", notes: ["G4", "B4", "D5"], isFragment: true, toleranceCents: 60 },
         },
         {
           id: "zs-l7-e3",
           type: "solfege-phrase-singing",
           difficulty: 5,
-          spec: { type: "solfege-phrase-singing", notes: ["G4", "B4", "D5", "F5"], isFragment: true, toleranceCents: 45 },
+          spec: { type: "solfege-phrase-singing", notes: ["G4", "B4", "D5", "F5"], isFragment: true, toleranceCents: 60 },
         },
         {
           id: "zs-l7-e4",
           type: "solfege-phrase-singing",
           difficulty: 5,
-          spec: { type: "solfege-phrase-singing", notes: ["G4", "B4", "D5", "F5"], isFragment: true, toleranceCents: 45 },
+          spec: { type: "solfege-phrase-singing", notes: ["G4", "B4", "D5", "F5"], isFragment: true, toleranceCents: 60 },
         },
         {
           id: "zs-l7-e5",
           type: "solfege-phrase-singing",
           difficulty: 5,
-          spec: { type: "solfege-phrase-singing", notes: ["F5", "D5", "B4", "G4"], isFragment: true, toleranceCents: 45 },
+          spec: { type: "solfege-phrase-singing", notes: ["F5", "D5", "B4", "G4"], isFragment: true, toleranceCents: 60 },
         },
       ],
     },

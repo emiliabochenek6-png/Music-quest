@@ -1,4 +1,4 @@
-import { letterDiatonicIndex, type Note } from "./notes";
+import { diatonicIndexToLetter, letterDiatonicIndex, type Accidental, type Note } from "./notes";
 
 export type Clef = "treble" | "bass";
 
@@ -16,6 +16,13 @@ const CLEF_BOTTOM_LINE_DIATONIC_INDEX: Record<Clef, number> = {
 export function noteToStaffStep(note: Note, clef: Clef = "treble"): number {
   const noteDiatonicIndex = 7 * note.octave + letterDiatonicIndex(note.letter);
   return noteDiatonicIndex - CLEF_BOTTOM_LINE_DIATONIC_INDEX[clef];
+}
+
+/** The inverse of noteToStaffStep: the note on a staff step with the chosen accidental. */
+export function staffStepToNote(step: number, accidental: Accidental, clef: Clef = "treble"): Note {
+  const diatonicIndex = step + CLEF_BOTTOM_LINE_DIATONIC_INDEX[clef];
+  const octave = Math.floor(diatonicIndex / 7);
+  return { letter: diatonicIndexToLetter(diatonicIndex - octave * 7), accidental, octave };
 }
 
 /** @deprecated Use noteToStaffStep(note, "treble") — kept for existing callers. */

@@ -90,7 +90,7 @@ export const KROLESTWO_INSTRUMENTOW_CONTENT: WorldContent = {
         fact("ki-l1-e1", 1, "Co to jest orkiestra?", ["Rodzaj tańca", "Duży zespół muzyków grających razem", "Jeden bardzo duży instrument"], 1, "Orkiestra to duży zespół muzyków, którzy grają razem jedną muzykę."),
         fact("ki-l1-e2", 1, "Kto macha pałeczką i pokazuje muzykom, kiedy zacząć grać?", ["Dyrygent", "Solista", "Kompozytor"], 0, "To dyrygent — pilnuje, żeby wszyscy grali razem i w tym samym tempie.", { imageId: "instrument_dyrygent" }),
         fact("ki-l1-e3", 1, "Kto wymyśla (komponuje) muzykę, którą gra orkiestra?", ["Dyrygent", "Kompozytor", "Słuchacz"], 1, "Muzykę wymyśla kompozytor. Dyrygent pomaga ją zagrać."),
-        fact("ki-l1-e4", 1, "W orkiestrze są cztery główne rodziny instrumentów: smyczkowe, drewniane dęte, blaszane dęte i perkusja. Ile ich jest?", ["Dwie", "Trzy", "Cztery", "Pięć"], 2, "Cztery: smyczkowe, drewniane dęte, blaszane dęte i perkusja.", { abcd: true }),
+        fact("ki-l1-e4", 1, "Instrumenty orkiestry dzielimy na rodziny: smyczkowe, drewniane dęte, blaszane dęte i perkusję. Ile jest tych głównych rodzin?", ["Dwie", "Trzy", "Cztery", "Pięć"], 2, "Cztery: smyczkowe, drewniane dęte, blaszane dęte i perkusja. To główne rodziny, do których należą prawie wszystkie instrumenty orkiestry.", { abcd: true }),
         fact("ki-l1-e5", 1, "Na skrzypcach gra się smyczkiem. Do jakiej rodziny należą skrzypce?", ["Smyczkowe", "Blaszane dęte", "Perkusja"], 0, "Skrzypce są instrumentem smyczkowym — gra się na nich smyczkiem.", { imageId: "instrument_skrzypce" }),
         fact("ki-l1-e6", 1, "Trąbka jest z błyszczącego metalu i dmuchamy w nią. Do jakiej rodziny należy?", ["Smyczkowe", "Perkusja", "Blaszane dęte"], 2, "Trąbka to instrument blaszany dęty: jest z metalu i gra się na niej dmuchając.", { imageId: "instrument_trabka" }),
         fact("ki-l1-e7", 1, "Na werblu gra się pałeczkami — uderzamy w niego. To instrument…", ["Perkusyjny", "Smyczkowy"], 0, "Instrumenty, w które uderzamy, należą do perkusji.", { imageId: "instrument_werbel" }),
@@ -145,7 +145,7 @@ export const KROLESTWO_INSTRUMENTOW_CONTENT: WorldContent = {
         {
           body: "Drewniane dęte to instrumenty, w które dmuchamy: flet, obój, klarnet i fagot. Dawniej wszystkie robiono z drewna — stąd nazwa, choć dziś część jest z metalu. Posłuchaj ich po kolei.",
           instrumentExamples: [
-            { imageId: "instrument_flet", label: "Flet", caption: "najwyżej", audioSource: SOUND.flet },
+            { imageId: "instrument_flet", label: "Flet", audioSource: SOUND.flet },
             { imageId: "instrument_oboj", label: "Obój", audioSource: SOUND.oboj },
             { imageId: "instrument_klarnet", label: "Klarnet", audioSource: SOUND.klarnet },
             { imageId: "instrument_fagot", label: "Fagot", caption: "najniżej", audioSource: SOUND.fagot },
@@ -155,7 +155,7 @@ export const KROLESTWO_INSTRUMENTOW_CONTENT: WorldContent = {
           body: "Większość z nich ma stroik — cienką płytkę z trzciny, która drga, kiedy dmuchamy, i tworzy dźwięk. Spośród tych instrumentów tylko flet nie ma stroika: dmuchamy w otwór z boku, trochę jak w butelkę.",
         },
         {
-          body: "Pamiętaj: im dłuższa rura, tym niższy dźwięk. Flet brzmi najwyżej, obój i klarnet niżej, a najdłuższy fagot — najniżej. Jest też saksofon: z metalu, ale z jednym stroikiem, więc też należy do drewnianych dętych.",
+          body: "Pamiętaj: im dłuższa rura, tym niższy dźwięk. Fagot ma rurę długą na ok. 2,5 metra (złożoną na pół), więc brzmi najniżej. Flet i obój grają wysoko, a klarnet niżej. Jest też saksofon: z metalu, ale z jednym stroikiem, więc też należy do drewnianych dętych.",
           instrumentExamples: [{ imageId: "instrument_saksofon", label: "Saksofon", caption: "z metalu, ale ze stroikiem", audioSource: SOUND.saksofon }],
         },
       ],
@@ -219,7 +219,7 @@ export const KROLESTWO_INSTRUMENTOW_CONTENT: WorldContent = {
           instrumentExamples: [
             { imageId: "instrument_kotly", label: "Kotły", audioSource: SOUND.kotly },
             { imageId: "instrument_werbel", label: "Werbel", audioSource: SOUND.werbel },
-            { imageId: "instrument_talerze", label: "Talerze", audioSource: SOUND.talerze },
+            { imageId: "instrument_talerze", label: "Talerze", caption: "tu: jeden talerz uderzony pałeczką", audioSource: SOUND.talerze },
             { imageId: "instrument_trojkat", label: "Trójkąt", audioSource: SOUND.trojkat },
             { imageId: "instrument_ksylofon", label: "Ksylofon", audioSource: SOUND.ksylofon },
           ],
@@ -231,7 +231,7 @@ export const KROLESTWO_INSTRUMENTOW_CONTENT: WorldContent = {
       exercises: [
         fact("ki-l5-e1", 1, "Te duże miedziane bębny, w które uderzamy pałkami, to…", ["Kotły", "Werbel", "Talerze"], 0, "To kotły. Można je stroić, żeby grały określone dźwięki.", { imageId: "instrument_kotly" }),
         fact("ki-l5-e2", 1, "Mały bęben, na którym gra się pałeczkami i który ma trzeszczący dźwięk, to…", ["Kotły", "Werbel", "Trójkąt"], 1, "To werbel.", { imageId: "instrument_werbel" }),
-        fact("ki-l5-e3", 1, "Dwa metalowe krążki, które uderzamy o siebie, to…", ["Trójkąt", "Ksylofon", "Talerze"], 2, "To talerze — dają głośny, błyszczący dźwięk.", { imageId: "instrument_talerze" }),
+        fact("ki-l5-e3", 1, "Metalowe krążki, w które uderzamy (o siebie albo pałeczką), to…", ["Trójkąt", "Ksylofon", "Talerze"], 2, "To talerze — dają głośny, błyszczący dźwięk.", { imageId: "instrument_talerze" }),
         fact("ki-l5-e4", 1, "Mały metalowy instrument, w który uderzamy metalową pałeczką, brzmi…", ["Głucho jak duży bęben", "Cienko i dźwięcznie", "Nisko jak tuba"], 1, "Trójkąt brzmi cienko i dźwięcznie, a dźwięk długo wybrzmiewa.", { imageId: "instrument_trojkat" }),
         fact("ki-l5-e5", 1, "Ten instrument ma drewniane płytki, w które uderzamy pałeczkami. To…", ["Ksylofon", "Harfa", "Fortepian", "Werbel"], 0, "To ksylofon — każda płytka ma inną wysokość dźwięku.", { imageId: "instrument_ksylofon", abcd: true }),
         fact("ki-l5-e6", 2, "Który z tych instrumentów perkusyjnych potrafi zagrać melodię?", ["Werbel", "Ksylofon", "Talerze"], 1, "Ksylofon — ma płytki o różnych wysokościach. Werbel i talerze nie mają określonej wysokości.", { optionImageIds: ["instrument_werbel", "instrument_ksylofon", "instrument_talerze"] }),
@@ -343,7 +343,7 @@ export const KROLESTWO_INSTRUMENTOW_CONTENT: WorldContent = {
         fact("ki-l8-e7", 1, "Na którym instrumencie wysuwa się i wsuwa suwak?", ["Róg", "Trąbka", "Puzon"], 2, "Na puzonie.", { optionImageIds: ["instrument_rog", "instrument_trabka", "instrument_puzon"] }),
         fact("ki-l8-e8", 1, "Co to jest ustnik?", ["Część instrumentu, w którą dmuchamy", "Część, po której przesuwamy smyczek", "Pałeczka do bębna"], 0, "Ustnik to końcówka, do której przykładamy usta i dmuchamy."),
         fact("ki-l8-e9", 2, "Na którym z tych instrumentów NIE gra się dmuchając?", ["Flet", "Trąbka", "Fagot", "Skrzypce"], 3, "Na skrzypcach gra się smyczkiem.", { abcd: true, optionImageIds: ["instrument_flet", "instrument_trabka", "instrument_fagot", "instrument_skrzypce"] }),
-        fact("ki-l8-e10", 2, "Smyczek jest dla skrzypiec tym, czym pałeczki dla…", ["Werbla", "Fletu", "Harfy"], 0, "Pałeczkami uderzamy w werbel — tak jak smyczkiem gramy na skrzypcach.", { optionImageIds: ["instrument_werbel", "instrument_flet", "instrument_harfa"] }),
+        fact("ki-l8-e10", 2, "Na skrzypcach gramy smyczkiem. A czym gramy na werblu?", ["Pałeczkami", "Smyczkiem", "Dmuchając"], 0, "Na werblu gramy pałeczkami — uderzamy nimi w naciągniętą skórę.", { imageId: "instrument_werbel" }),
       ],
     },
     {

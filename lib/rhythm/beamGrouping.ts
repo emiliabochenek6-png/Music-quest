@@ -1,4 +1,4 @@
-import { meterFeltPulseQuarterBeats } from "@/lib/rhythm/meter";
+import { meterFeltPulseQuarterBeats, meterQuarterNoteBeats } from "@/lib/rhythm/meter";
 import { NOTE_VALUE_BEATS, REST_VALUE_BEATS, REST_VALUES } from "@/lib/rhythm/valueBeats";
 import type { Meter, RhythmNoteValue, RhythmRestValue } from "@/types/exercises";
 
@@ -7,6 +7,23 @@ import type { Meter, RhythmNoteValue, RhythmRestValue } from "@/types/exercises"
  * never beams a quarter-or-longer value), matching BeamedNotation/
  * computeBeamLayout's own FLAGGABLE_VALUES. */
 const BEAMABLE_VALUES: ReadonlySet<RhythmNoteValue> = new Set(["eighth", "dottedEighth", "sixteenth", "eighthTriplet"]);
+
+/** Where the beam groups START inside one measure of the odd eighth meters,
+ * in quarter-note beats — the same conventions Gaj Grupowania teaches: 3/8 is
+ * one group of three eighths, 5/8 is 3+2 and 7/8 is 2+2+3. `null` for every
+ * other meter (those are grouped by their felt pulse). */
+function oddMeterGroupStarts(meter: Meter): readonly number[] | null {
+  switch (meter) {
+    case "3/8":
+      return [0];
+    case "5/8":
+      return [0, 1.5];
+    case "7/8":
+      return [0, 1, 2];
+    default:
+      return null;
+  }
+}
 
 /**
  * Derives computeBeamLayout's `groups` parameter automatically from a
@@ -26,6 +43,19 @@ const BEAMABLE_VALUES: ReadonlySet<RhythmNoteValue> = new Set(["eighth", "dotted
  */
 export function deriveBeamGroups(sequence: readonly (RhythmNoteValue | RhythmRestValue)[], meter: Meter): number[][] {
   const groupWidthBeats = meterFeltPulseQuarterBeats(meter);
+  const oddStarts = oddMeterGroupStarts(meter);
+  const measureBeats = meterQuarterNoteBeats(meter);
+  /** Which beam group a position (in quarter beats from the start) falls into. */
+  const groupIndexAt = (beats: number): number => {
+    if (!oddStarts) return Math.floor(beats / groupWidthBeats + 1e-9);
+    const measure = Math.floor(beats / measureBeats + 1e-9);
+    const position = beats - measure * measureBeats;
+    let startIndex = 0;
+    oddStarts.forEach((start, index) => {
+      if (position >= start - 1e-9) startIndex = index;
+    });
+    return measure * oddStarts.length + startIndex;
+  };
   const groups: number[][] = [];
   let cumulativeBeats = 0;
   let currentGroup: number[] = [];
@@ -35,7 +65,7 @@ export function deriveBeamGroups(sequence: readonly (RhythmNoteValue | RhythmRes
     const value = sequence[index];
     const isRest = REST_VALUES.has(value);
     const isBeamable = !isRest && BEAMABLE_VALUES.has(value as RhythmNoteValue);
-    const pulseIndex = Math.floor(cumulativeBeats / groupWidthBeats + 1e-9);
+    const pulseIndex = groupIndexAt(cumulativeBeats);
 
     if (isBeamable && currentGroup.length > 0 && pulseIndex === currentPulseIndex) {
       currentGroup.push(index);

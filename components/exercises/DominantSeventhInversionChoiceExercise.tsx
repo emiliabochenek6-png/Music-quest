@@ -26,7 +26,7 @@ interface DominantSeventhInversionChoiceExerciseProps {
  * via the speaker button, audible as a chord. Unlike triad-inversion-
  * choice there's no quality to name in the prompt — a dominant seventh is
  * always the same one quality, so the player only ever names WHICH of the
- * four postacie (postać zasadnicza / kwintsekstakord / tercekwartakord /
+ * four postacie (postać zasadnicza / kwintsekstakord / tercjakwartakord /
  * sekundakord) it's in. Same OptionButton/correctOptionId scoring shape,
  * no new scoring logic needed. When exercise.hideNotation is set, the
  * staff swaps for a plain "listen only" label, same ear-training

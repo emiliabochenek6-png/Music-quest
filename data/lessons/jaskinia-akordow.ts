@@ -66,7 +66,7 @@ export const JASKINIA_AKORDOW_CONTENT: WorldContent = {
       difficulty: 3,
       introSlides: [
         {
-          body: "Trójdźwięk nie zawsze stoi na tercjach jeden nad drugim od dźwięku podstawowego — można go 'przewrócić', czyli przełożyć dolny dźwięk o oktawę wyżej. Gdy w basie (na dole) znajdzie się tercja zamiast prymy, to sekstakord — pierwszy przewrót. Brzmi tak samo 'jasno' albo 'smutno' jak postać zasadnicza (to wciąż ten sam trójdźwięk), ale wygląda inaczej na pięciolinii.",
+          body: "Trójdźwięk nie zawsze stoi na tercjach jeden nad drugim od dźwięku podstawowego — można go 'przewrócić', czyli przełożyć dolny dźwięk o oktawę wyżej. Gdy w basie (na dole) znajdzie się tercja zamiast prymy, to sekstakord — pierwszy przewrót. Brzmi tak samo 'jasno' albo 'smutno' jak postać zasadnicza (to wciąż ten sam trójdźwięk), ale wygląda inaczej na pięciolinii. W nawiasach: 3 to tercja wielka, a 3> tercja mała — więc (3+3>) znaczy „tercja wielka + tercja mała”.",
           triadExamples: [
             { notes: ["C4", "E4", "G4"], label: "durowy, postać zasadnicza (3+3>)", degrees: [1, 3, 5] },
             { notes: ["E4", "G4", "C5"], label: "durowy, sekstakord (I przewrót)", degrees: [3, 5, 1] },
