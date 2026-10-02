@@ -102,7 +102,7 @@ const NUTKI_MULTIPLIER_WHEN_INTRO_DISABLED = 2;
 /** Per-world exercise-screen tint — every world's own `accentColor` (see
  * data/worlds.ts) lightened toward white, so each world's lesson screens
  * (button fill, background wash) match its own map/background art instead
- * of all opening on one app-wide neutral cream+orange. Covers all 12
+ * of all opening on one app-wide neutral cream+orange. Covers all 13
  * worlds now; the first four entries were hand-picked earlier (kept as-is
  * rather than reflowed through the formula below, to not shift an already-
  * shipped look), the rest are a plain ~12% mix of the world's accentColor
@@ -111,6 +111,7 @@ const WORLD_LESSON_THEME: Partial<Record<string, { background: string }>> = {
   note: { background: "#F3ECFC" }, // Wioska Nut — light purple
   metronome: { background: "#E8EEFC" }, // Miasto Rytmu — light blue
   "bar-line": { background: "#E3F5F1" }, // Przystań Taktów — light sea-green
+  instruments: { background: "#FCEEEA" }, // Królestwo Instrumentów — light coral
   interval: { background: "#E6F3FB" }, // Pasmo Interwałów — light icy blue
   chord: { background: "#E9EFF3" }, // Zatoka Trójdźwięków — light steel blue
   inversion: { background: "#EEEAE7" }, // Jaskinia Akordów — light brown
