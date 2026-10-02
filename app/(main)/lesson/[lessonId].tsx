@@ -10,7 +10,6 @@ import { LessonIntroRecap } from "@/components/exercises/LessonIntroRecap";
 import { LessonTheoryIntro } from "@/components/exercises/LessonTheoryIntro";
 import { PianoKeyboardRecap } from "@/components/exercises/PianoKeyboardRecap";
 import { WorldCompleteModal } from "@/components/exercises/WorldCompleteModal";
-import { OutOfHeartsModal } from "@/components/OutOfHeartsModal";
 import { SoltekMascot } from "@/components/SoltekMascot";
 import { getWorldContent } from "@/data/lessons";
 import { getNextWorld, getWorldById } from "@/data/worlds";
@@ -45,7 +44,7 @@ import { GlyphText } from "@/components/icons/GlyphText";
  * with zero mistakes at all. */
 const XP_PER_CORRECT_ANSWER = 10;
 /** Nutki ("nuty") a correct answer pays in "Tryb nauki". */
-const NUTKI_PER_CORRECT_IN_LEARNING_MODE = 2;
+const NUTKI_PER_CORRECT_ANSWER = 2;
 const XP_PERFECT_LESSON_BONUS = 20;
 /** Roughly 1 in 3 checks — see showSoltek's own doc for why this isn't
  * every check. */
@@ -68,11 +67,6 @@ const STREAK_CELEBRATION_INTERVAL = 5;
  * requeuing it and lets the lesson move on without it, instead of looping
  * forever on one question a player (or a broken exercise) can't get past. */
 const MAX_ATTEMPTS_PER_EXERCISE = 3;
-/** A correct answer also rewards hearts, not just XP — lets a player who's
- * doing well claw back toward MAX_HEARTS (see types/gamification.ts) well
- * before the slow passive regen would, instead of hearts being a purely
- * one-directional (lose-only) resource during a lesson. */
-const HEARTS_PER_CORRECT_ANSWER = 2;
 /** The reward for playing a world with its "Zapoznaj się" toggle off (see
  * app/(main)/world/[worldId].tsx's own toggle row and
  * types/gamification.ts's own introModeEnabledByWorld doc) — every nutki
@@ -156,14 +150,15 @@ export default function LessonScreen() {
 
 function LessonScreenBody() {
   const { lessonId, worldId, mode } = useLocalSearchParams<{ lessonId: string; worldId: string; mode?: string }>();
-  // "Tryb nauki" (opened from the study plan): no hearts — nothing is lost for
-  // a mistake and nothing blocks the next question — and every correct
-  // answer pays NUTKI_PER_CORRECT_IN_LEARNING_MODE nutki on top of the XP.
+  // The app has no hearts: a mistake never costs anything and nothing blocks
+  // the next question; every correct answer pays NUTKI_PER_CORRECT_ANSWER
+  // nutki on top of the XP. "Tryb nauki" (opened from the study plan) only
+  // differs in where the player returns to and which daily missions it counts for.
   const learningMode = mode === "plan";
   const insets = useSafeAreaInsets();
   const { progress, markLessonCompleted, markWorldCompleted } = useProgress();
   const { plan, onLessonCompleted } = usePlan();
-  const { state: gamificationState, getHeartsInfo, loseHeart, gainHearts, awardXp, addNutki, recordLessonStars, recordActivity } =
+  const { state: gamificationState, awardXp, addNutki, recordLessonStars, recordActivity } =
     useGamification();
   // XP/nutki the player had when this lesson started — the summary shows the difference.
   const startRewards = useRef({ xp: gamificationState.xp, nutki: gamificationState.nutki });
@@ -171,11 +166,6 @@ function LessonScreenBody() {
   const nutkiMultiplier = introModeEnabled ? 1 : NUTKI_MULTIPLIER_WHEN_INTRO_DISABLED;
   const { status: subscriptionStatus } = useSubscription();
   const { getElapsedMinutes } = useSessionTimer(lessonId);
-  const [showOutOfHearts, setShowOutOfHearts] = useState(false);
-  // Snapshot taken at the moment hearts run out — OutOfHeartsModal ticks
-  // its own countdown down from this rather than re-reading
-  // getHeartsInfo() live (see that component's own doc).
-  const [outOfHeartsMs, setOutOfHeartsMs] = useState<number | null>(null);
 
   const world = getWorldById(worldId);
   const content = getWorldContent(worldId);
@@ -374,7 +364,6 @@ function LessonScreenBody() {
         setEncouragementMessageIndex(1 + Math.floor(Math.random() * ENCOURAGEMENT_MESSAGE_COUNT));
       }
       setConsecutiveCorrect(0);
-      if (!learningMode) loseHeart();
       const failCountForThisExercise = (failCounts[definition.id] ?? 0) + 1;
       setFailCounts((current) => ({ ...current, [definition.id]: failCountForThisExercise }));
       if (failCountForThisExercise < MAX_ATTEMPTS_PER_EXERCISE) {
@@ -382,8 +371,7 @@ function LessonScreenBody() {
       }
     } else {
       awardXp(XP_PER_CORRECT_ANSWER);
-      if (learningMode) addNutki(NUTKI_PER_CORRECT_IN_LEARNING_MODE);
-      else gainHearts(HEARTS_PER_CORRECT_ANSWER);
+      addNutki(NUTKI_PER_CORRECT_ANSWER);
       setCorrectCount((n) => n + 1);
       const nextStreak = consecutiveCorrect + 1;
       setConsecutiveCorrect(nextStreak);
@@ -435,18 +423,6 @@ function LessonScreenBody() {
   // advance.
   function advanceOrFinish() {
     if (index + 1 < exercises.length) {
-      // A heart could have run out on THIS question (a wrong answer) or
-      // an earlier one in the same attempt — either way, no further
-      // exercises until at least one regenerates (see this screen's own
-      // doc and OutOfHeartsModal's). The question just answered still
-      // shows its own right/wrong feedback above; only moving PAST it is
-      // blocked.
-      const heartsInfo = getHeartsInfo();
-      if (!learningMode && heartsInfo.hearts <= 0) {
-        setOutOfHeartsMs(heartsInfo.msUntilNextHeart);
-        setShowOutOfHearts(true);
-        return;
-      }
       setIndex(index + 1);
       setAnswer(null);
       setChecked(false);
@@ -724,9 +700,9 @@ function LessonScreenBody() {
       </ScrollView>
 
       <View style={{ paddingHorizontal: 24, paddingBottom: insets.bottom + 16 }}>
-        {checked && learningMode && isCorrect && (
+        {checked && isCorrect && (
           <Text style={{ textAlign: "center", color: theme.colors.success, fontWeight: "800", marginBottom: theme.spacing(0.75) }}>
-            +{XP_PER_CORRECT_ANSWER} XP · +{NUTKI_PER_CORRECT_IN_LEARNING_MODE} nutki
+            +{XP_PER_CORRECT_ANSWER} XP · +{NUTKI_PER_CORRECT_ANSWER} nutki
           </Text>
         )}
         {checked && (
@@ -757,12 +733,6 @@ function LessonScreenBody() {
           disabled={!checked && !hasAnswerToCheck(answer)}
         />
       </View>
-      <OutOfHeartsModal
-        visible={showOutOfHearts}
-        msUntilNextHeart={outOfHeartsMs}
-        onExit={goBackToLevels}
-        onGoPremium={() => router.push("/paywall")}
-      />
     </View>
   );
 }

@@ -103,7 +103,7 @@ export default function PlacementScreen() {
           />
           <Text style={styles.heading}>Test poziomujący z Soltkiem</Text>
           <View style={styles.bullets}>
-            <Bullet text="Nic nie tracisz: bez serc, punktów i ocen." />
+            <Bullet text="Nic nie tracisz: bez punktów i ocen." />
             <Bullet text="Nie wiesz? Naciśnij „Nie wiem” — zamiast zgadywać." />
             <Bullet text="Z wyniku ułożymy ścieżkę: pominiesz to, co umiesz, i zaplanujemy resztę na ok. 3 miesiące." />
           </View>

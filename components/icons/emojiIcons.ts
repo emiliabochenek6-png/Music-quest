@@ -33,7 +33,7 @@ export const EMOJI_ICON: Readonly<Record<string, IconName>> = {
   "🌟": "hud_ranga_gwiazda",
   "🔥": "hud_seria_ogien",
   "🎵": "hud_nutki_waluta",
-  "💪": "hud_serce",
+  "💪": "ui_iskry",
   "📖": "tryb_nauki",
   "📚": "tryb_nauki",
   "🎮": "tryb_zabawy",

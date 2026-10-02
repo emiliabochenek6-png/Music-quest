@@ -6,7 +6,6 @@ import { router } from "expo-router";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { AppIcon } from "@/components/icons/AppIcon";
 import { useGamification } from "@/context/GamificationContext";
-import { useSubscription } from "@/context/SubscriptionContext";
 import { MAX_STREAK_FREEZES, POWER_UP_COSTS } from "@/lib/gamification/powerups";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import { GlyphText } from "@/components/icons/GlyphText";
@@ -17,13 +16,11 @@ import { GlyphText } from "@/components/icons/GlyphText";
  * since it's a secondary "spend what you earned" destination rather than
  * one of the app's five main sections. Only sells power-ups that make
  * sense to buy AHEAD of time — a banked streak freeze (consumed
- * automatically later, see lib/gamification/activity.ts's own doc) and
- * an instant heart refill.
+ * automatically later, see lib/gamification/activity.ts's own doc).
  */
 export default function PowerUpShopScreen() {
   const insets = useSafeAreaInsets();
-  const { state, buyStreakFreeze, buyHeartRefill } = useGamification();
-  const { status: subscription } = useSubscription();
+  const { state, buyStreakFreeze } = useGamification();
   const [feedback, setFeedback] = useState<string | null>(null);
 
   function handleBuyStreakFreeze() {
@@ -32,10 +29,6 @@ export default function PowerUpShopScreen() {
       return;
     }
     setFeedback(buyStreakFreeze() ? "Zamrożenie passy kupione! ❄️" : "Za mało nutek na zamrożenie passy.");
-  }
-
-  function handleBuyHeartRefill() {
-    setFeedback(buyHeartRefill() ? "Serca uzupełnione! ❤️" : "Za mało nutek na uzupełnienie serc.");
   }
 
   return (
@@ -56,14 +49,6 @@ export default function PowerUpShopScreen() {
           ownedLabel={`Masz: ${state.streakFreezes} z ${MAX_STREAK_FREEZES}`}
           disabled={state.nutki < POWER_UP_COSTS.streakFreeze || state.streakFreezes >= MAX_STREAK_FREEZES}
           onBuy={handleBuyStreakFreeze}
-        />
-        <ShopCard
-          icon={<AppIcon name="hud_serce" size={26} />}
-          title="Uzupełnienie serc"
-          description={subscription.isActive ? "Masz Premium — serca są już bez limitu." : "Od razu uzupełnia wszystkie serca."}
-          cost={POWER_UP_COSTS.heartRefill}
-          disabled={subscription.isActive || state.nutki < POWER_UP_COSTS.heartRefill}
-          onBuy={handleBuyHeartRefill}
         />
       </ScrollView>
     </View>

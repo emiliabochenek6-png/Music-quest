@@ -25,8 +25,8 @@ odstępach.
 - Po ukończeniu lekcji z planu: przycisk **„Przejdź do następnej lekcji dnia"** (z nazwą lekcji), a po ostatniej zaplanowanej lekcji: **„Gratulacje! Wykonałeś wszystkie zaplanowane lekcje na dziś."** Wyjście z takiej lekcji prowadzi z powrotem do planu.
 
 ## Nagrody i levele (tryb nauki)
-- **Bez serc.** W trybie nauki (lekcje z planu i powtórki) błąd nic nie kosztuje i niczego nie blokuje. Pasek na mapie chowa wtedy serca. W trybie zabawy serca zostają jak były.
-- **Za każdą poprawną odpowiedź:** +10 XP i **+2 nutki** (w powtórkach +5 XP i +2 nutki). Passa (dni z rzędu) liczy się jak dotąd.
+- **Serc nie ma w całej aplikacji** (tryb zabawy i nauki). Błąd nic nie kosztuje i niczego nie blokuje. Usunięte: licznik serc na mapie, ekran „Zabrakło Ci serc", sklep z uzupełnianiem serc i zasady o sercach. Zapisane w pamięci urządzenia pola serc zostają (żeby nic się nie zepsuło przy synchronizacji), ale nic ich już nie używa.
+- **Za każdą poprawną odpowiedź (w obu trybach):** +10 XP i **+2 nutki** (w powtórkach +5 XP i +2 nutki). Passa (dni z rzędu) liczy się jak dotąd.
 - **100 leveli** zamiast 11 rang. Każdy kolejny kosztuje więcej XP niż poprzedni: level 2 po 40 XP (4 dobre odpowiedzi), level 10 po 510 XP, level 50 po ok. 6 800 XP, level 100 po ok. 24 000 XP. To mniej więcej tyle, ile daje ukończenie wszystkich lekcji, wyzwań i powtórek z planu na 3 miesiące, więc najwyższy level da się zdobyć, ale trzeba naprawdę ukończyć całą aplikację.
 - Tytuły (Nutka → … → Legenda Muzyki) zmieniają się co kilkanaście leveli. Pełnoekranowe świętowanie jest co 5. level, żeby szybkie początkowe levele nie męczyły.
 - Zmiana na 200 leveli: jedna stała `MAX_LEVEL` w `lib/gamification/rank.ts` (krzywa przelicza się sama).

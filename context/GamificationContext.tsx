@@ -4,15 +4,13 @@ import { useAuth } from "@/context/AuthContext";
 import { useSubscription } from "@/context/SubscriptionContext";
 import { applyActivity } from "@/lib/gamification/activity";
 import type { ActivityDelta } from "@/lib/gamification/activity";
-import { deriveHearts, gainHearts as addHearts, loseHeart as deductHeart } from "@/lib/gamification/hearts";
-import type { HeartsInfo } from "@/lib/gamification/hearts";
 import { MAX_STREAK_FREEZES, NUTKI_REWARDS, POWER_UP_COSTS } from "@/lib/gamification/powerups";
 import { getTitleUnlockedAt, getRankForXp, getRankName, isLevelUpWorthCelebrating } from "@/lib/gamification/rank";
 import { nutkiForLevelRange } from "@/lib/gamification/levelRewards";
 import { mergeGamificationState } from "@/lib/sync/mergeState";
 import { useCloudSync } from "@/lib/sync/useCloudSync";
 import { readJson, STORAGE_KEYS, writeJson } from "@/lib/storage";
-import { INITIAL_GAMIFICATION_STATE, MAX_HEARTS, sanitizeGamificationState } from "@/types/gamification";
+import { INITIAL_GAMIFICATION_STATE, sanitizeGamificationState } from "@/types/gamification";
 import type { DailyChallengeState, GamificationState } from "@/types/gamification";
 
 /** A rank-up worth celebrating — see components/RankUpCelebration.tsx's
@@ -40,25 +38,11 @@ export interface LevelUpToastInfo {
 interface GamificationContextValue {
   state: GamificationState;
   isLoading: boolean;
-  /** A function, not a memoized value — hearts regenerate over real
-   * time, so "current" hearts only means something at the moment this
-   * is actually called (see lib/gamification/hearts.ts's own doc). A
-   * caller that wants a live-updating countdown (e.g. OutOfHeartsModal)
-   * should re-call this itself on its own interval, not expect the
-   * context to tick on its behalf. */
-  getHeartsInfo: () => HeartsInfo;
   pendingRankUp: PendingRankUp | null;
   clearPendingRankUp: () => void;
   levelUpToast: LevelUpToastInfo | null;
   clearLevelUpToast: () => void;
   awardXp: (amount: number) => void;
-  /** No-op for a premium subscriber — see SubscriptionContext's own
-   * status.isActive, checked here so no call site needs to guard this
-   * itself. */
-  loseHeart: () => void;
-  /** Rewards `amount` hearts, capped at MAX_HEARTS — same premium no-op
-   * as loseHeart (unlimited hearts already shown, nothing to add). */
-  gainHearts: (amount: number) => void;
   /** Best-of — only overwrites a lesson's stored rating if `stars` beats
    * whatever's already there, so a worse retry never downgrades it. */
   recordLessonStars: (lessonId: string, stars: 1 | 2 | 3) => void;
@@ -80,7 +64,6 @@ interface GamificationContextValue {
    * the calling screen can show "za mało nutek" instead of silently
    * doing nothing. */
   buyStreakFreeze: () => boolean;
-  buyHeartRefill: () => boolean;
   /** Per-world "Zapoznaj się" toggle — see types/gamification.ts's own
    * introModeEnabledByWorld doc. */
   setIntroModeEnabled: (worldId: string, enabled: boolean) => void;
@@ -141,10 +124,6 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
     merge: mergeGamificationState,
   });
 
-  function getHeartsInfo(): HeartsInfo {
-    return deriveHearts(state, Date.now(), subscription.isActive);
-  }
-
   function awardXp(amount: number) {
     // Read BEFORE the update to know whether this crossed a rank
     // threshold — `state.xp` here is this render's own committed value,
@@ -177,26 +156,6 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
 
   function clearPendingRankUp() {
     setPendingRankUp(null);
-  }
-
-  function loseHeart() {
-    if (subscription.isActive) return;
-    setState((prev) => {
-      const { hearts, lastHeartChangeAtISO } = deductHeart(prev, Date.now());
-      const next: GamificationState = { ...prev, hearts, lastHeartChangeAtISO };
-      void writeJson(STORAGE_KEYS.gamification, next);
-      return next;
-    });
-  }
-
-  function gainHearts(amount: number) {
-    if (subscription.isActive) return;
-    setState((prev) => {
-      const { hearts, lastHeartChangeAtISO } = addHearts(prev, Date.now(), amount);
-      const next: GamificationState = { ...prev, hearts, lastHeartChangeAtISO };
-      void writeJson(STORAGE_KEYS.gamification, next);
-      return next;
-    });
   }
 
   function recordLessonStars(lessonId: string, stars: 1 | 2 | 3) {
@@ -254,20 +213,6 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
     return true;
   }
 
-  function buyHeartRefill(): boolean {
-    // Nothing to refill — already unlimited. Same no-op stance
-    // loseHeart/gainHearts already take for a premium subscriber.
-    if (subscription.isActive) return false;
-    if (state.nutki < POWER_UP_COSTS.heartRefill) return false;
-    setState((prev) => {
-      const { hearts, lastHeartChangeAtISO } = addHearts(prev, Date.now(), MAX_HEARTS);
-      const next: GamificationState = { ...prev, nutki: prev.nutki - POWER_UP_COSTS.heartRefill, hearts, lastHeartChangeAtISO };
-      void writeJson(STORAGE_KEYS.gamification, next);
-      return next;
-    });
-    return true;
-  }
-
   function setIntroModeEnabled(worldId: string, enabled: boolean) {
     setState((prev) => {
       const next: GamificationState = { ...prev, introModeEnabledByWorld: { ...prev.introModeEnabledByWorld, [worldId]: enabled } };
@@ -289,20 +234,16 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
       value={{
         state,
         isLoading,
-        getHeartsInfo,
         pendingRankUp,
         clearPendingRankUp,
         levelUpToast,
         clearLevelUpToast,
         awardXp,
-        loseHeart,
-        gainHearts,
         recordLessonStars,
         recordActivity,
         setDailyChallenge,
         addNutki,
         buyStreakFreeze,
-        buyHeartRefill,
         setIntroModeEnabled,
       }}
     >

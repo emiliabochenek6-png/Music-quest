@@ -40,5 +40,4 @@ export const MAX_STREAK_FREEZES = 2;
  * of the per-answer ones, so a cheaper price made streaks free to protect. */
 export const POWER_UP_COSTS = {
   streakFreeze: 200,
-  heartRefill: 10,
 } as const;
