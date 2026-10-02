@@ -23,7 +23,8 @@ import type { WorldContent } from "@/types/exercises";
  * (solfege-phrase-singing with `withMetronome`): 🔊 plays the phrase with
  * its written rhythm (synthesized piano, or a real recording if a
  * `referenceAudioSource` is ever supplied), then "Nagraj" plays only a
- * count-in + metronome click while the player sings. Pitch-only grading,
+ * count-in + metronome click while the player sings — no recording at
+ * all (`metronomeOnly`, "Sprawdź siebie": nothing is graded). Pitch-only grading,
  * C major, quarter/half/whole/eighth values only (no dotted notes — those
  * belong to Gaj Grupowania/Szczyt Dyktand), tempo <= 72 bpm. The tunes
  * (Panie Janie, Hot cross buns, Mary had a little lamb, Au clair de la
@@ -744,13 +745,13 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
           body: "Kolejne melodie są odrobinę dłuższe, a niektóre mają skoki o jeden dźwięk w górę lub w dół — za to wszystko nadal mieści się w C-dur. Ostatnie dwa zadania to krótkie solfeże ułożone specjalnie do ćwiczeń.",
         },
         {
-          body: "Każde zadanie ma dwa kroki. Najpierw posłuchaj nagrania — naciśnij 🔊 (tyle razy, ile chcesz) i śledź nuty na pięciolinii. Potem naciśnij „Nagraj”: usłyszysz tylko metronom, czyli równe stuknięcia. Dwa pierwsze to odliczanie, a przy trzecim zaczynasz śpiewać razem z nim.",
+          body: "Każde zadanie ma dwa kroki. Najpierw posłuchaj nagrania — naciśnij 🔊 (tyle razy, ile chcesz) i śledź nuty na pięciolinii. Potem naciśnij „Śpiewaj z metronomem”: usłyszysz tylko metronom, czyli równe stuknięcia. Dwa pierwsze to odliczanie, a przy trzecim zaczynasz śpiewać razem z nim — zielona nuta pokazuje, którą śpiewasz teraz. Mikrofon nie jest tu potrzebny. To zadania „Sprawdź siebie”: nikt tu nie ocenia nagrania — sam decydujesz, czy dałeś radę, i możesz próbować, aż Ci się spodoba.",
         },
         {
           body: "Wskazówka: zanim zaśpiewasz, spróbuj „zanucić w myślach” całą frazę razem z nagraniem. Zauważ, gdzie melodia idzie w górę, a gdzie w dół — nuty na pięciolinii pokazują to dokładnie tak jak ona brzmi.",
         },
         {
-          body: "Za szybko? Włącz przełącznik „🐌 Wolno” — i nagranie, i metronom zwolnią. Nie chcesz używać mikrofonu? Wyłącz go przełącznikiem: wtedy po prostu zaśpiewasz na głos i naciśniesz „Zaśpiewane”. Kropka metronomu pozwala też najpierw sprawdzić samo tempo.",
+          body: "Za szybko? Włącz przełącznik „🐌 Wolno” — i nagranie, i metronom zwolnią. Kropka metronomu pozwala też najpierw sprawdzić samo tempo. Możesz powtarzać tyle razy, ile chcesz.",
         },
       ],
       exercises: [
@@ -758,37 +759,37 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
           id: "zs-m2-e1",
           type: "solfege-phrase-singing",
           difficulty: 3,
-          spec: { type: "solfege-phrase-singing", notes: ["C4", "E4", "D4", "D4", "C4"], rhythm: ["quarter", "quarter", "quarter", "quarter", "whole"], meter: "4/4", isFragment: true, sourceLabel: "Fragment: „Au clair de la lune” — francuska piosenka ludowa (dalszy ciąg)", withMetronome: true, bpm: 60, toleranceCents: 70 },
+          spec: { type: "solfege-phrase-singing", notes: ["C4", "E4", "D4", "D4", "C4"], rhythm: ["quarter", "quarter", "quarter", "quarter", "whole"], meter: "4/4", isFragment: true, sourceLabel: "Fragment: „Au clair de la lune” — francuska piosenka ludowa (dalszy ciąg)", withMetronome: true, metronomeOnly: true, bpm: 60, toleranceCents: 70 },
         },
         {
           id: "zs-m2-e2",
           type: "solfege-phrase-singing",
           difficulty: 3,
-          spec: { type: "solfege-phrase-singing", notes: ["E4", "E4", "F4", "G4", "G4", "F4", "E4", "D4"], rhythm: ["quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter"], meter: "4/4", isFragment: true, sourceLabel: "Fragment: „Oda do radości” — L. van Beethoven, IX Symfonia (takty 1–2)", withMetronome: true, bpm: 66, toleranceCents: 70 },
+          spec: { type: "solfege-phrase-singing", notes: ["E4", "E4", "F4", "G4", "G4", "F4", "E4", "D4"], rhythm: ["quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter"], meter: "4/4", isFragment: true, sourceLabel: "Fragment: „Oda do radości” — L. van Beethoven, IX Symfonia (takty 1–2)", withMetronome: true, metronomeOnly: true, bpm: 66, toleranceCents: 70 },
         },
         {
           id: "zs-m2-e3",
           type: "solfege-phrase-singing",
           difficulty: 4,
-          spec: { type: "solfege-phrase-singing", notes: ["E4", "E4", "F4", "G4", "G4", "F4", "E4", "D4", "C4", "C4", "D4", "E4"], rhythm: ["quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter"], meter: "4/4", isFragment: true, sourceLabel: "Fragment: „Oda do radości” — L. van Beethoven, IX Symfonia (takty 1–3)", withMetronome: true, bpm: 66, toleranceCents: 70 },
+          spec: { type: "solfege-phrase-singing", notes: ["E4", "E4", "F4", "G4", "G4", "F4", "E4", "D4", "C4", "C4", "D4", "E4"], rhythm: ["quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter"], meter: "4/4", isFragment: true, sourceLabel: "Fragment: „Oda do radości” — L. van Beethoven, IX Symfonia (takty 1–3)", withMetronome: true, metronomeOnly: true, bpm: 66, toleranceCents: 70 },
         },
         {
           id: "zs-m2-e4",
           type: "solfege-phrase-singing",
           difficulty: 3,
-          spec: { type: "solfege-phrase-singing", notes: ["D4", "D4", "D4", "E4", "G4", "G4"], rhythm: ["quarter", "quarter", "half", "quarter", "quarter", "half"], meter: "4/4", isFragment: true, sourceLabel: "Fragment: „Mary had a little lamb” — amerykańska piosenka dziecięca (dalszy ciąg)", withMetronome: true, bpm: 60, toleranceCents: 70 },
+          spec: { type: "solfege-phrase-singing", notes: ["D4", "D4", "D4", "E4", "G4", "G4"], rhythm: ["quarter", "quarter", "half", "quarter", "quarter", "half"], meter: "4/4", isFragment: true, sourceLabel: "Fragment: „Mary had a little lamb” — amerykańska piosenka dziecięca (dalszy ciąg)", withMetronome: true, metronomeOnly: true, bpm: 60, toleranceCents: 70 },
         },
         {
           id: "zs-m2-e5",
           type: "solfege-phrase-singing",
           difficulty: 4,
-          spec: { type: "solfege-phrase-singing", notes: ["G4", "E4", "G4", "E4", "C4", "D4", "E4"], rhythm: ["quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "half"], meter: "4/4", isFragment: true, sourceLabel: "Własne krótkie solfeże (nie fragment utworu)", withMetronome: true, bpm: 60, toleranceCents: 70 },
+          spec: { type: "solfege-phrase-singing", notes: ["G4", "E4", "G4", "E4", "C4", "D4", "E4"], rhythm: ["quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "half"], meter: "4/4", isFragment: true, sourceLabel: "Własne krótkie solfeże (nie fragment utworu)", withMetronome: true, metronomeOnly: true, bpm: 60, toleranceCents: 70 },
         },
         {
           id: "zs-m2-e6",
           type: "solfege-phrase-singing",
           difficulty: 4,
-          spec: { type: "solfege-phrase-singing", notes: ["C4", "E4", "G4", "E4"], rhythm: ["half", "quarter", "half", "quarter"], meter: "3/4", isFragment: true, sourceLabel: "Własne krótkie solfeże (nie fragment utworu), metrum 3/4", withMetronome: true, bpm: 66, toleranceCents: 70 },
+          spec: { type: "solfege-phrase-singing", notes: ["C4", "E4", "G4", "E4"], rhythm: ["half", "quarter", "half", "quarter"], meter: "3/4", isFragment: true, sourceLabel: "Własne krótkie solfeże (nie fragment utworu), metrum 3/4", withMetronome: true, metronomeOnly: true, bpm: 66, toleranceCents: 70 },
         },
       ],
     },

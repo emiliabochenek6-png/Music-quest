@@ -435,7 +435,7 @@ export type ExerciseSpec =
        * SolfegePhraseSingingExercise.tsx's own doc. Needs `rhythm`. */
       withMetronome?: boolean;
       /** Like `withMetronome`, but with NO recording at all (Zaczarowany
-       * Solfeż levels 12 and 14): the microphone is never used or asked
+       * Solfeż levels 12-14): the microphone is never used or asked
        * for. "Śpiewaj z metronomem" plays the count-in + click track while
        * the staff highlight walks through the notes in time, the player
        * sings along on their own, and the exercise counts as done when the
