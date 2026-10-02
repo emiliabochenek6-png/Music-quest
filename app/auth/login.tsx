@@ -103,7 +103,7 @@ export default function LoginScreen() {
         </View>
 
         <Pressable onPress={handleForgotPassword} disabled={isSubmitting} style={styles.linkButton}>
-          <Text style={styles.mutedLink}>Zapomniałeś hasła?</Text>
+          <Text style={styles.mutedLink}>Nie pamiętasz hasła?</Text>
         </Pressable>
 
         <Pressable onPress={() => router.push("/auth/signup")} disabled={isSubmitting} style={styles.linkButton}>

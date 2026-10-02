@@ -907,7 +907,7 @@ function LessonSummary({
           <GlyphText style={{ fontSize: 34 }}>🏆</GlyphText>
           <Text style={{ color: theme.colors.success, fontWeight: "800", fontSize: 17, textAlign: "center" }}>Dzień zaliczony!</Text>
           <Text style={{ color: theme.colors.ink, fontWeight: "700", fontSize: 13.5, textAlign: "center" }}>
-            Wykonałeś wszystkie zaplanowane lekcje na dziś{todayLessonCount > 1 ? ` (${todayLessonCount})` : ""}.
+            Wszystkie zaplanowane lekcje na dziś zrobione{todayLessonCount > 1 ? ` (${todayLessonCount})` : ""}.
           </Text>
           <Text style={{ color: theme.colors.muted, fontSize: 12.5, textAlign: "center" }}>
             {`🔥 ${streakComment(todayISODate(), streakDays)}`}

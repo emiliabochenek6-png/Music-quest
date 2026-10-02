@@ -232,7 +232,7 @@ export const ZATOKA_TROJDZWIEKOW_CONTENT: WorldContent = {
       difficulty: 3,
       introSlides: [
         {
-          body: "To poziom podsumowujący — sprawdzian tego, czego nauczyłeś się w czterech poprzednich poziomach. Znajdziesz tu mieszankę wszystkich rodzajów zadań: rozpoznawanie rodzaju trójdźwięku ze słuchu, nazywanie dźwięków trójdźwięków głównych (T/S/D) w danej tonacji i rozpoznawanie ich funkcji ze słuchu. Tak jak w poprzednich poziomach, część zadań pokazuje zapis nutowy, a część opiera się już wyłącznie na słuchu.",
+          body: "To poziom podsumowujący — sprawdzian tego, co przerobione w czterech poprzednich poziomach. Znajdziesz tu mieszankę wszystkich rodzajów zadań: rozpoznawanie rodzaju trójdźwięku ze słuchu, nazywanie dźwięków trójdźwięków głównych (T/S/D) w danej tonacji i rozpoznawanie ich funkcji ze słuchu. Tak jak w poprzednich poziomach, część zadań pokazuje zapis nutowy, a część opiera się już wyłącznie na słuchu.",
         },
       ],
       exercises: [
@@ -535,7 +535,7 @@ export const ZATOKA_TROJDZWIEKOW_CONTENT: WorldContent = {
       difficulty: 3,
       introSlides: [
         {
-          body: "Trzy trójdźwięki, wszystkie rodzaje — najtrudniejsza wersja tego ćwiczenia. Wszystko, czego się nauczyłeś o rozpoznawaniu trójdźwięków, naraz.",
+          body: "Trzy trójdźwięki, wszystkie rodzaje — najtrudniejsza wersja tego ćwiczenia. Wszystko, co wiesz o rozpoznawaniu trójdźwięków, naraz.",
         },
       ],
       exercises: [

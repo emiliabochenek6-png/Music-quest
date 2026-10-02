@@ -35,7 +35,7 @@ export const FABRYKA_BUDOWANIA_CONTENT: WorldContent = {
       difficulty: 2,
       introSlides: [
         {
-          body: "Tu odwracasz to, czego nauczyłeś się w Paśmie Interwałów: zamiast rozpoznawać nazwany interwał, sam go zbudujesz. Zobaczysz dźwięk startowy (prymę) i nazwę interwału — Twoje zadanie to policzyć właściwą liczbę półtonów w górę lub w dół (polecenie zawsze mówi, w którą stronę) i kliknąć odpowiedni klawisz na klawiaturze. Dźwięk startowy zostaje lekko podświetlony przez całe zadanie, żebyś zawsze wiedział, od czego liczyć. Poniżej masz pełną klawiaturę oktawy — każdy klawisz (biały i czarny) podpisany nazwą dźwięku i liczbą półtonów od C, razem z odpowiadającym zapisem nutowym nad klawiaturą. Przykład: budując sekundę wielką w górę od C, licz 2 półtony w górę — trafiasz na D.",
+          body: "Tu odwracasz to, co znasz z Pasma Interwałów: zamiast rozpoznawać nazwany interwał, zbudujesz go samodzielnie. Zobaczysz dźwięk startowy (prymę) i nazwę interwału — Twoje zadanie to policzyć właściwą liczbę półtonów w górę lub w dół (polecenie zawsze mówi, w którą stronę) i kliknąć odpowiedni klawisz na klawiaturze. Dźwięk startowy zostaje lekko podświetlony przez całe zadanie, żebyś zawsze wiedział, od czego liczyć. Poniżej masz pełną klawiaturę oktawy — każdy klawisz (biały i czarny) podpisany nazwą dźwięku i liczbą półtonów od C, razem z odpowiadającym zapisem nutowym nad klawiaturą. Przykład: budując sekundę wielką w górę od C, licz 2 półtony w górę — trafiasz na D.",
           chromaticKeyboardReference: { range: ["C4", "C5"] },
           intervalExamples: [
             { notes: ["C4", "Db4"], label: "sekunda mała" },
@@ -340,7 +340,7 @@ export const FABRYKA_BUDOWANIA_CONTENT: WorldContent = {
       difficulty: 3,
       introSlides: [
         {
-          body: "Teraz budujesz przewroty trójdźwięków, tak jak poznałeś je w Jaskini Akordów — tylko że sam je konstruujesz, zamiast tylko rozpoznawać. W sekstakordzie (I przewrót) w basie stoi już tercja trójdźwięku — Ty dobudowujesz kwintę i prymę (o oktawę wyżej), każdą osobno: najpierw klikasz jej pozycję na pięciolinii, potem jej znak chromatyczny.",
+          body: "Teraz budujesz przewroty trójdźwięków, tak jak znasz je z Jaskini Akordów — tylko że konstruujesz je samodzielnie, zamiast tylko rozpoznawać. W sekstakordzie (I przewrót) w basie stoi już tercja trójdźwięku — Ty dobudowujesz kwintę i prymę (o oktawę wyżej), każdą osobno: najpierw klikasz jej pozycję na pięciolinii, potem jej znak chromatyczny.",
           triadExamples: [
             { notes: ["E4", "G4", "C5"], label: "sekstakord C-dur — w basie tercja (E)", degrees: [3, 5, 1] },
           ],

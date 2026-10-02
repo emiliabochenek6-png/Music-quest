@@ -460,7 +460,7 @@ export const JASKINIA_AKORDOW_CONTENT: WorldContent = {
       difficulty: 4,
       introSlides: [
         {
-          body: "Tym razem zamiast rozpoznawać gotowy przewrót, sam go odtworzysz z pamięci — dostaniesz nazwę przewrotu i tonację, a Ty wskażesz poprawny zapis nut od najniższego dźwięku. Na pięciolinii w każdym pytaniu zawsze zobaczysz tę samą postać zasadniczą trójdźwięku (dla przypomnienia, jakie dźwięki w ogóle wchodzą w jego skład) — to punkt wyjścia, a nie odpowiedź.",
+          body: "Tym razem zamiast rozpoznawać gotowy przewrót, odtworzysz go samodzielnie z pamięci — dostaniesz nazwę przewrotu i tonację, a Ty wskażesz poprawny zapis nut od najniższego dźwięku. Na pięciolinii w każdym pytaniu zawsze zobaczysz tę samą postać zasadniczą trójdźwięku (dla przypomnienia, jakie dźwięki w ogóle wchodzą w jego skład) — to punkt wyjścia, a nie odpowiedź.",
           triadExamples: [
             { notes: ["C4", "E4", "G4"], label: "postać zasadnicza — C-E-G", degrees: [1, 3, 5] },
             { notes: ["E4", "G4", "C5"], label: "sekstakord — E-G-C", degrees: [3, 5, 1] },

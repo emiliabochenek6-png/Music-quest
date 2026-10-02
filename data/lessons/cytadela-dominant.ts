@@ -334,7 +334,7 @@ export const CYTADELA_DOMINANT_CONTENT: WorldContent = {
       difficulty: 4,
       introSlides: [
         {
-          body: "Tym razem zamiast rozpoznawać gotowy przewrót, sam go odtworzysz z pamięci — dostaniesz nazwę przewrotu i dźwięk, na którym zbudowano akord, a Ty wskażesz poprawny zapis nut od najniższego dźwięku.",
+          body: "Tym razem zamiast rozpoznawać gotowy przewrót, odtworzysz go samodzielnie z pamięci — dostaniesz nazwę przewrotu i dźwięk, na którym zbudowano akord, a Ty wskażesz poprawny zapis nut od najniższego dźwięku.",
           triadExamples: [
             { notes: ["C4", "E4", "G4", "Bb4"], label: "postać zasadnicza — C-E-G-B", degrees: [1, 3, 5, 7] },
             { notes: ["E4", "G4", "Bb4", "C5"], label: "kwintsekstakord — E-G-B-C", degrees: [3, 5, 7, 1] },

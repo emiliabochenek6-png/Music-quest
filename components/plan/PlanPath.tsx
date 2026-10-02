@@ -179,7 +179,7 @@ export function PlanPath() {
   const soltekLine = lessonsDoneToday
     ? { message: "Gratulacje! Dzisiejsze lekcje zrobione. Do jutra — albo zajrzyj do powtórek!", expression: "radosny" as const }
     : cameBackAfterBreak
-      ? { message: "Miło Cię znowu widzieć! Nic się nie stało — plan czeka dokładnie tam, gdzie skończyłeś. Zaczynamy od najbliższej lekcji.", expression: "zachecajacy" as const }
+      ? { message: "Miło Cię znowu widzieć! Nic się nie stało — plan czeka dokładnie tam, gdzie skończyło się ostatnio. Zaczynamy od najbliższej lekcji.", expression: "zachecajacy" as const }
       : view.doneCount === 0
       ? { message: "Zaczynamy Twój plan! Dotknij pulsującej lekcji, żeby wystartować.", expression: "zachecajacy" as const }
       : { message: `Idzie Ci świetnie! Zostało ${left} ${left === 1 ? "lekcja" : "lekcji"} do mety.`, expression: "radosny" as const };
@@ -208,7 +208,7 @@ export function PlanPath() {
 
       {lessonsDoneToday && (
         <View style={[styles.congrats, { width: TRAIL_WIDTH + 24 }]}>
-          <GlyphText style={styles.congratsText}>🎉 Gratulacje! Wykonałeś wszystkie zaplanowane lekcje na dziś.</GlyphText>
+          <GlyphText style={styles.congratsText}>🎉 Gratulacje! Wszystkie zaplanowane lekcje na dziś zrobione.</GlyphText>
         </View>
       )}
 

@@ -276,7 +276,7 @@ export const LABIRYNT_TONACJI_CONTENT: WorldContent = {
       difficulty: 3,
       introSlides: [
         {
-          body: "To poziom podsumowujący — sprawdzian tego, czego nauczyłeś się w trzech poprzednich poziomach. Znajdziesz tu mieszankę wszystkich rodzajów zadań: kroki po kole, tonacje równoległe, nazwy konkretnych znaków, sąsiadów na kole, rozpoznawanie po zapisie na pięciolinii i odwróconą logikę liczby znaków.",
+          body: "To poziom podsumowujący — sprawdzian tego, co przerobione w trzech poprzednich poziomach. Znajdziesz tu mieszankę wszystkich rodzajów zadań: kroki po kole, tonacje równoległe, nazwy konkretnych znaków, sąsiadów na kole, rozpoznawanie po zapisie na pięciolinii i odwróconą logikę liczby znaków.",
           circleHighlight: { fifths: 0 },
         },
       ],

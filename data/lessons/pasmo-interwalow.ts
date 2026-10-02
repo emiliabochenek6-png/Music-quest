@@ -364,7 +364,7 @@ export const PASMO_INTERWALOW_CONTENT: WorldContent = {
       difficulty: 3,
       introSlides: [
         {
-          body: "Trzy interwały, pełen zakres — najtrudniejsza wersja tego ćwiczenia. Wszystko, czego się nauczyłeś o interwałach, naraz.",
+          body: "Trzy interwały, pełen zakres — najtrudniejsza wersja tego ćwiczenia. Wszystko, co wiesz o interwałach, naraz.",
         },
       ],
       exercises: [
@@ -390,7 +390,7 @@ export const PASMO_INTERWALOW_CONTENT: WorldContent = {
       difficulty: 3,
       introSlides: [
         {
-          body: "Do tej pory każdy interwał słyszałeś jako dwa dźwięki pod rząd. Teraz oba dźwięki zabrzmią NARAZ, jako jeden połączony dźwięk — to się nazywa dwudźwięk. Brzmi inaczej niż ta sama para zagrana jeden dźwięk po drugim, ale to wciąż ten sam interwał — Twoje ucho musi go rozpoznać także w tej nowej, „zlanej” formie.",
+          body: "Do tej pory każdy interwał brzmiał jako dwa dźwięki pod rząd. Teraz oba dźwięki zabrzmią NARAZ, jako jeden połączony dźwięk — to się nazywa dwudźwięk. Brzmi inaczej niż ta sama para zagrana jeden dźwięk po drugim, ale to wciąż ten sam interwał — Twoje ucho musi go rozpoznać także w tej nowej, „zlanej” formie.",
         },
       ],
       exercises: [
@@ -477,7 +477,7 @@ export const PASMO_INTERWALOW_CONTENT: WorldContent = {
       difficulty: 3,
       introSlides: [
         {
-          body: "Trzy dwudźwięki, pełen zakres — najtrudniejsza wersja tego ćwiczenia z dwudźwiękami. Wszystko, czego się nauczyłeś o interwałach granych naraz, w jednej lekcji.",
+          body: "Trzy dwudźwięki, pełen zakres — najtrudniejsza wersja tego ćwiczenia z dwudźwiękami. Wszystko, co wiesz o interwałach granych naraz, w jednej lekcji.",
         },
       ],
       exercises: [

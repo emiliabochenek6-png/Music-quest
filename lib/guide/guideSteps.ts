@@ -52,7 +52,7 @@ export const GUIDE_STEPS: readonly GuideStep[] = [
     id: "misje",
     icon: "nav_misje",
     title: "Misje dnia",
-    message: "Kliknij tutaj po codzienne misje i wyzwanie dnia. Każdego dnia czekają 3 misje, a wyzwanie to pytanie z lekcji, które już zrobiłaś albo zrobiłeś.",
+    message: "Kliknij tutaj po codzienne misje i wyzwanie dnia. Każdego dnia czekają 3 misje, a wyzwanie to pytanie z lekcji, które już zrobione.",
     expression: "zachecajacy",
     target: "tabMisje",
   },

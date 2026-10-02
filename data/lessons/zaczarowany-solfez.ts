@@ -690,7 +690,7 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
           body: "Czas na prawdziwe melodie! W tym poziomie zaśpiewasz krótkie fragmenty znanych piosenek, zapisane w C-dur — używasz tylko dźwięków, które już znasz: do, re, mi, fa, sol.",
         },
         {
-          body: "Każde zadanie ma dwa kroki. Najpierw posłuchaj nagrania — naciśnij 🔊 (tyle razy, ile chcesz) i śledź nuty na pięciolinii. Potem naciśnij „Śpiewaj z metronomem”: usłyszysz tylko metronom, czyli równe stuknięcia. Dwa pierwsze to odliczanie, a przy trzecim zaczynasz śpiewać razem z nim — zielona nuta pokazuje, którą śpiewasz teraz. Mikrofon nie jest tu potrzebny. To zadania „Sprawdź siebie”: nikt tu nie ocenia nagrania — sam decydujesz, czy dałeś radę, i możesz próbować, aż Ci się spodoba.",
+          body: "Każde zadanie ma dwa kroki. Najpierw posłuchaj nagrania — naciśnij 🔊 (tyle razy, ile chcesz) i śledź nuty na pięciolinii. Potem naciśnij „Śpiewaj z metronomem”: usłyszysz tylko metronom, czyli równe stuknięcia. Dwa pierwsze to odliczanie, a przy trzecim zaczynasz śpiewać razem z nim — zielona nuta pokazuje, którą śpiewasz teraz. Mikrofon nie jest tu potrzebny. To zadania „Sprawdź siebie”: nikt tu nie ocenia nagrania — decydujesz samodzielnie, czy się udało, i możesz próbować, aż Ci się spodoba.",
         },
         {
           body: "Za szybko? Włącz przełącznik „🐌 Wolno” — i nagranie, i metronom zwolnią. Kropka metronomu pozwala też najpierw sprawdzić samo tempo. Możesz powtarzać tyle razy, ile chcesz.",
@@ -745,7 +745,7 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
           body: "Kolejne melodie są odrobinę dłuższe, a niektóre mają skoki o tercję (pomijasz jeden dźwięk) w górę lub w dół — za to wszystko nadal mieści się w C-dur. Ostatnie dwa zadania to krótkie solfeże ułożone specjalnie do ćwiczeń.",
         },
         {
-          body: "Każde zadanie ma dwa kroki. Najpierw posłuchaj nagrania — naciśnij 🔊 (tyle razy, ile chcesz) i śledź nuty na pięciolinii. Potem naciśnij „Śpiewaj z metronomem”: usłyszysz tylko metronom, czyli równe stuknięcia. Dwa pierwsze to odliczanie, a przy trzecim zaczynasz śpiewać razem z nim — zielona nuta pokazuje, którą śpiewasz teraz. Mikrofon nie jest tu potrzebny. To zadania „Sprawdź siebie”: nikt tu nie ocenia nagrania — sam decydujesz, czy dałeś radę, i możesz próbować, aż Ci się spodoba.",
+          body: "Każde zadanie ma dwa kroki. Najpierw posłuchaj nagrania — naciśnij 🔊 (tyle razy, ile chcesz) i śledź nuty na pięciolinii. Potem naciśnij „Śpiewaj z metronomem”: usłyszysz tylko metronom, czyli równe stuknięcia. Dwa pierwsze to odliczanie, a przy trzecim zaczynasz śpiewać razem z nim — zielona nuta pokazuje, którą śpiewasz teraz. Mikrofon nie jest tu potrzebny. To zadania „Sprawdź siebie”: nikt tu nie ocenia nagrania — decydujesz samodzielnie, czy się udało, i możesz próbować, aż Ci się spodoba.",
         },
         {
           body: "Wskazówka: zanim zaśpiewasz, spróbuj „zanucić w myślach” całą frazę razem z nagraniem. Zauważ, gdzie melodia idzie w górę, a gdzie w dół — nuty na pięciolinii pokazują to dokładnie tak jak ona brzmi.",
@@ -803,7 +803,7 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
           body: "Kolejny poziom z melodiami: teraz sięgasz po całą gamę, od do do do wyżej. Zobaczysz pary ósemek (dwa szybsze dźwięki w jednym uderzeniu metronomu), schodzenie w dół i na końcu — całą gamę w górę z metronomem.",
         },
         {
-          body: "Każde zadanie ma dwa kroki. Najpierw posłuchaj nagrania — naciśnij 🔊 (tyle razy, ile chcesz) i śledź nuty na pięciolinii. Potem naciśnij „Śpiewaj z metronomem”: usłyszysz tylko metronom, czyli równe stuknięcia. Dwa pierwsze to odliczanie, a przy trzecim zaczynasz śpiewać razem z nim — zielona nuta pokazuje, którą śpiewasz teraz. Mikrofon nie jest tu potrzebny. To zadania „Sprawdź siebie”: nikt tu nie ocenia nagrania — sam decydujesz, czy dałeś radę, i możesz próbować, aż Ci się spodoba.",
+          body: "Każde zadanie ma dwa kroki. Najpierw posłuchaj nagrania — naciśnij 🔊 (tyle razy, ile chcesz) i śledź nuty na pięciolinii. Potem naciśnij „Śpiewaj z metronomem”: usłyszysz tylko metronom, czyli równe stuknięcia. Dwa pierwsze to odliczanie, a przy trzecim zaczynasz śpiewać razem z nim — zielona nuta pokazuje, którą śpiewasz teraz. Mikrofon nie jest tu potrzebny. To zadania „Sprawdź siebie”: nikt tu nie ocenia nagrania — decydujesz samodzielnie, czy się udało, i możesz próbować, aż Ci się spodoba.",
         },
         {
           body: "Para ósemek to dwa dźwięki w czasie jednego stuknięcia metronomu — śpiewasz je trochę szybciej niż ćwierćnuty. Jeśli to za szybko, włącz „🐌 Wolno” i ćwicz powoli.",
@@ -861,7 +861,7 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
           body: "Teraz dłuższe melodie — nawet po kilkanaście nut! Najpierw znane piosenki (m.in. „Twinkle, twinkle, little star” i „Lightly Row”), na końcu dwa własne solfeże. Wszystko nadal w C-dur i w tempie, które zdążysz zaśpiewać.",
         },
         {
-          body: "Każde zadanie ma dwa kroki. Najpierw posłuchaj nagrania — naciśnij 🔊 (tyle razy, ile chcesz) i śledź nuty na pięciolinii. Potem naciśnij „Śpiewaj z metronomem”: usłyszysz tylko metronom, czyli równe stuknięcia. Dwa pierwsze to odliczanie, a przy trzecim zaczynasz śpiewać razem z nim — zielona nuta pokazuje, którą śpiewasz teraz. Mikrofon nie jest tu potrzebny. To zadania „Sprawdź siebie”: nikt tu nie ocenia nagrania — sam decydujesz, czy dałeś radę, i możesz próbować, aż Ci się spodoba.",
+          body: "Każde zadanie ma dwa kroki. Najpierw posłuchaj nagrania — naciśnij 🔊 (tyle razy, ile chcesz) i śledź nuty na pięciolinii. Potem naciśnij „Śpiewaj z metronomem”: usłyszysz tylko metronom, czyli równe stuknięcia. Dwa pierwsze to odliczanie, a przy trzecim zaczynasz śpiewać razem z nim — zielona nuta pokazuje, którą śpiewasz teraz. Mikrofon nie jest tu potrzebny. To zadania „Sprawdź siebie”: nikt tu nie ocenia nagrania — decydujesz samodzielnie, czy się udało, i możesz próbować, aż Ci się spodoba.",
         },
         {
           body: "Wskazówka na dłuższe melodie: nie próbuj ogarnąć wszystkiego naraz. Podziel melodię na takty (oddzielone pionowymi kreskami) i śpiewaj takt po takcie — każdy takt to jedna mała frazka. Najpierw posłuchaj całości, potem poćwicz osobno pierwszy takt, potem dwa i tak dalej.",
@@ -919,7 +919,7 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
           body: "Ostatni poziom z melodiami: własne solfeże, jeszcze dłuższe — do kilkunastu nut, w metrum 4/4 i 3/4, z parami ósemek. Tym razem żadna nie jest znaną piosenką, więc tym uważniej śledź nuty na pięciolinii.",
         },
         {
-          body: "Każde zadanie ma dwa kroki. Najpierw posłuchaj nagrania — naciśnij 🔊 (tyle razy, ile chcesz) i śledź nuty na pięciolinii. Potem naciśnij „Śpiewaj z metronomem”: usłyszysz tylko metronom, czyli równe stuknięcia. Dwa pierwsze to odliczanie, a przy trzecim zaczynasz śpiewać razem z nim — zielona nuta pokazuje, którą śpiewasz teraz. Mikrofon nie jest tu potrzebny. To zadania „Sprawdź siebie”: nikt tu nie ocenia nagrania — sam decydujesz, czy dałeś radę, i możesz próbować, aż Ci się spodoba.",
+          body: "Każde zadanie ma dwa kroki. Najpierw posłuchaj nagrania — naciśnij 🔊 (tyle razy, ile chcesz) i śledź nuty na pięciolinii. Potem naciśnij „Śpiewaj z metronomem”: usłyszysz tylko metronom, czyli równe stuknięcia. Dwa pierwsze to odliczanie, a przy trzecim zaczynasz śpiewać razem z nim — zielona nuta pokazuje, którą śpiewasz teraz. Mikrofon nie jest tu potrzebny. To zadania „Sprawdź siebie”: nikt tu nie ocenia nagrania — decydujesz samodzielnie, czy się udało, i możesz próbować, aż Ci się spodoba.",
         },
         {
           body: "Przy dłuższych frazach pomaga oddech: nabierz powietrza na początku taktu i śpiewaj spokojnie, równo z metronomem. Jeśli się zgubisz — nic się nie stało, zacznij jeszcze raz. Dla pewności możesz najpierw zanucić całą melodię razem z nagraniem.",

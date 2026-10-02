@@ -56,7 +56,7 @@ export function RankUpCelebration({ visible, rank, rankName, nutki = 0, onClose 
           )}
           {rankName && (
             <View style={{ marginTop: 20, width: "100%", maxWidth: 320 }}>
-              <SoltekMascot expression="radosny" message={`Brawo! Osiągnąłeś level ${rank} — „${rankName}”. Tak trzymaj!`} />
+              <SoltekMascot expression="radosny" message={`Brawo! Masz już level ${rank} — „${rankName}”. Tak trzymaj!`} />
             </View>
           )}
           <View style={{ marginTop: 20, width: "100%", maxWidth: 260 }}>

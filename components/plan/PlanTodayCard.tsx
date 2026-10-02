@@ -92,7 +92,7 @@ export function PlanTodayCard({ showFullPlanLink = true }: { showFullPlanLink?: 
           {!item.done && <MiniButton label="Powtórz" onPress={() => openReview(item.lessonId)} />}
         </View>
       ))}
-      {lessonsDone && <Text style={styles.success}>🎉 Gratulacje! Wykonałeś wszystkie zaplanowane lekcje na dziś.{reviewsPending ? " Zostały jeszcze powtórki." : ""}</Text>}
+      {lessonsDone && <Text style={styles.success}>🎉 Gratulacje! Wszystkie zaplanowane lekcje na dziś zrobione.{reviewsPending ? " Zostały jeszcze powtórki." : ""}</Text>}
     </View>
   );
 }
