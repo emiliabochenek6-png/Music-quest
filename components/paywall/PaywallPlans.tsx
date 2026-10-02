@@ -4,15 +4,11 @@ import { PaywallBenefitsList } from "@/components/paywall/PaywallBenefitsList";
 import { SubscriptionPlanCard } from "@/components/paywall/SubscriptionPlanCard";
 import { useSubscription } from "@/context/SubscriptionContext";
 import { t } from "@/lib/i18n/translate";
+import { formatPriceZl, MONTHLY_PRICE_ZL, YEARLY_PRICE_ZL, YEARLY_SAVINGS_PERCENT } from "@/lib/subscriptions/prices";
 import { useTheme } from "@/theme/ThemeProvider";
 import type { SubscriptionPlan } from "@/types/content";
 
-// Fixed marketing prices, shown immediately — the real charge goes through
-// purchase(plan), which resolves the real store product (see
-// SubscriptionContext). Kept in sync with App Store Connect / Play Console by hand.
-const MONTHLY_PRICE_ZL = 59;
-const YEARLY_PRICE_ZL = 590;
-const SAVINGS_PERCENT = Math.round((1 - YEARLY_PRICE_ZL / (MONTHLY_PRICE_ZL * 12)) * 100);
+// Prices come from lib/subscriptions/prices.ts (shown at once; the real charge goes through purchase(plan)).
 
 /** The heading, the benefits and the plans themselves, ready to buy at once
  * (no "see the plans" button in between). Used by the Subskrypcja tab and
@@ -41,7 +37,7 @@ export function PaywallPlans({ onPurchased }: { onPurchased?: () => void }) {
       <View style={styles.plans}>
         <SubscriptionPlanCard
           plan="monthly"
-          priceLabel={t("paywall.plan.monthlyPrice")}
+          priceLabel={formatPriceZl(MONTHLY_PRICE_ZL)}
           periodLabel={t("paywall.plan.monthlyPeriod")}
           description={t("paywall.plan.monthlyDescription")}
           ctaLabel={t("paywall.cta.monthly")}
@@ -51,11 +47,11 @@ export function PaywallPlans({ onPurchased }: { onPurchased?: () => void }) {
         />
         <SubscriptionPlanCard
           plan="yearly"
-          priceLabel={t("paywall.plan.yearlyPrice")}
+          priceLabel={formatPriceZl(YEARLY_PRICE_ZL)}
           periodLabel={t("paywall.plan.yearlyPeriod")}
           description={t("paywall.plan.yearlyDescription")}
           ctaLabel={t("paywall.cta.yearly")}
-          savingsPercent={SAVINGS_PERCENT}
+          savingsPercent={YEARLY_SAVINGS_PERCENT}
           highlighted
           loading={purchasingPlan === "yearly"}
           disabled={purchasingPlan !== null}

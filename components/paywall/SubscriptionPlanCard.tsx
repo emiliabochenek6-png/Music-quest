@@ -6,7 +6,7 @@ import type { SubscriptionPlan } from "@/types/content";
 
 interface SubscriptionPlanCardProps {
   plan: SubscriptionPlan;
-  /** Fixed marketing price (59 zł / 590 zł) — deliberately NOT the real
+  /** Fixed marketing price (see lib/subscriptions/prices.ts) — deliberately NOT the real
    * store-fetched price anymore (see app/paywall.tsx's own doc): this
    * screen no longer waits on RevenueCat's offering to render at all, it
    * always shows these two numbers immediately. The actual charge still
@@ -14,7 +14,7 @@ interface SubscriptionPlanCardProps {
   priceLabel: string;
   /** A short unit suffix ("/ mies.", "/ rok") set right after the price
    * itself, small and muted — NOT the plan's own name repeated (that
-   * used to render as "Miesięcznie … 59 zł / miesiąc", the same word
+   * used to render as "Miesięcznie … 35 zł / miesiąc", the same word
    * twice in one card, which read as a mistake rather than a deliberate
    * label). The plan name is now its own small uppercase eyebrow above
    * the price instead of sitting in the same row as it. */
