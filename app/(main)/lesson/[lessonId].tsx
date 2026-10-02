@@ -158,7 +158,7 @@ function LessonScreenBody() {
   const learningMode = mode === "plan";
   const insets = useSafeAreaInsets();
   const { progress, markLessonCompleted, markWorldCompleted } = useProgress();
-  const { plan, onLessonCompleted } = usePlan();
+  const { plan, onLessonCompleted, setView } = usePlan();
   const { state: gamificationState, awardXp, addNutki, recordLessonStars, recordActivity } =
     useGamification();
   // XP/nutki the player had when this lesson started — the summary shows the difference.
@@ -275,6 +275,7 @@ function LessonScreenBody() {
     // A lesson opened from the study plan returns to the plan (the map in
     // "Tryb nauki"), never to the world's level list.
     if (learningMode) {
+      setView("plan");
       router.replace({ pathname: "/(main)/map", params: { focusLessonId: lessonId } });
       return;
     }
@@ -547,7 +548,14 @@ function LessonScreenBody() {
           accentHex={world.accentColor}
           backgroundColor={screenBackgroundColor}
           // Opened from the study plan → back to the plan (map in "Tryb nauki"), not the world's level list.
-          onExit={fromPlan ? () => router.replace({ pathname: "/(main)/map", params: { focusLessonId: lessonId } }) : goBackToLevels}
+          onExit={
+            fromPlan
+              ? () => {
+                  setView("plan");
+                  router.replace({ pathname: "/(main)/map", params: { focusLessonId: lessonId } });
+                }
+              : goBackToLevels
+          }
           exitLabel={fromPlan ? "Wróć do planu" : t("lesson.backToLevels", "pl")}
           nextTodayLessonLabel={nextTodayLessonId ? describeLesson(nextTodayLessonId) : null}
           onNextTodayLesson={

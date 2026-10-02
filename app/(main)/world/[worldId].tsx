@@ -130,9 +130,6 @@ export default function WorldLevelsScreen() {
     );
   }
 
-  // Lessons the player's personal study path leaves out never block the next ones (see lib/plan).
-  const pathIds = new Set(plan.pathLessonIds);
-  const skippedLessonIds = plan.mode === "personal" && content ? new Set(content.lessons.filter((l) => !pathIds.has(l.id)).map((l) => l.id)) : undefined;
   const completedCount = content ? content.lessons.filter((l) => progress.completedLessonIds.has(l.id)).length : 0;
   const totalCount = content?.lessons.length ?? 0;
   const progressPct = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
@@ -229,11 +226,12 @@ export default function WorldLevelsScreen() {
         </View>
       </View>
 
+      {content && <Text style={styles.unlockHint}>Poziomy otwierają się po kolei: następny odblokujesz, zdobywając minimum 2 gwiazdki w poprzednim.</Text>}
+
       {content ? (
         <LessonPath
           lessons={content.lessons}
           completedLessonIds={progress.completedLessonIds}
-          skippedLessonIds={skippedLessonIds}
           lessonStars={gamification.lessonStars}
           accentHex={world.accentColor}
           focusLessonId={focusLessonId}
@@ -251,6 +249,14 @@ export default function WorldLevelsScreen() {
 }
 
 const styles = StyleSheet.create({
+  unlockHint: {
+    marginHorizontal: 24,
+    marginTop: 8,
+    textAlign: "center",
+    fontSize: 12,
+    fontWeight: "700",
+    color: theme.colors.muted,
+  },
   root: {
     flex: 1,
     backgroundColor: theme.colors.cream,

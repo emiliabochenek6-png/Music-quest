@@ -324,3 +324,28 @@ describe("path view", () => {
     expect(daysBetween(lastDay("2026-10-05"), lastDay("2026-10-19"))).toBe(14);
   });
 });
+
+describe("Tryb zabawy: levels open one by one with 2 stars", () => {
+  const lessons = [1, 2, 3].map((order) => ({ id: `s${order}`, order, difficulty: 1, exercises: [] }));
+
+  it("opens only level 1 at the start", () => {
+    expect(resolveLessonNodeState(lessons[0], lessons, new Set(), undefined, {})).toBe("available");
+    expect(resolveLessonNodeState(lessons[1], lessons, new Set(), undefined, {})).toBe("locked");
+    expect(resolveLessonNodeState(lessons[2], lessons, new Set(), undefined, {})).toBe("locked");
+  });
+
+  it("opens the next level after a level finished with 2 or 3 stars", () => {
+    expect(resolveLessonNodeState(lessons[1], lessons, new Set(["s1"]), undefined, { s1: 2 })).toBe("available");
+    expect(resolveLessonNodeState(lessons[1], lessons, new Set(["s1"]), undefined, { s1: 3 })).toBe("available");
+  });
+
+  it("keeps the next level closed after a level finished with only 1 star, while the level itself stays replayable", () => {
+    const done = new Set(["s1"]);
+    expect(resolveLessonNodeState(lessons[1], lessons, done, undefined, { s1: 1 })).toBe("locked");
+    expect(resolveLessonNodeState(lessons[0], lessons, done, undefined, { s1: 1 })).toBe("completed");
+  });
+
+  it("treats a finished level with no star record (saved before stars existed) as passed", () => {
+    expect(resolveLessonNodeState(lessons[1], lessons, new Set(["s1"]), undefined, {})).toBe("available");
+  });
+});

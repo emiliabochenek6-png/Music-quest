@@ -7,6 +7,8 @@ export interface ProfileState {
    * device — presentation state, same as everything else in
    * ProfileState, so it's deliberately per-device rather than synced. */
   hasSeenSoltekGreeting: boolean;
+  /** Whether the short tour of the whole game (components/guide/GameGuide.tsx) has been shown. */
+  hasSeenGuide: boolean;
 }
 
 /** One of the 12 curriculum worlds — see ARCHITECTURE.md section 3.2. This

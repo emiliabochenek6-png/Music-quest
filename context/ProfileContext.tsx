@@ -9,6 +9,7 @@ const DEFAULT_PROFILE: ProfileState = {
   narratorEnabled: true,
   soundEffectsEnabled: true,
   hasSeenSoltekGreeting: false,
+  hasSeenGuide: false,
 };
 
 interface ProfileContextValue {
@@ -21,6 +22,7 @@ interface ProfileContextValue {
   setNarratorEnabled: (enabled: boolean) => void;
   setSoundEffectsEnabled: (enabled: boolean) => void;
   setHasSeenSoltekGreeting: (seen: boolean) => void;
+  setHasSeenGuide: (seen: boolean) => void;
 }
 
 const ProfileContext = createContext<ProfileContextValue | null>(null);
@@ -49,7 +51,7 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
     () =>
       onLocalDataReset(() => {
         setProfile((current) => {
-          const next = { ...current, hasSeenSoltekGreeting: false };
+          const next = { ...current, hasSeenSoltekGreeting: false, hasSeenGuide: false };
           void writeJson(STORAGE_KEYS.profile, next);
           return next;
         });
@@ -69,6 +71,7 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
     setNarratorEnabled: (narratorEnabled) => persist({ ...profile, narratorEnabled }),
     setSoundEffectsEnabled: (soundEffectsEnabled) => persist({ ...profile, soundEffectsEnabled }),
     setHasSeenSoltekGreeting: (hasSeenSoltekGreeting) => persist({ ...profile, hasSeenSoltekGreeting }),
+    setHasSeenGuide: (hasSeenGuide) => persist({ ...profile, hasSeenGuide }),
   };
 
   return <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>;

@@ -11,6 +11,7 @@ import { SideMenuContent } from "@/components/SideMenuContent";
 import { ModeSwitch } from "@/components/plan/ModeSwitch";
 import { PlanPath } from "@/components/plan/PlanPath";
 import { PlanPromptModal } from "@/components/plan/PlanPromptModal";
+import { GameGuide } from "@/components/guide/GameGuide";
 import { SoltekWelcomeModal } from "@/components/SoltekWelcomeModal";
 import { useGamification } from "@/context/GamificationContext";
 import { usePlan } from "@/context/PlanContext";
@@ -57,7 +58,9 @@ export default function MapScreen() {
   const { progress } = useProgress();
   const { status } = useSubscription();
   const { state: gamification } = useGamification();
-  const { profile, isLoading: isProfileLoading, setHasSeenSoltekGreeting } = useProfile();
+  const { profile, isLoading: isProfileLoading, setHasSeenSoltekGreeting, setHasSeenGuide } = useProfile();
+  // The tour can also be replayed from the side menu.
+  const [guideReplay, setGuideReplay] = useState(false);
   const { plan, isLoading: isPlanLoading, startWithGame, setView } = usePlan();
   const [sideMenuOpen, setSideMenuOpen] = useState(false);
   // Not loading AND not-yet-seen — reading `profile` before it's finished
@@ -82,7 +85,9 @@ export default function MapScreen() {
       return () => setMapFocused(false);
     }, [])
   );
-  const showPlanPrompt = mapFocused && !planPromptHidden && !isProfileLoading && !isPlanLoading && profile.hasSeenSoltekGreeting && plan.mode === "unset" && !plan.promptSeen;
+  // First run: Soltek's welcome, then the short tour, then the choice of how to start.
+  const showGuide = guideReplay || (!isProfileLoading && profile.hasSeenSoltekGreeting && !profile.hasSeenGuide);
+  const showPlanPrompt = mapFocused && !planPromptHidden && !isProfileLoading && !isPlanLoading && profile.hasSeenSoltekGreeting && profile.hasSeenGuide && !guideReplay && plan.mode === "unset" && !plan.promptSeen;
 
   function handleSelectWorld(world: WorldDefinition) {
     const state = resolveNodeState(world, progress, status, gamification.lessonStars);
@@ -131,10 +136,24 @@ export default function MapScreen() {
       <BottomTabBar />
 
       <SideMenu visible={sideMenuOpen} onClose={() => setSideMenuOpen(false)}>
-        <SideMenuContent onClose={() => setSideMenuOpen(false)} />
+        <SideMenuContent
+          onClose={() => setSideMenuOpen(false)}
+          onOpenGuide={() => {
+            setSideMenuOpen(false);
+            setGuideReplay(true);
+          }}
+        />
       </SideMenu>
 
       <SoltekWelcomeModal visible={showSoltekWelcome} onDismiss={() => setHasSeenSoltekGreeting(true)} />
+      {showGuide && (
+        <GameGuide
+          onClose={() => {
+            setGuideReplay(false);
+            setHasSeenGuide(true);
+          }}
+        />
+      )}
 {/* Mounted only while it should be showing — a closing RN-web Modal can linger in the DOM until its fade animation ends (and never ends if the page is hidden), which kept it on top of the placement screen. */}
       {showPlanPrompt && (
         <PlanPromptModal

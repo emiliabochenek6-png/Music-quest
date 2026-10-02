@@ -28,7 +28,7 @@ const NUTKI_PER_CORRECT_IN_REVIEW = 2;
  * it back sooner) and counts the minutes toward today's activity. */
 export default function ReviewScreen() {
   const { lessonId, worldId } = useLocalSearchParams<{ lessonId: string; worldId: string }>();
-  const { plan, onReviewFinished } = usePlan();
+  const { plan, onReviewFinished, setView } = usePlan();
   const { recordActivity, awardXp, addNutki } = useGamification();
   const lesson = getWorldContent(worldId)?.lessons.find((l) => l.id === lessonId);
   const definitions = useMemo(() => (lesson ? pickReviewExercises(lesson) : []), [lessonId]);
@@ -43,8 +43,9 @@ export default function ReviewScreen() {
 
   function goBack() {
     stopAllScheduledAudio();
-    if (router.canGoBack()) router.back();
-    else router.replace("/(main)/plan");
+    // Back to the plan: the map in "Tryb nauki", whatever mode it was last left in.
+    setView("plan");
+    router.replace("/(main)/map");
   }
 
   function check() {

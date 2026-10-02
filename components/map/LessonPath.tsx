@@ -3,7 +3,7 @@ import { ScrollView, View, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Defs, LinearGradient, Path, Stop } from "react-native-svg";
 import { LessonNode } from "@/components/map/LessonNode";
-import { resolveLessonNodeState } from "@/lib/progression/resolveLessonNodeState";
+import { passedForNextLesson, resolveLessonNodeState } from "@/lib/progression/resolveLessonNodeState";
 import type { LessonDefinition } from "@/types/exercises";
 
 interface LessonPathProps {
@@ -72,8 +72,10 @@ export function LessonPath({ lessons, completedLessonIds, lessonStars, accentHex
   // fixed guess that ALWAYS fires beats an exact one that doesn't fire).
   const scrollRef = useRef<ScrollView>(null);
   const focusIndex = focusLessonId ? lessons.findIndex((lesson) => lesson.id === focusLessonId) : -1;
+  // The next thing to do: the first lesson not finished yet, or finished with too few stars to open the next one.
   const nextLessonIndex = lessons.findIndex(
-    (lesson) => resolveLessonNodeState(lesson, lessons, completedLessonIds, skippedLessonIds) !== "completed"
+    (lesson) =>
+      resolveLessonNodeState(lesson, lessons, completedLessonIds, skippedLessonIds, lessonStars) !== "completed" || !passedForNextLesson(lesson.id, lessonStars)
   );
   const targetIndex = focusIndex !== -1 ? focusIndex : nextLessonIndex === -1 ? lessons.length - 1 : nextLessonIndex;
   useEffect(() => {
@@ -125,7 +127,7 @@ export function LessonPath({ lessons, completedLessonIds, lessonStars, accentHex
         </Svg>
 
         {lessons.map((lesson, index) => {
-          const state = resolveLessonNodeState(lesson, lessons, completedLessonIds, skippedLessonIds);
+          const state = resolveLessonNodeState(lesson, lessons, completedLessonIds, skippedLessonIds, lessonStars);
           // The boss node renders noticeably bigger than every ordinary
           // node (see LessonNode's own doc) — centering it on the path
           // needs a wider offset than the fixed one every regular node
