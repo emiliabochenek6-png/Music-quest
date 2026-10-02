@@ -5,6 +5,7 @@ import Svg, { Circle, Path } from "react-native-svg";
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { DarkButton } from "@/components/exercises/DarkButton";
+import { InfoModal } from "@/components/ui/InfoModal";
 import { AppIcon } from "@/components/icons/AppIcon";
 import { WORLD_ICON } from "@/components/map/WorldNode";
 import { resolveBossPortrait } from "@/components/map/bossPortraits";
@@ -16,7 +17,7 @@ import { useProgress } from "@/context/ProgressContext";
 import { getWorldContent } from "@/data/lessons";
 import { getWorldById } from "@/data/worlds";
 import { todayISODate } from "@/lib/gamification/activity";
-import { daysBetween, formatShortPolishDate, weekdayOf } from "@/lib/plan/dates";
+import { addDays, daysBetween, formatShortPolishDate, weekdayOf } from "@/lib/plan/dates";
 import { getLessonInfo } from "@/lib/plan/lessonIndex";
 import { buildPathView } from "@/lib/plan/pathView";
 import { getTodayStatus } from "@/lib/plan/today";
@@ -46,6 +47,8 @@ interface TrailLesson {
   done: boolean;
   highlight: boolean;
   isCurrent: boolean;
+  /** The day this lesson is planned for; only today's lessons can be opened. */
+  dateISO: string;
   isBoss: boolean;
   bossName?: string;
   accent: string;
@@ -74,10 +77,11 @@ function iconFor(mapIconId: string | undefined) {
  * "Tryb zabawy" stays the world map. */
 export function PlanPath() {
   const insets = useSafeAreaInsets();
-  const { plan, isLoading } = usePlan();
+  const { plan, isLoading, planCompletedIds } = usePlan();
   const { progress } = useProgress();
   const { state: gamification } = useGamification();
   const [daysShown, setDaysShown] = useState(DAYS_SHOWN_STEP);
+  const [lockedNode, setLockedNode] = useState<TrailLesson | null>(null);
   const todayISO = todayISODate();
   // Coming back from a lesson (see the lesson screen's goBackToLevels) the
   // trail opens scrolled to the lesson just left, not at the very top.
@@ -91,15 +95,15 @@ export function PlanPath() {
     () =>
       buildPathView({
         pathLessonIds: plan.pathLessonIds,
-        completedLessonIds: progress.completedLessonIds,
+        completedLessonIds: planCompletedIds,
         todayLessonIds: plan.today?.dateISO === todayISO ? plan.today.lessonIds : [],
         minutesPerDay: plan.minutesPerDay,
         todayISO,
         minutesOf: (lessonId) => getLessonInfo(lessonId)?.minutes ?? 8,
       }),
-    [plan.pathLessonIds, plan.today, plan.minutesPerDay, progress.completedLessonIds, todayISO]
+    [plan.pathLessonIds, plan.today, plan.minutesPerDay, planCompletedIds, todayISO]
   );
-  const status = getTodayStatus(plan.today, todayISO, progress.completedLessonIds, plan.reviewLog);
+  const status = getTodayStatus(plan.today, todayISO, planCompletedIds, plan.reviewLog);
   const lessonsDoneToday = status.lessons.length > 0 && status.lessons.every((item) => item.done);
 
   const visibleDays = view.days.slice(0, daysShown);
@@ -123,7 +127,7 @@ export function PlanPath() {
         const lesson = info ? getWorldContent(info.worldId)?.lessons[info.lessonIndex] : undefined;
         const isBoss = info?.isBoss === true;
         const size = isBoss ? BOSS_NODE_SIZE : NODE_SIZE;
-        const done = progress.completedLessonIds.has(lessonId);
+        const done = planCompletedIds.has(lessonId);
         const isCurrent = !done && !currentAssigned;
         if (isCurrent) currentAssigned = true;
         items.push({
@@ -133,6 +137,7 @@ export function PlanPath() {
           cy: y + size / 2 + 8,
           done,
           highlight: day.isToday,
+          dateISO: day.dateISO,
           isCurrent,
           isBoss,
           bossName: lesson?.bossName,
@@ -145,7 +150,7 @@ export function PlanPath() {
       }
     }
     return { items, height: y + 90 };
-  }, [visibleDays, progress.completedLessonIds]);
+  }, [visibleDays, planCompletedIds]);
 
   const focusNode = trail.items.find((item): item is TrailLesson => item.kind === "lesson" && item.lessonId === focusLessonId);
   useEffect(() => {
@@ -261,7 +266,7 @@ export function PlanPath() {
           ))}
 
           {lessonNodes.map((node) => (
-            <TrailNode key={node.lessonId} node={node} />
+            <TrailNode key={node.lessonId} node={node} todayISO={todayISO} onLocked={setLockedNode} />
           ))}
 
           <View style={[styles.finish, { top: trail.height - 70 }]}>
@@ -271,11 +276,25 @@ export function PlanPath() {
       )}
 
       {view.days.length > daysShown && <DarkButton label={`Pokaż kolejne dni (${view.days.length - daysShown} więcej)`} onPress={() => setDaysShown((n) => n + DAYS_SHOWN_STEP)} variant="secondary" />}
+      {lockedNode && (
+        <InfoModal
+          title="Ta lekcja jeszcze czeka"
+          message={
+            lockedNode.dateISO === addDays(todayISO, 1)
+              ? "Wróć jutro, żeby ukończyć tę lekcję. W Trybie nauki każdego dnia robisz tylko lekcje zaplanowane na ten dzień."
+              : `Ta lekcja jest zaplanowana na ${capitalize(WEEKDAYS[weekdayOf(lockedNode.dateISO)])}, ${formatShortPolishDate(lockedNode.dateISO)}. Wróć wtedy, żeby ją ukończyć.`
+          }
+          buttonLabel="Rozumiem"
+          onClose={() => setLockedNode(null)}
+        />
+      )}
     </ScrollView>
   );
 }
 
-function TrailNode({ node }: { node: TrailLesson }) {
+function TrailNode({ node, todayISO, onLocked }: { node: TrailLesson; todayISO: string; onLocked: (node: TrailLesson) => void }) {
+  // Only today's lessons (and ones already done) open; the others wait for their own day.
+  const locked = !node.done && node.dateISO !== todayISO;
   const info = getLessonInfo(node.lessonId);
   const size = node.isBoss ? BOSS_NODE_SIZE : NODE_SIZE;
   const BossPortrait = node.isBoss ? resolveBossPortrait(node.bossName) : null;
@@ -307,16 +326,18 @@ function TrailNode({ node }: { node: TrailLesson }) {
         />
       )}
       <Pressable
-        onPress={() => openLesson(node.lessonId)}
+        onPress={() => (locked ? onLocked(node) : openLesson(node.lessonId))}
         accessibilityRole="button"
         accessibilityLabel={label}
         style={({ pressed }) => [
           styles.node,
-          { width: size, height: size, borderRadius: size / 2, backgroundColor: fill, opacity: node.done || node.highlight || node.isCurrent ? 1 : 0.72, transform: [{ scale: pressed ? 0.96 : 1 }], borderColor: node.isCurrent ? theme.colors.ink : "#FFFFFF" },
+          { width: size, height: size, borderRadius: size / 2, backgroundColor: fill, opacity: locked ? 0.6 : 1, transform: [{ scale: pressed ? 0.96 : 1 }], borderColor: node.isCurrent ? theme.colors.ink : "#FFFFFF" },
         ]}
       >
         {node.done ? (
           <GlyphText style={styles.nodeCheck}>✓</GlyphText>
+        ) : locked ? (
+          <AppIcon name="kraina_klodka" size={size - 30} />
         ) : BossPortrait ? (
           <BossPortrait size={size - 14} />
         ) : node.iconName ? (
@@ -326,7 +347,7 @@ function TrailNode({ node }: { node: TrailLesson }) {
       </Pressable>
       {node.isCurrent && (
         <View style={styles.startBubble}>
-          <Text style={styles.startBubbleText}>START</Text>
+          <Text style={styles.startBubbleText}>{locked ? "WKRÓTCE" : "START"}</Text>
         </View>
       )}
       <View style={[styles.nodeLabel, labelSide === "left" ? { right: size + 10, alignItems: "flex-end" } : { left: size + 10, alignItems: "flex-start" }]}>

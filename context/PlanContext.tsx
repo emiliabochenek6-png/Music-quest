@@ -39,6 +39,8 @@ export interface PlanState {
   /** True once the player has answered the first-run question ("Zrób test" / "Zacznij od gry"):
    * choosing the game must not create a plan, so "Tryb nauki" keeps offering the placement test. */
   promptSeen: boolean;
+  /** Lessons finished in "Tryb nauki". Kept apart from the game map's own progress on purpose: finishing a lesson in the plan never completes or unlocks anything in "Tryb zabawy". */
+  completedLessonIds: string[];
 }
 
 const DEFAULT_PLAN: PlanState = {
@@ -52,6 +54,7 @@ const DEFAULT_PLAN: PlanState = {
   today: null,
   view: "fun",
   promptSeen: false,
+  completedLessonIds: [],
 };
 
 interface PlanContextValue {
@@ -66,6 +69,10 @@ interface PlanContextValue {
   setMinutesPerDay: (minutes: number) => void;
   /** Switches the map screen between "Tryb zabawy" and "Tryb nauki" ("Twój plan"). */
   setView: (view: "fun" | "plan") => void;
+  /** Lessons that count as done for the PLAN: finished in "Tryb nauki" or already finished on the game map. */
+  planCompletedIds: ReadonlySet<string>;
+  /** Records a lesson finished in "Tryb nauki" (the game map's own progress is not touched). */
+  markPlanLessonCompleted: (lessonId: string) => void;
   /** Call when a lesson is finished: starts its spaced-repetition clock. */
   onLessonCompleted: (lessonId: string) => void;
   /** Call when a review round of `lessonId` ends, with its share of correct answers (0-1). */
@@ -95,6 +102,7 @@ export function PlanProvider({ children }: { children: ReactNode }) {
   const [plan, setPlan] = useState<PlanState>(DEFAULT_PLAN);
   const [isLoading, setIsLoading] = useState(true);
   const todayISO = todayISODate();
+  const planCompletedIds = useMemo<ReadonlySet<string>>(() => new Set([...progress.completedLessonIds, ...plan.completedLessonIds]), [progress.completedLessonIds, plan.completedLessonIds]);
 
   useEffect(() => {
     let cancelled = false;
@@ -133,14 +141,14 @@ export function PlanProvider({ children }: { children: ReactNode }) {
   // gives every lesson finished before the plan existed its first review.
   useEffect(() => {
     if (isLoading || isProgressLoading || plan.mode === "unset") return;
-    const needsBackfill = Array.from(progress.completedLessonIds).some((id) => !plan.reviewLog[id]);
+    const needsBackfill = Array.from(planCompletedIds).some((id) => !plan.reviewLog[id]);
     const needsSnapshot = plan.today?.dateISO !== todayISO;
     if (!needsBackfill && !needsSnapshot) return;
-    const reviewLog = needsBackfill ? backfillReviewLog(plan.reviewLog, progress.completedLessonIds, todayISO) : plan.reviewLog;
+    const reviewLog = needsBackfill ? backfillReviewLog(plan.reviewLog, planCompletedIds, todayISO) : plan.reviewLog;
     const base: PlanState = { ...plan, reviewLog };
-    persist({ ...base, today: needsSnapshot ? buildTodaySnapshot(base, progress.completedLessonIds, todayISO) : plan.today });
+    persist({ ...base, today: needsSnapshot ? buildTodaySnapshot(base, planCompletedIds, todayISO) : plan.today });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading, isProgressLoading, plan.mode, plan.today?.dateISO, plan.minutesPerDay, plan.pathLessonIds, todayISO, progress.completedLessonIds.size]);
+  }, [isLoading, isProgressLoading, plan.mode, plan.today?.dateISO, plan.minutesPerDay, plan.pathLessonIds, todayISO, planCompletedIds.size]);
 
   const value = useMemo<PlanContextValue>(() => {
     function startPlan(mode: "original" | "personal", levels: Record<string, PlacementLevel> | null, minutesPerDay: number) {
@@ -157,7 +165,7 @@ export function PlanProvider({ children }: { children: ReactNode }) {
         // A fresh test result lands the player on their new personal path; "zacznij od początku" keeps the original map.
         view: mode === "personal" ? "plan" : "fun",
       };
-      persist({ ...base, today: buildTodaySnapshot(base, progress.completedLessonIds, todayISODate()) });
+      persist({ ...base, today: buildTodaySnapshot(base, planCompletedIds, todayISODate()) });
     }
     return {
       plan,
@@ -167,9 +175,18 @@ export function PlanProvider({ children }: { children: ReactNode }) {
       applyPlacement: (levels, minutesPerDay = plan.minutesPerDay) => startPlan("personal", levels, minutesPerDay),
       setMinutesPerDay: (minutes) => {
         const base: PlanState = { ...plan, minutesPerDay: minutes };
-        persist({ ...base, today: plan.mode === "unset" ? null : buildTodaySnapshot(base, progress.completedLessonIds, todayISODate()) });
+        persist({ ...base, today: plan.mode === "unset" ? null : buildTodaySnapshot(base, planCompletedIds, todayISODate()) });
       },
       setView: (view) => persist({ ...plan, view }),
+      planCompletedIds,
+      markPlanLessonCompleted: (lessonId) => {
+        setPlan((prev) => {
+          if (prev.completedLessonIds.includes(lessonId)) return prev;
+          const next = { ...prev, completedLessonIds: [...prev.completedLessonIds, lessonId] };
+          void writeJson(STORAGE_KEYS.plan, next).catch(() => {});
+          return next;
+        });
+      },
       onLessonCompleted: (lessonId) => {
         setPlan((prev) => {
           if (prev.reviewLog[lessonId]) return prev;
@@ -188,7 +205,7 @@ export function PlanProvider({ children }: { children: ReactNode }) {
       },
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [plan, isLoading, progress.completedLessonIds]);
+  }, [plan, isLoading, planCompletedIds]);
 
   return <PlanContext.Provider value={value}>{children}</PlanContext.Provider>;
 }

@@ -38,7 +38,7 @@ export function openReview(lessonId: string) {
  * on the Misje tab and at the top of the plan screen. Before the player
  * has picked a path it shows the two starting choices instead. */
 export function PlanTodayCard({ showFullPlanLink = true }: { showFullPlanLink?: boolean }) {
-  const { plan, isLoading } = usePlan();
+  const { plan, isLoading, planCompletedIds } = usePlan();
   const { progress } = useProgress();
   if (isLoading) return null;
   const todayISO = todayISODate();
@@ -56,7 +56,7 @@ export function PlanTodayCard({ showFullPlanLink = true }: { showFullPlanLink?: 
     );
   }
 
-  const status = getTodayStatus(plan.today, todayISO, progress.completedLessonIds, plan.reviewLog);
+  const status = getTodayStatus(plan.today, todayISO, planCompletedIds, plan.reviewLog);
   const lessonsDone = status.lessons.length > 0 && status.lessons.every((l) => l.done);
   const reviewsPending = status.reviews.some((r) => !r.done);
   const nothingPlanned = status.lessons.length === 0 && status.reviews.length === 0;

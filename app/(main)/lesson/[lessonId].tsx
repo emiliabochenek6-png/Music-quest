@@ -158,7 +158,7 @@ function LessonScreenBody() {
   const learningMode = mode === "plan";
   const insets = useSafeAreaInsets();
   const { progress, markLessonCompleted, markWorldCompleted } = useProgress();
-  const { plan, onLessonCompleted, setView } = usePlan();
+  const { plan, onLessonCompleted, setView, markPlanLessonCompleted, planCompletedIds } = usePlan();
   const { state: gamificationState, awardXp, addNutki, recordLessonStars, recordActivity } =
     useGamification();
   // XP/nutki the player had when this lesson started — the summary shows the difference.
@@ -438,47 +438,53 @@ function LessonScreenBody() {
       setShowSoltek(false);
       setShowEncouragement(false);
     } else {
-      markLessonCompleted(currentLesson.id);
       onLessonCompleted(currentLesson.id);
-      const isLastLessonInWorld = currentLesson.order === currentContent.lessons.length;
       const earnedStars = resolveStars();
-      if (isLastLessonInWorld) {
-        markWorldCompleted(currentWorld.id);
-        setShowWorldComplete(true);
-        addNutki(NUTKI_REWARDS.worldCompleted * nutkiMultiplier);
-        // Progress/gamification state here is still the PRE-completion
-        // snapshot (markWorldCompleted/recordLessonStars just queued their
-        // own setState, not applied yet) — projecting this lesson's own
-        // just-earned star and this world into synthetic "after" copies
-        // lets didWorldJustUnlock (and the "Perfekcyjna Kraina" check
-        // below) answer synchronously, without waiting a render for real
-        // state to catch up.
-        const bestStarsForThisLesson = Math.max(gamificationState.lessonStars[currentLesson.id] ?? 0, earnedStars) as 1 | 2 | 3;
-        const projectedLessonStars = { ...gamificationState.lessonStars, [currentLesson.id]: bestStarsForThisLesson };
-        const isPerfectWorld = currentContent.lessons.every((l) => projectedLessonStars[l.id] === 3);
-        setIsPerfectWorldCompletion(isPerfectWorld);
-        if (isPerfectWorld) addNutki(NUTKI_REWARDS.perfectWorldBonus * nutkiMultiplier);
-        const nextWorld = getNextWorld(currentWorld);
-        if (nextWorld) {
-          const projectedProgress = { ...progress, completedWorldIds: new Set(progress.completedWorldIds).add(currentWorld.id) };
-          const justUnlocked = didWorldJustUnlock(
-            nextWorld,
-            progress,
-            projectedProgress,
-            subscriptionStatus,
-            gamificationState.lessonStars,
-            projectedLessonStars
-          );
-          if (justUnlocked) {
-            setUnlockedNextWorldName(t(nextWorld.nameKey as TranslationKey));
+      if (learningMode) {
+        // "Tryb nauki" keeps its own record: finishing a lesson here never completes, stars or unlocks
+        // anything on the "Tryb zabawy" map.
+        markPlanLessonCompleted(currentLesson.id);
+      } else {
+        markLessonCompleted(currentLesson.id);
+        const isLastLessonInWorld = currentLesson.order === currentContent.lessons.length;
+        if (isLastLessonInWorld) {
+          markWorldCompleted(currentWorld.id);
+          setShowWorldComplete(true);
+          addNutki(NUTKI_REWARDS.worldCompleted * nutkiMultiplier);
+          // Progress/gamification state here is still the PRE-completion
+          // snapshot (markWorldCompleted/recordLessonStars just queued their
+          // own setState, not applied yet) — projecting this lesson's own
+          // just-earned star and this world into synthetic "after" copies
+          // lets didWorldJustUnlock (and the "Perfekcyjna Kraina" check
+          // below) answer synchronously, without waiting a render for real
+          // state to catch up.
+          const bestStarsForThisLesson = Math.max(gamificationState.lessonStars[currentLesson.id] ?? 0, earnedStars) as 1 | 2 | 3;
+          const projectedLessonStars = { ...gamificationState.lessonStars, [currentLesson.id]: bestStarsForThisLesson };
+          const isPerfectWorld = currentContent.lessons.every((l) => projectedLessonStars[l.id] === 3);
+          setIsPerfectWorldCompletion(isPerfectWorld);
+          if (isPerfectWorld) addNutki(NUTKI_REWARDS.perfectWorldBonus * nutkiMultiplier);
+          const nextWorld = getNextWorld(currentWorld);
+          if (nextWorld) {
+            const projectedProgress = { ...progress, completedWorldIds: new Set(progress.completedWorldIds).add(currentWorld.id) };
+            const justUnlocked = didWorldJustUnlock(
+              nextWorld,
+              progress,
+              projectedProgress,
+              subscriptionStatus,
+              gamificationState.lessonStars,
+              projectedLessonStars
+            );
+            if (justUnlocked) {
+              setUnlockedNextWorldName(t(nextWorld.nameKey as TranslationKey));
+            }
           }
         }
+        recordLessonStars(currentLesson.id, earnedStars);
       }
       if (isPerfectRun) {
         awardXp(XP_PERFECT_LESSON_BONUS);
         addNutki(NUTKI_REWARDS.perfectLesson * nutkiMultiplier);
       }
-      recordLessonStars(currentLesson.id, earnedStars);
       // Feeds the daily missions: what was done today, split by mode.
       const modeStats = learningMode
         ? { planLessons: 1, planCorrect: originalExerciseCount, planStars3: earnedStars === 3 ? 1 : 0, planPerfect: isPerfectRun ? 1 : 0 }
@@ -530,11 +536,29 @@ function LessonScreenBody() {
 
   // Study plan: what's left of today's planned lessons once this one is done.
   const todayPlanIds = plan.today?.dateISO === todayISODate() ? plan.today.lessonIds : [];
-  const doneIncludingThis = new Set([...progress.completedLessonIds, lessonId]);
+  const doneIncludingThis = new Set([...planCompletedIds, lessonId]);
   const nextTodayLessonId = todayPlanIds.find((id) => id !== lessonId && !doneIncludingThis.has(id)) ?? null;
   const todayPlanDone = todayPlanIds.includes(lessonId) && nextTodayLessonId === null;
   const fromPlan = learningMode;
   const gained = { xp: gamificationState.xp - startRewards.current.xp, nutki: gamificationState.nutki - startRewards.current.nutki };
+
+  // "Tryb nauki": only today's lessons can be done today — anything planned for another day waits for it.
+  if (learningMode && !isFinished && plan.today?.dateISO === todayISODate() && !todayPlanIds.includes(lessonId) && !planCompletedIds.has(lessonId)) {
+    return (
+      <View style={[styles.root, { backgroundColor: screenBackgroundColor }]}>
+        <LessonHeader title="Lekcja" accentHex={theme.colors.primary} onBack={goBackToLevels} />
+        <View style={styles.centerFill}>
+          <Text style={{ fontSize: theme.fontSize.heading, fontWeight: "800", color: theme.colors.ink, textAlign: "center" }}>Ta lekcja jeszcze czeka</Text>
+          <Text style={{ color: theme.colors.muted, textAlign: "center", marginTop: 8 }}>
+            Wróć w dniu, na który jest zaplanowana, żeby ją ukończyć. Dziś robisz tylko lekcje z planu na dziś.
+          </Text>
+          <View style={{ marginTop: theme.spacing(2), width: "100%" }}>
+            <DarkButton label="Wróć do planu" onPress={goBackToLevels} />
+          </View>
+        </View>
+      </View>
+    );
+  }
 
   if (isFinished) {
     return (

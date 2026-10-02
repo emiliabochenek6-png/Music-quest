@@ -9,6 +9,7 @@ import { DarkButton } from "@/components/exercises/DarkButton";
 import { ExerciseRenderer, hasAnswerToCheck } from "@/components/exercises/ExerciseRenderer";
 import { SoltekMascot } from "@/components/SoltekMascot";
 import { useGamification } from "@/context/GamificationContext";
+import { usePlan } from "@/context/PlanContext";
 import { useProgress } from "@/context/ProgressContext";
 import { useSessionTimer } from "@/hooks/useSessionTimer";
 import { todayISODate } from "@/lib/gamification/activity";
@@ -62,6 +63,9 @@ function pickFreshDefinition(pool: readonly ExerciseDefinition[], avoidId?: stri
 export default function DailyChallengeScreen() {
   const insets = useSafeAreaInsets();
   const { progress } = useProgress();
+  const { planCompletedIds } = usePlan();
+  // Lessons finished in either mode count for the challenge.
+  const finishedProgress = { ...progress, completedLessonIds: planCompletedIds };
   const { state: gamification, isLoading: gamificationLoading, awardXp, addNutki, recordActivity, setDailyChallenge } = useGamification();
   const { getElapsedMinutes } = useSessionTimer("daily-challenge");
 
@@ -83,7 +87,7 @@ export default function DailyChallengeScreen() {
   // then and does nothing further.
   useEffect(() => {
     if (stored || gamificationLoading) return;
-    const pool = getUnlockedExercisePool(progress);
+    const pool = getUnlockedExercisePool(finishedProgress);
     const definition = pickDailyChallengeDefinition(pool);
     if (!definition) {
       setNoContentAvailable(true);
@@ -122,7 +126,7 @@ export default function DailyChallengeScreen() {
 
   function handleNextChallenge() {
     stopAllScheduledAudio();
-    const pool = getUnlockedExercisePool(progress);
+    const pool = getUnlockedExercisePool(finishedProgress);
     const definition = pickFreshDefinition(pool, stored?.generated.id);
     const next: GeneratedExercise | null = definition ? generateExercise(definition, "pl") : null;
     if (next) {

@@ -26,11 +26,11 @@ interface DailyMissionsCardProps {
  * this card itself drives. */
 export function DailyMissionsCard({ challengeXpReward }: DailyMissionsCardProps) {
   const { state } = useGamification();
-  const { plan } = usePlan();
+  const { plan, planCompletedIds } = usePlan();
   const { progress } = useProgress();
   const today = todayISODate();
   const challengeCompletedToday = state.dailyChallenge?.dateISO === today && state.dailyChallenge.completed;
-  const planStatus = getTodayStatus(plan.today, today, progress.completedLessonIds, plan.reviewLog);
+  const planStatus = getTodayStatus(plan.today, today, planCompletedIds, plan.reviewLog);
   const offer = { hasPlan: plan.mode !== "unset", lessons: planStatus.lessons.length, reviews: planStatus.reviews.length };
   const missions = computeDailyMissions(today, state.activityLog[today], challengeCompletedToday, challengeXpReward, offer);
 

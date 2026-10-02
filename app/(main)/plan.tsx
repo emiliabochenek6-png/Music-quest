@@ -27,7 +27,7 @@ const WEEKDAYS = ["nd", "pn", "wt", "śr", "cz", "pt", "sb"];
  * tasks, how the plan works (phases and spaced repetition), and the
  * calendar of upcoming weeks. */
 export default function PlanScreen() {
-  const { plan, setMinutesPerDay, chooseOriginal } = usePlan();
+  const { plan, setMinutesPerDay, chooseOriginal, planCompletedIds } = usePlan();
   const [confirmFullPath, setConfirmFullPath] = useState(false);
   const { progress } = useProgress();
   const todayISO = todayISODate();
@@ -36,16 +36,16 @@ export default function PlanScreen() {
 
   const model = useMemo(() => {
     const total = plan.pathLessonIds.length;
-    const done = plan.pathLessonIds.filter((id) => progress.completedLessonIds.has(id)).length;
+    const done = plan.pathLessonIds.filter((id) => planCompletedIds.has(id)).length;
     const remaining = plan.pathLessonIds
-      .filter((id) => !progress.completedLessonIds.has(id))
+      .filter((id) => !planCompletedIds.has(id))
       .map((lessonId) => ({ lessonId, minutes: getLessonInfo(lessonId)?.minutes ?? 8 }));
     const days = buildSchedule(remaining, plan.minutesPerDay, todayISO);
     const weeks = groupByWeek(days, todayISO);
     const lastLearningDay = days.length > 0 ? days[days.length - 1].dateISO : todayISO;
     const horizonISO = addDays(plan.startISO ?? todayISO, MIN_PLAN_WEEKS * 7);
     return { total, done, weeks, lastLearningDay, horizonISO, remainingCount: remaining.length };
-  }, [plan.pathLessonIds, plan.minutesPerDay, plan.startISO, progress.completedLessonIds, todayISO]);
+  }, [plan.pathLessonIds, plan.minutesPerDay, plan.startISO, planCompletedIds, todayISO]);
 
   function toggleWeek(number: number) {
     setExpandedWeeks((prev) => {
