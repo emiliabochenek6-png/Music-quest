@@ -29,6 +29,8 @@ export function GameGuide({ onClose }: GameGuideProps) {
   const { width, height } = useWindowDimensions();
   const [index, setIndex] = useState(0);
   const [rect, setRect] = useState<TourRect | null>(null);
+  // False while a step's spot is still being looked up (nothing is drawn but the dimming, so the card never flashes in the middle first).
+  const [measured, setMeasured] = useState(false);
   const step = GUIDE_STEPS[index];
   const isFirst = index === 0;
   const isLast = index === GUIDE_STEPS.length - 1;
@@ -37,11 +39,14 @@ export function GameGuide({ onClose }: GameGuideProps) {
   useEffect(() => {
     let cancelled = false;
     setRect(null);
+    setMeasured(!step.target);
     if (!step.target) return;
     const target = step.target;
     const timer = setTimeout(() => {
       void measureTourTarget(target).then((found) => {
-        if (!cancelled) setRect(found);
+        if (cancelled) return;
+        setRect(found);
+        setMeasured(true);
       });
     }, 60);
     return () => {
@@ -133,6 +138,14 @@ export function GameGuide({ onClose }: GameGuideProps) {
             {card}
           </View>
         </View>
+      </Modal>
+    );
+  }
+
+  if (!measured) {
+    return (
+      <Modal visible transparent animationType="none" onRequestClose={onClose}>
+        <View style={styles.centerBackdrop} />
       </Modal>
     );
   }
