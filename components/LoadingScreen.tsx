@@ -70,9 +70,9 @@ export function LoadingScreen() {
   const soltekHeight = Math.min(portrait ? height * 0.36 : height * 0.62, 460);
   const soltekWidth = soltekHeight * SOLTEK_ASPECT;
   const soltekLeft = portrait ? (width - soltekWidth) / 2 : width * 0.3 - soltekWidth / 2;
-  const soltekTop = portrait ? height * 0.07 : height * 0.17;
+  const soltekTop = portrait ? height * 0.14 : height * 0.24;
   const loaderStyle = portrait
-    ? { left: 0, right: 0, top: height * 0.5, alignItems: "center" as const }
+    ? { left: 0, right: 0, top: height * 0.57, alignItems: "center" as const }
     : { left: width * 0.5, right: 0, top: height * 0.34, alignItems: "center" as const };
 
   function handleTrackLayout(event: LayoutChangeEvent) {
