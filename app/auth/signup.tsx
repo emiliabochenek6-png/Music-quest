@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Pressable, ScrollView, Text, TextInput, View, StyleSheet } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Pressable, Text, TextInput, View, StyleSheet } from "react-native";
 import { router } from "expo-router";
+import { AuthLayout } from "@/components/auth/AuthLayout";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { useAuth } from "@/context/AuthContext";
 import { translateAuthError } from "@/lib/supabase/authErrors";
@@ -26,7 +26,6 @@ const MIN_PASSWORD_LENGTH = 6;
  * pick up until that link is used.
  */
 export default function SignupScreen() {
-  const insets = useSafeAreaInsets();
   const { signUp } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -59,14 +58,7 @@ export default function SignupScreen() {
   const isSubmitting = status.kind === "submitting";
 
   return (
-    <View style={styles.root}>
-      <View style={styles.glowBlob} />
-      <View style={[styles.headerRow, { paddingTop: insets.top + 12 }]}>
-        <Pressable onPress={() => router.back()} accessibilityRole="button" accessibilityLabel="Wstecz" hitSlop={12} style={styles.backButton}>
-          <Text style={styles.backIcon}>‹</Text>
-        </Pressable>
-      </View>
-
+    <AuthLayout onBack={() => router.back()}>
       {status.kind === "confirm-email" ? (
         <View style={styles.container}>
           <GlyphText style={{ fontSize: 48 }}>📬</GlyphText>
@@ -80,7 +72,7 @@ export default function SignupScreen() {
           </View>
         </View>
       ) : (
-        <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+        <View style={styles.container}>
           <Text style={styles.title}>Załóż konto</Text>
           <Text style={styles.subtitle}>
             Konto pozwala odzyskać postęp na innym urządzeniu — nic z tego, co już zrobiłaś/eś na tym telefonie, nie zniknie.
@@ -134,49 +126,14 @@ export default function SignupScreen() {
           <Pressable onPress={() => router.replace("/auth/login")} disabled={isSubmitting} style={styles.linkButton}>
             <Text style={styles.primaryLink}>Masz już konto? Zaloguj się</Text>
           </Pressable>
-        </ScrollView>
+        </View>
       )}
-    </View>
+    </AuthLayout>
   );
 }
 
 const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-    backgroundColor: theme.colors.cream,
-    overflow: "hidden",
-  },
-  glowBlob: {
-    position: "absolute",
-    top: -160,
-    left: "50%",
-    marginLeft: -200,
-    width: 400,
-    height: 320,
-    borderRadius: 220,
-    backgroundColor: theme.colors.primary,
-    opacity: 0.22,
-  },
-  headerRow: {
-    paddingHorizontal: 16,
-    paddingBottom: 8,
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: theme.radius.md,
-    backgroundColor: theme.colors.surfaceMuted,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  backIcon: {
-    fontSize: 20,
-    color: theme.colors.ink,
-  },
   container: {
-    flexGrow: 1,
-    paddingHorizontal: 24,
-    paddingBottom: 24,
     gap: 12,
   },
   title: {

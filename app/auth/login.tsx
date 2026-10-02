@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Pressable, ScrollView, Text, TextInput, View, StyleSheet } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Pressable, Text, TextInput, View, StyleSheet } from "react-native";
 import { router } from "expo-router";
+import { AuthLayout } from "@/components/auth/AuthLayout";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { useAuth } from "@/context/AuthContext";
 import { translateAuthError } from "@/lib/supabase/authErrors";
@@ -25,7 +25,6 @@ type Status = { kind: "idle" } | { kind: "submitting" } | { kind: "error"; messa
  * screen just needs to replace itself with the map.
  */
 export default function LoginScreen() {
-  const insets = useSafeAreaInsets();
   const { signIn, resetPassword } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -59,10 +58,8 @@ export default function LoginScreen() {
   const isSubmitting = status.kind === "submitting";
 
   return (
-    <View style={styles.root}>
-      <View style={styles.glowBlob} />
-
-      <ScrollView contentContainerStyle={[styles.container, { paddingTop: insets.top + 32 }]} keyboardShouldPersistTaps="handled">
+    <AuthLayout>
+      <View style={styles.container}>
         <Text style={styles.brand}>Music Quest</Text>
         <Text style={styles.tagline}>Naucz się czytać nuty, rytm i słuch muzyczny — krok po kroku.</Text>
 
@@ -108,33 +105,14 @@ export default function LoginScreen() {
         <Pressable onPress={() => router.push("/auth/signup")} disabled={isSubmitting} style={styles.linkButton}>
           <Text style={styles.primaryLink}>Nie masz konta? Załóż je</Text>
         </Pressable>
-      </ScrollView>
-    </View>
+      </View>
+    </AuthLayout>
   );
 }
 
 const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-    backgroundColor: theme.colors.cream,
-    overflow: "hidden",
-  },
-  glowBlob: {
-    position: "absolute",
-    top: -160,
-    left: "50%",
-    marginLeft: -200,
-    width: 400,
-    height: 320,
-    borderRadius: 220,
-    backgroundColor: theme.colors.primary,
-    opacity: 0.22,
-  },
   container: {
-    flexGrow: 1,
     alignItems: "center",
-    paddingHorizontal: 24,
-    paddingBottom: 24,
     gap: 12,
   },
   brand: {
