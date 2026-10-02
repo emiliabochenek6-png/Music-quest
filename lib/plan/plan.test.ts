@@ -313,4 +313,14 @@ describe("path view", () => {
     expect(view.days).toEqual([]);
     expect(view.doneCount).toBe(6);
   });
+
+  it("pushes the finish date back by the days the player was away", () => {
+    const sameProgress = { ...base, completedLessonIds: new Set(["a"]), todayLessonIds: [] as string[] };
+    const lastDay = (todayISO: string) => {
+      const days = buildPathView({ ...sameProgress, todayISO }).days;
+      return days[days.length - 1].dateISO;
+    };
+    // Two weeks later (no lessons done in between) the plan ends two weeks later.
+    expect(daysBetween(lastDay("2026-10-05"), lastDay("2026-10-19"))).toBe(14);
+  });
 });
