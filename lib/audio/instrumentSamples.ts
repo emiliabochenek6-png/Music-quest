@@ -13,7 +13,13 @@
  * (A1), Flute.vib.mf.C5B5, Oboe.mf.C5B5, BbClar.mf.C4B4, Bassoon.mf.C3B3,
  * AltoSax.NoVib.mf.C5Ab5, Trumpet.novib.mf.E3B3, Horn.mf.C4B4, TenorTrombone.
  * mf.C3B3, Tuba.mf.C2B2, xylophone.rosewood.mf.C5B5, 8triangle.mf — the
- * first note of each file. Keys match the `instrument_*` icon names
+ * first note of each file. The one exception is the snare drum ("werbel"):
+ * the Iowa set has none, so it comes from Wikimedia Commons' "Drum - Cadence
+ * B.ogg" (commons.wikimedia.org/wiki/File:Drum_-_Cadence_B.ogg), a snare-drum
+ * cadence by the U.S. Navy Band — public domain as a work of a U.S. Navy
+ * employee made in the course of official duties. A 2-second rhythmic
+ * figure (0.40-2.40 s) was cut out, downmixed to mono 22.05 kHz, normalized
+ * and given a short fade-out. Keys match the `instrument_*` icon names
  * (components/icons/icons.ts) minus that prefix. */
 export const INSTRUMENT_SAMPLES = {
   skrzypce: require("@/assets/audio/instruments/skrzypce.wav"),
@@ -30,6 +36,7 @@ export const INSTRUMENT_SAMPLES = {
   tuba: require("@/assets/audio/instruments/tuba.wav"),
   ksylofon: require("@/assets/audio/instruments/ksylofon.wav"),
   trojkat: require("@/assets/audio/instruments/trojkat.wav"),
+  werbel: require("@/assets/audio/instruments/werbel.wav"),
 } as const;
 
 export type InstrumentSampleName = keyof typeof INSTRUMENT_SAMPLES;
