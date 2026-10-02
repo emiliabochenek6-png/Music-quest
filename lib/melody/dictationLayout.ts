@@ -35,9 +35,30 @@ export const TIME_SIGNATURE_X = CLEF_KEY_SIGNATURE_WIDTH + 17;
 /** Extra width the time signature's own digits need past TIME_SIGNATURE_X
  * before the first note can land. */
 export const TIME_SIGNATURE_WIDTH = 16;
+/** Horizontal distance between consecutive key-signature accidentals —
+ * must match components/exercises/KeySignatureStaffIcon.tsx's own
+ * ACCIDENTAL_SPACING (that component draws the glyphs; this file only
+ * needs the number to know how much room they take). */
+const KEY_SIGNATURE_ACCIDENTAL_SPACING = 23;
+/** Extra room to the RIGHT of the clef/first-accidental slot reserved by
+ * CLEF_KEY_SIGNATURE_WIDTH, for a key signature with more than one
+ * accidental — each additional ♯/♭ pushes the signature's right edge out
+ * by one ACCIDENTAL_SPACING, and without this the time signature (fixed
+ * at TIME_SIGNATURE_X) landed right on top of the 2nd accidental of any
+ * 2-sharp/2-flat key. The first accidental already fits the base width
+ * (plus a small breathing gap so it doesn't touch the time signature
+ * either); keys with no accidentals need no extra room at all. Both the
+ * time signature's x and every note's x (via the layout functions'
+ * `leftShift` param) move right by this same amount. */
+export function keySignatureExtraWidth(fifths: number): number {
+  const accidentals = Math.abs(fifths);
+  if (accidentals === 0) return 0;
+  return (accidentals - 1) * KEY_SIGNATURE_ACCIDENTAL_SPACING + 6;
+}
 /** Left padding before the first notehead — now needs to clear the
  * embedded clef + key signature + time signature above, not just room for
- * the note's own accidental. */
+ * the note's own accidental. This is the base (zero-or-one-accidental)
+ * value; see keySignatureExtraWidth for the per-key addition. */
 export const LEFT_MARGIN = TIME_SIGNATURE_X + TIME_SIGNATURE_WIDTH + 9;
 export const RIGHT_MARGIN = 20;
 /** Extra room reserved past the last note's x for its stem/flag/dot. */
@@ -212,11 +233,12 @@ export function computeDictationLayout(
   notes: readonly DictationLayoutInputNote[],
   meter: Meter,
   groups: readonly (readonly number[])[] = [],
-  manualBarLineAfter?: ReadonlySet<number>
+  manualBarLineAfter?: ReadonlySet<number>,
+  leftShift = 0
 ): DictationLayout {
   const beatsPerMeasure = meterQuarterNoteBeats(meter);
   const stemDirections = groupStemDirections(notes, groups);
-  let cursorX = LEFT_MARGIN;
+  let cursorX = LEFT_MARGIN + leftShift;
   let cumulativeBeats = 0;
   let previousMeasureIndex = 0;
   let previousNoteX: number | null = null;
@@ -348,10 +370,11 @@ export function computeDictationLayout(
 export function pendingNoteX(
   notes: readonly DictationLayoutInputNote[],
   meter: Meter,
-  manualBarLineAfter?: ReadonlySet<number>
+  manualBarLineAfter?: ReadonlySet<number>,
+  leftShift = 0
 ): number {
   const beatsPerMeasure = meterQuarterNoteBeats(meter);
-  let cursorX = LEFT_MARGIN;
+  let cursorX = LEFT_MARGIN + leftShift;
   let cumulativeBeats = 0;
   let previousMeasureIndex = 0;
 
@@ -380,9 +403,10 @@ export function pendingNoteX(
 export function pendingViewWidth(
   notes: readonly DictationLayoutInputNote[],
   meter: Meter,
-  manualBarLineAfter?: ReadonlySet<number>
+  manualBarLineAfter?: ReadonlySet<number>,
+  leftShift = 0
 ): number {
-  return Math.max(MIN_VIEW_WIDTH, pendingNoteX(notes, meter, manualBarLineAfter) + RIGHT_MARGIN + GLYPH_TAIL_ALLOWANCE);
+  return Math.max(MIN_VIEW_WIDTH, pendingNoteX(notes, meter, manualBarLineAfter, leftShift) + RIGHT_MARGIN + GLYPH_TAIL_ALLOWANCE);
 }
 
 /**

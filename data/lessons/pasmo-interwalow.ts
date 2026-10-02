@@ -195,7 +195,7 @@ export const PASMO_INTERWALOW_CONTENT: WorldContent = {
       difficulty: 3,
       introSlides: [
         {
-          body: "Wielki finał: wszystkie poznane interwały wymieszane, w trybie testowym na czas. Masz 60 sekund, żeby odpowiedzieć na jak najwięcej pytań poprawnie — po każdej odpowiedzi natychmiast pojawia się kolejne pytanie. Dla przypomnienia — wszystkie interwały po kolei, łącznie z prymą, czyli tym samym dźwiękiem powtórzonym dwa razy.",
+          body: "Test na czas: wszystkie dotąd poznane interwały wymieszane, w trybie testowym. Masz 60 sekund, żeby odpowiedzieć na jak najwięcej pytań poprawnie — po każdej odpowiedzi natychmiast pojawia się kolejne pytanie. Dla przypomnienia — wszystkie interwały po kolei, łącznie z prymą, czyli tym samym dźwiękiem powtórzonym dwa razy.",
           intervalExamples: [
             { notes: ["C4", "C4"], label: "pryma czysta (1)" },
             { notes: ["B3", "C4"], label: "sekunda mała (2>)" },
@@ -364,7 +364,7 @@ export const PASMO_INTERWALOW_CONTENT: WorldContent = {
       difficulty: 3,
       introSlides: [
         {
-          body: "Trzy interwały, pełen zakres — najtrudniejsza wersja tego ćwiczenia. Wszystko, czego się nauczyłeś w tej krainie, naraz.",
+          body: "Trzy interwały, pełen zakres — najtrudniejsza wersja tego ćwiczenia. Wszystko, czego się nauczyłeś o interwałach, naraz.",
         },
       ],
       exercises: [

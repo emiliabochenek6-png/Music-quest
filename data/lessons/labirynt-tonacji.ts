@@ -379,7 +379,7 @@ export const LABIRYNT_TONACJI_CONTENT: WorldContent = {
       difficulty: 3,
       introSlides: [
         {
-          body: "Ostatnia dedykowana lekcja odwraca kierunek myślenia: zamiast pytać „ile znaków ma ta tonacja”, podaje LICZBĘ znaków i każe znaleźć, która para tonacji równoległych do niej pasuje.",
+          body: "Ta lekcja odwraca kierunek myślenia: zamiast pytać „ile znaków ma ta tonacja”, podaje LICZBĘ znaków i każe znaleźć, która para tonacji równoległych do niej pasuje.",
           circleHighlight: { fifths: 0 },
         },
       ],

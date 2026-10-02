@@ -149,7 +149,7 @@ export const SZCZYT_DYKTAND_CONTENT: WorldContent = {
       difficulty: 7,
       introSlides: [
         {
-          body: "Ostatni odcinek przed szczytem: dochodzą ćwiartka z kropką, ósemka z kropką i szesnastka, a wysokości sięgają teraz od dolnej linii (E4) aż po górną linię pięciolinii (F5) — pełen zakres, jaki oferuje ta pięciolinia.",
+          body: "Kolejny odcinek wspinaczki: dochodzą ćwiartka z kropką, ósemka z kropką i szesnastka, a wysokości sięgają teraz od dolnej linii (E4) aż po górną linię pięciolinii (F5).",
         },
       ],
       exercises: [
@@ -167,7 +167,7 @@ export const SZCZYT_DYKTAND_CONTENT: WorldContent = {
       difficulty: 8,
       introSlides: [
         {
-          body: "Szczyt! Ostatni poziom łączy wszystko: pełny zakres pięciolinii, mieszane znaki chromatyczne, całe słownictwo rytmiczne (włącznie z całą nutą), zmienne metrum (4/4, 3/4, a nawet 6/8 i 9/8) i dłuższe, 6-7-nutowe frazy. Odsłuchaj tyle razy, ile potrzebujesz.",
+          body: "Kolejny szczyt — ale nie ostatni! Ten poziom łączy wszystko, co było do tej pory: pięciolinię od E4 do F5, mieszane znaki chromatyczne, całe słownictwo rytmiczne (włącznie z całą nutą), zmienne metrum (4/4, 3/4, a nawet 6/8 i 9/8) i dłuższe, 6-7-nutowe frazy. Odsłuchaj tyle razy, ile potrzebujesz.",
         },
       ],
       exercises: [

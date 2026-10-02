@@ -27,11 +27,11 @@ interface SoltekMascotProps {
    * use) where Soltek himself is the focus. */
   size?: "sm" | "md" | "lg";
   /** Drops the avatar's border/background frame — for a "lg" portrait
-   * that's already the sole focus of a full screen (this app's lesson
-   * encouragement/streak interstitials), where a frame around him reads
-   * as redundant chrome rather than adding anything. Default false keeps
-   * every other "lg" usage (e.g. SoltekWelcomeModal, a card inside a
-   * modal rather than the whole screen) framed as before. */
+   * that's already the sole focus of a screen or card (this app's lesson
+   * encouragement/streak interstitials, and SoltekWelcomeModal's own
+   * "Poznaj Soltka!" card), where a frame around him reads as redundant
+   * chrome rather than adding anything. Default false keeps every other
+   * usage framed as before. */
   frameless?: boolean;
 }
 

@@ -86,7 +86,7 @@ export const FABRYKA_BUDOWANIA_CONTENT: WorldContent = {
       difficulty: 2,
       introSlides: [
         {
-          body: "Ostatnie interwały do zbudowania na klawiaturze — septymy i oktawa (10 do 12 półtonów), tak jak w ostatnim poziomie Pasma Interwałów. Pamiętaj, że polecenie może kazać zbudować interwał w dół, nie tylko w górę.",
+          body: "Ostatnie interwały do zbudowania na klawiaturze — septymy i oktawa (10 do 12 półtonów), tak jak na poziomie septym i oktawy w Paśmie Interwałów. Pamiętaj, że polecenie może kazać zbudować interwał w dół, nie tylko w górę.",
           chromaticKeyboardReference: { range: ["C4", "C5"] },
           intervalExamples: [
             { notes: ["C4", "Bb4"], label: "septyma mała" },

@@ -6,6 +6,7 @@ import {
   BEAM_THICKNESS,
   computeDictationLayout,
   isAccidentalImpliedByKey,
+  keySignatureExtraWidth,
   NOTE_SPACING,
   pendingNoteX,
   pendingViewWidth,
@@ -172,11 +173,15 @@ export function MelodicDictationStaff({
   const resolvedGroups = groups ?? deriveBeamGroups(notes.map((note) => note.value), meter);
   const manualBarLineSet = manualBarLines ? new Set(manualBarLines) : undefined;
   const inputNotes: DictationLayoutInputNote[] = notes;
-  const layout = computeDictationLayout(inputNotes, meter, resolvedGroups, manualBarLineSet);
+  // A 2-sharp/2-flat key signature is wider than a 1-accidental one —
+  // push the time signature and every note right by however much extra
+  // room the signature needs, so the digits never land on its accidentals.
+  const keyShift = keySignatureExtraWidth(keySignature);
+  const layout = computeDictationLayout(inputNotes, meter, resolvedGroups, manualBarLineSet, keyShift);
   const interactive = onSelectStep !== undefined;
-  const viewWidth = interactive ? pendingViewWidth(inputNotes, meter, manualBarLineSet) : layout.viewWidth;
+  const viewWidth = interactive ? pendingViewWidth(inputNotes, meter, manualBarLineSet, keyShift) : layout.viewWidth;
   const pixelWidth = (viewWidth / VIEW_HEIGHT) * PIXEL_HEIGHT;
-  const pendingX = pendingNoteX(inputNotes, meter, manualBarLineSet);
+  const pendingX = pendingNoteX(inputNotes, meter, manualBarLineSet, keyShift);
   const ink = theme.colors.ink;
   // A manual bar line placed right after the LAST written note has no next
   // note yet to render computeDictationLayout's own barLines entry between
@@ -225,10 +230,10 @@ export function MelodicDictationStaff({
           ))}
 
           <KeySignatureGlyphs fifths={keySignature} />
-          <SvgText x={TIME_SIGNATURE_X} y={stepToY(6) + 8} fontSize={22} fontWeight="800" fill={ink} textAnchor="middle">
+          <SvgText x={TIME_SIGNATURE_X + keyShift} y={stepToY(6) + 8} fontSize={22} fontWeight="800" fill={ink} textAnchor="middle">
             {meter.split("/")[0]}
           </SvgText>
-          <SvgText x={TIME_SIGNATURE_X} y={stepToY(2) + 8} fontSize={22} fontWeight="800" fill={ink} textAnchor="middle">
+          <SvgText x={TIME_SIGNATURE_X + keyShift} y={stepToY(2) + 8} fontSize={22} fontWeight="800" fill={ink} textAnchor="middle">
             {meter.split("/")[1]}
           </SvgText>
 

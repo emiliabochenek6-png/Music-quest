@@ -26,6 +26,7 @@ export function SoltekWelcomeModal({ visible, onDismiss }: SoltekWelcomeModalPro
           <SoltekMascot
             size="lg"
             expression="glowny"
+            frameless
             message={
               "Cześć! Jestem Soltek, Twój przewodnik po świecie muzyki. Będę Ci towarzyszyć, podpowiadać i kibicować w każdym zadaniu. Gotowy na przygodę?"
             }
