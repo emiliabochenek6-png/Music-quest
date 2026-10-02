@@ -10,6 +10,7 @@ import { OktawiuszPortrait } from "@/components/map/OktawiuszPortrait";
 import { OsmiotaktPortrait } from "@/components/map/OsmiotaktPortrait";
 import { PeczekPortrait } from "@/components/map/PeczekPortrait";
 import { PietrusPortrait } from "@/components/map/PietrusPortrait";
+import { TrabalskiPortrait } from "@/components/map/TrabalskiPortrait";
 import { TrojglosPortrait } from "@/components/map/TrojglosPortrait";
 
 /** One entry per world's own boss (LessonDefinition's own `bossName`) —
@@ -31,6 +32,7 @@ export const BOSS_PORTRAITS: Record<string, ComponentType<{ size?: number }>> = 
   Pęczek: PeczekPortrait,
   Bazgroł: BazgrolPortrait,
   Mirefa: MirefaPortrait,
+  Trąbalski: TrabalskiPortrait,
 };
 
 /** Wioska Nut's own boss predates the `bossName` field — every lesson

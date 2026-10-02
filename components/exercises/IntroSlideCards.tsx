@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Text, View } from "react-native";
+import { AppIcon } from "@/components/icons/AppIcon";
+import { ICONS } from "@/components/icons/icons";
+import type { IconName } from "@/components/icons/icons";
 import { BeamedNotation } from "@/components/exercises/BeamedNotation";
 import { ChromaticKeyboardReference } from "@/components/exercises/ChromaticKeyboardReference";
 import { CircleOfFifthsWheel } from "@/components/exercises/CircleOfFifthsWheel";
@@ -11,7 +14,7 @@ import { NoteValueIcon } from "@/components/exercises/NoteValueIcon";
 import { RestValueIcon } from "@/components/exercises/RestValueIcon";
 import { StaffNotation } from "@/components/exercises/StaffNotation";
 import { TriadStaffNotation } from "@/components/exercises/TriadStaffNotation";
-import { playChord, playInterval, playNote, playSample, type SamplePlaybackHandle } from "@/lib/audio/player";
+import { playChord, playInterval, playNote, playSample, stopAllActiveSamples, type SamplePlaybackHandle } from "@/lib/audio/player";
 import { getNoteDisplayName } from "@/lib/music/names";
 import { parseScientific } from "@/lib/music/notes";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
@@ -170,6 +173,37 @@ export function IntroSlideCards({ slides, locale, bossName }: IntroSlideCardsPro
                   </Text>
                 </View>
               ))}
+            </View>
+          )}
+
+          {slide.instrumentExamples && slide.instrumentExamples.length > 0 && (
+            <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center", gap: theme.spacing(2) }}>
+              {slide.instrumentExamples.map((example, exampleIndex) => {
+                const { audioSource } = example;
+                return (
+                  <View key={exampleIndex} style={{ alignItems: "center", gap: theme.spacing(0.75), width: 96 }}>
+                    {example.imageId in ICONS && <AppIcon name={example.imageId as IconName} size={64} />}
+                    {audioSource !== undefined && (
+                      <DarkButton
+                        label="🔊"
+                        onPress={() => {
+                          stopAllActiveSamples();
+                          playSample(audioSource, 0.8);
+                        }}
+                        variant="secondary"
+                        size={40}
+                        fontSize={18}
+                      />
+                    )}
+                    <Text style={{ color: theme.colors.primary, fontSize: theme.fontSize.body * 0.8, fontWeight: "700", textAlign: "center" }}>
+                      {example.label}
+                    </Text>
+                    {example.caption && (
+                      <Text style={{ color: theme.colors.muted, fontSize: theme.fontSize.body * 0.7, textAlign: "center" }}>{example.caption}</Text>
+                    )}
+                  </View>
+                );
+              })}
             </View>
           )}
 

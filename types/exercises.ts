@@ -304,6 +304,9 @@ export type ExerciseSpec =
       imageId?: string;
       optionImageIds?: (string | undefined)[];
       referenceAudioSource?: number;
+      /** "Quiz ABCD": exactly four options, shown lettered A) B) C) D) with
+       * the prompt prefixed "Quiz ABCD:" (see generateExercise's own case). */
+      abcd?: boolean;
     }
   | { type: "key-signature-names-choice"; fifthsRange: [number, number] }
   | { type: "circle-neighbor-key-choice"; fifthsRange: [number, number] }
@@ -539,6 +542,14 @@ export interface LessonTheorySlide {
    * kluczy" lesson is the first to pass "bass" explicitly, one slide of
    * examples per clef, so the exact same note can be shown once each way. */
   noteExamples?: { note: string; label: string; clef?: Clef }[];
+  /** Królestwo Instrumentów's own intro-slide illustration: one card per
+   * instrument — its illustration (`imageId`, an `instrument_*` key of
+   * components/icons/icons.ts), its name, an optional short `caption`
+   * (e.g. "gra najwyżej"), and, when `audioSource` is set (a require()'d
+   * module from lib/audio/instrumentSamples.ts), a 🔊 button playing a
+   * real recording of that instrument. See IntroSlideCards.tsx's own
+   * instrumentExamples render branch. */
+  instrumentExamples?: { imageId: string; label: string; caption?: string; audioSource?: number }[];
   /** A connected multi-note staff (the SAME visual LessonIntroStaff already
    * draws for a whole lesson's own introNotes) embedded inside one slide —
    * for a lesson that needs this more than once (Wioska Nut's own

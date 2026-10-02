@@ -96,7 +96,11 @@ const WORLD_BACKGROUNDS: Partial<Record<string, number | { portrait: number; lan
   dictation: {
     portrait: require("@/assets/backgrounds/szczyt-dyktand-tlo-telefon.png"),
     landscape: require("@/assets/backgrounds/szczyt-dyktand-tlo-laptop.png"),
-  },  microphone: {
+  },  instruments: {
+    portrait: require("@/assets/backgrounds/krolestwo-instrumentow-tlo-telefon.png"),
+    landscape: require("@/assets/backgrounds/krolestwo-instrumentow-tlo-laptop.png"),
+  },
+  microphone: {
     portrait: require("@/assets/backgrounds/zaczarowany-solfez-tlo-telefon.png"),
     landscape: require("@/assets/backgrounds/zaczarowany-solfez-tlo-laptop.png"),
   },
