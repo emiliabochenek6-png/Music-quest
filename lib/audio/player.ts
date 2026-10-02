@@ -2,7 +2,7 @@ import { Asset } from "expo-asset";
 import { createAudioPlayer, type AudioPlayer } from "expo-audio";
 import { Platform } from "react-native";
 import { formatScientific, midiToNote, noteToMidi, type Note } from "@/lib/music/notes";
-import { MELODY_NOTE_SAMPLES, NOTE_SAMPLES } from "@/lib/audio/samples";
+import { CLICK_WEAK_SAMPLE, MELODY_NOTE_SAMPLES, NOTE_SAMPLES } from "@/lib/audio/samples";
 
 interface ToneOptions {
   velocity?: number;
@@ -169,11 +169,18 @@ function getWebAudioLoopContext(): AudioContext | null {
  *
  * Call once, as early as possible (RootLayout) — attaches a one-time
  * listener for the first tap/click/touch ANYWHERE in the app, and uses
- * THAT gesture to prime both playback paths with a real (silent) play()
- * call each: a zero-length Web Audio buffer through the shared context,
- * and a muted HTMLAudioElement. Once either has genuinely started once,
- * both browsers' own gesture requirement is satisfied for the rest of
- * the session — every later playSample/playWebAudioTrack call (including
+ * THAT gesture to prime both playback paths with a REAL bundled sample
+ * (CLICK_WEAK_SAMPLE — already used everywhere in rhythm playback, so
+ * nothing new to bundle), muted, through each path: a genuinely decoded
+ * buffer on the shared Web Audio context, and expo-audio's own
+ * HTMLAudioElement path via playSample. Deliberately a real file, not a
+ * synthesized empty buffer — a muted-but-real decode+play exercises the
+ * exact same fetch/decode/play steps a genuine 🔊 press does, so it
+ * can't silently "succeed" at unlocking a path that still fails for real
+ * content for some other reason (e.g. a codec/CORS quirk a synthesized
+ * buffer would never hit). Once either has genuinely started once, both
+ * browsers' own gesture requirement is satisfied for the rest of the
+ * session — every later playSample/playWebAudioTrack call (including
  * ones that only start after their own async asset load) plays normally,
  * the same way it already does on desktop. No-op on native (no browser
  * autoplay policy there) and in any environment with no `document`
@@ -191,30 +198,38 @@ export function installWebAudioUnlock(): void {
     const context = getWebAudioLoopContext();
     if (context) {
       void context.resume();
-      try {
-        const buffer = context.createBuffer(1, 1, context.sampleRate);
-        const source = context.createBufferSource();
-        source.buffer = buffer;
-        source.connect(context.destination);
-        source.start(0);
-      } catch {
-        // A browser odd enough to throw on a 1-sample silent buffer
-        // wasn't going to play real audio reliably either way — resume()
-        // above is still a genuine attempt, so let it stand on its own.
-      }
+      // Start a REAL (muted) buffer source synchronously, in the same
+      // tick as resume() — this is the part that actually "counts" as
+      // audio starting from the gesture on the strictest mobile
+      // browsers; the buffer itself only needs to decode before
+      // `.start()` can fire, which still happens inside this same
+      // unlocked context either way.
+      void decodeLoopBuffer(context, CLICK_WEAK_SAMPLE)
+        .then((buffer) => {
+          const source = context.createBufferSource();
+          const gain = context.createGain();
+          gain.gain.value = 0;
+          source.buffer = buffer;
+          source.connect(gain);
+          gain.connect(context.destination);
+          source.start(0);
+        })
+        .catch(() => {
+          // Same best-effort reasoning as the HTMLAudioElement path below.
+        });
     }
 
     try {
-      const silent = new Audio();
-      silent.muted = true;
-      // play() returns a Promise that rejects if the browser still
-      // refuses it — expected on some browsers/contexts (e.g. a
-      // moment before the very first real gesture lands on OTHER
-      // listeners too), and harmless either way since this is only a
-      // best-effort prime, not the user's actual requested sound.
-      void silent.play()?.catch(() => {});
+      // playSample itself ignores Platform (its own doc covers every
+      // platform), and on web is exactly the HTMLAudioElement path every
+      // "🔊" button's playSample call already goes through — velocity 0
+      // keeps this unlock silent without skipping the real decode/play
+      // steps.
+      playSample(CLICK_WEAK_SAMPLE, 0);
     } catch {
-      // Same reasoning as above — nothing left to do.
+      // A browser odd enough to throw here wasn't going to play real
+      // audio reliably either way — the Web Audio attempt above still
+      // stands on its own.
     }
   }
   document.addEventListener("touchend", unlock, true);
