@@ -1,5 +1,6 @@
 import { Asset } from "expo-asset";
 import { createAudioPlayer, type AudioPlayer } from "expo-audio";
+import { Platform } from "react-native";
 import { formatScientific, midiToNote, noteToMidi, type Note } from "@/lib/music/notes";
 import { MELODY_NOTE_SAMPLES, NOTE_SAMPLES } from "@/lib/audio/samples";
 
@@ -149,6 +150,76 @@ function getWebAudioLoopContext(): AudioContext | null {
   const Ctor = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
   webAudioLoopContext = Ctor ? new Ctor() : null;
   return webAudioLoopContext;
+}
+
+/** Mobile browsers (iOS Safari in particular, Android Chrome to a lesser
+ * degree) only ever start audio from inside a genuine, synchronous user
+ * gesture — on desktop this app's existing per-call `context.resume()`
+ * (playWebAudioTrack/playLoopingSample) and expo-audio's own
+ * HTMLAudioElement `.play()` (every playSample call) are each already
+ * enough, called straight from whatever onPress triggered them. Mobile
+ * browsers are stricter: the very FIRST sound of a session is the one
+ * most often silently dropped, especially from playWebAudioTrack, which
+ * only calls `.start()` on a buffer source AFTER an async decode
+ * (Promise.all(...).then(...)) — by the time that resolves, the tap that
+ * triggered it no longer counts as "live" on some mobile browsers, so
+ * the very first 🔊 press of a session can play nothing at all with no
+ * error anywhere (every LATER press that session works fine, since the
+ * context is "running" by then).
+ *
+ * Call once, as early as possible (RootLayout) — attaches a one-time
+ * listener for the first tap/click/touch ANYWHERE in the app, and uses
+ * THAT gesture to prime both playback paths with a real (silent) play()
+ * call each: a zero-length Web Audio buffer through the shared context,
+ * and a muted HTMLAudioElement. Once either has genuinely started once,
+ * both browsers' own gesture requirement is satisfied for the rest of
+ * the session — every later playSample/playWebAudioTrack call (including
+ * ones that only start after their own async asset load) plays normally,
+ * the same way it already does on desktop. No-op on native (no browser
+ * autoplay policy there) and in any environment with no `document`
+ * (the static export's own server-side prerender). */
+export function installWebAudioUnlock(): void {
+  if (Platform.OS !== "web" || typeof document === "undefined") return;
+  let unlocked = false;
+  function unlock() {
+    if (unlocked) return;
+    unlocked = true;
+    document.removeEventListener("touchend", unlock, true);
+    document.removeEventListener("pointerdown", unlock, true);
+    document.removeEventListener("click", unlock, true);
+
+    const context = getWebAudioLoopContext();
+    if (context) {
+      void context.resume();
+      try {
+        const buffer = context.createBuffer(1, 1, context.sampleRate);
+        const source = context.createBufferSource();
+        source.buffer = buffer;
+        source.connect(context.destination);
+        source.start(0);
+      } catch {
+        // A browser odd enough to throw on a 1-sample silent buffer
+        // wasn't going to play real audio reliably either way — resume()
+        // above is still a genuine attempt, so let it stand on its own.
+      }
+    }
+
+    try {
+      const silent = new Audio();
+      silent.muted = true;
+      // play() returns a Promise that rejects if the browser still
+      // refuses it — expected on some browsers/contexts (e.g. a
+      // moment before the very first real gesture lands on OTHER
+      // listeners too), and harmless either way since this is only a
+      // best-effort prime, not the user's actual requested sound.
+      void silent.play()?.catch(() => {});
+    } catch {
+      // Same reasoning as above — nothing left to do.
+    }
+  }
+  document.addEventListener("touchend", unlock, true);
+  document.addEventListener("pointerdown", unlock, true);
+  document.addEventListener("click", unlock, true);
 }
 
 // One decode per distinct source, reused across every playLoopingSample
