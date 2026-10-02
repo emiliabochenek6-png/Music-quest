@@ -1,5 +1,6 @@
 import Svg, { Ellipse, G, Line, Text as SvgText } from "react-native-svg";
 import { View } from "react-native";
+import { assignAccidentalColumns } from "@/lib/music/accidentalColumns";
 import { describeStaffPosition, ledgerLineSteps } from "@/lib/music/staff";
 import { parseScientific } from "@/lib/music/notes";
 import { STAFF_LINE_STEPS, VIEW_HEIGHT, VIEW_WIDTH, stepToY } from "@/lib/music/staffGeometry";
@@ -46,6 +47,8 @@ const ACCIDENTAL_FONT_SIZE: Record<-1 | 1, number> = { [-1]: 22, [1]: 27 };
  * left the sharp sitting visibly too high, off its target line. */
 const ACCIDENTAL_DY: Record<-1 | 1, number> = { [-1]: 7, [1]: 9 };
 const EDGE_MARGIN = NOTE_RADIUS + 4;
+/** Horizontal distance between accidental columns (see assignAccidentalColumns) — a ♯ at fontSize 27 is ~14 wide, so this leaves a hairline gap. */
+const ACCIDENTAL_COLUMN_GAP = 18;
 
 /** A chord's notes stacked on one treble staff, as it would really be
  * written — "Zatoka Trójdźwięków"'s theory-intro visual for
@@ -72,7 +75,12 @@ const DEGREE_LABEL_X_GAP = 6;
 export function TriadStaffNotation({ notes, width = 130, degreeLabels }: TriadStaffNotationProps) {
   const parsedNotes = notes.map((note) => parseScientific(note));
   const positions = parsedNotes.map((note) => describeStaffPosition(note));
-  const noteX = VIEW_WIDTH * NOTE_X_FRACTION;
+  const accidentalColumns = assignAccidentalColumns(
+    positions.map((position) => position.step),
+    parsedNotes.map((note) => note.accidental)
+  );
+  // A third column (F♯-A♯-C♯ and the like) would run off the left edge, so the whole chord moves right to make room.
+  const noteX = VIEW_WIDTH * NOTE_X_FRACTION + (Math.max(-1, ...accidentalColumns) >= 2 ? ACCIDENTAL_COLUMN_GAP : 0);
 
   // One staff step (a second) above the previous note -> shift right so
   // the two noteheads clear each other, UNLESS the previous note was
@@ -144,13 +152,12 @@ export function TriadStaffNotation({ notes, width = 130, degreeLabels }: TriadSt
                 // is exactly where the unshifted neighbor's own notehead
                 // already ends, so anchoring here keeps the glyph left of
                 // both circles instead of drifting onto the lower one.
-                // Stacked thirds put adjacent accidentals only a couple
-                // staff steps apart vertically — close enough for two
-                // flat/sharp glyphs to visually collide. Push this one
-                // further left only when the note directly below it ALSO
-                // has an accidental (the only case close enough to
-                // actually overlap).
-                x={noteX - NOTE_RADIUS - 10 - (index > 0 && parsedNotes[index - 1].accidental !== 0 ? 14 : 0)}
+                // Stacked accidentals closer than a seventh would overprint,
+                // so each one gets its own column (see
+                // assignAccidentalColumns) — the topmost nearest the chord,
+                // lower ones further out until they're far enough below to
+                // drop back into an inner column.
+                x={noteX - NOTE_RADIUS - 10 - accidentalColumns[index] * ACCIDENTAL_COLUMN_GAP}
                 y={stepToY(position.step) + ACCIDENTAL_DY[parsedNotes[index].accidental as -1 | 1]}
                 fontSize={ACCIDENTAL_FONT_SIZE[parsedNotes[index].accidental as -1 | 1]}
                 fill={theme.colors.ink}
