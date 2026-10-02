@@ -30,9 +30,14 @@ export const NUTKI_REWARDS = {
   perfectWorldBonus: 15,
 } as const;
 
+/** Most streak freezes a player can hold at once — stops stockpiling a
+ * whole season of them in advance. */
+export const MAX_STREAK_FREEZES = 2;
+
 /** What each power-up costs — see app/(main)/power-ups.tsx,
- * the one screen that spends these. */
+ * the one screen that spends these. A freeze is about three lessons of
+ * "Tryb nauki" (~20 nutki each), so it takes a day or two of real study. */
 export const POWER_UP_COSTS = {
-  streakFreeze: 15,
+  streakFreeze: 60,
   heartRefill: 10,
 } as const;

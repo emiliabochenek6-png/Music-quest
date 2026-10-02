@@ -6,7 +6,7 @@ import { applyActivity } from "@/lib/gamification/activity";
 import type { ActivityDelta } from "@/lib/gamification/activity";
 import { deriveHearts, gainHearts as addHearts, loseHeart as deductHeart } from "@/lib/gamification/hearts";
 import type { HeartsInfo } from "@/lib/gamification/hearts";
-import { NUTKI_REWARDS, POWER_UP_COSTS } from "@/lib/gamification/powerups";
+import { MAX_STREAK_FREEZES, NUTKI_REWARDS, POWER_UP_COSTS } from "@/lib/gamification/powerups";
 import { getTitleUnlockedAt, getRankForXp, getRankName, isLevelUpWorthCelebrating } from "@/lib/gamification/rank";
 import { nutkiForLevelRange } from "@/lib/gamification/levelRewards";
 import { mergeGamificationState } from "@/lib/sync/mergeState";
@@ -240,6 +240,7 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
   }
 
   function buyStreakFreeze(): boolean {
+    if (state.streakFreezes >= MAX_STREAK_FREEZES) return false;
     if (state.nutki < POWER_UP_COSTS.streakFreeze) return false;
     setState((prev) => {
       const next: GamificationState = {

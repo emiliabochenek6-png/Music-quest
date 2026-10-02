@@ -7,7 +7,7 @@ import { DarkButton } from "@/components/exercises/DarkButton";
 import { AppIcon } from "@/components/icons/AppIcon";
 import { useGamification } from "@/context/GamificationContext";
 import { useSubscription } from "@/context/SubscriptionContext";
-import { POWER_UP_COSTS } from "@/lib/gamification/powerups";
+import { MAX_STREAK_FREEZES, POWER_UP_COSTS } from "@/lib/gamification/powerups";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import { GlyphText } from "@/components/icons/GlyphText";
 
@@ -27,6 +27,10 @@ export default function PowerUpShopScreen() {
   const [feedback, setFeedback] = useState<string | null>(null);
 
   function handleBuyStreakFreeze() {
+    if (state.streakFreezes >= MAX_STREAK_FREEZES) {
+      setFeedback(`Masz już maksimum zamrożeń (${MAX_STREAK_FREEZES}).`);
+      return;
+    }
     setFeedback(buyStreakFreeze() ? "Zamrożenie passy kupione! ❄️" : "Za mało nutek na zamrożenie passy.");
   }
 
@@ -49,8 +53,8 @@ export default function PowerUpShopScreen() {
           title="Zamrożenie passy"
           description="Chroni Twoją passę, jeśli ominiesz jeden dzień ćwiczeń — zużywa się samo, kiedy będzie potrzebne."
           cost={POWER_UP_COSTS.streakFreeze}
-          ownedLabel={`Masz: ${state.streakFreezes}`}
-          disabled={state.nutki < POWER_UP_COSTS.streakFreeze}
+          ownedLabel={`Masz: ${state.streakFreezes} z ${MAX_STREAK_FREEZES}`}
+          disabled={state.nutki < POWER_UP_COSTS.streakFreeze || state.streakFreezes >= MAX_STREAK_FREEZES}
           onBuy={handleBuyStreakFreeze}
         />
         <ShopCard
