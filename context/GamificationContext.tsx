@@ -5,6 +5,7 @@ import { useSubscription } from "@/context/SubscriptionContext";
 import { applyActivity } from "@/lib/gamification/activity";
 import type { ActivityDelta } from "@/lib/gamification/activity";
 import { MAX_STREAK_FREEZES, NUTKI_REWARDS, POWER_UP_COSTS } from "@/lib/gamification/powerups";
+import { onLocalDataReset } from "@/lib/sync/localDataReset";
 import { getTitleUnlockedAt, getRankForXp, getRankName, isLevelUpWorthCelebrating } from "@/lib/gamification/rank";
 import { nutkiForLevelRange } from "@/lib/gamification/levelRewards";
 import { mergeGamificationState } from "@/lib/sync/mergeState";
@@ -89,7 +90,7 @@ const GamificationContext = createContext<GamificationContextValue | null>(null)
  */
 export function GamificationProvider({ children }: { children: ReactNode }) {
   const { status: subscription } = useSubscription();
-  const { user } = useAuth();
+  const { syncUserId } = useAuth();
   const [state, setState] = useState<GamificationState>(INITIAL_GAMIFICATION_STATE);
   const [isLoading, setIsLoading] = useState(true);
   const [pendingRankUp, setPendingRankUp] = useState<PendingRankUp | null>(null);
@@ -116,8 +117,20 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
   // for most players) — every setter below keeps working exactly as
   // before, pure local AsyncStorage, whether or not this hook is even
   // doing anything.
+  // A new account (or a different one) starts from zero — see lib/sync/localDataReset.ts.
+  useEffect(
+    () =>
+      onLocalDataReset(() => {
+        setState(INITIAL_GAMIFICATION_STATE);
+        setPendingRankUp(null);
+        setLevelUpToast(null);
+        void writeJson(STORAGE_KEYS.gamification, INITIAL_GAMIFICATION_STATE);
+      }),
+    []
+  );
+
   useCloudSync({
-    userId: user?.id ?? null,
+    userId: syncUserId,
     column: "gamification",
     localState: state,
     setLocalState: setState,

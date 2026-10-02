@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { readJson, STORAGE_KEYS, writeJson } from "@/lib/storage";
+import { onLocalDataReset } from "@/lib/sync/localDataReset";
 import type { ProfileState } from "@/types/content";
 
 const DEFAULT_PROFILE: ProfileState = {
@@ -41,6 +42,20 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
       cancelled = true;
     };
   }, []);
+
+  // A new account (or a different one) meets Soltek again — see lib/sync/localDataReset.ts.
+  // (Name and sound settings are about this device, so they stay.)
+  useEffect(
+    () =>
+      onLocalDataReset(() => {
+        setProfile((current) => {
+          const next = { ...current, hasSeenSoltekGreeting: false };
+          void writeJson(STORAGE_KEYS.profile, next);
+          return next;
+        });
+      }),
+    []
+  );
 
   function persist(next: ProfileState) {
     setProfile(next);

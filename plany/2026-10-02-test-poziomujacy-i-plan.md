@@ -108,3 +108,9 @@ Przykładowe długości (15 min dziennie, 6 dni w tygodniu):
 
 ## Własne ikonki
 - Ikony trybów (pad do gry i otwarta książka) oraz ok. 20 nowych (głośnik, stop, ptaszek, konfetti, puchar, cel, powtórka, lekcja, meta, korona, kompas, płatek, złamane serce, odznaka, koperta, iskry, zamknij, start, zegar, otwarta kłódka) zastępują emoji wszędzie tam, gdzie pełniły rolę ikony. Emoji w zwykłym tekście (opisy, zdania) zostają.
+
+## Nowe konto zaczyna od zera
+- Nowo założone konto (bez zapisu w chmurze) zawsze startuje od zera: 0 XP, level 1, 0 nutek, bez ukończonych lekcji i bez planu. Soltek wita je od nowa, a potem proponuje test poziomujący. Nazwa i ustawienia dźwięku zostają, bo dotyczą urządzenia.
+- Zalogowanie na **inne** konto niż to, do którego należą postępy na urządzeniu, czyści urządzenie przed synchronizacją, więc nikt nie dziedziczy cudzych postępów.
+- Istniejące konto, które loguje się po raz pierwszy na urządzeniu używanym wcześniej bez konta, zachowuje to, co tam jest (łączy z chmurą, jak dotąd). To samo dotyczy osób, które były już zalogowane przed tą zmianą.
+- Gdy nie da się sprawdzić chmury (brak internetu), nic nie jest kasowane.

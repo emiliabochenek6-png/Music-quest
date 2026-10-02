@@ -1,12 +1,18 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase/client";
+import { prepareLocalDataFor } from "@/lib/sync/localDataReset";
 
 interface AuthContextValue {
   session: Session | null;
   user: User | null;
+  /** True while the first session is being read, and, right after a sign-in,
+   * while the device decides whether to start this account from zero (see
+   * lib/sync/localDataReset.ts) — so the map never flashes someone else's progress. */
   isLoading: boolean;
+  /** The account id progress may sync with: null until the sign-in preparation is done. */
+  syncUserId: string | null;
   /** Resolves to whether signup ALSO established a live session right
    * away — true when the Supabase project has email confirmation
    * disabled, false when Supabase's own default (confirm-before-signed-
@@ -41,11 +47,32 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [preparedForUserId, setPreparedForUserId] = useState<string | null>(null);
+  const userId = session?.user?.id ?? null;
+  // The account whose session was already stored when the app opened (not a sign-in made just now).
+  const restoredUserIdRef = useRef<string | null>(null);
+
+  // Each sign-in: first decide whether this account starts from zero, only then let anything sync.
+  useEffect(() => {
+    if (!userId) {
+      setPreparedForUserId(null);
+      return;
+    }
+    let cancelled = false;
+    void prepareLocalDataFor(userId, { restoredSession: restoredUserIdRef.current === userId }).finally(() => {
+      if (!cancelled) setPreparedForUserId(userId);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [userId]);
+  const dataReady = userId === null || preparedForUserId === userId;
 
   useEffect(() => {
     let cancelled = false;
     supabase.auth.getSession().then(({ data }) => {
       if (cancelled) return;
+      restoredUserIdRef.current = data.session?.user?.id ?? null;
       setSession(data.session);
       setIsLoading(false);
     });
@@ -91,7 +118,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ session, user: session?.user ?? null, isLoading, signUp, signIn, signOut, resetPassword }}>
+    <AuthContext.Provider value={{ session, user: session?.user ?? null, isLoading: isLoading || !dataReady, syncUserId: dataReady ? userId : null, signUp, signIn, signOut, resetPassword }}>
       {children}
     </AuthContext.Provider>
   );

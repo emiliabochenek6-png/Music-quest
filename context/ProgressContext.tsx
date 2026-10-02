@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useCloudSync } from "@/lib/sync/useCloudSync";
+import { onLocalDataReset } from "@/lib/sync/localDataReset";
 import { mergeProgressState } from "@/lib/sync/mergeState";
 import { readJson, writeJson } from "@/lib/storage";
 import type { ProgressState } from "@/types/content";
@@ -51,7 +52,7 @@ function deserializeFromCloud(value: unknown): ProgressState {
  * mirror on top without changing this provider's own public shape, so
  * no screen reading `useProgress()` needed to change either. */
 export function ProgressProvider({ children }: { children: ReactNode }) {
-  const { user } = useAuth();
+  const { syncUserId } = useAuth();
   const [progress, setProgress] = useState<ProgressState>({ completedWorldIds: new Set(), completedLessonIds: new Set() });
   const [isLoading, setIsLoading] = useState(true);
 
@@ -72,8 +73,20 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
+  // A new account (or a different one) starts from zero — see lib/sync/localDataReset.ts.
+  useEffect(
+    () =>
+      onLocalDataReset(() => {
+        const empty: ProgressState = { completedWorldIds: new Set(), completedLessonIds: new Set() };
+        setProgress(empty);
+        void writeJson(WORLDS_STORAGE_KEY, []);
+        void writeJson(LESSONS_STORAGE_KEY, []);
+      }),
+    []
+  );
+
   useCloudSync({
-    userId: user?.id ?? null,
+    userId: syncUserId,
     column: "progress",
     localState: progress,
     setLocalState: setProgress,

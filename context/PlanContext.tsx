@@ -13,6 +13,7 @@ import { afterReview, backfillReviewLog, dueReviewIds, newReviewEntry } from "@/
 import type { ReviewEntry } from "@/lib/plan/spacedRepetition";
 import type { TodayPlan } from "@/lib/plan/today";
 import { readJson, STORAGE_KEYS, writeJson } from "@/lib/storage";
+import { onLocalDataReset } from "@/lib/sync/localDataReset";
 
 /** Reviews asked per day at most — a few minutes of recap, not a second lesson. */
 export const MAX_REVIEWS_PER_DAY = 3;
@@ -104,6 +105,16 @@ export function PlanProvider({ children }: { children: ReactNode }) {
       cancelled = true;
     };
   }, []);
+
+  // A new account (or a different one) starts from zero — see lib/sync/localDataReset.ts.
+  useEffect(
+    () =>
+      onLocalDataReset(() => {
+        setPlan(DEFAULT_PLAN);
+        void writeJson(STORAGE_KEYS.plan, DEFAULT_PLAN).catch(() => {});
+      }),
+    []
+  );
 
   function persist(next: PlanState) {
     setPlan(next);
