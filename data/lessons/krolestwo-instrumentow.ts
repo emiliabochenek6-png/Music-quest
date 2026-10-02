@@ -117,7 +117,7 @@ export const KROLESTWO_INSTRUMENTOW_CONTENT: WorldContent = {
         },
         {
           body: "Na instrumentach smyczkowych gra się smyczkiem (pałeczką z naciągniętym włosiem), który przesuwamy po strunach. Można też szarpać struny palcami — to pizzicato. Podobnie gra się na harfie, która ma kilkadziesiąt strun.",
-          instrumentExamples: [{ imageId: "instrument_harfa", label: "Harfa", caption: "struny szarpane palcami" }],
+          instrumentExamples: [{ imageId: "instrument_harfa", label: "Harfa", caption: "struny szarpane palcami", audioSource: SOUND.harfa }],
         },
       ],
       exercises: [
@@ -133,6 +133,7 @@ export const KROLESTWO_INSTRUMENTOW_CONTENT: WorldContent = {
         fact("ki-l2-e10", 1, "Kwartet smyczkowy to czworo muzyków: dwoje skrzypiec, altówka i…", ["flet", "wiolonczela", "trąbka", "fagot"], 1, "Dwoje skrzypiec, altówka i wiolonczela — cztery instrumenty smyczkowe.", { abcd: true }),
         fact("ki-l2-e12", 1, "Posłuchaj i wskaż: który instrument gra?", ["Skrzypce", "Wiolonczela", "Kontrabas"], 1, "To wiolonczela — brzmi niżej niż skrzypce, ale wyżej niż kontrabas.", { referenceAudioSource: SOUND.wiolonczela }),
         fact("ki-l2-e13", 1, "Ten dźwięk jest bardzo niski. Który instrument smyczkowy gra?", ["Skrzypce", "Wiolonczela", "Kontrabas"], 2, "To kontrabas — największy i najniżej grający instrument smyczkowy.", { referenceAudioSource: SOUND.kontrabas }),
+        fact("ki-l2-e14", 1, "Posłuchaj: dźwięk jak z wielu delikatnie szarpanych strun. Który instrument gra?", ["Kontrabas", "Skrzypce", "Harfa"], 2, "To harfa — jej struny szarpie się palcami, a dźwięk brzmi jak perlista fala.", { referenceAudioSource: SOUND.harfa }),
         fact("ki-l2-e11", 1, "Które z tych instrumentów NIE jest smyczkowe?", ["Skrzypce", "Trąbka", "Kontrabas"], 1, "Trąbka jest z metalu i gra się na niej dmuchając — to blaszany instrument dęty.", { optionImageIds: ["instrument_skrzypce", "instrument_trabka", "instrument_kontrabas"] }),
       ],
     },
@@ -216,9 +217,9 @@ export const KROLESTWO_INSTRUMENTOW_CONTENT: WorldContent = {
         {
           body: "Perkusja to instrumenty, w które uderzamy: pałeczkami, pałkami albo rękami. Są wśród nich bębny — kotły i werbel, metalowe talerze i trójkąt oraz ksylofon z drewnianymi płytkami.",
           instrumentExamples: [
-            { imageId: "instrument_kotly", label: "Kotły" },
+            { imageId: "instrument_kotly", label: "Kotły", audioSource: SOUND.kotly },
             { imageId: "instrument_werbel", label: "Werbel", audioSource: SOUND.werbel },
-            { imageId: "instrument_talerze", label: "Talerze" },
+            { imageId: "instrument_talerze", label: "Talerze", audioSource: SOUND.talerze },
             { imageId: "instrument_trojkat", label: "Trójkąt", audioSource: SOUND.trojkat },
             { imageId: "instrument_ksylofon", label: "Ksylofon", audioSource: SOUND.ksylofon },
           ],
@@ -239,6 +240,8 @@ export const KROLESTWO_INSTRUMENTOW_CONTENT: WorldContent = {
         fact("ki-l5-e9", 1, "Czy perkusja to tylko bębny?", ["Tak, tylko bębny", "Nie — to też ksylofon, talerze i trójkąt", "Nie — to też skrzypce"], 1, "Perkusja to wszystkie instrumenty, w które uderzamy: bębny, talerze, trójkąt, ksylofon i wiele innych."),
         fact("ki-l5-e10", 1, "Posłuchaj: krótki, drewniany, dźwięczny dźwięk. Który to instrument?", ["Ksylofon", "Fagot", "Kotły"], 0, "To ksylofon — drewniane płytki dają krótki, stukający dźwięk.", { referenceAudioSource: SOUND.ksylofon }),
         fact("ki-l5-e12", 1, "Posłuchaj: suchy, rytmiczny dźwięk jak w marszu. Który to instrument?", ["Ksylofon", "Werbel", "Trójkąt"], 1, "To werbel — mały bęben ze „struną” pod spodem, która nadaje mu trzeszczące brzmienie.", { referenceAudioSource: SOUND.werbel }),
+        fact("ki-l5-e13", 1, "Posłuchaj: głęboki, dudniący dźwięk bębna. Który to instrument?", ["Talerze", "Kotły", "Trójkąt"], 1, "To kotły — duże bębny o niskim, dudniącym dźwięku.", { referenceAudioSource: SOUND.kotly }),
+        fact("ki-l5-e14", 1, "Posłuchaj: błyszczący szum metalu, który długo wybrzmiewa. Który instrument gra?", ["Talerze", "Werbel", "Ksylofon"], 0, "To talerze (tu: talerz zawieszony, uderzony pałeczką).", { referenceAudioSource: SOUND.talerze }),
         fact("ki-l5-e11", 1, "Posłuchaj: cienki, wysoki dźwięk, który długo wybrzmiewa. Który to instrument?", ["Werbel", "Trójkąt", "Tuba"], 1, "To trójkąt.", { referenceAudioSource: SOUND.trojkat }),
       ],
     },
@@ -251,14 +254,14 @@ export const KROLESTWO_INSTRUMENTOW_CONTENT: WorldContent = {
           body: "Instrumenty klawiszowe mają klawisze, które naciskamy: fortepian, organy i akordeon. W fortepianie klawisz porusza młoteczek, który uderza w strunę. W organach dźwięk robi powietrze w rurach, a w akordeonie — powietrze z miecha, który się rozciąga i ściska.",
           instrumentExamples: [
             { imageId: "instrument_fortepian", label: "Fortepian", audioSource: NOTE_SAMPLES.C4 },
-            { imageId: "instrument_organy", label: "Organy" },
-            { imageId: "instrument_akordeon", label: "Akordeon" },
+            { imageId: "instrument_organy", label: "Organy", audioSource: SOUND.organy },
+            { imageId: "instrument_akordeon", label: "Akordeon", audioSource: SOUND.akordeon },
           ],
         },
         {
           body: "Są też instrumenty ze strunami, które szarpiemy palcami: harfa (kilkadziesiąt strun) i gitara (zwykle sześć strun). Nie gra się na nich smyczkiem, tylko dotykając strun.",
           instrumentExamples: [
-            { imageId: "instrument_harfa", label: "Harfa" },
+            { imageId: "instrument_harfa", label: "Harfa", audioSource: SOUND.harfa },
             { imageId: "instrument_gitara", label: "Gitara" },
           ],
         },
@@ -274,6 +277,9 @@ export const KROLESTWO_INSTRUMENTOW_CONTENT: WorldContent = {
         fact("ki-l6-e8", 1, "Który z tych instrumentów ma klawisze?", ["Gitara", "Harfa", "Fortepian", "Trąbka"], 2, "Fortepian ma klawisze. Gitara i harfa mają struny, a trąbka wentyle.", { abcd: true }),
         fact("ki-l6-e9", 1, "Dlaczego fortepian nazywamy instrumentem klawiszowym?", ["Bo ma klawisze, które naciskamy", "Bo gra się na nim smyczkiem", "Bo ma suwak"], 0, "Bo gra się na nim, naciskając klawisze."),
         fact("ki-l6-e10", 1, "Który z tych instrumentów NIE ma klawiszy?", ["Akordeon", "Organy", "Gitara"], 2, "Gitara — gra się na niej, szarpiąc struny.", { optionImageIds: ["instrument_akordeon", "instrument_organy", "instrument_gitara"] }),
+        fact("ki-l6-e11", 1, "Posłuchaj: długi, uroczysty dźwięk jak w kościele. Który instrument gra?", ["Akordeon", "Organy", "Gitara"], 1, "To organy — dźwięk robi powietrze w piszczałkach.", { referenceAudioSource: SOUND.organy }),
+        fact("ki-l6-e12", 1, "Posłuchaj: ciepły dźwięk z „oddychaniem” miecha. Który to instrument?", ["Organy", "Fortepian", "Akordeon"], 2, "To akordeon — dźwięk powstaje, gdy powietrze z miecha wprawia w drganie metalowe języczki.", { referenceAudioSource: SOUND.akordeon }),
+        fact("ki-l6-e13", 1, "Posłuchaj: krótki dźwięk, który zaraz cichnie. Który instrument gra?", ["Fortepian", "Harfa", "Organy"], 0, "To fortepian — młoteczek uderza w strunę, więc dźwięk jest wyraźny i zaraz cichnie.", { referenceAudioSource: NOTE_SAMPLES.C4 }),
       ],
     },
     {
@@ -317,8 +323,8 @@ export const KROLESTWO_INSTRUMENTOW_CONTENT: WorldContent = {
           instrumentExamples: [
             { imageId: "instrument_skrzypce", label: "Smyczek", caption: "po strunach", audioSource: SOUND.skrzypce },
             { imageId: "instrument_flet", label: "Dmuchanie", caption: "flet", audioSource: SOUND.flet },
-            { imageId: "instrument_kotly", label: "Uderzanie", caption: "kotły" },
-            { imageId: "instrument_harfa", label: "Szarpanie", caption: "harfa" },
+            { imageId: "instrument_kotly", label: "Uderzanie", caption: "kotły", audioSource: SOUND.kotly },
+            { imageId: "instrument_harfa", label: "Szarpanie", caption: "harfa", audioSource: SOUND.harfa },
             { imageId: "instrument_fortepian", label: "Klawisze", caption: "fortepian", audioSource: NOTE_SAMPLES.C4 },
           ],
         },
@@ -351,7 +357,7 @@ export const KROLESTWO_INSTRUMENTOW_CONTENT: WorldContent = {
             { imageId: "instrument_skrzypce", label: "Smyczki", caption: "z przodu" },
             { imageId: "instrument_flet", label: "Drewniane", caption: "w środku" },
             { imageId: "instrument_trabka", label: "Blaszane", caption: "z tyłu" },
-            { imageId: "instrument_kotly", label: "Perkusja", caption: "z tyłu" },
+            { imageId: "instrument_kotly", label: "Perkusja", caption: "z tyłu", audioSource: SOUND.kotly },
           ],
         },
         {

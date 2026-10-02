@@ -19,7 +19,15 @@
  * cadence by the U.S. Navy Band — public domain as a work of a U.S. Navy
  * employee made in the course of official duties. A 2-second rhythmic
  * figure (0.40-2.40 s) was cut out, downmixed to mono 22.05 kHz, normalized
- * and given a short fade-out. Keys match the `instrument_*` icon names
+ * and given a short fade-out. Added later (each cut to 1.7-2.6 s, mono 22.05
+ * kHz, normalized, faded out): harfa (D4, mf), akordeon (G4), kotly (one mf
+ * hit), organy (C4) — all four from FreePats (freepats.zenvoid.org), published
+ * under CC0 1.0 (public domain). The harp and timpani come from the Versilian
+ * Community Sample Library, the accordion is a Hohner recorded by Jeff Stauffer
+ * (2023). The organ is NOT a recording of real pipes but the Aeolus pipe-organ
+ * emulator (Fons Adriaensen), sampled by FreePats. "talerze" is the University
+ * of Iowa file 18crash.stick.normal.mf (a suspended 18" crash cymbal, struck
+ * with a stick; same terms as the other Iowa files above). Keys match the `instrument_*` icon names
  * (components/icons/icons.ts) minus that prefix. */
 export const INSTRUMENT_SAMPLES = {
   skrzypce: require("@/assets/audio/instruments/skrzypce.wav"),
@@ -37,6 +45,11 @@ export const INSTRUMENT_SAMPLES = {
   ksylofon: require("@/assets/audio/instruments/ksylofon.wav"),
   trojkat: require("@/assets/audio/instruments/trojkat.wav"),
   werbel: require("@/assets/audio/instruments/werbel.wav"),
+  harfa: require("@/assets/audio/instruments/harfa.wav"),
+  akordeon: require("@/assets/audio/instruments/akordeon.wav"),
+  kotly: require("@/assets/audio/instruments/kotly.wav"),
+  organy: require("@/assets/audio/instruments/organy.wav"),
+  talerze: require("@/assets/audio/instruments/talerze.wav"),
 } as const;
 
 export type InstrumentSampleName = keyof typeof INSTRUMENT_SAMPLES;
