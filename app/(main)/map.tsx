@@ -145,7 +145,8 @@ export default function MapScreen() {
         />
       </SideMenu>
 
-      <SoltekWelcomeModal visible={showSoltekWelcome} onDismiss={() => setHasSeenSoltekGreeting(true)} />
+      {/* Mounted only while showing — a closing RN-web Modal lingers (faded) behind whatever opens next. */}
+      {showSoltekWelcome && <SoltekWelcomeModal visible onDismiss={() => setHasSeenSoltekGreeting(true)} />}
       {showGuide && (
         <GameGuide
           onClose={() => {

@@ -221,12 +221,11 @@ export default function WorldLevelsScreen() {
                 <View style={[styles.progressFill, { backgroundColor: world.accentColor, width: `${progressPct}%` }]} />
               </View>
               <Text style={styles.progressPct}>{progressPct}%</Text>
+              <Text style={styles.unlockHint}>Poziomy otwierają się po kolei: następny odblokujesz, zdobywając minimum 2 gwiazdki w poprzednim.</Text>
             </>
           )}
         </View>
       </View>
-
-      {content && <Text style={styles.unlockHint}>Poziomy otwierają się po kolei: następny odblokujesz, zdobywając minimum 2 gwiazdki w poprzednim.</Text>}
 
       {content ? (
         <LessonPath
@@ -250,10 +249,8 @@ export default function WorldLevelsScreen() {
 
 const styles = StyleSheet.create({
   unlockHint: {
-    marginHorizontal: 24,
-    marginTop: 8,
-    textAlign: "center",
-    fontSize: 12,
+    marginTop: 6,
+    fontSize: 11.5,
     fontWeight: "700",
     color: theme.colors.muted,
   },

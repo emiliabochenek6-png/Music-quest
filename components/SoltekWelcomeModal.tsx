@@ -20,7 +20,7 @@ interface SoltekWelcomeModalProps {
  */
 export function SoltekWelcomeModal({ visible, onDismiss }: SoltekWelcomeModalProps) {
   return (
-    <Modal visible={visible} transparent animationType="fade" onRequestClose={onDismiss}>
+    <Modal visible={visible} transparent animationType="none" onRequestClose={onDismiss}>
       <View style={styles.backdrop}>
         <View style={styles.card}>
           <GlyphText style={styles.title}>🎵 Poznaj Soltka!</GlyphText>

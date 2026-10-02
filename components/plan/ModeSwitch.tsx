@@ -28,8 +28,10 @@ function Segment({ icon, label, active, onPress }: { icon: IconName; label: stri
       accessibilityState={{ selected: active }}
       style={[styles.segment, active && styles.segmentActive]}
     >
-      <AppIcon name={icon} size={24} />
-      <Text style={[styles.segmentText, active && styles.segmentTextActive]}>{label}</Text>
+      <AppIcon name={icon} size={22} />
+      <Text numberOfLines={1} style={[styles.segmentText, active && styles.segmentTextActive]}>
+        {label}
+      </Text>
     </Pressable>
   );
 }
@@ -51,14 +53,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 6,
-    paddingHorizontal: 10,
+    gap: 4,
+    paddingHorizontal: 6,
   },
   segmentActive: {
     backgroundColor: theme.colors.primary,
   },
   segmentText: {
-    fontSize: 13,
+    flexShrink: 1,
+    fontSize: 12.5,
     fontWeight: "800",
     color: theme.colors.muted,
   },
