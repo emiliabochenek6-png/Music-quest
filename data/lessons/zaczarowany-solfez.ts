@@ -18,7 +18,7 @@ import type { WorldContent } from "@/types/exercises";
  * the lessons' own `order` is 1-4, ahead of the singing lessons' 5-11
  * (their ids are unchanged, so saved progress still applies).
  *
- * The last five lessons (zs-melodie-1..5, orders 12-16), followed by the world's boss lesson zs-boss-falszomir (order 17: a mix — four listening exercises, then six metronome melodies covering triads, intervals, the dominant seventh and inversions) are short real
+ * The last five lessons (zs-melodie-1..5, orders 12-16), followed by the world's boss lesson zs-boss-mirefa (order 17: a mix — four listening exercises, then six metronome melodies covering triads, intervals, the dominant seventh and inversions) are short real
  * melodies and solfèges in "nagranie, potem metronom" form
  * (solfege-phrase-singing with `withMetronome`): 🔊 plays the phrase with
  * its written rhythm (synthesized piano, or a real recording if a
@@ -968,15 +968,15 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
       ],
     },
     {
-      id: "zs-boss-falszomir",
+      id: "zs-boss-mirefa",
       order: 17,
       difficulty: 6,
       isBoss: true,
-      bossName: "Fałszomir",
+      bossName: "Mirefa",
       pianoKeyboardReference: { range: ["C4", "C5"] },
       introSlides: [
         {
-          body: "Fałszomir wraca! Ten, który wszędzie szuka fałszywych nut, chce zagłuszyć całą Zaczarowaną Krainę. Pokonaj go: czeka na Ciebie mieszanka wszystkiego, czego się tu nauczyłeś — słuchanie sylab, interwały, trójdźwięki, przewroty, dominanta i melodie.",
+          body: "Kameleon Mirefa zmienia kolory i zaczarowuje sylaby: pokazuje jedną, a śpiewa inną — jego imię to „mi-re-fa” ułożone na opak! Pokonaj go: czeka na Ciebie mieszanka wszystkiego, czego się tu nauczyłeś — słuchanie sylab, interwały, trójdźwięki, przewroty, dominanta i melodie.",
           bossPortrait: true,
         },
         {

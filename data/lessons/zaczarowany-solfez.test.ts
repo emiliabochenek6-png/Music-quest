@@ -49,7 +49,7 @@ describe("Zaczarowany Solfeż content", () => {
   it("short-melody levels (withMetronome) fill whole measures, no note crossing a barline", () => {
     const melodyLessons = ZACZAROWANY_SOLFEZ_CONTENT.lessons.filter((lesson) => lesson.id.startsWith("zs-melodie-"));
     expect(melodyLessons).toHaveLength(5);
-    const boss = ZACZAROWANY_SOLFEZ_CONTENT.lessons.find((lesson) => lesson.id === "zs-boss-falszomir");
+    const boss = ZACZAROWANY_SOLFEZ_CONTENT.lessons.find((lesson) => lesson.id === "zs-boss-mirefa");
     expect(boss?.isBoss).toBe(true);
     // The boss mixes listening exercises with metronome melodies — only its melodies are checked here.
     for (const lesson of [...melodyLessons, boss!]) {
@@ -79,7 +79,7 @@ describe("Zaczarowany Solfeż content", () => {
 
   it("no short-melody exercise repeats another's exact notes and rhythm", () => {
     const seen = new Set<string>();
-    for (const lesson of ZACZAROWANY_SOLFEZ_CONTENT.lessons.filter((l) => l.id.startsWith("zs-melodie-") || l.id === "zs-boss-falszomir")) {
+    for (const lesson of ZACZAROWANY_SOLFEZ_CONTENT.lessons.filter((l) => l.id.startsWith("zs-melodie-") || l.id === "zs-boss-mirefa")) {
       for (const definition of lesson.exercises) {
         if (definition.spec.type !== "solfege-phrase-singing") continue;
         const key = `${definition.spec.notes.join(",")}|${(definition.spec.rhythm ?? []).join(",")}`;

@@ -4,6 +4,7 @@ import { ArytmikPortrait } from "@/components/map/ArytmikPortrait";
 import { BazgrolPortrait } from "@/components/map/BazgrolPortrait";
 import { DominikPortrait } from "@/components/map/DominikPortrait";
 import { FalszomirPortrait } from "@/components/map/FalszomirPortrait";
+import { MirefaPortrait } from "@/components/map/MirefaPortrait";
 import { MolotaurPortrait } from "@/components/map/MolotaurPortrait";
 import { OktawiuszPortrait } from "@/components/map/OktawiuszPortrait";
 import { OsmiotaktPortrait } from "@/components/map/OsmiotaktPortrait";
@@ -29,6 +30,7 @@ export const BOSS_PORTRAITS: Record<string, ComponentType<{ size?: number }>> = 
   Piętrus: PietrusPortrait,
   Pęczek: PeczekPortrait,
   Bazgroł: BazgrolPortrait,
+  Mirefa: MirefaPortrait,
 };
 
 /** Wioska Nut's own boss predates the `bossName` field — every lesson
