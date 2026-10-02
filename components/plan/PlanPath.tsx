@@ -148,7 +148,7 @@ export function PlanPath() {
       <ScrollView style={styles.scroll} contentContainerStyle={contentStyle} showsVerticalScrollIndicator={false}>
         <View style={[styles.card, { width: TRAIL_WIDTH + 24 }]}>
           <SoltekMascot size="md" expression="zachecajacy" message="W trybie nauki znajdziesz „Twój plan”: własną ścieżkę lekcji, dzień po dniu, z powtórkami. Zrobimy najpierw krótki test, żeby ją dopasować?" />
-          <DarkButton label="Zrób test z Soltkiem" onPress={() => router.push("/(main)/placement")} />
+          <DarkButton label="Zrób test poziomujący" onPress={() => router.push("/(main)/placement")} />
         </View>
       </ScrollView>
     );
