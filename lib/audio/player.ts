@@ -1,6 +1,6 @@
 import { Asset } from "expo-asset";
 import { createAudioPlayer, type AudioPlayer } from "expo-audio";
-import { formatScientific, midiToNote, noteToMidi, type Note } from "@/lib/music/notes";
+import { formatScientific, midiToNote, noteToMidi, parseScientific, type Note } from "@/lib/music/notes";
 import { MELODY_NOTE_SAMPLES, NOTE_SAMPLES } from "@/lib/audio/samples";
 
 interface ToneOptions {
@@ -960,6 +960,60 @@ export function playChordSequence(chords: readonly (readonly Note[])[], options:
   const playScheduled = () => {
     chords.forEach((chord, index) => {
       scheduleAt(index * stepSeconds * 1000, () => playChord(chord, options), anchorMs);
+    });
+  };
+  if (!playWebAudioTrack(events, anchorMs, playScheduled)) playScheduled();
+}
+
+/** Spacing between the four cadence chords of playSolfegeEarPrompt — shorter
+ * than playChordSequence's own ring-length spacing, so the C–F–G–C
+ * context lasts under 3 seconds (chords overlap lightly, like a held
+ * pedal) instead of ~8. */
+const EAR_CADENCE_STEP_SECONDS = 0.7;
+/** Silence between the cadence's last chord and the first heard note. */
+const EAR_CADENCE_TO_NOTE_SECONDS = 0.6;
+/** Onset spacing between consecutive notes of a heard sequence. */
+const EAR_SEQUENCE_STEP_SECONDS = 0.7;
+/** C–F–G–C in C major, voiced close around the middle of the keyboard. */
+const EAR_CADENCE_CHORDS: readonly (readonly string[])[] = [
+  ["C4", "E4", "G4"],
+  ["C4", "F4", "A4"],
+  ["B3", "D4", "G4"],
+  ["C4", "E4", "G4"],
+];
+
+/** "Zaczarowany Solfeż"'s listen-and-name-the-syllable prompt — optionally
+ * a short C–F–G–C cadence first (so "do" is heard as home before any
+ * note is judged against it), then the target note or notes. A single
+ * note rings long (NOTE_SAMPLES); a sequence uses the short melodic
+ * samples with a fixed step so each note is heard distinctly. One
+ * scheduled track, so replaying never drifts between chords and notes. */
+export function playSolfegeEarPrompt(notes: readonly Note[], options: { withCadence?: boolean } = {}): void {
+  const withCadence = options.withCadence ?? true;
+  const chordVelocity = 0.3;
+  const noteVelocity = 0.7;
+  const sustained = notes.length === 1;
+  const anchorMs = schedulerNow();
+  const noteSet = sustained ? NOTE_SAMPLES : MELODY_NOTE_SAMPLES;
+  const cadenceMs = withCadence ? (EAR_CADENCE_CHORDS.length * EAR_CADENCE_STEP_SECONDS + EAR_CADENCE_TO_NOTE_SECONDS) * 1000 : 0;
+
+  const events: { source: number; delayMs: number; velocity: number; playbackRate: number }[] = [];
+  if (withCadence) {
+    EAR_CADENCE_CHORDS.forEach((chord, index) => {
+      chord.forEach((name) => {
+        const { source, playbackRate } = resolveSample(NOTE_SAMPLES, parseScientific(name));
+        events.push({ source, delayMs: index * EAR_CADENCE_STEP_SECONDS * 1000, velocity: chordVelocity, playbackRate });
+      });
+    });
+  }
+  notes.forEach((note, index) => {
+    const { source, playbackRate } = resolveSample(noteSet, note);
+    events.push({ source, delayMs: cadenceMs + index * EAR_SEQUENCE_STEP_SECONDS * 1000, velocity: noteVelocity, playbackRate });
+  });
+
+  const playScheduled = () => {
+    events.forEach(({ source, delayMs, velocity, playbackRate }) => {
+      scheduleAt(delayMs, () => getPool(source).trigger(velocity, playbackRate), anchorMs);
     });
   };
   if (!playWebAudioTrack(events, anchorMs, playScheduled)) playScheduled();

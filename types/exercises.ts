@@ -366,6 +366,20 @@ export type ExerciseSpec =
       toleranceCents?: number;
     }
   | {
+      type: "solfege-syllable-choice";
+      /** Natural notes (scientific names, e.g. "C4") the heard note(s) are
+       * drawn from — the answer buttons are the DISTINCT solfège syllables
+       * of this pool, in pitch order, so a lesson widens its own choice
+       * (do/sol → do/re/mi → …) just by widening this list. C4 and C5
+       * both read "do", so a pool spanning an octave shows that button
+       * once. Same natural-notes-only constraint as the singing types. */
+      notePool: string[];
+      /** How many notes are heard in a row (default 1) — the player picks
+       * one syllable per heard note, in order. Adjacent notes always
+       * differ (see generateExercise's own case). */
+      length?: number;
+    }
+  | {
       type: "solfege-phrase-singing";
       /** Fixed, authored sequence (e.g. the whole C4-C5 scale) — not
        * randomly generated the way solfege-note-singing's single note is,
@@ -926,6 +940,15 @@ export type GeneratedExercise =
     }
   | {
       id: string;
+      type: "solfege-syllable-choice";
+      targetNotes: string[];
+      solfegeSyllables: string[];
+      /** Distinct syllables of the spec's notePool, lowest to highest —
+       * the answer buttons. */
+      options: string[];
+    }
+  | {
+      id: string;
       type: "solfege-phrase-singing";
       notes: string[];
       solfegeSyllables: string[];
@@ -1004,6 +1027,11 @@ export type AnswerInput =
     }
   | { type: "rhythm-value-dictation"; sequence: (RhythmNoteValue | RhythmRestValue)[]; groups: number[][] }
   | { type: "melodic-rhythmic-dictation"; notes: { step: number; accidental: Accidental; value: RhythmNoteValue }[]; groups: number[][] }
+  | {
+      type: "solfege-syllable-choice";
+      /** One slot per heard note, filled left to right; null = not yet chosen. */
+      selectedSyllables: (string | null)[];
+    }
   | { type: "solfege-note-singing"; detectedFrequencyHz: number | null }
   | {
       type: "solfege-phrase-singing";

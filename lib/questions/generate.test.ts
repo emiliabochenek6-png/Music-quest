@@ -230,4 +230,51 @@ describe("generateExercise", () => {
       expect(exercise.requiredTapTimesMs).toEqual([0, 1000, 2000]);
     }
   });
+
+  describe("solfege-syllable-choice", () => {
+    const pool = ["C4", "D4", "E4"];
+
+    it("offers the distinct syllables of the pool, lowest to highest", () => {
+      const exercise = generateExercise(
+        makeDefinition({ type: "solfege-syllable-choice", spec: { type: "solfege-syllable-choice", notePool: ["E4", "C4", "C5", "D4"] } }),
+        "pl"
+      );
+      expect(exercise).toMatchObject({ type: "solfege-syllable-choice", options: ["do", "re", "mi"] });
+    });
+
+    it("never repeats a single note while the pool still has unused ones", () => {
+      const used = new Set<string>();
+      for (let attempt = 0; attempt < pool.length; attempt++) {
+        const exercise = generateExercise(
+          makeDefinition({ type: "solfege-syllable-choice", spec: { type: "solfege-syllable-choice", notePool: pool } }),
+          "pl",
+          used
+        );
+        if (exercise.type !== "solfege-syllable-choice") throw new Error("wrong type");
+        const signature = `solfege-syllable-choice:${exercise.targetNotes[0]}`;
+        expect(used.has(signature)).toBe(false);
+        used.add(signature);
+      }
+      expect(used.size).toBe(pool.length);
+    });
+
+    it("builds sequences of the requested length with no identical neighbours", () => {
+      for (let attempt = 0; attempt < 30; attempt++) {
+        const exercise = generateExercise(
+          makeDefinition({ type: "solfege-syllable-choice", spec: { type: "solfege-syllable-choice", notePool: pool, length: 3 } }),
+          "pl"
+        );
+        if (exercise.type !== "solfege-syllable-choice") throw new Error("wrong type");
+        expect(exercise.targetNotes).toHaveLength(3);
+        expect(exercise.solfegeSyllables).toHaveLength(3);
+        exercise.targetNotes.slice(1).forEach((note, index) => expect(note).not.toBe(exercise.targetNotes[index]));
+      }
+    });
+
+    it("rejects a pool too small for the requested sequence length", () => {
+      expect(() =>
+        generateExercise(makeDefinition({ type: "solfege-syllable-choice", spec: { type: "solfege-syllable-choice", notePool: ["C4"], length: 2 } }), "pl")
+      ).toThrow();
+    });
+  });
 });

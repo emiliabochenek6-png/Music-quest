@@ -359,6 +359,8 @@ export function getExerciseSignature(exercise: GeneratedExercise): string | null
       return `dominant-seventh-inversion-sequence-choice:${exercise.chords.map((chord) => chord.join(",")).join("|")}`;
     case "solfege-note-singing":
       return `solfege-note-singing:${exercise.targetNote}`;
+    case "solfege-syllable-choice":
+      return `solfege-syllable-choice:${exercise.targetNotes.join(",")}`;
     case "triad-notes-choice":
       return `triad-notes-choice:${exercise.fifths}-${exercise.role}`;
     case "triad-role-choice":
@@ -1385,6 +1387,37 @@ export function generateExercise(definition: ExerciseDefinition, locale: Locale,
         solfegeSyllable: getSolfegeSyllable(note.letter, locale),
         toleranceCents: toleranceCents ?? DEFAULT_SOLFEGE_TOLERANCE_CENTS,
       };
+    }
+    case "solfege-syllable-choice": {
+      const { notePool, length = 1 } = definition.spec;
+      // Pool sorted low to high (and de-duplicated) — the answer buttons
+      // read in pitch order, the way the scale itself does.
+      const pool = [...new Set(notePool)].sort((a, b) => noteToMidi(parseScientific(a)) - noteToMidi(parseScientific(b)));
+      if (pool.length === 0 || (length > 1 && pool.length < 2)) {
+        throw new Error(`solfege-syllable-choice: notePool [${notePool.join(", ")}] too small for length ${length}`);
+      }
+      const syllableOf = (note: string) => getSolfegeSyllable(parseScientific(note).letter, locale);
+      const options = [...new Set(pool.map(syllableOf))];
+      const build = (): Extract<GeneratedExercise, { type: "solfege-syllable-choice" }> => {
+        const targetNotes: string[] = [];
+        for (let position = 0; position < length; position++) {
+          // Adjacent heard notes always differ — two identical notes in a
+          // row would sound like one long note, not a sequence to read.
+          const candidates = pool.filter((note) => note !== targetNotes[position - 1]);
+          targetNotes.push(candidates[Math.floor(Math.random() * candidates.length)]);
+        }
+        return { id: definition.id, type: "solfege-syllable-choice", targetNotes, solfegeSyllables: targetNotes.map(syllableOf), options };
+      };
+      if (length === 1) {
+        // Same deterministic "no repeats this attempt" filter as
+        // solfege-note-singing: pick only from notes not yet asked, so a
+        // lesson whose exercise count fits the pool never repeats a note.
+        const unused = exclude ? pool.filter((note) => !exclude.has(`solfege-syllable-choice:${note}`)) : pool;
+        const candidates = unused.length > 0 ? unused : pool;
+        const note = candidates[Math.floor(Math.random() * candidates.length)];
+        return { id: definition.id, type: "solfege-syllable-choice", targetNotes: [note], solfegeSyllables: [syllableOf(note)], options };
+      }
+      return generateWithoutRepeat(build, exclude);
     }
     case "solfege-phrase-singing": {
       // Fixed, authored content (the notes themselves come straight from

@@ -32,6 +32,7 @@ import { RhythmNotationTapExercise } from "@/components/exercises/RhythmNotation
 import { RhythmSequencingExercise } from "@/components/exercises/RhythmSequencingExercise";
 import { RhythmValueDictationExercise } from "@/components/exercises/RhythmValueDictationExercise";
 import { SolfegeNoteSingingExercise } from "@/components/exercises/SolfegeNoteSingingExercise";
+import { SolfegeSyllableChoiceExercise } from "@/components/exercises/SolfegeSyllableChoiceExercise";
 import { SolfegePhraseSingingExercise } from "@/components/exercises/SolfegePhraseSingingExercise";
 import { StaffPlacementExercise } from "@/components/exercises/StaffPlacementExercise";
 import { TriadBuildStaffChoiceExercise } from "@/components/exercises/TriadBuildStaffChoiceExercise";
@@ -700,6 +701,16 @@ export function ExerciseRenderer({ exercise, answer, onAnswerChange, checked, is
         />
       );
     }
+    case "solfege-syllable-choice":
+      return (
+        <SolfegeSyllableChoiceExercise
+          exercise={exercise}
+          answer={answer?.type === "solfege-syllable-choice" ? answer : null}
+          onAnswerChange={onAnswerChange}
+          checked={checked}
+          locale={locale}
+        />
+      );
     case "solfege-note-singing":
       return (
         <SolfegeNoteSingingExercise
@@ -759,6 +770,8 @@ export function hasAnswerToCheck(answer: AnswerInput | null): boolean {
       return answer.sequence.length > 0;
     case "melodic-rhythmic-dictation":
       return answer.notes.length > 0;
+    case "solfege-syllable-choice":
+      return answer.selectedSyllables.length > 0 && answer.selectedSyllables.every((syllable) => syllable !== null);
     case "solfege-note-singing":
       return answer.detectedFrequencyHz !== null;
     case "solfege-phrase-singing":

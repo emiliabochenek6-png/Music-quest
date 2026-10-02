@@ -163,4 +163,17 @@ describe("isAnswerCorrect", () => {
     };
     expect(isAnswerCorrect(notationTap, { type: "rhythm-notation-tap", tapTimestampsMs: [50, 540] })).toBe(true);
   });
+
+  it("checks solfege-syllable-choice by exact syllable order", () => {
+    const exercise: GeneratedExercise = {
+      id: "x",
+      type: "solfege-syllable-choice",
+      targetNotes: ["C4", "E4"],
+      solfegeSyllables: ["do", "mi"],
+      options: ["do", "re", "mi"],
+    };
+    expect(isAnswerCorrect(exercise, { type: "solfege-syllable-choice", selectedSyllables: ["do", "mi"] })).toBe(true);
+    expect(isAnswerCorrect(exercise, { type: "solfege-syllable-choice", selectedSyllables: ["mi", "do"] })).toBe(false);
+    expect(isAnswerCorrect(exercise, { type: "solfege-syllable-choice", selectedSyllables: ["do", null] })).toBe(false);
+  });
 });

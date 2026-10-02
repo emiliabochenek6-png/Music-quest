@@ -8,9 +8,17 @@ import type { WorldContent } from "@/types/exercises";
  * names every earlier world teaches (see lib/music/solfege.ts's own doc
  * on why that's a genuinely different naming system, introduced here for
  * the first time on purpose). This is also the only world whose exercises
- * read the MICROPHONE rather than just playing sound back.
+ * read the MICROPHONE rather than just playing sound back — except its
+ * first four lessons (zs-sluch-1..4), which are listening-only and need
+ * no microphone: the player hears a short C–F–G–C cadence (so "do" is
+ * heard as home), then one note or a few in a row, and names each by its
+ * syllable from buttons (solfege-syllable-choice — see components/
+ * exercises/SolfegeSyllableChoiceExercise.tsx). The button set widens
+ * lesson by lesson (do/sol → do/re/mi → do…sol → the full scale), and
+ * the lessons' own `order` is 1-4, ahead of the singing lessons' 5-11
+ * (their ids are unchanged, so saved progress still applies).
  *
- * Two exercise types, both graded the same underlying way (record via
+ * The singing lessons use two exercise types, both graded the same underlying way (record via
  * expo-audio's useAudioRecorder, analyze with lib/audio/pitchDetection.ts's
  * autocorrelation estimator, compare octave-folded — see lib/music/
  * notes.ts's octaveFoldedCentsDifference):
@@ -31,7 +39,8 @@ import type { WorldContent } from "@/types/exercises";
  *     curriculum (intervals → triads → inversions → the dominant seventh)
  *     instead, so there is no rhythm-grading content in this world at all.
  *
- * Level-by-level content, all sung as ordered sequences via
+ * Singing levels (ids zs-poziom-1..7, which the rest of this doc calls
+ * "level 1"-"level 7"), level-by-level content, all sung as ordered sequences via
  * solfege-phrase-singing (never simultaneously — this app's mic pipeline
  * is single-voice, so a "chord" here always means "sing its notes one
  * after another," i.e. arpeggiated):
@@ -127,8 +136,129 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
   worldId: "zaczarowany-solfez",
   lessons: [
     {
-      id: "zs-poziom-1-cala-gama",
+      id: "zs-sluch-1-dom-do",
       order: 1,
+      difficulty: 1,
+      pianoKeyboardReference: { range: ["C4", "C5"] },
+      introSlides: [
+        {
+          body: "Zanim zaczniesz śpiewać, nauczysz się SŁUCHAĆ. Solfeż to nazwy dźwięków: do, re, mi, fa, sol, la, si. Dźwięk „do” to taki dźwiękowy DOM — wszystkie inne dźwięki „kręcą się” wokół niego.",
+          staffNote: "C4",
+        },
+        {
+          body: "W tej lekcji poznasz dwa dźwięki: „do” (dom, spokojny) i „sol” (wyżej, jasny). Naciśnij 🔊 przy każdym z nich, tyle razy, ile chcesz.",
+          noteExamples: [
+            { note: "C4", label: "do" },
+            { note: "G4", label: "sol" },
+          ],
+        },
+        {
+          body: "Przed każdym dźwiękiem usłyszysz cztery krótkie akordy — one pokazują, gdzie jest „dom”. Potem zagra dźwięk, a Ty wskażesz jego nazwę. Możesz słuchać bez końca: 🔊 gra wszystko od początku, a „Tylko dźwięk” — samą nutę.",
+        },
+      ],
+      exercises: [
+        { id: "zs-sluch-l1-e1", type: "solfege-syllable-choice", difficulty: 1, spec: { type: "solfege-syllable-choice", notePool: ["C4", "G4"] } },
+        { id: "zs-sluch-l1-e2", type: "solfege-syllable-choice", difficulty: 1, spec: { type: "solfege-syllable-choice", notePool: ["C4", "G4"] } },
+        { id: "zs-sluch-l1-e3", type: "solfege-syllable-choice", difficulty: 1, spec: { type: "solfege-syllable-choice", notePool: ["C4", "G4"], length: 2 } },
+        { id: "zs-sluch-l1-e4", type: "solfege-syllable-choice", difficulty: 1, spec: { type: "solfege-syllable-choice", notePool: ["C4", "G4"], length: 2 } },
+        { id: "zs-sluch-l1-e5", type: "solfege-syllable-choice", difficulty: 1, spec: { type: "solfege-syllable-choice", notePool: ["C4", "G4"], length: 3 } },
+        { id: "zs-sluch-l1-e6", type: "solfege-syllable-choice", difficulty: 1, spec: { type: "solfege-syllable-choice", notePool: ["C4", "G4"], length: 3 } },
+      ],
+    },
+    {
+      id: "zs-sluch-2-do-re-mi",
+      order: 2,
+      difficulty: 1,
+      pianoKeyboardReference: { range: ["C4", "C5"] },
+      introSlides: [
+        {
+          body: "Czas na trzy pierwsze schodki gamy: do, re, mi. Każdy kolejny jest odrobinę wyżej od poprzedniego. Posłuchaj ich po kolei.",
+          noteExamples: [
+            { note: "C4", label: "do" },
+            { note: "D4", label: "re" },
+            { note: "E4", label: "mi" },
+          ],
+        },
+        {
+          body: "Wskazówka: „do” brzmi jak miejsce, w którym można odpocząć. „Mi” jest od niego dość daleko, a „re” — tuż obok. Jeśli się pogubisz, kliknij „Tylko dźwięk” i posłuchaj jeszcze raz.",
+        },
+        {
+          body: "Od teraz zdarzą się też dwa dźwięki z rzędu. Wskaż ich nazwy po kolei: kliknij pierwszą sylabę, potem drugą. Pomyłkę poprawisz, dotykając pola z sylabą.",
+        },
+      ],
+      exercises: [
+        { id: "zs-sluch-l2-e1", type: "solfege-syllable-choice", difficulty: 1, spec: { type: "solfege-syllable-choice", notePool: ["C4", "D4", "E4"] } },
+        { id: "zs-sluch-l2-e2", type: "solfege-syllable-choice", difficulty: 1, spec: { type: "solfege-syllable-choice", notePool: ["C4", "D4", "E4"] } },
+        { id: "zs-sluch-l2-e3", type: "solfege-syllable-choice", difficulty: 1, spec: { type: "solfege-syllable-choice", notePool: ["C4", "D4", "E4"] } },
+        { id: "zs-sluch-l2-e4", type: "solfege-syllable-choice", difficulty: 1, spec: { type: "solfege-syllable-choice", notePool: ["C4", "D4", "E4"], length: 2 } },
+        { id: "zs-sluch-l2-e5", type: "solfege-syllable-choice", difficulty: 1, spec: { type: "solfege-syllable-choice", notePool: ["C4", "D4", "E4"], length: 2 } },
+        { id: "zs-sluch-l2-e6", type: "solfege-syllable-choice", difficulty: 1, spec: { type: "solfege-syllable-choice", notePool: ["C4", "D4", "E4"], length: 2 } },
+      ],
+    },
+    {
+      id: "zs-sluch-3-pierwsza-piatka",
+      order: 3,
+      difficulty: 2,
+      pianoKeyboardReference: { range: ["C4", "C5"] },
+      introSlides: [
+        {
+          body: "Dokładamy dwa dźwięki: fa i sol. Teraz znasz już pierwsze pięć dźwięków gamy: do, re, mi, fa, sol. Posłuchaj ich.",
+          noteExamples: [
+            { note: "C4", label: "do" },
+            { note: "D4", label: "re" },
+            { note: "E4", label: "mi" },
+            { note: "F4", label: "fa" },
+            { note: "G4", label: "sol" },
+          ],
+        },
+        {
+          body: "Pięć dźwięków to sporo, więc słuchaj spokojnie. Dobry trik: zanim klikniesz odpowiedź, spróbuj zanucić dźwięk w myślach i zastanów się, czy jest blisko „domu” (do), czy daleko od niego.",
+        },
+      ],
+      exercises: [
+        { id: "zs-sluch-l3-e1", type: "solfege-syllable-choice", difficulty: 1, spec: { type: "solfege-syllable-choice", notePool: ["C4", "D4", "E4", "F4", "G4"] } },
+        { id: "zs-sluch-l3-e2", type: "solfege-syllable-choice", difficulty: 1, spec: { type: "solfege-syllable-choice", notePool: ["C4", "D4", "E4", "F4", "G4"] } },
+        { id: "zs-sluch-l3-e3", type: "solfege-syllable-choice", difficulty: 1, spec: { type: "solfege-syllable-choice", notePool: ["C4", "D4", "E4", "F4", "G4"] } },
+        { id: "zs-sluch-l3-e4", type: "solfege-syllable-choice", difficulty: 2, spec: { type: "solfege-syllable-choice", notePool: ["C4", "D4", "E4", "F4", "G4"], length: 2 } },
+        { id: "zs-sluch-l3-e5", type: "solfege-syllable-choice", difficulty: 2, spec: { type: "solfege-syllable-choice", notePool: ["C4", "D4", "E4", "F4", "G4"], length: 2 } },
+        { id: "zs-sluch-l3-e6", type: "solfege-syllable-choice", difficulty: 2, spec: { type: "solfege-syllable-choice", notePool: ["C4", "D4", "E4", "F4", "G4"], length: 3 } },
+      ],
+    },
+    {
+      id: "zs-sluch-4-cala-gama",
+      order: 4,
+      difficulty: 2,
+      pianoKeyboardReference: { range: ["C4", "C5"] },
+      introSlides: [
+        {
+          body: "Na koniec słuchania — cała gama: do, re, mi, fa, sol, la, si i znowu do, ale wyżej. Dwa „do” brzmią podobnie, bo to ten sam dźwięk, tylko jedno jest wyżej — dlatego oba nazywają się „do”.",
+          noteExamples: [
+            { note: "C4", label: "do" },
+            { note: "D4", label: "re" },
+            { note: "E4", label: "mi" },
+            { note: "F4", label: "fa" },
+            { note: "G4", label: "sol" },
+            { note: "A4", label: "la" },
+            { note: "B4", label: "si" },
+            { note: "C5", label: "do" },
+          ],
+        },
+        {
+          body: "Siedem sylab to dużo przycisków, ale masz je ułożone od najniższej do najwyższej, tak jak w gamie. Słuchaj tyle razy, ile potrzebujesz. Po tej lekcji będziesz gotowy, żeby zacząć śpiewać — z mikrofonem albo bez.",
+        },
+      ],
+      exercises: [
+        { id: "zs-sluch-l4-e1", type: "solfege-syllable-choice", difficulty: 1, spec: { type: "solfege-syllable-choice", notePool: ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"] } },
+        { id: "zs-sluch-l4-e2", type: "solfege-syllable-choice", difficulty: 1, spec: { type: "solfege-syllable-choice", notePool: ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"] } },
+        { id: "zs-sluch-l4-e3", type: "solfege-syllable-choice", difficulty: 1, spec: { type: "solfege-syllable-choice", notePool: ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"] } },
+        { id: "zs-sluch-l4-e4", type: "solfege-syllable-choice", difficulty: 1, spec: { type: "solfege-syllable-choice", notePool: ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"] } },
+        { id: "zs-sluch-l4-e5", type: "solfege-syllable-choice", difficulty: 2, spec: { type: "solfege-syllable-choice", notePool: ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"], length: 2 } },
+        { id: "zs-sluch-l4-e6", type: "solfege-syllable-choice", difficulty: 2, spec: { type: "solfege-syllable-choice", notePool: ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"], length: 3 } },
+      ],
+    },
+    {
+      id: "zs-poziom-1-cala-gama",
+      order: 5,
       difficulty: 1,
       pianoKeyboardReference: { range: ["C4", "C5"] },
       introSlides: [
@@ -169,7 +299,7 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
     },
     {
       id: "zs-poziom-2-do-sol",
-      order: 2,
+      order: 6,
       difficulty: 2,
       pianoKeyboardReference: { range: ["C4", "C5"] },
       introSlides: [
@@ -239,7 +369,7 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
     },
     {
       id: "zs-poziom-3-cala-gama",
-      order: 3,
+      order: 7,
       difficulty: 3,
       pianoKeyboardReference: { range: ["C4", "C5"] },
       introSlides: [
@@ -318,7 +448,7 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
     },
     {
       id: "zs-poziom-4-interwaly",
-      order: 4,
+      order: 8,
       difficulty: 3,
       pianoKeyboardReference: { range: ["C4", "C5"] },
       introSlides: [
@@ -385,7 +515,7 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
     },
     {
       id: "zs-poziom-5-trojdzwieki",
-      order: 5,
+      order: 9,
       difficulty: 4,
       pianoKeyboardReference: { range: ["C4", "E5"] },
       introSlides: [
@@ -438,7 +568,7 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
     },
     {
       id: "zs-poziom-6-przewroty",
-      order: 6,
+      order: 10,
       difficulty: 4,
       pianoKeyboardReference: { range: ["C4", "E5"] },
       introSlides: [
@@ -489,7 +619,7 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
     },
     {
       id: "zs-poziom-7-dominanta",
-      order: 7,
+      order: 11,
       difficulty: 5,
       pianoKeyboardReference: { range: ["G4", "F5"] },
       introSlides: [

@@ -235,6 +235,10 @@ export function isAnswerCorrect(exercise: GeneratedExercise, answer: AnswerInput
       const groupsCorrect = JSON.stringify(answerGroups) === JSON.stringify(canonicalGroups);
       return notesCorrect && groupsCorrect;
     }
+    case "solfege-syllable-choice": {
+      const { selectedSyllables } = answer as { selectedSyllables: (string | null)[] };
+      return selectedSyllables.length === exercise.solfegeSyllables.length && selectedSyllables.every((syllable, index) => syllable === exercise.solfegeSyllables[index]);
+    }
     case "solfege-note-singing": {
       const { detectedFrequencyHz } = answer as { detectedFrequencyHz: number | null };
       if (detectedFrequencyHz === null) return false;
