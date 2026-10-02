@@ -4,7 +4,8 @@
 // to know the Metro static export's own content-hashed bundle filenames
 // ahead of time: everything is cached OPPORTUNISTICALLY as it's actually
 // fetched, not pre-listed here.
-const CACHE_NAME = "music-quest-v1";
+// Bumped when the logo/icons changed: the old cache-first copies must not linger on returning visitors' devices.
+const CACHE_NAME = "music-quest-v2";
 
 self.addEventListener("install", (event) => {
   self.skipWaiting();

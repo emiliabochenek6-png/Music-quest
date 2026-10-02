@@ -23,7 +23,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFF8F0"
+        "backgroundColor": "#F28A1E"
       },
       "package": "com.masterquest.mobile",
       "versionCode": 1

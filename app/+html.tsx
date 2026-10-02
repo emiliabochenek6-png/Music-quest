@@ -18,6 +18,21 @@ export default function Root({ children }: PropsWithChildren) {
         <meta name="theme-color" content="#FFF8F0" />
         <meta name="description" content="Naucz się teorii muzyki, śpiewu i słuchu przez zabawę." />
 
+        {/* Link preview (Facebook, Messenger, WhatsApp, Slack, iMessage…): the logo with Soltek. */}
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Music Quest" />
+        <meta property="og:title" content="Music Quest — Śpiewaj. Wędruj. Wygrywaj." />
+        <meta property="og:description" content="Naucz się teorii muzyki, śpiewu i słuchu przez zabawę z Soltkiem." />
+        <meta property="og:url" content="https://musicquest.pl" />
+        <meta property="og:image" content="https://musicquest.pl/og-image.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content="Soltek, maskotka Music Quest, i napis Music Quest" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Music Quest — Śpiewaj. Wędruj. Wygrywaj." />
+        <meta name="twitter:description" content="Naucz się teorii muzyki, śpiewu i słuchu przez zabawę z Soltkiem." />
+        <meta name="twitter:image" content="https://musicquest.pl/og-image.png" />
+
         <link rel="manifest" href="/manifest.json" />
         <link rel="icon" href="/favicon.png" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />

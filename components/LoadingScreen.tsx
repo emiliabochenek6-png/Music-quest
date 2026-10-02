@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Animated, Easing, StyleSheet, Text, View, type LayoutChangeEvent } from "react-native";
+import { Animated, Easing, Image, StyleSheet, Text, View, type LayoutChangeEvent } from "react-native";
 import { DARK_EXERCISE_THEME } from "@/theme/darkExerciseTheme";
 
 // Matches app.json's own native splash background/adaptive-icon color
@@ -20,6 +20,8 @@ const TRACK_COLOR = DARK_EXERCISE_THEME.colors.border;
 const TRACK_HEIGHT = 8;
 const NOTE_SIZE = 30;
 const TRACK_MAX_WIDTH = 220;
+// The logo with Soltek (560x720 source), shown instead of the plain title.
+const LOGO = require("@/assets/logo/logo-pionowe-560.png");
 const BOUNCE_DURATION_MS = 1100;
 
 /** The app's own branded "please wait" screen — shown at launch while
@@ -55,7 +57,7 @@ export function LoadingScreen() {
 
   return (
     <View style={styles.root}>
-      <Text style={styles.title}>Music Quest</Text>
+      <Image source={LOGO} style={styles.logo} resizeMode="contain" accessibilityLabel="Music Quest" />
       <View style={styles.trackWrap}>
         <View onLayout={handleTrackLayout} style={styles.track} />
         <Animated.View style={[styles.note, { transform: [{ translateX }] }]}>
@@ -73,6 +75,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: BACKGROUND,
     paddingHorizontal: 48,
+  },
+  logo: {
+    width: 220,
+    height: 283,
+    marginBottom: 24,
   },
   title: {
     fontSize: 26,

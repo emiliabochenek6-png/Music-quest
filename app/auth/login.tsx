@@ -1,11 +1,14 @@
 import { useState } from "react";
-import { Pressable, Text, TextInput, View, StyleSheet } from "react-native";
+import { Image, Pressable, Text, TextInput, View, StyleSheet } from "react-native";
 import { router } from "expo-router";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { useAuth } from "@/context/AuthContext";
 import { translateAuthError } from "@/lib/supabase/authErrors";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
+
+// Rounded Music Quest icon with Soltek above the name.
+const LOGO_ICON = require("@/assets/logo/ikona-zaokraglona-256.png");
 
 type Status = { kind: "idle" } | { kind: "submitting" } | { kind: "error"; message: string } | { kind: "reset-sent" };
 
@@ -60,6 +63,7 @@ export default function LoginScreen() {
   return (
     <AuthLayout>
       <View style={styles.container}>
+        <Image source={LOGO_ICON} style={styles.logoIcon} accessibilityLabel="Music Quest" />
         <Text style={styles.brand}>Music Quest</Text>
         <Text style={styles.tagline}>Naucz się czytać nuty, rytm i słuch muzyczny — krok po kroku.</Text>
 
@@ -114,6 +118,10 @@ const styles = StyleSheet.create({
   container: {
     alignItems: "center",
     gap: 12,
+  },
+  logoIcon: {
+    width: 72,
+    height: 72,
   },
   brand: {
     fontSize: theme.fontSize.display,

@@ -21,6 +21,9 @@ import { resolveNodeState } from "@/lib/progression/resolveNodeState";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import type { WorldDefinition } from "@/types/content";
 
+// Small rounded logo icon with Soltek, next to the title.
+const LOGO_ICON = require("@/assets/logo/ikona-zaokraglona-256.png");
+
 /** The map's own background art (see assets/backgrounds's own soltek-tlo
  * source folder for the commissioned SVG/README) — a phone-portrait and a
  * laptop-landscape version, picked at runtime by aspect ratio rather than
@@ -110,6 +113,7 @@ export default function MapScreen() {
       >
         <AppIcon name="hud_menu" size={20} />
       </Pressable>
+      <Image source={LOGO_ICON} style={[styles.logoIcon, { top: insets.top + 8 }]} accessibilityLabel="Music Quest" />
       <Text style={[styles.title, { top: insets.top + 16 }]}>Music Quest</Text>
       <View style={[styles.headerBarWrap, { top: insets.top + 56 }]}>
         <GamificationHeaderBar />
@@ -163,9 +167,16 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.primary,
     opacity: 0.22,
   },
-  title: {
+  logoIcon: {
     position: "absolute",
     left: 64,
+    width: 32,
+    height: 32,
+    zIndex: 10,
+  },
+  title: {
+    position: "absolute",
+    left: 104,
     fontSize: 15,
     fontWeight: "800",
     color: theme.colors.ink,
