@@ -357,7 +357,7 @@ export const KROLESTWO_INSTRUMENTOW_CONTENT: WorldContent = {
             { imageId: "instrument_skrzypce", label: "Smyczki", caption: "z przodu" },
             { imageId: "instrument_flet", label: "Drewniane", caption: "w środku" },
             { imageId: "instrument_trabka", label: "Blaszane", caption: "z tyłu" },
-            { imageId: "instrument_kotly", label: "Perkusja", caption: "z tyłu", audioSource: SOUND.kotly },
+            { imageId: "instrument_kotly", label: "Perkusja", caption: "z tyłu" },
           ],
         },
         {
