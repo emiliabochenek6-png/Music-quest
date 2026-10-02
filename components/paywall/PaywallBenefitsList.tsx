@@ -7,6 +7,7 @@ import { GlyphText } from "@/components/icons/GlyphText";
 const BENEFIT_KEYS: TranslationKey[] = [
   "paywall.benefit.allWorlds",
   "paywall.benefit.dictation",
+  "paywall.benefit.variety",
   "paywall.benefit.noAds",
   "paywall.benefit.sync",
 ];
