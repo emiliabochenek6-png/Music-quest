@@ -5,6 +5,7 @@ import { DarkButton } from "@/components/exercises/DarkButton";
 import { AppIcon } from "@/components/icons/AppIcon";
 import type { IconName } from "@/components/icons/icons";
 import { PlanTodayCard, describeLesson } from "@/components/plan/PlanTodayCard";
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { ScreenHeader } from "@/components/ui/ScreenHeader";
 import { usePlan } from "@/context/PlanContext";
 import { useProgress } from "@/context/ProgressContext";
@@ -27,6 +28,7 @@ const WEEKDAYS = ["nd", "pn", "wt", "śr", "cz", "pt", "sb"];
  * calendar of upcoming weeks. */
 export default function PlanScreen() {
   const { plan, setMinutesPerDay, chooseOriginal } = usePlan();
+  const [confirmFullPath, setConfirmFullPath] = useState(false);
   const { progress } = useProgress();
   const todayISO = todayISODate();
   const [expandedWeeks, setExpandedWeeks] = useState<Set<number>>(new Set([1]));
@@ -164,11 +166,27 @@ export default function PlanScreen() {
 
         <View style={{ gap: theme.spacing(1.25) }}>
           <DarkButton label={plan.mode === "unset" ? "🧭 Zrób test poziomujący" : "🧭 Zrób test poziomujący ponownie"} onPress={() => router.push("/(main)/placement")} variant={plan.mode === "unset" ? "primary" : "secondary"} />
-          {plan.mode === "personal" && <DarkButton label="▶ Wróć do pełnej ścieżki od początku" onPress={() => chooseOriginal()} variant="secondary" />}
+          {plan.mode === "personal" && <DarkButton label="▶ Wróć do pełnej ścieżki od początku" onPress={() => setConfirmFullPath(true)} variant="secondary" />}
           <DarkButton label="Wróć na mapę" onPress={() => router.replace("/(main)/map")} variant="secondary" />
         </View>
         <Text style={styles.footnote}>Dni nauki w tygodniu: {STUDY_DAYS_PER_WEEK}. Plan zapisuje się na tym urządzeniu.</Text>
       </ScrollView>
+
+      {confirmFullPath && (
+        <ConfirmModal
+          title="Na pewno wrócić do pełnej ścieżki?"
+          message={
+            "Twoja dopasowana ścieżka i wynik testu poziomującego zostaną usunięte. Dostaniesz pełną ścieżkę od pierwszej lekcji i nowy harmonogram od dziś, a lekcje, które test pozwolił pominąć, znów pojawią się w planie.\n\nUkończone lekcje, gwiazdki, XP i nutki zostają. Test możesz zrobić ponownie w każdej chwili."
+          }
+          confirmLabel="Tak, wróć do pełnej ścieżki"
+          cancelLabel="Zostaję przy swoim planie"
+          onConfirm={() => {
+            setConfirmFullPath(false);
+            chooseOriginal();
+          }}
+          onCancel={() => setConfirmFullPath(false)}
+        />
+      )}
     </View>
   );
 }
