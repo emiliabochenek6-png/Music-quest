@@ -12,12 +12,13 @@ export function PaywallHero() {
   const { width, height } = useWindowDimensions();
   const portrait = width < height;
   return (
-    <View style={styles.wrap}>
+    <View style={[styles.wrap, { aspectRatio: portrait ? 3 / 2 : 16 / 5 }]}>
+      {/* Explicit 100%/100% on top of absoluteFill — see app/(main)/world/[worldId].tsx: react-native-web would otherwise draw the picture at its own pixel size. */}
       <Image
         source={portrait ? HERO_PHONE : HERO_LAPTOP}
         resizeMode="cover"
         accessibilityLabel="Soltek ze skrzynią skarbów i bossami wszystkich krain"
-        style={[styles.image, { aspectRatio: portrait ? 3 / 2 : 16 / 5 }]}
+        style={[StyleSheet.absoluteFill, { width: "100%", height: "100%" }]}
       />
     </View>
   );
@@ -30,6 +31,5 @@ export function usePaywallBackground(): string {
 }
 
 const styles = StyleSheet.create({
-  wrap: { width: "100%", alignItems: "center" },
-  image: { width: "100%" },
+  wrap: { width: "100%", overflow: "hidden" },
 });
