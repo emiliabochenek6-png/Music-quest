@@ -11,7 +11,6 @@ import { ProfileProvider } from "@/context/ProfileContext";
 import { ProgressProvider } from "@/context/ProgressContext";
 import { SubscriptionProvider } from "@/context/SubscriptionContext";
 import { ThemeProvider } from "@/theme/ThemeProvider";
-import { installWebAudioUnlock } from "@/lib/audio/player";
 import { configurePurchases } from "@/lib/subscriptions/purchases";
 
 /**
@@ -55,11 +54,6 @@ function AppShell() {
 
 export default function RootLayout() {
   useEffect(() => {
-    // Mobile browsers (reported: works on laptop, silent on phone) need
-    // the app's very first tap/touch anywhere to "unlock" audio playback
-    // before any exercise's own 🔊 button can reliably play — see
-    // installWebAudioUnlock's own doc for why. No-op on native/non-web.
-    installWebAudioUnlock();
     // react-native-purchases wraps StoreKit/Play Billing — there's no web
     // implementation to configure, and SubscriptionContext's own web
     // guard already skips every OTHER call into the SDK (see its own
