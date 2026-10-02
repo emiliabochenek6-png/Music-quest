@@ -18,7 +18,7 @@ import type { WorldContent } from "@/types/exercises";
  * the lessons' own `order` is 1-4, ahead of the singing lessons' 5-11
  * (their ids are unchanged, so saved progress still applies).
  *
- * The last three lessons (zs-melodie-1..3, orders 12-14) are short real
+ * The last five lessons (zs-melodie-1..5, orders 12-16) are short real
  * melodies and solfèges in "nagranie, potem metronom" form
  * (solfege-phrase-singing with `withMetronome`): 🔊 plays the phrase with
  * its written rhythm (synthesized piano, or a real recording if a
@@ -848,6 +848,122 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
           type: "solfege-phrase-singing",
           difficulty: 4,
           spec: { type: "solfege-phrase-singing", notes: ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"], rhythm: ["quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter"], meter: "4/4", sourceLabel: "Gama C-dur w górę, od „do” do „do”", withMetronome: true, metronomeOnly: true, bpm: 60, toleranceCents: 65 },
+        },
+      ],
+    },
+    {
+      id: "zs-melodie-4-dluzsze-melodie",
+      order: 15,
+      difficulty: 4,
+      pianoKeyboardReference: { range: ["C4", "C5"] },
+      introSlides: [
+        {
+          body: "Teraz dłuższe melodie — nawet po kilkanaście nut! Najpierw znane piosenki (m.in. „Twinkle, twinkle, little star” i „Lightly Row”), na końcu dwa własne solfeże. Wszystko nadal w C-dur i w tempie, które zdążysz zaśpiewać.",
+        },
+        {
+          body: "Każde zadanie ma dwa kroki. Najpierw posłuchaj nagrania — naciśnij 🔊 (tyle razy, ile chcesz) i śledź nuty na pięciolinii. Potem naciśnij „Śpiewaj z metronomem”: usłyszysz tylko metronom, czyli równe stuknięcia. Dwa pierwsze to odliczanie, a przy trzecim zaczynasz śpiewać razem z nim — zielona nuta pokazuje, którą śpiewasz teraz. Mikrofon nie jest tu potrzebny. To zadania „Sprawdź siebie”: nikt tu nie ocenia nagrania — sam decydujesz, czy dałeś radę, i możesz próbować, aż Ci się spodoba.",
+        },
+        {
+          body: "Wskazówka na dłuższe melodie: nie próbuj ogarnąć wszystkiego naraz. Podziel melodię na takty (oddzielone pionowymi kreskami) i śpiewaj takt po takcie — każdy takt to jedna mała frazka. Najpierw posłuchaj całości, potem poćwicz osobno pierwszy takt, potem dwa i tak dalej.",
+        },
+        {
+          body: "Za szybko? Włącz przełącznik „🐌 Wolno” — i nagranie, i metronom zwolnią. Kropka metronomu pozwala też najpierw sprawdzić samo tempo. Możesz powtarzać tyle razy, ile chcesz.",
+        },
+      ],
+      exercises: [
+        {
+          id: "zs-m4-e1",
+          type: "solfege-phrase-singing",
+          difficulty: 4,
+          spec: { type: "solfege-phrase-singing", notes: ["C4", "C4", "G4", "G4", "A4", "A4", "G4", "F4", "F4", "E4", "E4", "D4", "D4", "C4"], rhythm: ["quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "half", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "half"], meter: "4/4", isFragment: true, sourceLabel: "Fragment: „Twinkle, twinkle, little star” — melodia ludowa (1.–2. linijka)", withMetronome: true, metronomeOnly: true, bpm: 60, toleranceCents: 65 },
+        },
+        {
+          id: "zs-m4-e2",
+          type: "solfege-phrase-singing",
+          difficulty: 4,
+          spec: { type: "solfege-phrase-singing", notes: ["G4", "G4", "F4", "F4", "E4", "E4", "D4", "G4", "G4", "F4", "F4", "E4", "E4", "D4"], rhythm: ["quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "half", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "half"], meter: "4/4", isFragment: true, sourceLabel: "Fragment: „Twinkle, twinkle, little star” — melodia ludowa (3.–4. linijka)", withMetronome: true, metronomeOnly: true, bpm: 60, toleranceCents: 65 },
+        },
+        {
+          id: "zs-m4-e3",
+          type: "solfege-phrase-singing",
+          difficulty: 4,
+          spec: { type: "solfege-phrase-singing", notes: ["G4", "E4", "E4", "F4", "D4", "D4", "C4", "D4", "E4", "F4", "G4", "G4", "G4"], rhythm: ["quarter", "quarter", "half", "quarter", "quarter", "half", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "half"], meter: "4/4", isFragment: true, sourceLabel: "Fragment: „Lightly Row” — ludowa piosenka dziecięca (cała melodia)", withMetronome: true, metronomeOnly: true, bpm: 60, toleranceCents: 65 },
+        },
+        {
+          id: "zs-m4-e4",
+          type: "solfege-phrase-singing",
+          difficulty: 4,
+          spec: { type: "solfege-phrase-singing", notes: ["G4", "A4", "G4", "F4", "E4", "C4", "G4", "A4", "G4", "F4", "E4", "C4"], rhythm: ["eighth", "eighth", "eighth", "eighth", "quarter", "quarter", "eighth", "eighth", "eighth", "eighth", "quarter", "quarter"], meter: "4/4", isFragment: true, sourceLabel: "Fragment: „Panie Janie” — melodia ludowa (część z ósemkami)", withMetronome: true, metronomeOnly: true, bpm: 60, toleranceCents: 65 },
+        },
+        {
+          id: "zs-m4-e5",
+          type: "solfege-phrase-singing",
+          difficulty: 4,
+          spec: { type: "solfege-phrase-singing", notes: ["C4", "E4", "G4", "E4", "F4", "A4", "G4", "E4", "G4", "C5", "G4", "F4", "D4", "C4"], rhythm: ["quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "half", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "half"], meter: "4/4", isFragment: true, sourceLabel: "Własne dłuższe solfeże (nie fragment utworu)", withMetronome: true, metronomeOnly: true, bpm: 66, toleranceCents: 65 },
+        },
+        {
+          id: "zs-m4-e6",
+          type: "solfege-phrase-singing",
+          difficulty: 4,
+          spec: { type: "solfege-phrase-singing", notes: ["C4", "D4", "E4", "F4", "E4", "D4", "E4", "F4", "G4", "F4", "D4", "C4"], rhythm: ["quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter"], meter: "3/4", isFragment: true, sourceLabel: "Własne dłuższe solfeże (nie fragment utworu), metrum 3/4", withMetronome: true, metronomeOnly: true, bpm: 66, toleranceCents: 65 },
+        },
+      ],
+    },
+    {
+      id: "zs-melodie-5-najdluzsze",
+      order: 16,
+      difficulty: 5,
+      pianoKeyboardReference: { range: ["C4", "C5"] },
+      introSlides: [
+        {
+          body: "Ostatni poziom z melodiami: własne solfeże, jeszcze dłuższe — do kilkunastu nut, w metrum 4/4 i 3/4, z parami ósemek. Tym razem żadna nie jest znaną piosenką, więc tym uważniej śledź nuty na pięciolinii.",
+        },
+        {
+          body: "Każde zadanie ma dwa kroki. Najpierw posłuchaj nagrania — naciśnij 🔊 (tyle razy, ile chcesz) i śledź nuty na pięciolinii. Potem naciśnij „Śpiewaj z metronomem”: usłyszysz tylko metronom, czyli równe stuknięcia. Dwa pierwsze to odliczanie, a przy trzecim zaczynasz śpiewać razem z nim — zielona nuta pokazuje, którą śpiewasz teraz. Mikrofon nie jest tu potrzebny. To zadania „Sprawdź siebie”: nikt tu nie ocenia nagrania — sam decydujesz, czy dałeś radę, i możesz próbować, aż Ci się spodoba.",
+        },
+        {
+          body: "Przy dłuższych frazach pomaga oddech: nabierz powietrza na początku taktu i śpiewaj spokojnie, równo z metronomem. Jeśli się zgubisz — nic się nie stało, zacznij jeszcze raz. Dla pewności możesz najpierw zanucić całą melodię razem z nagraniem.",
+        },
+        {
+          body: "Za szybko? Włącz przełącznik „🐌 Wolno” — i nagranie, i metronom zwolnią. Kropka metronomu pozwala też najpierw sprawdzić samo tempo. Możesz powtarzać tyle razy, ile chcesz.",
+        },
+      ],
+      exercises: [
+        {
+          id: "zs-m5-e1",
+          type: "solfege-phrase-singing",
+          difficulty: 5,
+          spec: { type: "solfege-phrase-singing", notes: ["C4", "D4", "E4", "C4", "E4", "F4", "G4", "A4", "G4", "F4", "E4", "D4", "C4"], rhythm: ["quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "half", "quarter", "quarter", "quarter", "quarter", "half", "half"], meter: "4/4", isFragment: true, sourceLabel: "Własne dłuższe solfeże (nie fragment utworu)", withMetronome: true, metronomeOnly: true, bpm: 60, toleranceCents: 65 },
+        },
+        {
+          id: "zs-m5-e2",
+          type: "solfege-phrase-singing",
+          difficulty: 5,
+          spec: { type: "solfege-phrase-singing", notes: ["C4", "E4", "G4", "A4", "G4", "F4", "E4", "D4", "E4", "D4", "C4"], rhythm: ["quarter", "quarter", "quarter", "half", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter"], meter: "3/4", isFragment: true, sourceLabel: "Własne dłuższe solfeże (nie fragment utworu), metrum 3/4", withMetronome: true, metronomeOnly: true, bpm: 66, toleranceCents: 65 },
+        },
+        {
+          id: "zs-m5-e3",
+          type: "solfege-phrase-singing",
+          difficulty: 5,
+          spec: { type: "solfege-phrase-singing", notes: ["C4", "D4", "E4", "F4", "G4", "G4", "A4", "G4", "F4", "E4", "D4", "C4"], rhythm: ["eighth", "eighth", "eighth", "eighth", "quarter", "quarter", "eighth", "eighth", "eighth", "eighth", "quarter", "quarter"], meter: "4/4", isFragment: true, sourceLabel: "Własne dłuższe solfeże (nie fragment utworu)", withMetronome: true, metronomeOnly: true, bpm: 60, toleranceCents: 65 },
+        },
+        {
+          id: "zs-m5-e4",
+          type: "solfege-phrase-singing",
+          difficulty: 5,
+          spec: { type: "solfege-phrase-singing", notes: ["E4", "G4", "E4", "C4", "D4", "F4", "D4", "E4", "F4", "G4", "A4", "G4", "E4", "D4", "D4", "C4"], rhythm: ["quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "half", "eighth", "eighth", "eighth", "eighth", "quarter", "quarter", "quarter", "quarter", "half"], meter: "4/4", isFragment: true, sourceLabel: "Własne dłuższe solfeże (nie fragment utworu)", withMetronome: true, metronomeOnly: true, bpm: 60, toleranceCents: 65 },
+        },
+        {
+          id: "zs-m5-e5",
+          type: "solfege-phrase-singing",
+          difficulty: 5,
+          spec: { type: "solfege-phrase-singing", notes: ["C4", "D4", "E4", "G4", "E4", "F4", "A4", "G4", "F4", "D4", "E4", "D4", "C4"], rhythm: ["quarter", "quarter", "quarter", "half", "quarter", "quarter", "quarter", "quarter", "half", "quarter", "quarter", "quarter", "quarter"], meter: "3/4", isFragment: true, sourceLabel: "Własne dłuższe solfeże (nie fragment utworu), metrum 3/4", withMetronome: true, metronomeOnly: true, bpm: 66, toleranceCents: 65 },
+        },
+        {
+          id: "zs-m5-e6",
+          type: "solfege-phrase-singing",
+          difficulty: 5,
+          spec: { type: "solfege-phrase-singing", notes: ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5", "C5", "B4", "A4", "G4", "F4", "E4", "D4", "C4", "C4"], rhythm: ["quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "whole"], meter: "4/4", isFragment: true, sourceLabel: "Własne dłuższe solfeże (nie fragment utworu): gama w górę i w dół", withMetronome: true, metronomeOnly: true, bpm: 60, toleranceCents: 65 },
         },
       ],
     },

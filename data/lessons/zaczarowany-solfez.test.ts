@@ -48,7 +48,7 @@ describe("Zaczarowany Solfeż content", () => {
 
   it("short-melody levels (withMetronome) fill whole measures, no note crossing a barline", () => {
     const melodyLessons = ZACZAROWANY_SOLFEZ_CONTENT.lessons.filter((lesson) => lesson.id.startsWith("zs-melodie-"));
-    expect(melodyLessons).toHaveLength(3);
+    expect(melodyLessons).toHaveLength(5);
     for (const lesson of melodyLessons) {
       for (const definition of lesson.exercises) {
         const spec = definition.spec;
@@ -69,6 +69,18 @@ describe("Zaczarowany Solfeż content", () => {
           cursor += beats;
         }
         expect(cursor % measureBeats).toBe(0);
+      }
+    }
+  });
+
+  it("no short-melody exercise repeats another's exact notes and rhythm", () => {
+    const seen = new Set<string>();
+    for (const lesson of ZACZAROWANY_SOLFEZ_CONTENT.lessons.filter((l) => l.id.startsWith("zs-melodie-"))) {
+      for (const definition of lesson.exercises) {
+        if (definition.spec.type !== "solfege-phrase-singing") continue;
+        const key = `${definition.spec.notes.join(",")}|${(definition.spec.rhythm ?? []).join(",")}`;
+        expect(seen.has(key)).toBe(false);
+        seen.add(key);
       }
     }
   });
