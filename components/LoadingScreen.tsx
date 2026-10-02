@@ -25,7 +25,11 @@ const HOP_DURATION_MS = 700;
  * on purpose — nothing here tracks real progress toward a known total, and
  * a filling bar would claim one. */
 export function LoadingScreen() {
-  const { width, height } = useWindowDimensions();
+  const windowSize = useWindowDimensions();
+  // The size the screen actually got (a window that was still 0×0 when the app started would hide Soltek).
+  const [box, setBox] = useState<{ width: number; height: number } | null>(null);
+  const width = box?.width || windowSize.width;
+  const height = box?.height || windowSize.height;
   const portrait = width < height;
   const [trackWidth, setTrackWidth] = useState(0);
   const progress = useRef(new Animated.Value(0)).current;
@@ -73,7 +77,7 @@ export function LoadingScreen() {
   }
 
   return (
-    <View style={styles.root}>
+    <View style={styles.root} onLayout={(event) => setBox({ width: event.nativeEvent.layout.width, height: event.nativeEvent.layout.height })}>
       <Image source={portrait ? BACKGROUND_PHONE : BACKGROUND_LAPTOP} resizeMode="cover" style={[StyleSheet.absoluteFill, { width: "100%", height: "100%" }]} />
 
       <Animated.View style={[styles.shadow, { left: soltekLeft + soltekWidth * 0.15, top: soltekTop + soltekHeight * 0.93, width: soltekWidth * 0.7, transform: [{ scaleX: shadowScale }] }]} />
