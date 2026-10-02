@@ -9,7 +9,7 @@ const BENEFIT_KEYS: TranslationKey[] = [
   "paywall.benefit.dictation",
   "paywall.benefit.variety",
   "paywall.benefit.noAds",
-  "paywall.benefit.sync",
+  "paywall.benefit.plan",
 ];
 
 /** Concrete benefits, not marketing generalities — see ARCHITECTURE.md
