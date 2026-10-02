@@ -186,7 +186,7 @@ export default function DailyChallengeScreen() {
             <>
               <GlyphText style={{ fontSize: 34 }}>🎯</GlyphText>
               <Text style={styles.challengeTitle}>Wyzwanie dnia</Text>
-              <Text style={styles.challengeText}>Jedno pytanie z lekcji, które już zrobione. Za dobrą odpowiedź +{XP_DAILY_CHALLENGE_BONUS} XP i nutki.</Text>
+              <Text style={styles.challengeText}>Jedno pytanie z lekcji, które masz już za sobą. Za dobrą odpowiedź +{XP_DAILY_CHALLENGE_BONUS} XP i nutki.</Text>
               <DarkButton label="Wykonaj wyzwanie dnia" onPress={openChallenge} disabled={!dailyExercise} />
             </>
           )}
