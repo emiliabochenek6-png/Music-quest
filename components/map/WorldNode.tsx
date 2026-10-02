@@ -22,7 +22,7 @@ interface WorldNodeProps {
  * icons (components/icons/icons.ts) — every world now has a matching
  * "kraina_" icon, so a map node never falls back to a plain Unicode
  * emoji anymore. */
-const WORLD_ICON: Record<string, { icon: IconName }> = {
+export const WORLD_ICON: Record<string, { icon: IconName }> = {
   note: { icon: "kraina_wioska_nut" },
   metronome: { icon: "kraina_miasto_rytmu" },
   "bar-line": { icon: "kraina_przystan_taktow" },

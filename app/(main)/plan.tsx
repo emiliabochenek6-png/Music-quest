@@ -58,7 +58,7 @@ export default function PlanScreen() {
 
   return (
     <View style={styles.root}>
-      <ScreenHeader title="Twój plan" onBack={() => (router.canGoBack() ? router.back() : router.replace("/(main)/map"))} />
+      <ScreenHeader title="Tryb nauki · Twój plan" onBack={() => (router.canGoBack() ? router.back() : router.replace("/(main)/map"))} />
       <ScrollView contentContainerStyle={styles.content}>
         {plan.mode === "unset" ? (
           <PlanTodayCard showFullPlanLink={false} />
@@ -87,6 +87,8 @@ export default function PlanScreen() {
 
             <View style={styles.card}>
               <Text style={styles.cardTitle}>Jak działa Twój plan</Text>
+              <Step n="🎮" title="Tryb zabawy" text="Gra: mapa krain, lekcje w dowolnej kolejności i walki z bossami. Postępy z obu trybów liczą się razem." />
+              <Step n="📚" title="Tryb nauki (Twój plan)" text="Ścieżka lekcji ułożona dla Ciebie, dzień po dniu, z powtórkami. Przełączasz tryby na mapie, u góry." />
               <Step n="1" title="Codziennie nowa nauka" text={`Z ścieżki bierzemy następne lekcje, tyle, ile mieści się w ${plan.minutesPerDay} minutach. Pracujesz 6 dni w tygodniu, niedziela to dzień odpoczynku (tylko powtórki).`} />
               <Step n="2" title="Powtórki w odstępach" text={`Po każdej ukończonej lekcji wracamy do niej po ${REVIEW_INTERVAL_DAYS.join(", ")} dniach — kolejny odstęp dopiero po dobrej powtórce. Dziennie najwyżej 3 krótkie powtórki (5 pytań).`} />
               <Step n="3" title="Misje dnia" text="W zakładce Misje codziennie dostajesz: lekcje z planu, powtórki, wyzwanie dnia i ćwiczenie przez 10 minut." />

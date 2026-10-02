@@ -7,6 +7,7 @@ import { todayISODate } from "@/lib/gamification/activity";
 import { getLessonInfo } from "@/lib/plan/lessonIndex";
 import { buildPath } from "@/lib/plan/personalPath";
 import type { PlacementLevel } from "@/lib/plan/placement";
+import { weekdayOf } from "@/lib/plan/dates";
 import { pickTodayLessons } from "@/lib/plan/schedule";
 import { afterReview, backfillReviewLog, dueReviewIds, newReviewEntry } from "@/lib/plan/spacedRepetition";
 import type { ReviewEntry } from "@/lib/plan/spacedRepetition";
@@ -30,6 +31,10 @@ export interface PlanState {
   pathLessonIds: string[];
   reviewLog: Record<string, ReviewEntry>;
   today: TodayPlan | null;
+  /** Which of the two ways through the app the map screen shows: "fun" =
+   * "Tryb zabawy" (the game: the original world map and its bosses) or
+   * "plan" = "Tryb nauki" / "Twój plan" (the personal path, lesson by lesson). */
+  view: "fun" | "plan";
 }
 
 const DEFAULT_PLAN: PlanState = {
@@ -41,6 +46,7 @@ const DEFAULT_PLAN: PlanState = {
   pathLessonIds: [],
   reviewLog: {},
   today: null,
+  view: "fun",
 };
 
 interface PlanContextValue {
@@ -51,6 +57,8 @@ interface PlanContextValue {
   /** Builds the personal path from a finished placement test. */
   applyPlacement: (levels: Record<string, PlacementLevel>, minutesPerDay?: number) => void;
   setMinutesPerDay: (minutes: number) => void;
+  /** Switches the map screen between "Tryb zabawy" and "Tryb nauki" ("Twój plan"). */
+  setView: (view: "fun" | "plan") => void;
   /** Call when a lesson is finished: starts its spaced-repetition clock. */
   onLessonCompleted: (lessonId: string) => void;
   /** Call when a review round of `lessonId` ends, with its share of correct answers (0-1). */
@@ -63,7 +71,8 @@ function buildTodaySnapshot(plan: PlanState, completed: ReadonlySet<string>, tod
   const path = plan.pathLessonIds.map((lessonId) => ({ lessonId, minutes: getLessonInfo(lessonId)?.minutes ?? 8 }));
   return {
     dateISO: todayISO,
-    lessonIds: pickTodayLessons(path, (id) => completed.has(id), plan.minutesPerDay),
+    // Sunday is a rest day: no new lessons, only reviews (see the plan screen's own description).
+    lessonIds: weekdayOf(todayISO) === 0 ? [] : pickTodayLessons(path, (id) => completed.has(id), plan.minutesPerDay),
     reviewIds: dueReviewIds(plan.reviewLog, todayISO, MAX_REVIEWS_PER_DAY),
   };
 }
@@ -128,6 +137,8 @@ export function PlanProvider({ children }: { children: ReactNode }) {
         placementTakenISO: mode === "personal" ? todayISODate() : plan.placementTakenISO,
         pathLessonIds: path,
         today: null,
+        // A fresh test result lands the player on their new personal path; "zacznij od początku" keeps the original map.
+        view: mode === "personal" ? "plan" : "fun",
       };
       persist({ ...base, today: buildTodaySnapshot(base, progress.completedLessonIds, todayISODate()) });
     }
@@ -140,6 +151,7 @@ export function PlanProvider({ children }: { children: ReactNode }) {
         const base: PlanState = { ...plan, minutesPerDay: minutes };
         persist({ ...base, today: plan.mode === "unset" ? null : buildTodaySnapshot(base, progress.completedLessonIds, todayISODate()) });
       },
+      setView: (view) => persist({ ...plan, view }),
       onLessonCompleted: (lessonId) => {
         setPlan((prev) => {
           if (prev.reviewLog[lessonId]) return prev;

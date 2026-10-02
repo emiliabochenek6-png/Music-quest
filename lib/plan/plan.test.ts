@@ -3,6 +3,7 @@ import { WORLDS } from "@/data/worlds";
 import { getWorldContent } from "@/data/lessons";
 import { addDays, daysBetween, formatShortPolishDate, weekdayOf } from "@/lib/plan/dates";
 import { buildPath, lessonIndexesToKeep } from "@/lib/plan/personalPath";
+import { buildPathView } from "@/lib/plan/pathView";
 import {
   applyPlacementAnswer,
   completeLevels,
@@ -298,5 +299,32 @@ describe("Soltek's placement lines", () => {
     expect(placementResultLine(0, 12, 208, 208).message).toContain("od podstaw");
     expect(placementResultLine(10, 12, 62, 208).message).toContain("62 z 208");
     expect(placementResultLine(2, 12, 150, 208).message).toContain("150 z 208");
+  });
+});
+
+describe("path view", () => {
+  const ids = ["a", "b", "c", "d", "e", "f"];
+  const base = { pathLessonIds: ids, minutesPerDay: 16, minutesOf: () => 8 };
+
+  it("shows today's lessons first (even finished ones), then the rest on later study days", () => {
+    const view = buildPathView({ ...base, completedLessonIds: new Set(["a"]), todayLessonIds: ["b", "c"], todayISO: "2026-10-05" });
+    expect(view.days[0]).toMatchObject({ dateISO: "2026-10-05", isToday: true, lessonIds: ["b", "c"] });
+    expect(view.days.slice(1).flatMap((day) => day.lessonIds)).toEqual(["d", "e", "f"]);
+    expect(view.days.slice(1).every((day) => !day.isToday && day.dateISO > "2026-10-05")).toBe(true);
+    expect(view.doneCount).toBe(1);
+    expect(view.totalCount).toBe(6);
+  });
+
+  it("drops lessons completed earlier and has no today block when nothing is planned for today", () => {
+    const view = buildPathView({ ...base, completedLessonIds: new Set(["a", "b"]), todayLessonIds: [], todayISO: "2026-10-04" }); // a Sunday
+    expect(view.days.every((day) => !day.isToday)).toBe(true);
+    expect(view.days.flatMap((day) => day.lessonIds)).toEqual(["c", "d", "e", "f"]);
+    expect(view.days[0].dateISO).toBe("2026-10-05");
+  });
+
+  it("is empty once the whole path is done", () => {
+    const view = buildPathView({ ...base, completedLessonIds: new Set(ids), todayLessonIds: [], todayISO: "2026-10-05" });
+    expect(view.days).toEqual([]);
+    expect(view.doneCount).toBe(6);
   });
 });

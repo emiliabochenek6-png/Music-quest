@@ -38,7 +38,7 @@ export default function SettingsScreen() {
       </View>
 
       <Pressable onPress={() => router.push("/(main)/plan")} style={styles.row}>
-        <Text style={{ color: theme.colors.ink, fontSize: theme.fontSize.body }}>Twój plan</Text>
+        <Text style={{ color: theme.colors.ink, fontSize: theme.fontSize.body }}>Tryb nauki — Twój plan</Text>
         <Text style={{ color: theme.colors.muted }}>›</Text>
       </Pressable>
 

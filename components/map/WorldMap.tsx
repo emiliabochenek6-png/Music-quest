@@ -52,7 +52,7 @@ export function WorldMap({ progress, subscription, lessonStars, onSelectWorld }:
       // plus a progress bar) reaches roughly insets.top + 110, overlapping
       // the FIRST world node right under it. +128 clears that with a
       // little room to spare.
-      contentContainerStyle={{ paddingTop: insets.top + 128, paddingBottom: insets.bottom + 40, alignItems: "center" }}
+      contentContainerStyle={{ paddingTop: insets.top + 176, paddingBottom: insets.bottom + 40, alignItems: "center" }}
       showsVerticalScrollIndicator={false}
     >
       {/* Fixed PATH_WIDTH (not "100%") so this column — the SVG path

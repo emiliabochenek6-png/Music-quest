@@ -44,7 +44,7 @@ export function PlanTodayCard({ showFullPlanLink = true }: { showFullPlanLink?: 
   if (plan.mode === "unset") {
     return (
       <View style={styles.card}>
-        <Text style={styles.title}>🧭 Twój plan nauki</Text>
+        <Text style={styles.title}>📚 Tryb nauki · Twój plan</Text>
         <Text style={styles.muted}>Zrób test poziomujący albo zacznij od początku — wtedy codziennie dostaniesz zaplanowane lekcje i powtórki.</Text>
         <DarkButton label="Wybierz, jak zacząć" onPress={() => router.push("/(main)/placement")} />
       </View>
@@ -52,7 +52,8 @@ export function PlanTodayCard({ showFullPlanLink = true }: { showFullPlanLink?: 
   }
 
   const status = getTodayStatus(plan.today, todayISO, progress.completedLessonIds, plan.reviewLog);
-  const allDone = status.lessons.every((l) => l.done) && status.reviews.every((r) => r.done);
+  const lessonsDone = status.lessons.length > 0 && status.lessons.every((l) => l.done);
+  const reviewsPending = status.reviews.some((r) => !r.done);
   const nothingPlanned = status.lessons.length === 0 && status.reviews.length === 0;
 
   return (
@@ -86,7 +87,7 @@ export function PlanTodayCard({ showFullPlanLink = true }: { showFullPlanLink?: 
           {!item.done && <MiniButton label="Powtórz" onPress={() => openReview(item.lessonId)} />}
         </View>
       ))}
-      {!nothingPlanned && allDone && <Text style={styles.success}>Plan na dziś wykonany — świetna robota! 🎉</Text>}
+      {lessonsDone && <Text style={styles.success}>🎉 Gratulacje! Wykonałeś wszystkie zaplanowane lekcje na dziś.{reviewsPending ? " Zostały jeszcze powtórki." : ""}</Text>}
     </View>
   );
 }

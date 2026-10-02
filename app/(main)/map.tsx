@@ -8,6 +8,8 @@ import { AppIcon } from "@/components/icons/AppIcon";
 import { WorldMap } from "@/components/map/WorldMap";
 import { SideMenu } from "@/components/SideMenu";
 import { SideMenuContent } from "@/components/SideMenuContent";
+import { ModeSwitch } from "@/components/plan/ModeSwitch";
+import { PlanPath } from "@/components/plan/PlanPath";
 import { PlanPromptModal } from "@/components/plan/PlanPromptModal";
 import { SoltekWelcomeModal } from "@/components/SoltekWelcomeModal";
 import { useGamification } from "@/context/GamificationContext";
@@ -53,7 +55,7 @@ export default function MapScreen() {
   const { status } = useSubscription();
   const { state: gamification } = useGamification();
   const { profile, isLoading: isProfileLoading, setHasSeenSoltekGreeting } = useProfile();
-  const { plan, isLoading: isPlanLoading, chooseOriginal } = usePlan();
+  const { plan, isLoading: isPlanLoading, chooseOriginal, setView } = usePlan();
   const [sideMenuOpen, setSideMenuOpen] = useState(false);
   // Not loading AND not-yet-seen — reading `profile` before it's finished
   // loading would show the modal for a returning player too, for the one
@@ -112,7 +114,15 @@ export default function MapScreen() {
       <View style={[styles.headerBarWrap, { top: insets.top + 56 }]}>
         <GamificationHeaderBar />
       </View>
-      <WorldMap progress={progress} subscription={status} lessonStars={gamification.lessonStars} onSelectWorld={handleSelectWorld} />
+      {plan.view === "plan" ? (
+        <PlanPath />
+      ) : (
+        <WorldMap progress={progress} subscription={status} lessonStars={gamification.lessonStars} onSelectWorld={handleSelectWorld} />
+      )}
+      {/* Above both views: "Tryb zabawy" (world map: the game, bosses) / "Tryb nauki" (Twój plan: personal path). */}
+      <View style={[styles.switchWrap, { top: insets.top + 118 }]}>
+        <ModeSwitch view={plan.view} onChange={setView} />
+      </View>
 
       <BottomTabBar />
 
@@ -161,6 +171,13 @@ const styles = StyleSheet.create({
     color: theme.colors.ink,
     letterSpacing: 0.4,
     zIndex: 10,
+  },
+  switchWrap: {
+    position: "absolute",
+    left: 16,
+    right: 16,
+    zIndex: 10,
+    alignItems: "center",
   },
   headerBarWrap: {
     position: "absolute",

@@ -16,7 +16,9 @@ import { getWorldContent } from "@/data/lessons";
 import { getNextWorld, getWorldById } from "@/data/worlds";
 import { ExerciseAccentProvider } from "@/context/ExerciseAccentContext";
 import { useGamification } from "@/context/GamificationContext";
+import { describeLesson } from "@/components/plan/PlanTodayCard";
 import { usePlan } from "@/context/PlanContext";
+import { getLessonInfo } from "@/lib/plan/lessonIndex";
 import { useProgress } from "@/context/ProgressContext";
 import { useSubscription } from "@/context/SubscriptionContext";
 import { useSessionTimer } from "@/hooks/useSessionTimer";
@@ -134,9 +136,13 @@ export default function LessonScreen() {
   const { worldId } = useLocalSearchParams<{ worldId: string }>();
   const world = getWorldById(worldId);
   const accentOverride = world && WORLD_LESSON_THEME[world.mapIconId] ? world.accentColor : null;
+  // Keyed by lesson so "next lesson of the day" (a replace to this same
+  // route with another lessonId) starts a clean screen instead of reusing
+  // the finished one's state.
+  const { lessonId: lessonKey } = useLocalSearchParams<{ lessonId: string }>();
   return (
     <ExerciseAccentProvider color={accentOverride}>
-      <LessonScreenBody />
+      <LessonScreenBody key={lessonKey} />
     </ExerciseAccentProvider>
   );
 }
@@ -145,7 +151,7 @@ function LessonScreenBody() {
   const { lessonId, worldId } = useLocalSearchParams<{ lessonId: string; worldId: string }>();
   const insets = useSafeAreaInsets();
   const { progress, markLessonCompleted, markWorldCompleted } = useProgress();
-  const { onLessonCompleted } = usePlan();
+  const { plan, onLessonCompleted } = usePlan();
   const { state: gamificationState, getHeartsInfo, loseHeart, gainHearts, awardXp, addNutki, recordLessonStars, recordActivity } =
     useGamification();
   const introModeEnabled = gamificationState.introModeEnabledByWorld[worldId] ?? true;
@@ -514,6 +520,13 @@ function LessonScreenBody() {
     advanceOrFinish();
   }
 
+  // Study plan: what's left of today's planned lessons once this one is done.
+  const todayPlanIds = plan.today?.dateISO === todayISODate() ? plan.today.lessonIds : [];
+  const doneIncludingThis = new Set([...progress.completedLessonIds, lessonId]);
+  const nextTodayLessonId = todayPlanIds.find((id) => id !== lessonId && !doneIncludingThis.has(id)) ?? null;
+  const todayPlanDone = todayPlanIds.includes(lessonId) && nextTodayLessonId === null;
+  const fromPlan = plan.view === "plan" && plan.pathLessonIds.includes(lessonId);
+
   if (isFinished) {
     return (
       <>
@@ -525,7 +538,19 @@ function LessonScreenBody() {
           isPerfect={isPerfectRun}
           accentHex={world.accentColor}
           backgroundColor={screenBackgroundColor}
-          onExit={goBackToLevels}
+          // Opened from the study plan → back to the plan (map in "Tryb nauki"), not the world's level list.
+          onExit={fromPlan ? () => router.replace("/(main)/map") : goBackToLevels}
+          exitLabel={fromPlan ? "Wróć do planu" : t("lesson.backToLevels", "pl")}
+          nextTodayLessonLabel={nextTodayLessonId ? describeLesson(nextTodayLessonId) : null}
+          onNextTodayLesson={
+            nextTodayLessonId
+              ? () => {
+                  const info = getLessonInfo(nextTodayLessonId);
+                  if (info) router.replace({ pathname: "/(main)/lesson/[lessonId]", params: { lessonId: nextTodayLessonId, worldId: info.worldId } });
+                }
+              : undefined
+          }
+          todayPlanDone={todayPlanDone}
         />
         <WorldCompleteModal
           visible={showWorldComplete}
@@ -785,7 +810,16 @@ function LessonSummary({
   accentHex,
   backgroundColor,
   onExit,
+  nextTodayLessonLabel,
+  onNextTodayLesson,
+  todayPlanDone,
+  exitLabel,
 }: {
+  exitLabel: string;
+  nextTodayLessonLabel: string | null;
+  onNextTodayLesson?: () => void;
+  /** True when this lesson was the last unfinished one of today's study plan. */
+  todayPlanDone: boolean;
   mistakeCount: number;
   totalExercises: number;
   stars: 1 | 2 | 3;
@@ -820,8 +854,21 @@ function LessonSummary({
           ? `Poprawnych: ${timedTestResult.correctCount}, błędnych: ${timedTestResult.totalCount - timedTestResult.correctCount}`
           : `${totalExercises - mistakeCount}/${totalExercises} poprawnie za pierwszym razem`}
       </Text>
-      <View style={{ marginTop: theme.spacing(2), width: "100%" }}>
-        <DarkButton label={t("lesson.backToLevels", "pl")} onPress={onExit} />
+      {todayPlanDone && (
+        <View style={[styles.perfectBadge, { borderColor: theme.colors.success, paddingHorizontal: 14, paddingVertical: 10 }]}>
+          <Text style={{ color: theme.colors.success, fontWeight: "800", fontSize: 14, textAlign: "center" }}>
+            🎉 Gratulacje! Wykonałeś wszystkie zaplanowane lekcje na dziś.
+          </Text>
+        </View>
+      )}
+      <View style={{ marginTop: theme.spacing(2), width: "100%", gap: theme.spacing(1.25) }}>
+        {onNextTodayLesson && nextTodayLessonLabel && (
+          <>
+            <Text style={{ color: theme.colors.muted, textAlign: "center", fontSize: 12.5 }}>Następna w planie na dziś: {nextTodayLessonLabel}</Text>
+            <DarkButton label="Przejdź do następnej lekcji dnia ›" onPress={onNextTodayLesson} />
+          </>
+        )}
+        <DarkButton label={exitLabel} onPress={onExit} variant={onNextTodayLesson ? "secondary" : "primary"} />
       </View>
     </View>
   );
