@@ -43,7 +43,7 @@ export const LABIRYNT_TONACJI_CONTENT: WorldContent = {
       difficulty: 1,
       introSlides: [
         {
-          body: "Koło kwintowe to zegar tonacji: C-dur na górze, a idąc w prawo (zgodnie z ruchem wskazówek zegara) o jedną kwintę, dodajemy jeden krzyżyk. C-dur → G-dur (1 krzyżyk) → D-dur (2) → A-dur (3) → E-dur (4) → H-dur (5). Kliknij, żeby usłyszeć zasadę — teraz przećwiczysz krok po kroku tę stronę krzyżykową. Każda tonacja durowa ma swoją gamę molową równoległą — leży o tercję małą niżej i ma ten sam znak przykluczowy (np. a-moll dla C-dur, e-moll dla G-dur).",
+          body: "Koło kwintowe to zegar tonacji: C-dur na górze, a idąc w prawo (zgodnie z ruchem wskazówek zegara) o jedną kwintę, dodajemy jeden krzyżyk. C-dur → G-dur (1 krzyżyk) → D-dur (2) → A-dur (3) → E-dur (4) → H-dur (5). Teraz przećwiczysz krok po kroku tę stronę krzyżykową. Każda tonacja durowa ma swoją gamę molową równoległą — leży o tercję małą niżej i ma ten sam znak przykluczowy (np. a-moll dla C-dur, e-moll dla G-dur).",
           circleHighlight: { fifths: 0 },
         },
       ],
@@ -99,7 +99,7 @@ export const LABIRYNT_TONACJI_CONTENT: WorldContent = {
           difficulty: 2,
           spec: {
             type: "key-fact-choice",
-            prompt: "Ile znaków przykluczowych i jakich mają gamy równoległe D-dur i h-moll?",
+            prompt: "Ile znaków przykluczowych mają gamy równoległe D-dur i h-moll?",
             hint: "Kolejność dodawania krzyżyków na kole kwintowym to: fis, cis, gis, dis, ais, eis, his.",
             options: ["1 krzyżyk", "2 krzyżyki", "3 krzyżyki", "2 bemole"],
             correctOptionIndex: 1,
@@ -139,7 +139,7 @@ export const LABIRYNT_TONACJI_CONTENT: WorldContent = {
           spec: {
             type: "key-fact-choice",
             prompt: "Która para gam równoległych posiada 4 bemole (b, es, as, des)?",
-            hint: "Czwarty bemol (des) wyznacza tonację durową o krok wcześniej na kole kwintowym (przedostatni bemol to nazwa gamy durowej).",
+            hint: "Przy czterech bemolach (b, es, as, des) nazwę gamy durowej podaje przedostatni bemol, czyli as. To As-dur.",
             options: ["As-dur i f-moll", "Des-dur i b-moll", "Es-dur i c-moll", "As-dur i c-moll"],
             correctOptionIndex: 0,
             explanation: "Przedostatni bemol z czterech (b, es, as, des) wskazuje na gamę As-dur. Jej równoległą jest f-moll.",
@@ -220,7 +220,7 @@ export const LABIRYNT_TONACJI_CONTENT: WorldContent = {
           spec: {
             type: "key-fact-choice",
             prompt: "Jaka gama równoległa odpowiada gamie Ges-dur i ile ma znaków przykluczowych?",
-            hint: "Ges-dur to najdalsza tonacja durowa po stronie bemolowej — ma aż 6 bemoli. Zejdź o tercję małą w dół od dźwięku Ges.",
+            hint: "Ges-dur to tonacja z aż 6 bemolami, prawie na samym końcu koła po stronie bemolowej. Zejdź o tercję małą w dół od dźwięku Ges.",
             options: ["es-moll, 6 bemoli", "b-moll, 6 bemoli", "es-moll, 5 bemoli", "dis-moll, 6 krzyżyków"],
             correctOptionIndex: 0,
             explanation: "Ges-dur i es-moll to gamy równoległe posiadające 6 bemoli (b, es, as, des, ges, ces).",
@@ -233,7 +233,7 @@ export const LABIRYNT_TONACJI_CONTENT: WorldContent = {
           spec: {
             type: "key-fact-choice",
             prompt: "Jaka gama równoległa odpowiada gamie Fis-dur i ile ma znaków przykluczowych?",
-            hint: "Fis-dur to najdalsza tonacja durowa po stronie krzyżykowej — ma aż 6 krzyżyków. Zejdź o tercję małą w dół od dźwięku Fis, pamiętając o podwyższonym dźwięku (dis, a nie d).",
+            hint: "Fis-dur to tonacja z aż 6 krzyżykami, prawie na samym końcu koła po stronie krzyżykowej. Zejdź o tercję małą w dół od dźwięku Fis, pamiętając o podwyższonym dźwięku (dis, a nie d).",
             options: ["dis-moll, 6 krzyżyków", "d-moll, 6 krzyżyków", "dis-moll, 5 krzyżyków", "es-moll, 6 bemoli"],
             correctOptionIndex: 0,
             explanation: "Fis-dur i dis-moll to gamy równoległe posiadające 6 krzyżyków (fis, cis, gis, dis, ais, eis).",
@@ -247,7 +247,7 @@ export const LABIRYNT_TONACJI_CONTENT: WorldContent = {
       difficulty: 2,
       introSlides: [
         {
-          body: "Każda tonacja durowa ma swoją tonację pokrewną (równoległą) molową — leżą na tym samym „promieniu” koła kwintowego, bo mają ten sam znak przykluczowy. C-dur i a-moll (0 znaków), G-dur i e-moll (1 krzyżyk), F-dur i d-moll (1 bemol). Zapamiętaj: tonacja molowa to tercja mała poniżej swojej durowej pary.",
+          body: "Każda tonacja durowa ma swoją tonację równoległą molową — leżą na tym samym „promieniu” koła kwintowego, bo mają ten sam znak przykluczowy. C-dur i a-moll (0 znaków), G-dur i e-moll (1 krzyżyk), F-dur i d-moll (1 bemol). Zapamiętaj: tonacja molowa to tercja mała poniżej swojej durowej pary.",
           circleHighlight: { fifths: 0 },
         },
       ],
@@ -343,7 +343,7 @@ export const LABIRYNT_TONACJI_CONTENT: WorldContent = {
       difficulty: 2,
       introSlides: [
         {
-          body: "Dedykowana lekcja tonacji równoległych — klikasz na kole sektor pasujący do podanej tonacji, czasem durowej, czasem molowej.",
+          body: "Dedykowana lekcja tonacji równoległych — klikasz na kole tonację równoległą do podanej, czasem durowej, czasem molowej.",
           circleHighlight: { fifths: 0 },
         },
       ],
@@ -401,7 +401,7 @@ export const LABIRYNT_TONACJI_CONTENT: WorldContent = {
       difficulty: 3,
       introSlides: [
         {
-          body: "Powrót do kroków po kole kwintowym — tym razem bez podpowiedzi kierunku. Czasem o kwintę w prawo (więcej krzyżyków), czasem w lewo (więcej bemoli) — musisz sam rozpoznać, w którą stronę patrzysz.",
+          body: "Powrót do kroków po kole kwintowym — tym razem bez podpowiedzi kierunku. Czasem o kwintę w prawo (zgodnie z ruchem wskazówek zegara), czasem w lewo (przeciwnie do ruchu wskazówek). Uważaj: po stronie krzyżyków ruch w prawo dodaje krzyżyk, a po stronie bemoli ruch w prawo odejmuje bemol.",
           circleHighlight: { fifths: 0 },
         },
       ],

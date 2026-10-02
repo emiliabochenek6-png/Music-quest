@@ -152,7 +152,7 @@ export const KROLESTWO_INSTRUMENTOW_CONTENT: WorldContent = {
           ],
         },
         {
-          body: "Większość z nich ma stroik — cienką płytkę z trzciny, która drga, kiedy dmuchamy, i tworzy dźwięk. Tylko flet nie ma stroika: dmuchamy w otwór z boku, trochę jak w butelkę.",
+          body: "Większość z nich ma stroik — cienką płytkę z trzciny, która drga, kiedy dmuchamy, i tworzy dźwięk. Spośród tych instrumentów tylko flet nie ma stroika: dmuchamy w otwór z boku, trochę jak w butelkę.",
         },
         {
           body: "Pamiętaj: im dłuższa rura, tym niższy dźwięk. Flet brzmi najwyżej, obój i klarnet niżej, a najdłuższy fagot — najniżej. Jest też saksofon: z metalu, ale z jednym stroikiem, więc też należy do drewnianych dętych.",
@@ -160,8 +160,8 @@ export const KROLESTWO_INSTRUMENTOW_CONTENT: WorldContent = {
         },
       ],
       exercises: [
-        fact("ki-l3-e1", 1, "Ten długi, srebrny instrument trzymamy poziomo i dmuchamy w otwór z boku. To…", ["Flet poprzeczny", "Klarnet", "Trąbka", "Obój"], 0, "To flet poprzeczny. Jest jedynym z drewnianych dętych bez stroika.", { imageId: "instrument_flet", abcd: true }),
-        fact("ki-l3-e2", 1, "Czarna rura z klapkami i szerokim lejkiem na końcu. Który to instrument?", ["Obój", "Klarnet", "Fagot"], 1, "To klarnet. Ma pojedynczy stroik, który drga w ustniku.", { imageId: "instrument_klarnet" }),
+        fact("ki-l3-e1", 1, "Ten długi, srebrny instrument trzymamy poziomo i dmuchamy w otwór z boku. To…", ["Flet poprzeczny", "Klarnet", "Trąbka", "Obój"], 0, "To flet poprzeczny. Z tych czterech jest jedynym bez stroika.", { imageId: "instrument_flet", abcd: true }),
+        fact("ki-l3-e2", 1, "Czarna rura z klapkami, z ustnikiem i szerokim lejkiem na końcu. Który to instrument?", ["Obój", "Klarnet", "Fagot"], 1, "To klarnet. Ma pojedynczy stroik, który drga w ustniku.", { imageId: "instrument_klarnet" }),
         fact("ki-l3-e3", 1, "Cienki, ciemny instrument z podwójnym stroikiem. Gra dźwięk „a”, według którego stroi się cała orkiestra. To…", ["Fagot", "Flet", "Obój"], 2, "To obój — jego dźwięk „a” słychać na początku koncertu, kiedy orkiestra stroi instrumenty.", { imageId: "instrument_oboj" }),
         fact("ki-l3-e4", 1, "Największy z drewnianych dętych: rura jest tak długa, że złożono ją na pół. Gra najniżej. To…", ["Klarnet", "Fagot", "Saksofon"], 1, "To fagot. Długa rura daje niski dźwięk.", { imageId: "instrument_fagot" }),
         fact("ki-l3-e5", 2, "Saksofon jest z metalu, a mimo to należy do drewnianych dętych. Dlaczego?", ["Bo gra się na nim smyczkiem", "Bo ma stroik", "Bo uderzamy w niego pałeczkami", "Bo ma struny"], 1, "Saksofon ma stroik, tak jak klarnet — dlatego zaliczamy go do drewnianych dętych.", { imageId: "instrument_saksofon", abcd: true }),
@@ -190,14 +190,14 @@ export const KROLESTWO_INSTRUMENTOW_CONTENT: WorldContent = {
           ],
         },
         {
-          body: "Jak zmieniać dźwięki? Na trąbce naciska się wentyle, a na puzonie wysuwa i wsuwa suwak — dzięki temu rura robi się dłuższa lub krótsza. Róg ma rurę zwiniętą w kółko, a tuba jest największa i brzmi najniżej.",
+          body: "Jak zmieniać dźwięki? Na trąbce naciska się wentyle, a na puzonie wysuwa i wsuwa suwak — dzięki temu rura robi się dłuższa lub krótsza. Róg ma rurę zwiniętą w kółko, a muzyk wkłada dłoń do jego czary. Tuba jest największa i brzmi najniżej.",
         },
       ],
       exercises: [
         fact("ki-l4-e1", 1, "Ten błyszczący instrument ma trzy wentyle i gra najwyżej z blaszanych. To…", ["Puzon", "Trąbka", "Tuba"], 1, "To trąbka — najmniejsza i najwyżej grająca z instrumentów blaszanych.", { imageId: "instrument_trabka" }),
         fact("ki-l4-e2", 1, "Który blaszany instrument ma suwak, który się wysuwa i wsuwa?", ["Trąbka", "Róg", "Puzon"], 2, "To puzon. Suwak zmienia długość rury, a więc i wysokość dźwięku.", { imageId: "instrument_puzon" }),
         fact("ki-l4-e3", 1, "Największy blaszany instrument, który gra najniżej. To…", ["Tuba", "Trąbka", "Róg", "Puzon"], 0, "To tuba. Im dłuższa rura, tym niższy dźwięk.", { imageId: "instrument_tuba", abcd: true }),
-        fact("ki-l4-e4", 1, "Rura tego instrumentu jest zwinięta w kółko. To…", ["Trąbka", "Róg", "Tuba"], 1, "To róg (nazywany też francuskim). Zwinięta rura jest bardzo długa.", { imageId: "instrument_rog" }),
+        fact("ki-l4-e4", 1, "Muzyk wkłada dłoń do czary tego instrumentu, a jego rura jest zwinięta w kółko. To…", ["Trąbka", "Róg", "Tuba"], 1, "To róg (nazywany też francuskim). Zwinięta rura jest bardzo długa.", { imageId: "instrument_rog" }),
         fact("ki-l4-e5", 1, "Z czego robi się instrumenty blaszane?", ["Z drewna", "Z metalu", "Ze szkła"], 1, "Z metalu — mosiądzu — stąd nazwa „blaszane”."),
         fact("ki-l4-e6", 1, "Jak powstaje dźwięk w instrumentach blaszanych?", ["Dmuchamy w ustnik i drgają nasze wargi", "Szarpiemy struny", "Uderzamy pałeczkami", "Naciskamy klawisze"], 0, "Dmuchamy w ustnik, a wargi drgają i wprawiają w drganie powietrze w rurze.", { abcd: true }),
         fact("ki-l4-e7", 1, "Który z blaszanych instrumentów gra najwyżej?", ["Tuba", "Puzon", "Trąbka"], 2, "Najwyżej gra trąbka — ma najkrótszą rurę.", { optionImageIds: ["instrument_tuba", "instrument_puzon", "instrument_trabka"] }),
@@ -238,7 +238,7 @@ export const KROLESTWO_INSTRUMENTOW_CONTENT: WorldContent = {
         fact("ki-l5-e7", 1, "Czym gra się na instrumentach perkusyjnych?", ["Smyczkiem", "Pałeczkami lub uderzając rękami", "Dmuchając"], 1, "Na perkusji gra się uderzając."),
         fact("ki-l5-e8", 2, "Który z tych instrumentów stroi się, żeby grał określone dźwięki?", ["Kotły", "Werbel", "Trójkąt"], 0, "Kotły — zmienia się napięcie skóry, żeby zagrały właściwy dźwięk.", { optionImageIds: ["instrument_kotly", "instrument_werbel", "instrument_trojkat"] }),
         fact("ki-l5-e9", 1, "Czy perkusja to tylko bębny?", ["Tak, tylko bębny", "Nie — to też ksylofon, talerze i trójkąt", "Nie — to też skrzypce"], 1, "Perkusja to wszystkie instrumenty, w które uderzamy: bębny, talerze, trójkąt, ksylofon i wiele innych."),
-        fact("ki-l5-e10", 1, "Posłuchaj: krótki, drewniany, dźwięczny dźwięk. Który to instrument?", ["Ksylofon", "Fagot", "Kotły"], 0, "To ksylofon — drewniane płytki dają krótki, stukający dźwięk.", { referenceAudioSource: SOUND.ksylofon }),
+        fact("ki-l5-e10", 1, "Posłuchaj: krótki, drewniany i dźwięczny odgłos. Który to instrument?", ["Ksylofon", "Fagot", "Kotły"], 0, "To ksylofon — drewniane płytki dają krótki, stukający dźwięk.", { referenceAudioSource: SOUND.ksylofon }),
         fact("ki-l5-e12", 1, "Posłuchaj: suchy, rytmiczny dźwięk jak w marszu. Który to instrument?", ["Ksylofon", "Werbel", "Trójkąt"], 1, "To werbel — mały bęben ze „struną” pod spodem, która nadaje mu trzeszczące brzmienie.", { referenceAudioSource: SOUND.werbel }),
         fact("ki-l5-e13", 1, "Posłuchaj: głęboki, dudniący dźwięk bębna. Który to instrument?", ["Talerze", "Kotły", "Trójkąt"], 1, "To kotły — duże bębny o niskim, dudniącym dźwięku.", { referenceAudioSource: SOUND.kotly }),
         fact("ki-l5-e14", 1, "Posłuchaj: błyszczący szum metalu, który długo wybrzmiewa. Który instrument gra?", ["Talerze", "Werbel", "Ksylofon"], 0, "To talerze (tu: talerz zawieszony, uderzony pałeczką).", { referenceAudioSource: SOUND.talerze }),
@@ -279,8 +279,8 @@ export const KROLESTWO_INSTRUMENTOW_CONTENT: WorldContent = {
         fact("ki-l6-e10", 1, "Który z tych instrumentów NIE ma klawiszy?", ["Akordeon", "Organy", "Gitara"], 2, "Gitara — gra się na niej, szarpiąc struny.", { optionImageIds: ["instrument_akordeon", "instrument_organy", "instrument_gitara"] }),
         fact("ki-l6-e11", 1, "Posłuchaj: długi, uroczysty dźwięk jak w kościele. Który instrument gra?", ["Akordeon", "Organy", "Gitara"], 1, "To organy — dźwięk robi powietrze w piszczałkach.", { referenceAudioSource: SOUND.organy }),
         fact("ki-l6-e12", 1, "Posłuchaj: ciepły dźwięk z „oddychaniem” miecha. Który to instrument?", ["Organy", "Fortepian", "Akordeon"], 2, "To akordeon — dźwięk powstaje, gdy powietrze z miecha wprawia w drganie metalowe języczki.", { referenceAudioSource: SOUND.akordeon }),
-        fact("ki-l6-e14", 1, "Posłuchaj: szarpnięta struna o ciepłym, drewnianym brzmieniu. Który instrument gra?", ["Harfa", "Gitara", "Skrzypce"], 1, "To gitara — struny szarpie się palcami, a pudło z drewna nadaje dźwiękowi ciepło.", { referenceAudioSource: SOUND.gitara }),
-        fact("ki-l6-e13", 1, "Posłuchaj: krótki dźwięk, który zaraz cichnie. Który instrument gra?", ["Fortepian", "Harfa", "Organy"], 0, "To fortepian — młoteczek uderza w strunę, więc dźwięk jest wyraźny i zaraz cichnie.", { referenceAudioSource: NOTE_SAMPLES.C4 }),
+        fact("ki-l6-e14", 1, "Posłuchaj: szarpnięta struna o ciepłym, drewnianym brzmieniu. Który instrument gra?", ["Akordeon", "Gitara", "Skrzypce"], 1, "To gitara — struny szarpie się palcami, a pudło z drewna nadaje dźwiękowi ciepło.", { referenceAudioSource: SOUND.gitara }),
+        fact("ki-l6-e13", 1, "Posłuchaj: krótki dźwięk, który zaraz cichnie. Który instrument gra?", ["Fortepian", "Skrzypce", "Organy"], 0, "To fortepian — młoteczek uderza w strunę, więc dźwięk jest wyraźny i zaraz cichnie.", { referenceAudioSource: NOTE_SAMPLES.C4 }),
       ],
     },
     {
@@ -337,7 +337,7 @@ export const KROLESTWO_INSTRUMENTOW_CONTENT: WorldContent = {
         fact("ki-l8-e1", 1, "Jak gra się na skrzypcach?", ["Dmuchając", "Przesuwając smyczek po strunach", "Uderzając pałeczkami"], 1, "Smyczkiem, który przesuwamy po strunach.", { imageId: "instrument_skrzypce" }),
         fact("ki-l8-e2", 1, "Jak gra się na trąbce?", ["Dmuchając w ustnik i naciskając wentyle", "Uderzając w nią", "Szarpiąc struny"], 0, "Dmuchamy w ustnik, a wentylami zmieniamy dźwięk.", { imageId: "instrument_trabka" }),
         fact("ki-l8-e3", 1, "Jak powstaje dźwięk we flecie poprzecznym?", ["Dmuchamy w otwór z boku", "Naciskamy klawisze", "Uderzamy w niego pałeczką"], 0, "Dmuchamy w otwór z boku — bez stroika.", { imageId: "instrument_flet" }),
-        fact("ki-l8-e4", 1, "Jak gra się na kotłach?", ["Smyczkiem", "Dmuchając", "Uderzając pałkami"], 2, "Uderzamy pałkami w skórę, naciągniętą na miedziany kocioł.", { imageId: "instrument_kotly" }),
+        fact("ki-l8-e4", 1, "Jak gra się na kotłach?", ["Smyczkiem", "Dmuchając", "Uderzając pałkami"], 2, "Uderzamy pałkami w skórę naciągniętą na miedziany kocioł.", { imageId: "instrument_kotly" }),
         fact("ki-l8-e5", 1, "Jak gra się na harfie?", ["Dmuchając", "Szarpiąc struny palcami", "Uderzając w klawisze"], 1, "Szarpiemy struny palcami.", { imageId: "instrument_harfa" }),
         fact("ki-l8-e6", 1, "Jak gra się na fortepianie?", ["Naciskając klawisze", "Dmuchając", "Szarpiąc struny", "Smyczkiem"], 0, "Naciskamy klawisze, które poruszają młoteczki.", { imageId: "instrument_fortepian", abcd: true }),
         fact("ki-l8-e7", 1, "Na którym instrumencie wysuwa się i wsuwa suwak?", ["Róg", "Trąbka", "Puzon"], 2, "Na puzonie.", { optionImageIds: ["instrument_rog", "instrument_trabka", "instrument_puzon"] }),
@@ -352,7 +352,7 @@ export const KROLESTWO_INSTRUMENTOW_CONTENT: WorldContent = {
       difficulty: 2,
       introSlides: [
         {
-          body: "Orkiestra symfoniczna siedzi na scenie w ustalonym porządku. Z przodu, tuż przed dyrygentem, są smyczki — jest ich najwięcej. Za nimi siedzą drewniane dęte, a jeszcze dalej blaszane dęte i perkusja, bo są najgłośniejsze.",
+          body: "Orkiestra symfoniczna siedzi na scenie w ustalonym porządku. Najbliżej dyrygenta siedzą smyczki — jest ich najwięcej. Za nimi siedzą drewniane dęte, a jeszcze dalej blaszane dęte i perkusja, bo są najgłośniejsze.",
           instrumentExamples: [
             { imageId: "instrument_dyrygent", label: "Dyrygent", caption: "z przodu" },
             { imageId: "instrument_skrzypce", label: "Smyczki", caption: "z przodu" },
@@ -362,7 +362,7 @@ export const KROLESTWO_INSTRUMENTOW_CONTENT: WorldContent = {
           ],
         },
         {
-          body: "Muzycy czytają nuty z partytury — to zapis wszystkich instrumentów razem. Mniejsze zespoły mają swoje nazwy: duet to dwie osoby, trio trzy, kwartet cztery. Solista gra sam, a orkiestra mu akompaniuje. Zespół, który śpiewa razem, to chór.",
+          body: "Dyrygent czyta nuty z partytury — to zapis wszystkich instrumentów razem. Każdy muzyk ma swój głos, czyli zapis tylko swojej partii. Mniejsze zespoły mają swoje nazwy: duet to dwie osoby, trio trzy, kwartet cztery. Solista gra sam, a orkiestra mu akompaniuje. Zespół, który śpiewa razem, to chór.",
         },
       ],
       exercises: [

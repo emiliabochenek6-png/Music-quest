@@ -2,7 +2,7 @@ import type { WorldContent } from "@/types/exercises";
 
 /**
  * Ported from master-quest (web)'s data/worlds/wioska-nut.json — same 5
- * lessons, same 61 exercises, same ids/specs, restructured only to fit
+ * lessons, same 161 exercises, same ids/specs, restructured only to fit
  * this app's own WorldContent/LessonDefinition/ExerciseDefinition shape
  * (types/exercises.ts). Two intro styles are ported: the simpler
  * `introNotes`/`introSubtitle`/`introClef` "get familiar with these notes
@@ -92,7 +92,7 @@ export const WIOSKA_NUT_CONTENT: WorldContent = {
         { id: "l3-e11", type: "multiple-choice-notation", difficulty: 3, spec: { type: "multiple-choice-notation", targetNote: "D#4", distractorPool: ["D4", "E4", "C#4"] } },
         { id: "l3-e12", type: "multiple-choice-notation", difficulty: 3, spec: { type: "multiple-choice-notation", targetNote: "G4", distractorPool: ["F#4", "A4", "F4"] } },
         { id: "l3-e13", type: "multiple-choice-notation", difficulty: 3, spec: { type: "multiple-choice-notation", targetNote: "A#4", distractorPool: ["A4", "B4", "G#4"] } },
-        { id: "l3-e14", type: "multiple-choice-notation", difficulty: 3, spec: { type: "multiple-choice-notation", targetNote: "C5", distractorPool: ["B4", "A4", "C4"] } },
+        { id: "l3-e14", type: "multiple-choice-notation", difficulty: 3, spec: { type: "multiple-choice-notation", targetNote: "C5", distractorPool: ["B4", "A4", "E4"] } },
       ],
     },
     {
@@ -320,7 +320,7 @@ export const WIOSKA_NUT_CONTENT: WorldContent = {
       difficulty: 3,
       introSlides: [
         {
-          body: "Cały zakres na raz: linie dodane nad i pod pięciolinią, w kluczu wiolinowym i basowym — pomieszane, bez podpowiedzi który to rejestr.",
+          body: "Cały zakres na raz: linie dodane nad i pod pięciolinią, w kluczu wiolinowym i basowym — pomieszane, bez podpowiedzi, w którym kluczu jesteś.",
         },
       ],
       exercises: [
@@ -415,7 +415,7 @@ export const WIOSKA_NUT_CONTENT: WorldContent = {
       isBoss: true,
       introSlides: [
         {
-          body: "Król Fałszomir strzeże ostatniej tajemnicy Wioski Nut! Żeby go pokonać, pokaż wszystko, czego się nauczyłeś — oba klucze, linie dodane, kroki i skoki, krzyżyki i bemole, bez podpowiedzi który to rejestr.",
+          body: "Król Fałszomir strzeże ostatniej tajemnicy Wioski Nut! Żeby go pokonać, pokaż wszystko, co wiesz — oba klucze, linie dodane, kroki i skoki, krzyżyki i bemole, bez podpowiedzi, w którym kluczu jesteś.",
           bossPortrait: true,
         },
       ],

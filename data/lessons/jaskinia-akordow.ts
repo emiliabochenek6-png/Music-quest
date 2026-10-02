@@ -102,7 +102,7 @@ export const JASKINIA_AKORDOW_CONTENT: WorldContent = {
           ],
         },
         {
-          body: "Rozpoznawanie: policz odległość od najniższego dźwięku do najbliższego kolejnego — jeśli to kwarta (4 dźwięki), masz kwartsekstakord. Jeśli tercja — sekstakord. Jeśli oba przedziały to tercje — postać zasadnicza.",
+          body: "Rozpoznawanie: policz odległości między kolejnymi dźwiękami od dołu. Tercja i tercja to postać zasadnicza. Tercja i kwarta to sekstakord (na dole leży tercja). Kwarta i tercja to kwartsekstakord (na dole leży kwinta).",
         },
       ],
       exercises: [
@@ -292,7 +292,7 @@ export const JASKINIA_AKORDOW_CONTENT: WorldContent = {
           difficulty: 4,
           spec: {
             type: "triad-fact-choice",
-            prompt: "Masz trójdźwięk d-moll w postaci zasadniczej: D-F-A. W basie słyszysz F. Jak nazywa się ten przewrót?",
+            prompt: "Masz trójdźwięk d-moll w postaci zasadniczej: D-F-A. W basie jest F. Jak nazywa się ten przewrót?",
             hint: "F to środkowy dźwięk trójdźwięku — tercja.",
             options: ["postać zasadnicza", "sekstakord", "kwartsekstakord"],
             correctOptionIndex: 1,
@@ -306,7 +306,7 @@ export const JASKINIA_AKORDOW_CONTENT: WorldContent = {
           difficulty: 4,
           spec: {
             type: "triad-fact-choice",
-            prompt: "Masz trójdźwięk d-moll w postaci zasadniczej: D-F-A. W basie słyszysz A. Jak nazywa się ten przewrót?",
+            prompt: "Masz trójdźwięk d-moll w postaci zasadniczej: D-F-A. W basie jest A. Jak nazywa się ten przewrót?",
             hint: "A to górny dźwięk trójdźwięku — kwinta.",
             options: ["postać zasadnicza", "sekstakord", "kwartsekstakord"],
             correctOptionIndex: 2,
@@ -320,7 +320,7 @@ export const JASKINIA_AKORDOW_CONTENT: WorldContent = {
           difficulty: 5,
           spec: {
             type: "triad-fact-choice",
-            prompt: "Słyszysz sekstakord zbudowany z trójdźwięku G-dur (G-H-D — pryma G, tercja H, kwinta D). Jaki dźwięk jest teraz w basie?",
+            prompt: "Masz sekstakord zbudowany z trójdźwięku G-dur (G-H-D — pryma G, tercja H, kwinta D). Jaki dźwięk jest teraz w basie?",
             hint: "Sekstakord to I przewrót — w basie ląduje tercja.",
             options: ["G", "H", "D"],
             correctOptionIndex: 1,
@@ -334,7 +334,7 @@ export const JASKINIA_AKORDOW_CONTENT: WorldContent = {
           difficulty: 5,
           spec: {
             type: "triad-fact-choice",
-            prompt: "Słyszysz kwartsekstakord zbudowany z trójdźwięku G-dur (G-H-D). Jaki dźwięk jest teraz w basie?",
+            prompt: "Masz kwartsekstakord zbudowany z trójdźwięku G-dur (G-H-D). Jaki dźwięk jest teraz w basie?",
             hint: "Kwartsekstakord to II przewrót — w basie ląduje kwinta.",
             options: ["G", "H", "D"],
             correctOptionIndex: 2,
@@ -749,7 +749,7 @@ export const JASKINIA_AKORDOW_CONTENT: WorldContent = {
       difficulty: 5,
       introSlides: [
         {
-          body: "Trzy trójdźwięki, wszystkie postacie — najtrudniejsza wersja tego ćwiczenia. Wszystko, czego się nauczyłeś o rozpoznawaniu przewrotów, naraz.",
+          body: "Trzy trójdźwięki, wszystkie postacie — najtrudniejsza wersja tego ćwiczenia. Wszystko, co wiesz o rozpoznawaniu przewrotów, naraz.",
           triadExamples: [
             { notes: ["C4", "E4", "G4"], label: "postać zasadnicza", degrees: [1, 3, 5] },
             { notes: ["E4", "G4", "C5"], label: "sekstakord", degrees: [3, 5, 1] },
@@ -779,7 +779,7 @@ export const JASKINIA_AKORDOW_CONTENT: WorldContent = {
       bossName: "Akordeon",
       introSlides: [
         {
-          body: "Hrabia Akordeon strzeże wyjścia z Jaskini Akordów — jego skrzydła to miechy akordeonu, a na piersi nosi klawiaturę. Zna każdy przewrót trójdźwięku: ze słuchu, z zapisu i z odległości między dźwiękami. Żeby go pokonać, pokaż, że opanowałeś je wszystkie.",
+          body: "Hrabia Akordeon strzeże wyjścia z Jaskini Akordów — jego skrzydła to miechy akordeonu, a na piersi nosi klawiaturę. Zna każdy przewrót trójdźwięku: ze słuchu, z zapisu i z odległości między dźwiękami. Żeby go pokonać, pokaż, że znasz je wszystkie.",
           bossPortrait: true,
         },
       ],

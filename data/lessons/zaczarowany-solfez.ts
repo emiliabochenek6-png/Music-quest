@@ -256,7 +256,7 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
           ],
         },
         {
-          body: "Siedem sylab to dużo przycisków, ale masz je ułożone od najniższej do najwyższej, tak jak w gamie. Słuchaj tyle razy, ile potrzebujesz. Po tej lekcji będziesz gotowy, żeby zacząć śpiewać — z mikrofonem albo bez.",
+          body: "Siedem sylab to dużo przycisków, ale masz je ułożone od najniższej do najwyższej, tak jak w gamie. Słuchaj tyle razy, ile potrzebujesz. Po tej lekcji możesz zacząć śpiewać — z mikrofonem albo bez.",
         },
       ],
       exercises: [
@@ -292,7 +292,7 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
           ],
         },
         {
-          body: "Najpierw poćwiczysz każdy dźwięk osobno, z własnym nagraniem dla każdego. Potem, w drugim zadaniu, zaśpiewasz całą gamę na raz: do re mi fa sol la si do — we własnym tempie, bez żadnych kliknięć. Naciśnij 'Nagraj' i śpiewaj kolejno, tak jak Ci wygodnie. Aplikacja od razu sprawdzi nagranie przez mikrofon.",
+          body: "Najpierw poćwiczysz pojedyncze dźwięki, każdy z własnym nagraniem. Potem, w ostatnim zadaniu, zaśpiewasz całą gamę na raz: do re mi fa sol la si do — we własnym tempie, bez żadnych kliknięć. Naciśnij 'Nagraj' i śpiewaj kolejno, tak jak Ci wygodnie. Aplikacja od razu sprawdzi nagranie przez mikrofon.",
         },
       ],
       exercises: [
@@ -532,7 +532,7 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
       pianoKeyboardReference: { range: ["C4", "E5"] },
       introSlides: [
         {
-          body: "Trójdźwięk to trzy dźwięki ułożone jeden nad drugim w tercjach — zaśpiewasz je po kolei, od najniższego do najwyższego, jak małą melodię. Zaśpiewasz pięć trójdźwięków zbudowanych na kolejnych stopniach gamy C-dur — niektóre brzmią jasno (durowe), inne smutniej (molowe).",
+          body: "Trójdźwięk to trzy dźwięki ułożone jeden nad drugim w tercjach — zaśpiewasz je po kolei, od najniższego do najwyższego, jak małą melodię. Zaśpiewasz pięć trójdźwięków zbudowanych na wybranych stopniach gamy C-dur — niektóre brzmią jasno (durowe), inne smutniej (molowe).",
           triadExamples: [
             { notes: ["C4", "E4", "G4"], label: "I stopień — C-dur (durowy)", degrees: [1, 3, 5] },
             { notes: ["D4", "F4", "A4"], label: "II stopień — d-moll (molowy)", degrees: [1, 3, 5] },
@@ -542,7 +542,7 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
           ],
         },
         {
-          body: "I i IV, i V stopień to trójdźwięki tonika, subdominanta i dominanta (T-S-D) — najważniejsze akordy każdej tonacji. Śpiewasz je tak samo jak wcześniej: we własnym tempie, nuta po nucie, liczy się tylko wysokość dźwięku.",
+          body: "Trójdźwięki zbudowane na I, IV i V stopniu to tonika, subdominanta i dominanta (T-S-D) — najważniejsze akordy każdej tonacji. Śpiewasz je tak samo jak wcześniej: we własnym tempie, nuta po nucie, liczy się tylko wysokość dźwięku.",
         },
       ],
       exercises: [
@@ -636,7 +636,7 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
       pianoKeyboardReference: { range: ["G4", "F5"] },
       introSlides: [
         {
-          body: "Ostatni poziom tej krainy: dominanta septymowa, krok po kroku. To trójdźwięk dominanty (który już znasz — sol-si-re), z dodatkowym, czwartym dźwiękiem na górze — septymą. Zbudujesz ten akord po kolei, dźwięk po dźwięku.",
+          body: "Ostatni poziom śpiewania akordów: dominanta septymowa, krok po kroku. To trójdźwięk dominanty (który już znasz — sol-si-re), z dodatkowym, czwartym dźwiękiem na górze — septymą. Zbudujesz ten akord po kolei, dźwięk po dźwięku.",
           triadExamples: [
             { notes: ["G4", "B4"], label: "krok 1: pryma + tercja", degrees: [1, 3] },
             { notes: ["G4", "B4", "D5"], label: "krok 2: + kwinta (już znane D)", degrees: [1, 3, 5] },
@@ -719,7 +719,7 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
           id: "zs-m1-e4",
           type: "solfege-phrase-singing",
           difficulty: 3,
-          spec: { type: "solfege-phrase-singing", notes: ["C4", "C4", "C4", "C4", "D4", "D4", "D4", "D4", "E4", "D4", "C4"], rhythm: ["eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "quarter", "quarter", "half"], meter: "4/4", isFragment: true, sourceLabel: "Fragment: „Hot cross buns” — angielska rymowanka ludowa (cała melodia)", withMetronome: true, metronomeOnly: true, bpm: 60, toleranceCents: 70 },
+          spec: { type: "solfege-phrase-singing", notes: ["C4", "C4", "C4", "C4", "D4", "D4", "D4", "D4", "E4", "D4", "C4"], rhythm: ["eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "quarter", "quarter", "half"], meter: "4/4", isFragment: true, sourceLabel: "Fragment: „Hot cross buns” — angielska rymowanka ludowa (dalszy ciąg i zakończenie)", withMetronome: true, metronomeOnly: true, bpm: 60, toleranceCents: 70 },
         },
         {
           id: "zs-m1-e5",
@@ -742,7 +742,7 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
       pianoKeyboardReference: { range: ["C4", "C5"] },
       introSlides: [
         {
-          body: "Kolejne melodie są odrobinę dłuższe, a niektóre mają skoki o jeden dźwięk w górę lub w dół — za to wszystko nadal mieści się w C-dur. Ostatnie dwa zadania to krótkie solfeże ułożone specjalnie do ćwiczeń.",
+          body: "Kolejne melodie są odrobinę dłuższe, a niektóre mają skoki o tercję (pomijasz jeden dźwięk) w górę lub w dół — za to wszystko nadal mieści się w C-dur. Ostatnie dwa zadania to krótkie solfeże ułożone specjalnie do ćwiczeń.",
         },
         {
           body: "Każde zadanie ma dwa kroki. Najpierw posłuchaj nagrania — naciśnij 🔊 (tyle razy, ile chcesz) i śledź nuty na pięciolinii. Potem naciśnij „Śpiewaj z metronomem”: usłyszysz tylko metronom, czyli równe stuknięcia. Dwa pierwsze to odliczanie, a przy trzecim zaczynasz śpiewać razem z nim — zielona nuta pokazuje, którą śpiewasz teraz. Mikrofon nie jest tu potrzebny. To zadania „Sprawdź siebie”: nikt tu nie ocenia nagrania — sam decydujesz, czy dałeś radę, i możesz próbować, aż Ci się spodoba.",
@@ -800,7 +800,7 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
       pianoKeyboardReference: { range: ["C4", "C5"] },
       introSlides: [
         {
-          body: "Ostatni poziom z melodiami: teraz sięgasz po całą gamę, od do do do wyżej. Zobaczysz pary ósemek (dwa szybsze dźwięki w jednym uderzeniu metronomu), schodzenie w dół i na końcu — całą gamę w górę z metronomem.",
+          body: "Kolejny poziom z melodiami: teraz sięgasz po całą gamę, od do do do wyżej. Zobaczysz pary ósemek (dwa szybsze dźwięki w jednym uderzeniu metronomu), schodzenie w dół i na końcu — całą gamę w górę z metronomem.",
         },
         {
           body: "Każde zadanie ma dwa kroki. Najpierw posłuchaj nagrania — naciśnij 🔊 (tyle razy, ile chcesz) i śledź nuty na pięciolinii. Potem naciśnij „Śpiewaj z metronomem”: usłyszysz tylko metronom, czyli równe stuknięcia. Dwa pierwsze to odliczanie, a przy trzecim zaczynasz śpiewać razem z nim — zielona nuta pokazuje, którą śpiewasz teraz. Mikrofon nie jest tu potrzebny. To zadania „Sprawdź siebie”: nikt tu nie ocenia nagrania — sam decydujesz, czy dałeś radę, i możesz próbować, aż Ci się spodoba.",
@@ -887,7 +887,7 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
           id: "zs-m4-e3",
           type: "solfege-phrase-singing",
           difficulty: 4,
-          spec: { type: "solfege-phrase-singing", notes: ["G4", "E4", "E4", "F4", "D4", "D4", "C4", "D4", "E4", "F4", "G4", "G4", "G4"], rhythm: ["quarter", "quarter", "half", "quarter", "quarter", "half", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "half"], meter: "4/4", isFragment: true, sourceLabel: "Fragment: „Lightly Row” — ludowa piosenka dziecięca (cała melodia)", withMetronome: true, metronomeOnly: true, bpm: 60, toleranceCents: 65 },
+          spec: { type: "solfege-phrase-singing", notes: ["G4", "E4", "E4", "F4", "D4", "D4", "C4", "D4", "E4", "F4", "G4", "G4", "G4"], rhythm: ["quarter", "quarter", "half", "quarter", "quarter", "half", "quarter", "quarter", "quarter", "quarter", "quarter", "quarter", "half"], meter: "4/4", isFragment: true, sourceLabel: "Fragment: „Lightly Row” — ludowa piosenka dziecięca (początek)", withMetronome: true, metronomeOnly: true, bpm: 60, toleranceCents: 65 },
         },
         {
           id: "zs-m4-e4",
@@ -976,7 +976,7 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
       pianoKeyboardReference: { range: ["C4", "C5"] },
       introSlides: [
         {
-          body: "Kameleon Mirefa zmienia kolory i zaczarowuje sylaby: pokazuje jedną, a śpiewa inną — jego imię to „mi-re-fa” ułożone na opak! Pokonaj go: czeka na Ciebie mieszanka wszystkiego, czego się tu nauczyłeś — słuchanie sylab, interwały, trójdźwięki, przewroty, dominanta i melodie.",
+          body: "Kameleon Mirefa zmienia kolory i zaczarowuje sylaby: pokazuje jedną, a śpiewa inną — jego imię to „mi-re-fa” ułożone na opak! Pokonaj go: czeka na Ciebie mieszanka wszystkiego z tej krainy: słuchanie sylab, interwały, trójdźwięki, przewroty, dominanta i melodie.",
           bossPortrait: true,
         },
         {

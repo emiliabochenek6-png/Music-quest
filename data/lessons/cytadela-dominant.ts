@@ -238,7 +238,7 @@ export const CYTADELA_DOMINANT_CONTENT: WorldContent = {
             { notes: ["C4", "E4", "G4", "Bb4"], label: "postać zasadnicza — w basie pryma (C)", degrees: [1, 3, 5, 7] },
             { notes: ["E4", "G4", "Bb4", "C5"], label: "kwintsekstakord — w basie tercja (E)", degrees: [3, 5, 7, 1] },
             { notes: ["G4", "Bb4", "C5", "E5"], label: "tercekwartakord — w basie kwinta (G)", degrees: [5, 7, 1, 3] },
-            { notes: ["Bb4", "C5", "E5", "G5"], label: "sekundakord — w basie septyma (B♭)", degrees: [7, 1, 3, 5] },
+            { notes: ["Bb4", "C5", "E5", "G5"], label: "sekundakord — w basie septyma (B)", degrees: [7, 1, 3, 5] },
           ],
         },
       ],
@@ -249,9 +249,9 @@ export const CYTADELA_DOMINANT_CONTENT: WorldContent = {
           difficulty: 4,
           spec: {
             type: "triad-fact-choice",
-            prompt: "Masz dominantę septymową zbudowaną na dźwięku C: C-E-G-B♭ (pryma-tercja-kwinta-septyma). Który dźwięk musi wylądować w basie, żeby powstał kwintsekstakord (I przewrót)?",
+            prompt: "Masz dominantę septymową zbudowaną na dźwięku C: C-E-G-B (pryma-tercja-kwinta-septyma). Który dźwięk musi wylądować w basie, żeby powstał kwintsekstakord (I przewrót)?",
             hint: "Kwintsekstakord to I przewrót — w basie ląduje tercja.",
-            options: ["C", "E", "G", "B♭"],
+            options: ["C", "E", "G", "B"],
             correctOptionIndex: 1,
             explanation: "W kwintsekstakordzie (I przewrót) w basie jest tercja akordu — tutaj E.",
           },
@@ -262,9 +262,9 @@ export const CYTADELA_DOMINANT_CONTENT: WorldContent = {
           difficulty: 4,
           spec: {
             type: "triad-fact-choice",
-            prompt: "Masz dominantę septymową zbudowaną na dźwięku C: C-E-G-B♭. Który dźwięk musi wylądować w basie, żeby powstał tercekwartakord (II przewrót)?",
+            prompt: "Masz dominantę septymową zbudowaną na dźwięku C: C-E-G-B. Który dźwięk musi wylądować w basie, żeby powstał tercekwartakord (II przewrót)?",
             hint: "Tercekwartakord to II przewrót — w basie ląduje kwinta.",
-            options: ["C", "E", "G", "B♭"],
+            options: ["C", "E", "G", "B"],
             correctOptionIndex: 2,
             explanation: "W tercekwartakordzie (II przewrót) w basie jest kwinta akordu — tutaj G.",
           },
@@ -275,11 +275,11 @@ export const CYTADELA_DOMINANT_CONTENT: WorldContent = {
           difficulty: 4,
           spec: {
             type: "triad-fact-choice",
-            prompt: "Masz dominantę septymową zbudowaną na dźwięku C: C-E-G-B♭. Który dźwięk musi wylądować w basie, żeby powstał sekundakord (III przewrót)?",
+            prompt: "Masz dominantę septymową zbudowaną na dźwięku C: C-E-G-B. Który dźwięk musi wylądować w basie, żeby powstał sekundakord (III przewrót)?",
             hint: "Sekundakord to III przewrót — w basie ląduje septyma.",
-            options: ["C", "E", "G", "B♭"],
+            options: ["C", "E", "G", "B"],
             correctOptionIndex: 3,
-            explanation: "W sekundakordzie (III przewrót) w basie jest septyma akordu — tutaj B♭.",
+            explanation: "W sekundakordzie (III przewrót) w basie jest septyma akordu — tutaj B.",
           },
         },
         {
@@ -288,7 +288,7 @@ export const CYTADELA_DOMINANT_CONTENT: WorldContent = {
           difficulty: 4,
           spec: {
             type: "triad-fact-choice",
-            prompt: "Masz dominantę septymową zbudowaną na dźwięku G: G-H-D-F (pryma-tercja-kwinta-septyma). W basie słyszysz H. Jak nazywa się ten przewrót?",
+            prompt: "Masz dominantę septymową zbudowaną na dźwięku G: G-H-D-F (pryma-tercja-kwinta-septyma). W basie jest H. Jak nazywa się ten przewrót?",
             hint: "H to tercja tego akordu.",
             options: ["postać zasadnicza", "kwintsekstakord", "tercekwartakord", "sekundakord"],
             correctOptionIndex: 1,
@@ -301,7 +301,7 @@ export const CYTADELA_DOMINANT_CONTENT: WorldContent = {
           difficulty: 4,
           spec: {
             type: "triad-fact-choice",
-            prompt: "Masz dominantę septymową zbudowaną na dźwięku G: G-H-D-F. W basie słyszysz D. Jak nazywa się ten przewrót?",
+            prompt: "Masz dominantę septymową zbudowaną na dźwięku G: G-H-D-F. W basie jest D. Jak nazywa się ten przewrót?",
             hint: "D to kwinta tego akordu.",
             options: ["postać zasadnicza", "kwintsekstakord", "tercekwartakord", "sekundakord"],
             correctOptionIndex: 2,
@@ -314,7 +314,7 @@ export const CYTADELA_DOMINANT_CONTENT: WorldContent = {
           difficulty: 4,
           spec: {
             type: "triad-fact-choice",
-            prompt: "Masz dominantę septymową zbudowaną na dźwięku G: G-H-D-F. W basie słyszysz F. Jak nazywa się ten przewrót?",
+            prompt: "Masz dominantę septymową zbudowaną na dźwięku G: G-H-D-F. W basie jest F. Jak nazywa się ten przewrót?",
             hint: "F to septyma tego akordu.",
             options: ["postać zasadnicza", "kwintsekstakord", "tercekwartakord", "sekundakord"],
             correctOptionIndex: 3,
@@ -336,10 +336,10 @@ export const CYTADELA_DOMINANT_CONTENT: WorldContent = {
         {
           body: "Tym razem zamiast rozpoznawać gotowy przewrót, sam go odtworzysz z pamięci — dostaniesz nazwę przewrotu i dźwięk, na którym zbudowano akord, a Ty wskażesz poprawny zapis nut od najniższego dźwięku.",
           triadExamples: [
-            { notes: ["C4", "E4", "G4", "Bb4"], label: "postać zasadnicza — C-E-G-B♭", degrees: [1, 3, 5, 7] },
-            { notes: ["E4", "G4", "Bb4", "C5"], label: "kwintsekstakord — E-G-B♭-C", degrees: [3, 5, 7, 1] },
-            { notes: ["G4", "Bb4", "C5", "E5"], label: "tercekwartakord — G-B♭-C-E", degrees: [5, 7, 1, 3] },
-            { notes: ["Bb4", "C5", "E5", "G5"], label: "sekundakord — B♭-C-E-G", degrees: [7, 1, 3, 5] },
+            { notes: ["C4", "E4", "G4", "Bb4"], label: "postać zasadnicza — C-E-G-B", degrees: [1, 3, 5, 7] },
+            { notes: ["E4", "G4", "Bb4", "C5"], label: "kwintsekstakord — E-G-B-C", degrees: [3, 5, 7, 1] },
+            { notes: ["G4", "Bb4", "C5", "E5"], label: "tercekwartakord — G-B-C-E", degrees: [5, 7, 1, 3] },
+            { notes: ["Bb4", "C5", "E5", "G5"], label: "sekundakord — B-C-E-G", degrees: [7, 1, 3, 5] },
           ],
         },
       ],
@@ -352,9 +352,9 @@ export const CYTADELA_DOMINANT_CONTENT: WorldContent = {
             type: "triad-fact-choice",
             prompt: "Jak zapisane są (od najniższego dźwięku) nuty kwintsekstakordu zbudowanego na dźwięku C?",
             hint: "Kwintsekstakord to I przewrót — zaczyna się od tercji akordu.",
-            options: ["C-E-G-B♭", "E-G-B♭-C", "G-B♭-C-E", "B♭-C-E-G"],
+            options: ["C-E-G-B", "E-G-B-C", "G-B-C-E", "B-C-E-G"],
             correctOptionIndex: 1,
-            explanation: "Kwintsekstakord zaczyna się od tercji (E), potem kwinta (G), septyma (B♭), na końcu pryma o oktawę wyżej (C).",
+            explanation: "Kwintsekstakord zaczyna się od tercji (E), potem kwinta (G), septyma (B), na końcu pryma o oktawę wyżej (C).",
           },
         },
         {
@@ -365,9 +365,9 @@ export const CYTADELA_DOMINANT_CONTENT: WorldContent = {
             type: "triad-fact-choice",
             prompt: "Jak zapisane są (od najniższego dźwięku) nuty tercekwartakordu zbudowanego na dźwięku C?",
             hint: "Tercekwartakord to II przewrót — zaczyna się od kwinty akordu.",
-            options: ["C-E-G-B♭", "E-G-B♭-C", "G-B♭-C-E", "B♭-C-E-G"],
+            options: ["C-E-G-B", "E-G-B-C", "G-B-C-E", "B-C-E-G"],
             correctOptionIndex: 2,
-            explanation: "Tercekwartakord zaczyna się od kwinty (G), potem septyma (B♭), pryma (C), na końcu tercja o oktawę wyżej (E).",
+            explanation: "Tercekwartakord zaczyna się od kwinty (G), potem septyma (B), pryma (C), na końcu tercja o oktawę wyżej (E).",
           },
         },
         {
@@ -378,9 +378,9 @@ export const CYTADELA_DOMINANT_CONTENT: WorldContent = {
             type: "triad-fact-choice",
             prompt: "Jak zapisane są (od najniższego dźwięku) nuty sekundakordu zbudowanego na dźwięku C?",
             hint: "Sekundakord to III przewrót — zaczyna się od septymy akordu.",
-            options: ["C-E-G-B♭", "E-G-B♭-C", "G-B♭-C-E", "B♭-C-E-G"],
+            options: ["C-E-G-B", "E-G-B-C", "G-B-C-E", "B-C-E-G"],
             correctOptionIndex: 3,
-            explanation: "Sekundakord zaczyna się od septymy (B♭), potem pryma (C), tercja (E), na końcu kwinta o oktawę wyżej (G).",
+            explanation: "Sekundakord zaczyna się od septymy (B), potem pryma (C), tercja (E), na końcu kwinta o oktawę wyżej (G).",
           },
         },
         {
@@ -605,7 +605,7 @@ export const CYTADELA_DOMINANT_CONTENT: WorldContent = {
       difficulty: 5,
       introSlides: [
         {
-          body: "Trzy dominanty septymowe, wszystkie postacie — najtrudniejsza wersja tego ćwiczenia. Wszystko, czego się nauczyłeś o rozpoznawaniu przewrotów dominanty septymowej, naraz.",
+          body: "Trzy dominanty septymowe, wszystkie postacie — najtrudniejsza wersja tego ćwiczenia. Wszystko, co wiesz o rozpoznawaniu przewrotów dominanty septymowej, naraz.",
         },
       ],
       exercises: [
@@ -631,7 +631,7 @@ export const CYTADELA_DOMINANT_CONTENT: WorldContent = {
       bossName: "Dominik",
       introSlides: [
         {
-          body: "Rycerz Dominik V strzeże wyjścia z Cytadeli Dominant — jego tarcza nosi rzymskie V, a proporzec V⁷. Wiecznie czeka w pozie napięcia na rozwiązanie, które nie nadchodzi. Zna każdy przewrót dominanty septymowej: ze słuchu, z zapisu i w sekwencjach. Żeby go pokonać, pokaż, że opanowałeś je wszystkie.",
+          body: "Rycerz Dominik V strzeże wyjścia z Cytadeli Dominant — jego tarcza nosi rzymskie V, a proporzec V⁷. Wiecznie czeka w pozie napięcia na rozwiązanie, które nie nadchodzi. Zna każdy przewrót dominanty septymowej: ze słuchu, z zapisu i w sekwencjach. Żeby go pokonać, pokaż, że znasz je wszystkie.",
           bossPortrait: true,
         },
       ],
@@ -644,9 +644,9 @@ export const CYTADELA_DOMINANT_CONTENT: WorldContent = {
           difficulty: 4,
           spec: {
             type: "triad-fact-choice",
-            prompt: "Masz dominantę septymową zbudowaną na dźwięku C: C-E-G-B♭ (pryma-tercja-kwinta-septyma). Który dźwięk musi wylądować w basie, żeby powstał kwintsekstakord (I przewrót)?",
+            prompt: "Masz dominantę septymową zbudowaną na dźwięku C: C-E-G-B (pryma-tercja-kwinta-septyma). Który dźwięk musi wylądować w basie, żeby powstał kwintsekstakord (I przewrót)?",
             hint: "Kwintsekstakord to I przewrót — w basie ląduje tercja.",
-            options: ["C", "E", "G", "B♭"],
+            options: ["C", "E", "G", "B"],
             correctOptionIndex: 1,
             explanation: "W kwintsekstakordzie (I przewrót) w basie jest tercja akordu — tutaj E.",
           },
@@ -660,9 +660,9 @@ export const CYTADELA_DOMINANT_CONTENT: WorldContent = {
             type: "triad-fact-choice",
             prompt: "Jak zapisane są (od najniższego dźwięku) nuty kwintsekstakordu zbudowanego na dźwięku C?",
             hint: "Kwintsekstakord to I przewrót — zaczyna się od tercji akordu.",
-            options: ["C-E-G-B♭", "E-G-B♭-C", "G-B♭-C-E", "B♭-C-E-G"],
+            options: ["C-E-G-B", "E-G-B-C", "G-B-C-E", "B-C-E-G"],
             correctOptionIndex: 1,
-            explanation: "Kwintsekstakord zaczyna się od tercji (E), potem kwinta (G), septyma (B♭), na końcu pryma o oktawę wyżej (C).",
+            explanation: "Kwintsekstakord zaczyna się od tercji (E), potem kwinta (G), septyma (B), na końcu pryma o oktawę wyżej (C).",
           },
         },
         { id: "cd-l15-e6", type: "dominant-seventh-inversion-choice", difficulty: 5, spec: { type: "dominant-seventh-inversion-choice", noteRange: ["C4", "E4"], hideNotation: true } },

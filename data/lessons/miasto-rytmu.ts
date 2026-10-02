@@ -246,7 +246,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
       difficulty: 2,
       introSlides: [
         {
-          body: "Pauza to cisza o określonej długości — tak samo ważna jak dźwięk. Pauza ćwierćnutowa trwa jedno uderzenie ciszy, pauza ósemkowa pół uderzenia. Synkopa to przesunięcie akcentu na słabszą część taktu — uderzenie tam, gdzie normalnie byłaby cisza lub słabsza miara. To uczy precyzji nie tylko w uderzaniu, ale i w kontrolowaniu ciszy.",
+          body: "Pauza to cisza o określonej długości — tak samo ważna jak dźwięk. Pauza ćwierćnutowa trwa jedno uderzenie ciszy, pauza ósemkowa pół uderzenia. Synkopa to przesunięcie akcentu na słabszą część taktu — uderzenie tam, gdzie normalnie byłaby cisza lub słabsza część taktu. To uczy precyzji nie tylko w uderzaniu, ale i w kontrolowaniu ciszy.",
           noteValueReference: [
             { value: "quarterRest", caption: "pauza ćwierćnutowa — 1 uderzenie ciszy" },
             { value: "eighthRest", caption: "pauza ósemkowa — 1/2 uderzenia ciszy" },
@@ -420,10 +420,10 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
       difficulty: 2,
       introSlides: [
         {
-          body: "Tempo to szybkość pulsu — jak szybko biją \"kroki\" muzyki. Wolne tempo brzmi spokojnie, jak spacer. Szybkie tempo brzmi żwawo, jak bieg. Ten sam rytm zagrany wolno i szybko wciąż jest tym samym rytmem — zmienia się tylko to, jak szybko go wystukujesz.",
+          body: "Tempo to szybkość pulsu — jak szybko biją „kroki” muzyki. Wolne tempo brzmi spokojnie, jak spacer. Szybkie tempo brzmi żwawo, jak bieg. Ten sam rytm zagrany wolno i szybko wciąż jest tym samym rytmem — zmienia się tylko to, jak szybko go wystukujesz.",
         },
         {
-          body: "Na początku usłyszysz kilka pulsów \"na rozbieg\" — to jeszcze nie liczy się do wyniku. Dołącz do nich stukaniem i zostań w rytmie, gdy zacznie się liczyć naprawdę.",
+          body: "Na początku usłyszysz kilka pulsów „na rozbieg” — to jeszcze nie liczy się do wyniku. Dołącz do nich stukaniem i zostań w rytmie, gdy zacznie się liczyć naprawdę.",
         },
       ],
       exercises: [
@@ -652,7 +652,7 @@ export const MIASTO_RYTMU_CONTENT: WorldContent = {
       difficulty: 3,
       introSlides: [
         {
-          body: "Znasz już synkopy, które zaczynają się po krótkiej ciszy w środku taktu. Teraz cisza pojawia się na samym początku — na \"raz\", tam gdzie zwykle słyszysz pierwsze uderzenie. Musisz poczuć puls, nawet gdy on sam milczy.",
+          body: "Znasz już synkopy, które zaczynają się po krótkiej ciszy w środku taktu. Teraz cisza pojawia się na samym początku — na „raz”, tam gdzie zwykle słyszysz pierwsze uderzenie. Musisz poczuć puls, nawet gdy on sam milczy.",
         },
       ],
       exercises: [

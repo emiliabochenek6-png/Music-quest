@@ -24,7 +24,7 @@ export const SZCZYT_DYKTAND_CONTENT: WorldContent = {
           body: "Zaczynamy wspinaczkę od podstaw: usłysz krótki rytm złożony tylko z ćwierćnut, półnut i ćwierćpauz (możesz odsłuchać dowolną liczbę razy), a potem zapisz go samodzielnie, klikając kolejne wartości rytmiczne.",
         },
         {
-          body: 'Metrum i takt widać od razu, zanim jeszcze cokolwiek zapiszesz — Twoja notacja rośnie w miarę dodawania kolejnych wartości. Pomyliłeś się? "Cofnij ostatnią wartość" usuwa ostatni krok.',
+          body: 'Metrum i takt widać od razu, zanim jeszcze cokolwiek zapiszesz — Twoja notacja rośnie w miarę dodawania kolejnych wartości. Pomyłka? "Cofnij ostatnią wartość" usuwa ostatni krok.',
         },
         {
           body: "Uwaga: jedno pojedyncze usłyszane uderzenie może być zarówno ćwierćnutą, jak i ósemką — o tym, jaka to naprawdę wartość, decyduje tempo i odstęp do następnego dźwięku, nie samo \"jedno stuknięcie\".",
@@ -63,7 +63,7 @@ export const SZCZYT_DYKTAND_CONTENT: WorldContent = {
       order: 3,
       difficulty: 3,
       introSlides: [
-        { body: "Ścieżka robi się bardziej techniczna: dochodzi ćwiartka z kropką i pary szesnastek, a takt zmienia się na 6/8 — dwa pulsy w takcie, każdy o długości ćwiartki z kropką (trzy ósemki)." },
+        { body: "Ścieżka robi się bardziej techniczna: dochodzi ćwierćnuta z kropką i pary szesnastek, a takt zmienia się na 6/8 — dwa pulsy w takcie, każdy o długości ćwierćnuty z kropką (trzy ósemki)." },
       ],
       exercises: [
         { id: "sd-l3-e1", type: "rhythm-value-dictation", difficulty: 3, spec: { type: "rhythm-value-dictation", bpm: 86, meter: "6/8", allowedValues: ["dottedQuarter", "eighth", "sixteenth"], sequence: ["dottedQuarter", "dottedQuarter"] } },
@@ -114,7 +114,7 @@ export const SZCZYT_DYKTAND_CONTENT: WorldContent = {
         {
           body: "Zdobywamy pierwszy szczyt: teraz fraza ma i wysokość, i rytm. Odsłuchaj ją dowolną liczbę razy, a potem zapisz samodzielnie na pustej pięciolinii — dla każdej nuty wybierz najpierw pozycję (wysokość), potem wartość rytmiczną, i kliknij 'Dodaj nutę'.",
         },
-        { body: "Na tym poziomie tylko ćwierćnuty i półnuty, a wysokości mieszczą się między dolną linią (E4) a czwartą linią (H4) — żadnych znaków chromatycznych, zawsze w metrum 4/4." },
+        { body: "Na tym poziomie tylko ćwierćnuty i półnuty, a wysokości mieszczą się między dolną linią (E4) a trzecią linią (H4) — żadnych znaków chromatycznych, zawsze w metrum 4/4." },
       ],
       exercises: [
         { id: "sd-l6-e1", type: "melodic-rhythmic-dictation", difficulty: 5, spec: { type: "melodic-rhythmic-dictation", bpm: 72, key: 0, meter: "4/4", allowedValues: ["quarter", "half"], notes: [{ pitch: "E4", value: "quarter" }, { pitch: "G4", value: "quarter" }, { pitch: "B4", value: "half" }] } },
@@ -131,7 +131,7 @@ export const SZCZYT_DYKTAND_CONTENT: WorldContent = {
       difficulty: 6,
       introSlides: [
         {
-          body: 'Zbocze robi się strome: dochodzi półnuta z kropką i ósemka, a zakres wysokości rozciąga się aż do D5 (szósta linia licząc od dołu, jedna nad pięciolinią... a właściwie szósty stopień: D nad czwartą linią). Czasem pojawi się też krzyżyk (♯) albo bemol (♭), a metrum bywa teraz 3/4 zamiast 4/4. Sąsiednie ósemki możesz połączyć belką przyciskiem "Grupuj" — tak jak w dyktandzie rytmicznym.',
+          body: 'Zbocze robi się strome: dochodzi półnuta z kropką i ósemka, a zakres wysokości rozciąga się aż do D5 (czwarta linia pięciolinii). Czasem pojawi się też krzyżyk (♯) albo bemol (♭), a metrum bywa teraz 3/4 zamiast 4/4. Sąsiednie ósemki możesz połączyć belką przyciskiem "Grupuj" — tak jak w dyktandzie rytmicznym.',
         },
       ],
       exercises: [
@@ -149,7 +149,7 @@ export const SZCZYT_DYKTAND_CONTENT: WorldContent = {
       difficulty: 7,
       introSlides: [
         {
-          body: "Kolejny odcinek wspinaczki: dochodzą ćwiartka z kropką, ósemka z kropką i szesnastka, a wysokości sięgają teraz od dolnej linii (E4) aż po górną linię pięciolinii (F5).",
+          body: "Kolejny odcinek wspinaczki: dochodzą ćwierćnuta z kropką, ósemka z kropką i szesnastka, a wysokości sięgają teraz od dolnej linii (E4) aż po górną linię pięciolinii (F5).",
         },
       ],
       exercises: [
@@ -167,7 +167,7 @@ export const SZCZYT_DYKTAND_CONTENT: WorldContent = {
       difficulty: 8,
       introSlides: [
         {
-          body: "Kolejny szczyt — ale nie ostatni! Ten poziom łączy wszystko, co było do tej pory: pięciolinię od E4 do F5, mieszane znaki chromatyczne, całe słownictwo rytmiczne (włącznie z całą nutą), zmienne metrum (4/4, 3/4, a nawet 6/8 i 9/8) i dłuższe, 6-7-nutowe frazy. Odsłuchaj tyle razy, ile potrzebujesz.",
+          body: "Kolejny szczyt — ale nie ostatni! Ten poziom łączy wszystko, co było do tej pory: pięciolinię od E4 do F5, mieszane znaki chromatyczne, całe słownictwo rytmiczne (włącznie z całą nutą), zmienne metrum (4/4, 3/4, a nawet 6/8 i 9/8) i dłuższe, 5–7-nutowe frazy. Odsłuchaj tyle razy, ile potrzebujesz.",
         },
       ],
       exercises: [
@@ -235,7 +235,7 @@ export const SZCZYT_DYKTAND_CONTENT: WorldContent = {
           body: "Frazy robią się dłuższe — dwa takty zamiast jednego. Więcej do zapamiętania, ale metoda zostaje ta sama.",
         },
         {
-          body: "Nie czekaj, aż usłyszysz całość, żeby zacząć pisać. Zapisuj na bieżąco, nutę po nucie, w miarę jak je rozpoznajesz — od tego jest przycisk odtwarzania jeszcze raz: żeby dopełnić to, czego nie zdążyłeś za pierwszym razem.",
+          body: "Najpierw odsłuchaj całą frazę, a dopiero potem zapisuj ją nuta po nucie. Przycisk odtwarzania jeszcze raz jest po to, żeby dopełnić to, czego nie udało się zapamiętać za pierwszym razem.",
         },
       ],
       exercises: [
@@ -253,7 +253,7 @@ export const SZCZYT_DYKTAND_CONTENT: WorldContent = {
       difficulty: 10,
       introSlides: [
         {
-          body: "Wysokości sięgają teraz aż do G5 — najwyższego dźwięku w tej grze. Dochodzi też coś nowego: w jednej frazie mogą pojawić się RAZEM krzyżyk i bemol, nie tylko jeden rodzaj znaku.",
+          body: "Wysokości sięgają teraz aż do G5 — najwyższego dźwięku w dyktandach. Dochodzi też coś nowego: w jednej frazie mogą pojawić się RAZEM krzyżyk i bemol, nie tylko jeden rodzaj znaku.",
         },
         {
           body: "Wysoki dźwięk łatwo pomylić z sąsiednim, jeśli nie masz punktu odniesienia — zacznij od zlokalizowania najniższego i najwyższego dźwięku frazy, dopiero potem wypełniaj to, co jest pomiędzy.",

@@ -110,7 +110,7 @@ export const FABRYKA_BUDOWANIA_CONTENT: WorldContent = {
       difficulty: 2,
       introSlides: [
         {
-          body: "Teraz przenosisz budowanie interwałów z klawiatury na pięciolinię. Zobaczysz prymę zapisaną na pięciolinii i nazwę interwału — kliknij pozycję (linię lub przestrzeń), na której ma się znaleźć druga nuta, a potem wybierz jej znak chromatyczny (bemol, kasownik albo krzyżyk). Zaczynasz od najmniejszych interwałów: sekund i tercji (1 do 4 półtony). Przykład: budując sekundę wielką w górę od C, klikasz pozycję linii/przestrzeni o jeden stopień wyżej niż C (czyli D) i wybierasz kasownik — bez żadnego znaku chromatycznego.",
+          body: "Teraz przenosisz budowanie interwałów z klawiatury na pięciolinię. Zobaczysz prymę zapisaną na pięciolinii i nazwę interwału — kliknij pozycję (linię lub przestrzeń), na której ma się znaleźć druga nuta, a potem wybierz jej znak chromatyczny (bemol, kasownik albo krzyżyk). Zaczynasz od najmniejszych interwałów: sekund i tercji (1 do 4 półtonów). Przykład: budując sekundę wielką w górę od C, klikasz pozycję linii/przestrzeni o jeden stopień wyżej niż C (czyli D) i wybierasz kasownik — bez żadnego znaku chromatycznego.",
           intervalExamples: [
             { notes: ["C4", "Db4"], label: "sekunda mała (pół tonu)" },
             { notes: ["C4", "D4"], label: "sekunda wielka (cały ton)" },
@@ -437,13 +437,13 @@ export const FABRYKA_BUDOWANIA_CONTENT: WorldContent = {
         },
       ],
       exercises: [
-        { id: "fb-l16-e1", type: "triad-inversion-build-staff-choice", difficulty: 4, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"] } },
-        { id: "fb-l16-e2", type: "triad-inversion-build-staff-choice", difficulty: 4, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"] } },
-        { id: "fb-l16-e3", type: "triad-inversion-build-staff-choice", difficulty: 4, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"] } },
-        { id: "fb-l16-e4", type: "triad-inversion-build-staff-choice", difficulty: 4, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"] } },
-        { id: "fb-l16-e5", type: "triad-inversion-build-staff-choice", difficulty: 4, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"] } },
-        { id: "fb-l16-e6", type: "triad-inversion-build-staff-choice", difficulty: 4, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"] } },
-        { id: "fb-l16-e7", type: "triad-inversion-build-staff-choice", difficulty: 4, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"] } },
+        { id: "fb-l16-e1", type: "triad-inversion-build-staff-choice", difficulty: 4, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"], allowedQualities: ["major", "minor"] } },
+        { id: "fb-l16-e2", type: "triad-inversion-build-staff-choice", difficulty: 4, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"], allowedQualities: ["major", "minor"] } },
+        { id: "fb-l16-e3", type: "triad-inversion-build-staff-choice", difficulty: 4, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"], allowedQualities: ["major", "minor"] } },
+        { id: "fb-l16-e4", type: "triad-inversion-build-staff-choice", difficulty: 4, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"], allowedQualities: ["major", "minor"] } },
+        { id: "fb-l16-e5", type: "triad-inversion-build-staff-choice", difficulty: 4, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"], allowedQualities: ["major", "minor"] } },
+        { id: "fb-l16-e6", type: "triad-inversion-build-staff-choice", difficulty: 4, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"], allowedQualities: ["major", "minor"] } },
+        { id: "fb-l16-e7", type: "triad-inversion-build-staff-choice", difficulty: 4, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"], allowedQualities: ["major", "minor"] } },
       ],
     },
     {
@@ -524,7 +524,7 @@ export const FABRYKA_BUDOWANIA_CONTENT: WorldContent = {
         {
           body: "Ostatni, najtrudniejszy przewrót: sekundakord (D², III przewrót). W basie stoi już septyma akordu — Ty dobudowujesz prymę, tercję i kwintę (wszystkie o oktawę wyżej). Uwaga: odległość od basu do pierwszej dobudowanej nuty to tym razem sekunda, nie tercja ani kwarta — stąd nazwa tego przewrotu.",
           triadExamples: [
-            { notes: ["Bb4", "C5", "E5", "G5"], label: "sekundakord (D²) — w basie septyma (B♭)", degrees: [7, 1, 3, 5] },
+            { notes: ["Bb4", "C5", "E5", "G5"], label: "sekundakord (D²) — w basie septyma (B)", degrees: [7, 1, 3, 5] },
           ],
         },
       ],
@@ -582,7 +582,7 @@ export const FABRYKA_BUDOWANIA_CONTENT: WorldContent = {
         { id: "fb-l22-e5", type: "dominant-seventh-build-staff-choice", difficulty: 3, spec: { type: "dominant-seventh-build-staff-choice", noteRange: ["C4", "C5"] } },
         { id: "fb-l22-e6", type: "dominant-seventh-build-staff-choice", difficulty: 4, spec: { type: "dominant-seventh-build-staff-choice", noteRange: ["C4", "C5"], allowedInversions: ["first"] } },
         { id: "fb-l22-e7", type: "dominant-seventh-build-staff-choice", difficulty: 4, spec: { type: "dominant-seventh-build-staff-choice", noteRange: ["C4", "C5"], allowedInversions: ["third"] } },
-        { id: "fb-l22-e8", type: "triad-inversion-build-staff-choice", difficulty: 4, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"] } },
+        { id: "fb-l22-e8", type: "triad-inversion-build-staff-choice", difficulty: 4, spec: { type: "triad-inversion-build-staff-choice", noteRange: ["C4", "C5"], allowedQualities: ["major", "minor"] } },
       ],
     },
   ],

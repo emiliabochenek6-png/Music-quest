@@ -170,7 +170,7 @@ export function formatAccidentalCount(count: number, type: "sharps" | "flats", l
   return `${count} ${word}`;
 }
 
-const NO_ACCIDENTALS_LABEL: Record<Locale, string> = { pl: "brak znaków" };
+const NO_ACCIDENTALS_LABEL: Record<Locale, string> = { pl: "0 znaków" };
 
 /** Same as formatAccidentalCount, but handles `fifths === 0` (C major/A
  * minor has no key signature to name a count for) — used wherever a hint

@@ -30,7 +30,7 @@ export const PASMO_INTERWALOW_CONTENT: WorldContent = {
       difficulty: 1,
       introSlides: [
         {
-          body: "Interwał to odległość między dwoma dźwiękami, liczona w półtonach. Sekunda mała to jeden półton — najmniejsza odległość, jaka istnieje, jak dwa sąsiednie klawisze fortepianu. Sekunda wielka to dwa półtony. Posłuchaj uważnie różnicy między tymi dwoma najmniejszymi interwałami.",
+          body: "Interwał to odległość między dwoma dźwiękami. Jego nazwa mówi, ile stopni obejmuje (sekunda, tercja…), a liczba półtonów — jakiego jest rodzaju (mały, wielki, czysty). W oznaczeniach „>” znaczy „o półton mniejszy” (np. 2>), a „<” — „o półton większy” (np. 4<). Sekunda mała to jeden półton — najmniejsza odległość, jaka istnieje, jak dwa sąsiednie klawisze fortepianu. Sekunda wielka to dwa półtony. Posłuchaj uważnie różnicy między tymi dwoma najmniejszymi interwałami.",
           intervalExamples: [
             { notes: ["C4", "D4"], label: "sekunda wielka (2)" },
             { notes: ["B3", "C4"], label: "sekunda mała (2>)" },
@@ -100,7 +100,7 @@ export const PASMO_INTERWALOW_CONTENT: WorldContent = {
       difficulty: 2,
       introSlides: [
         {
-          body: "Kwarta czysta to pięć półtonów, kwinta czysta — siedem, a dokładnie pośrodku między nimi leży tryton — sześć półtonów. W przeciwieństwie do „czystych” kwarty i kwinty, tryton brzmi niepokojąco i napięcie, dlatego bywa nazywany „diabelskim interwałem”. Posłuchaj wszystkich trzech po kolei.",
+          body: "Kwarta czysta to pięć półtonów, kwinta czysta — siedem, a dokładnie pośrodku między nimi leży tryton — sześć półtonów. W przeciwieństwie do „czystych” kwarty i kwinty, tryton brzmi niepokojąco i jest pełen napięcia, dlatego bywa nazywany „diabelskim interwałem”. To kwarta zwiększona (4<), czyli inaczej kwinta zmniejszona. Posłuchaj wszystkich trzech po kolei.",
           intervalExamples: [
             { notes: ["C4", "F4"], label: "kwarta czysta (4)" },
             { notes: ["C4", "F#4"], label: "tryton (4<)" },
@@ -229,7 +229,7 @@ export const PASMO_INTERWALOW_CONTENT: WorldContent = {
       difficulty: 3,
       introSlides: [
         {
-          body: "Czas na czyste ucho — bez zerkania na zapis nutowy. Usłysz interwał i nazwij go, korzystając wyłącznie ze słuchu. Wszystkie dwanaście interwałów naraz, bez ograniczenia czasowego jak w poprzedniej lekcji — możesz się w pełni skupić na samym dźwięku.",
+          body: "Czas na czyste ucho — bez zerkania na zapis nutowy. Usłysz interwał i nazwij go, korzystając wyłącznie ze słuchu. Wszystkie interwały od prymy do oktawy naraz, bez ograniczenia czasowego jak w poprzedniej lekcji — możesz się w pełni skupić na samym dźwięku.",
           intervalExamples: [
             { notes: ["C4", "C4"], label: "pryma czysta (1)" },
             { notes: ["B3", "C4"], label: "sekunda mała (2>)" },
@@ -321,7 +321,7 @@ export const PASMO_INTERWALOW_CONTENT: WorldContent = {
       difficulty: 3,
       introSlides: [
         {
-          body: "Ten sam pomysł co w poprzedniej lekcji, ale teraz mogą pojawić się WSZYSTKIE poznane interwały — nie tylko sekundy i tercje, ale też kwarty, kwinty, seksty, septymy i oktawa.",
+          body: "Ten sam pomysł co w poprzedniej lekcji, ale teraz mogą pojawić się WSZYSTKIE poznane interwały — nie tylko pryma, sekundy i tercje, ale też kwarty, kwinty, seksty, septymy i oktawa.",
         },
       ],
       exercises: [
@@ -390,7 +390,7 @@ export const PASMO_INTERWALOW_CONTENT: WorldContent = {
       difficulty: 3,
       introSlides: [
         {
-          body: "Do tej pory każdy interwał słyszałeś jako dwa dźwięki pod rząd. Teraz oba dźwięki zabrzmią NARAZ, jako jeden połączony dźwięk — to się nazywa dwudźwięk. Brzmi inaczej niż ta sama para zagrana pojedynczo, ale to wciąż ten sam interwał — Twoje ucho musi go rozpoznać także w tej nowej, „zlanej” formie.",
+          body: "Do tej pory każdy interwał słyszałeś jako dwa dźwięki pod rząd. Teraz oba dźwięki zabrzmią NARAZ, jako jeden połączony dźwięk — to się nazywa dwudźwięk. Brzmi inaczej niż ta sama para zagrana jeden dźwięk po drugim, ale to wciąż ten sam interwał — Twoje ucho musi go rozpoznać także w tej nowej, „zlanej” formie.",
         },
       ],
       exercises: [
@@ -437,7 +437,7 @@ export const PASMO_INTERWALOW_CONTENT: WorldContent = {
       difficulty: 3,
       introSlides: [
         {
-          body: "Ten sam pomysł co w poprzedniej lekcji, ale teraz mogą pojawić się WSZYSTKIE poznane interwały jako dwudźwięki — od sekundy po oktawę.",
+          body: "Ten sam pomysł co w poprzedniej lekcji, ale teraz mogą pojawić się WSZYSTKIE poznane interwały jako dwudźwięki — od prymy po oktawę.",
         },
       ],
       exercises: [

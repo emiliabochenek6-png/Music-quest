@@ -50,7 +50,7 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
       difficulty: 1,
       introSlides: [
         {
-          body: "Metrum 2/4 liczy tylko do dwóch — RAZ-dwa, RAZ-dwa. To najprostszy krok marszowy, jakby połowa taktu 4/4: dwa mocne uderzenia zamiast czterech.",
+          body: "Metrum 2/4 liczy tylko do dwóch — RAZ-dwa, RAZ-dwa. To najprostszy krok marszowy, jakby połowa taktu 4/4: dwa uderzenia zamiast czterech, z których mocne jest tylko pierwsze (RAZ).",
           referenceAudio: [
             { source: DRUMMER_2_4_SAMPLE, label: "Posłuchaj przykładu w metrum 2/4" },
             { source: DRUMMER_3_4_SAMPLE, label: "Posłuchaj przykładu w metrum 3/4" },
@@ -109,7 +109,7 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
       difficulty: 1,
       introSlides: [
         {
-          body: "Metrum 2/2 (zwane 'alla breve' albo 'na dwa') też liczy do dwóch, ale każde uderzenie to teraz półnuta, nie ćwierćnuta — brzmi jak bardzo szybkie 4/4 policzone w dwa zamiast w cztery. Każde uderzenie w 2/2 dzieli się w środku na dwie ćwiartki — usłyszysz ciche 'i' pomiędzy, czego 2/4 nie ma. To właśnie ta różnica pozwala je rozróżnić na słuch, nie tylko w zapisie.",
+          body: "Metrum 2/2 (zwane 'alla breve' albo 'na dwa') też liczy do dwóch, ale każde uderzenie to teraz półnuta, nie ćwierćnuta. Takt trwa tyle co w 4/4 (cztery ćwierćnuty), tylko liczysz go w dwa zamiast w cztery — dlatego 2/2 brzmi szerzej i spokojniej niż 2/4, w którym takt jest o połowę krótszy. W tej grze w 2/2 usłyszysz też ciche kliknięcie w środku każdego uderzenia — to pomoc, żeby poczuć długą półnutę.",
         },
       ],
       exercises: [
@@ -169,7 +169,7 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
       difficulty: 2,
       introSlides: [
         {
-          body: "Czas przećwiczyć wszystkie cztery metra proste razem: 2/4, 2/2, 3/4 i 4/4. Różnią się tym, do ilu liczysz w takcie (dwa, trzy albo cztery) i jak długie jest jedno uderzenie (ćwierćnuta albo półnuta) — w 2/2 usłyszysz dodatkowe, ciche 'i' w środku każdego uderzenia (bo to półnuta dzieląca się na dwie ćwiartki), czego 2/4 nie ma.",
+          body: "Czas przećwiczyć wszystkie cztery metra proste razem: 2/4, 2/2, 3/4 i 4/4. Różnią się tym, do ilu liczysz w takcie (dwa, trzy albo cztery) i jak długie jest jedno uderzenie (ćwierćnuta albo półnuta) — w 2/2 jedno uderzenie to półnuta, więc takt jest dwa razy dłuższy niż w 2/4 (w tej grze słychać w nim dodatkowe ciche kliknięcie w środku każdego uderzenia).",
         },
       ],
       exercises: [
@@ -526,7 +526,7 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
       difficulty: 3,
       introSlides: [
         {
-          body: "Poznałeś już wszystkie siedem metrum tej krainy — czas nauczyć się rozróżniać je samym słuchem, bez patrzenia na zapis. Przypomnienie, jak każde brzmi: 2/4 to prosty krok 'RAZ-dwa'. 2/2 brzmi podobnie, ale każde uderzenie dzieli się w środku na dwie ćwiartki — słychać ciche 'i' pomiędzy, czego 2/4 nie ma. 3/4 to walc 'RAZ-dwa-trzy'. 4/4 liczy do czterech, 'RAZ-dwa-trzy-cztery'. Metra złożone kołyszą się w grupach po trzy ósemki: 6/8 to dwie takie grupy ('RAZ-dwa-trzy, RAZ-dwa-trzy'), 9/8 to trzy grupy, a 12/8 to cztery. Teraz usłysz je wszystkie obok siebie i rozpoznaj każde na słuch.",
+          body: "Znasz już wszystkie siedem metrów tej krainy — czas nauczyć się rozróżniać je samym słuchem, bez patrzenia na zapis. Przypomnienie, jak każde brzmi: 2/4 to prosty krok 'RAZ-dwa'. 2/2 też liczy do dwóch, ale każde uderzenie jest dłuższe (półnuta), więc takt brzmi szerzej. 3/4 to walc 'RAZ-dwa-trzy'. 4/4 liczy do czterech, 'RAZ-dwa-trzy-cztery'. Metra złożone kołyszą się w grupach po trzy ósemki: 6/8 to dwie takie grupy ('RAZ-dwa-trzy, RAZ-dwa-trzy'), 9/8 to trzy grupy, a 12/8 to cztery. Teraz usłysz je wszystkie obok siebie i rozpoznaj każde na słuch.",
         },
       ],
       exercises: [
@@ -633,7 +633,7 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
       difficulty: 3,
       introSlides: [
         {
-          body: "Niektóre metra brzmią bardzo podobnie, jeśli liczysz tylko dźwięki. 3/4 i 6/8 mogą mieć dokładnie tyle samo ósemek, ale inaczej się \"kołyszą\" — 3/4 liczy trzy równe uderzenia, a 6/8 dwie większe grupy po trzy. Tak samo 6/8 i 12/8 różnią się tylko liczbą tych grup, nie ich brzmieniem. Posłuchaj uważnie, gdzie wypada mocne uderzenie.",
+          body: "Niektóre metra brzmią bardzo podobnie, jeśli liczysz tylko dźwięki. 3/4 i 6/8 mogą mieć dokładnie tyle samo ósemek, ale inaczej się „kołyszą” — 3/4 liczy trzy równe uderzenia, a 6/8 dwie większe grupy po trzy. Tak samo 6/8 i 12/8 różnią się tylko liczbą tych grup, nie ich brzmieniem. Posłuchaj uważnie, gdzie wypada mocne uderzenie.",
         },
       ],
       exercises: [
@@ -704,7 +704,7 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
       difficulty: 2,
       introSlides: [
         {
-          body: "Metra złożone (6/8, 9/8, 12/8) też mogą mieć synkopy — ciszę tam, gdzie spodziewasz się uderzenia na początku grupy trzech ósemek. Ucho musi trzymać się dużego pulsu, nawet gdy pojedyncza ósemka w grupie milczy.",
+          body: "Metra złożone (6/8, 9/8, 12/8) też potrafią zaskoczyć: pauza na początku grupy trzech ósemek zabiera mocne uderzenie, tam gdzie go się spodziewasz. Ucho musi trzymać się dużego pulsu, nawet gdy pojedyncza ósemka w grupie milczy.",
         },
       ],
       exercises: [
@@ -893,7 +893,7 @@ export const PRZYSTAN_TAKTOW_CONTENT: WorldContent = {
       difficulty: 2,
       introSlides: [
         {
-          body: "W prostym metrum już zamieniałeś jedną ósemkę na dwie szesnastki. Ten sam trik działa też w metrum złożonym — w miejscu jednej z trzech ósemek pulsu 6/8, 9/8 czy 12/8 mogą zmieścić się dwie szesnastki, przez co ten fragment pulsu brzmi gęściej niż reszta.",
+          body: "W prostym metrum jedną ósemkę można zamienić na dwie szesnastki. Ten sam trik działa też w metrum złożonym — w miejscu jednej z trzech ósemek pulsu 6/8, 9/8 czy 12/8 mogą zmieścić się dwie szesnastki, przez co ten fragment pulsu brzmi gęściej niż reszta.",
         },
       ],
       exercises: [

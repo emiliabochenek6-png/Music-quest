@@ -11,7 +11,7 @@ import type { WorldContent } from "@/types/exercises";
  * one IS computed at generation time, see lib/questions/generate.ts).
  * Lekcje 1-7 transcribed verbatim from the web app's
  * data/worlds/gaj-grupowania.json. Lekcje 8-14 (pauza ósemkowa, triole
- * obok prostych wartości, długie wartości, nieparzyste metra ćwiartkowe
+ * obok prostych wartości, długie wartości, nieparzyste metra ćwierćnutowe
  * — 5/4 i 7/4, nowe to this world — granica taktu, przegląd, i lekcja-
  * boss z Wiewiórem Pęczkiem) added later, same two exercise types
  * throughout. Every `options[].groups` partition here was checked by
@@ -59,13 +59,13 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
           ],
         },
         {
-          body: "Synkopa (ósemka + ćwierćnuta + ósemka) zapisywana jest jako spójna grupa — na dwa równoważne, tak samo brzmiące sposoby. Wprost: ósemka, ćwierćnuta, ósemka — ćwierćnuta nigdy nie ma belki ani chorągiewki, więc żadna z trzech nut nie jest belkowana. Albo z łukiem: środkowa 'ćwierćnuta' zapisana jako dwie ósemki związane łukiem, a wszystkie cztery ósemki pod jedną belką — tej wersji używa się, gdy zależy nam na pokazaniu podziału na ćwiartki. W 4/4 nie wolno łączyć belką 2. i 3. miary — środek taktu musi zostać widoczny.",
+          body: "Synkopa (ósemka + ćwierćnuta + ósemka) zapisywana jest jako spójna grupa — na dwa równoważne, tak samo brzmiące sposoby. Wprost: ósemka, ćwierćnuta, ósemka — ćwierćnuta nigdy nie ma belki ani chorągiewki, więc żadna z trzech nut nie jest belkowana. Albo z łukiem: środkowa 'ćwierćnuta' zapisana jako dwie ósemki związane łukiem, a wszystkie cztery ósemki pod jedną belką — tej wersji używa się, gdy zależy nam na pokazaniu podziału na ćwierćnuty. W 4/4 nie wolno łączyć belką 2. i 3. miary — środek taktu musi zostać widoczny.",
           groupingExamples: [
             {
               sequence: ["eighth", "quarter", "eighth", "quarter", "quarter"],
               groups: [[0], [1], [2], [3], [4]],
               meter: "4/4",
-              label: "Wprost: ósemka-ćwierćnuta-ósemka (reszta taktu: dwie ćwiartki)",
+              label: "Wprost: ósemka-ćwierćnuta-ósemka (reszta taktu: dwie ćwierćnuty)",
             },
             {
               sequence: ["eighth", "eighth", "eighth", "eighth", "quarter", "quarter"],
@@ -220,7 +220,7 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
           ],
         },
         {
-          body: "Synkopa na przełomie miar: zamiast pojedynczej ćwierćnuty używa się dwóch ósemek połączonych łukiem, żeby zachować podział taktu na główne części — kreska taktowa zostaje widoczna mimo synkopy.",
+          body: "Nuta, która trwa przez granicę miary albo taktu, jest zapisana jako dwie nuty połączone łukiem — dzięki temu kreska taktowa i podział taktu na główne części zawsze zostają widoczne.",
           groupingExamples: [
             {
               sequence: [
@@ -352,7 +352,7 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
           ],
         },
         {
-          body: "Ćwierćnuta z kropką + ósemka trwa tu całą jedną półnutę — ten sam kształt co w metrum ćwierćnutowym, tylko teraz wypełnia całą miarę taktu. Najczęstszy podział całego taktu 2/2 to półnuta z kropką + ćwierćnuta.",
+          body: "Ćwierćnuta z kropką + ósemka trwa tu jedną półnutę, czyli jedną miarę taktu 2/2. Cały takt 2/2 można wypełnić na przykład półnutą z kropką i ćwierćnutą.",
           groupingExamples: [
             {
               sequence: ["dottedHalf", "quarter"],
@@ -631,7 +631,7 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
               sequence: ["half", "quarterRest", "quarter"],
               groups: [[0], [1], [2]],
               meter: "4/4",
-              label: "Cała pauza (tu ćwierćpauza) zawsze stoi osobno, nigdy nie wchodzi w belkę",
+              label: "Pauza wypełniająca cały puls (tu ćwierćpauza) stoi osobno, nigdy nie wchodzi w belkę",
             },
           ],
         },
@@ -994,13 +994,13 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
       difficulty: 4,
       introSlides: [
         {
-          body: "Pauza ósemkowa wewnątrz grupy nut nie przerywa belki — belka nadal łączy prawdziwe nuty po obu jej stronach, dokładnie jak pauza szesnastkowa i ćwierćpauza, które już znasz.",
+          body: "Pauza ósemkowa wewnątrz grupy nut nie przerywa grupy — belka nadal łączy nuty, które w niej są, dokładnie jak pauza szesnastkowa, którą już znasz.",
           groupingExamples: [
             {
               sequence: ["eighth", "eighth", "eighth", "eighthRest", "eighth", "eighth"],
               groups: [[0, 1, 2], [3, 4, 5]],
               meter: "6/8",
-              label: "Pauza ósemkowa w środku grupy — belka nadal łączy ósemki po obu stronach",
+              label: "Pauza ósemkowa na początku grupy — belka nadal łączy ósemki po niej",
             },
           ],
         },
@@ -1145,13 +1145,13 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
           ],
         },
         {
-          body: "Triola nigdy nie łączy się belką z sąsiednią ćwiartką ani z żadną pojedynczą wartością spoza niej — zawsze zostaje własną, zamkniętą grupą trzech.",
+          body: "Triola nigdy nie łączy się belką z sąsiednią ćwierćnutą ani z żadną pojedynczą wartością spoza niej — zawsze zostaje własną, zamkniętą grupą trzech.",
           groupingExamples: [
             {
               sequence: ["quarter", "eighthTriplet", "eighthTriplet", "eighthTriplet"],
               groups: [[0], [1, 2, 3]],
               meter: "2/4",
-              label: "Triola nigdy nie łączy się belką z sąsiednią ćwiartką",
+              label: "Triola nigdy nie łączy się belką z sąsiednią ćwierćnutą",
             },
           ],
         },
@@ -1427,18 +1427,18 @@ export const GAJ_GRUPOWANIA_CONTENT: WorldContent = {
       difficulty: 6,
       introSlides: [
         {
-          body: "5/4 najczęściej grupuje się jako 3+2 (trzy ćwiartki, potem dwie) — ten sam podział, który już znasz z 5/8, tylko teraz jednostką jest ćwiartka, nie ósemka.",
+          body: "5/4 najczęściej grupuje się jako 3+2 (trzy ćwierćnuty, potem dwie) — ten sam podział, który już znasz z 5/8, tylko teraz jednostką jest ćwierćnuta, nie ósemka.",
           groupingExamples: [
             {
               sequence: ["eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth"],
               groups: [[0, 1, 2, 3, 4, 5], [6, 7, 8, 9]],
               meter: "5/4",
-              label: "5/4 jako 3+2 (trzy ćwiartki + dwie ćwiartki)",
+              label: "5/4 jako 3+2 (trzy ćwierćnuty + dwie ćwierćnuty)",
             },
           ],
         },
         {
-          body: "7/4 najczęściej grupuje się jako 2+2+3 — dokładnie jak 7/8, tylko w ćwiartkach zamiast w ósemkach.",
+          body: "7/4 najczęściej grupuje się jako 2+2+3 — dokładnie jak 7/8, tylko w ćwierćnutach zamiast w ósemkach.",
           groupingExamples: [
             {
               sequence: ["eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth"],
