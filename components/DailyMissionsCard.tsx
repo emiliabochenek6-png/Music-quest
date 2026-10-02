@@ -1,7 +1,10 @@
 import { Text, View, StyleSheet } from "react-native";
 import { useGamification } from "@/context/GamificationContext";
+import { usePlan } from "@/context/PlanContext";
+import { useProgress } from "@/context/ProgressContext";
 import { todayISODate } from "@/lib/gamification/activity";
 import { computeDailyMissions } from "@/lib/gamification/dailyMissions";
+import { getTodayStatus } from "@/lib/plan/today";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 
 interface DailyMissionsCardProps {
@@ -22,9 +25,12 @@ interface DailyMissionsCardProps {
  * this card itself drives. */
 export function DailyMissionsCard({ challengeXpReward }: DailyMissionsCardProps) {
   const { state } = useGamification();
+  const { plan } = usePlan();
+  const { progress } = useProgress();
   const today = todayISODate();
   const challengeCompletedToday = state.dailyChallenge?.dateISO === today && state.dailyChallenge.completed;
-  const missions = computeDailyMissions(state.activityLog[today], challengeCompletedToday, challengeXpReward);
+  const planStatus = getTodayStatus(plan.today, today, progress.completedLessonIds, plan.reviewLog);
+  const missions = computeDailyMissions(state.activityLog[today], challengeCompletedToday, challengeXpReward, planStatus);
 
   return (
     <View style={styles.card}>

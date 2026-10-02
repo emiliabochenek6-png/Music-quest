@@ -1,3 +1,4 @@
+import type { TodayStatus } from "@/lib/plan/today";
 import type { DayActivity } from "@/types/gamification";
 
 /** One glanceable "today's mission" row — the Misje tab's own equivalent
@@ -12,7 +13,7 @@ import type { DayActivity } from "@/types/gamification";
  * XP, the daily challenge's own bonus — see
  * app/(main)/daily-challenge.tsx's own XP_DAILY_CHALLENGE_BONUS). */
 export interface DailyMissionProgress {
-  id: "lesson" | "challenge" | "minutes";
+  id: "lesson" | "challenge" | "minutes" | "plan" | "review";
   icon: string;
   label: string;
   current: number;
@@ -45,12 +46,45 @@ const MINUTES_TARGET = 10;
  * equivalent flags to trust. `challengeXpReward` is the caller's own
  * XP_DAILY_CHALLENGE_BONUS, passed in rather than duplicated here as a
  * second magic number that could drift from the one actually awarded. */
-export function computeDailyMissions(day: DayActivity | undefined, challengeCompletedToday: boolean, challengeXpReward: number): DailyMissionProgress[] {
+export function computeDailyMissions(
+  day: DayActivity | undefined,
+  challengeCompletedToday: boolean,
+  challengeXpReward: number,
+  planStatus?: TodayStatus
+): DailyMissionProgress[] {
   const activity = day ?? EMPTY_DAY;
   const lessonsToday = activity.lessonIdsCompleted.length;
   const minutesToday = activity.minutesSpent;
 
+  // Study-plan missions (see lib/plan): today's planned lessons and the
+  // spaced-repetition reviews that are due — only when the plan has some
+  // for today, so a player without a plan sees the same three missions as ever.
+  const planMissions: DailyMissionProgress[] = [];
+  if (planStatus && planStatus.lessons.length > 0) {
+    const done = planStatus.lessons.filter((item) => item.done).length;
+    planMissions.push({
+      id: "plan",
+      icon: "🗓",
+      label: planStatus.lessons.length === 1 ? "Plan: przerób zaplanowaną lekcję" : `Plan: przerób ${planStatus.lessons.length} zaplanowane lekcje`,
+      current: done,
+      target: planStatus.lessons.length,
+      completed: done >= planStatus.lessons.length,
+    });
+  }
+  if (planStatus && planStatus.reviews.length > 0) {
+    const done = planStatus.reviews.filter((item) => item.done).length;
+    planMissions.push({
+      id: "review",
+      icon: "🔁",
+      label: planStatus.reviews.length === 1 ? "Powtórka: 1 lekcja" : `Powtórka: ${planStatus.reviews.length} lekcje`,
+      current: done,
+      target: planStatus.reviews.length,
+      completed: done >= planStatus.reviews.length,
+    });
+  }
+
   return [
+    ...planMissions,
     {
       id: "lesson",
       icon: "📘",

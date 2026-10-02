@@ -16,6 +16,7 @@ import { getWorldContent } from "@/data/lessons";
 import { getNextWorld, getWorldById } from "@/data/worlds";
 import { ExerciseAccentProvider } from "@/context/ExerciseAccentContext";
 import { useGamification } from "@/context/GamificationContext";
+import { usePlan } from "@/context/PlanContext";
 import { useProgress } from "@/context/ProgressContext";
 import { useSubscription } from "@/context/SubscriptionContext";
 import { useSessionTimer } from "@/hooks/useSessionTimer";
@@ -144,6 +145,7 @@ function LessonScreenBody() {
   const { lessonId, worldId } = useLocalSearchParams<{ lessonId: string; worldId: string }>();
   const insets = useSafeAreaInsets();
   const { progress, markLessonCompleted, markWorldCompleted } = useProgress();
+  const { onLessonCompleted } = usePlan();
   const { state: gamificationState, getHeartsInfo, loseHeart, gainHearts, awardXp, addNutki, recordLessonStars, recordActivity } =
     useGamification();
   const introModeEnabled = gamificationState.introModeEnabledByWorld[worldId] ?? true;
@@ -433,6 +435,7 @@ function LessonScreenBody() {
       setShowEncouragement(false);
     } else {
       markLessonCompleted(currentLesson.id);
+      onLessonCompleted(currentLesson.id);
       const isLastLessonInWorld = currentLesson.order === currentContent.lessons.length;
       const earnedStars = resolveStars();
       if (isLastLessonInWorld) {

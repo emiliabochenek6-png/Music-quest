@@ -13,12 +13,21 @@ export type LessonNodeState = "completed" | "available" | "locked";
 export function resolveLessonNodeState(
   lesson: LessonDefinition,
   lessons: readonly LessonDefinition[],
-  completedLessonIds: ReadonlySet<string>
+  completedLessonIds: ReadonlySet<string>,
+  skippedLessonIds?: ReadonlySet<string>
 ): LessonNodeState {
   if (completedLessonIds.has(lesson.id)) {
     return "completed";
   }
-  const previous = lessons.find((l) => l.order === lesson.order - 1);
+  // A lesson the player's personal study path leaves out (see lib/plan)
+  // never blocks the next one — look back past skipped lessons to the
+  // nearest one that is part of the path.
+  let previousOrder = lesson.order - 1;
+  let previous = lessons.find((l) => l.order === previousOrder);
+  while (previous && skippedLessonIds?.has(previous.id) && !completedLessonIds.has(previous.id)) {
+    previousOrder -= 1;
+    previous = lessons.find((l) => l.order === previousOrder);
+  }
   const previousDone = !previous || completedLessonIds.has(previous.id);
   return previousDone ? "available" : "locked";
 }

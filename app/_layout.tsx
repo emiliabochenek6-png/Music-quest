@@ -7,6 +7,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { RankUpCelebration } from "@/components/RankUpCelebration";
 import { AuthProvider } from "@/context/AuthContext";
 import { GamificationProvider, useGamification } from "@/context/GamificationContext";
+import { PlanProvider } from "@/context/PlanContext";
 import { ProfileProvider } from "@/context/ProfileContext";
 import { ProgressProvider } from "@/context/ProgressContext";
 import { SubscriptionProvider } from "@/context/SubscriptionContext";
@@ -14,7 +15,7 @@ import { ThemeProvider } from "@/theme/ThemeProvider";
 import { configurePurchases } from "@/lib/subscriptions/purchases";
 
 /**
- * Root provider stack — order matters: ThemeProvider must sit INSIDE
+ * Root provider stack — order matters (PlanProvider, the study plan, sits INSIDE ProgressProvider because it reads which lessons are completed): ThemeProvider must sit INSIDE
  * ProfileProvider (it reads ProfileContext, see theme/ThemeProvider.tsx),
  * and GamificationProvider must sit INSIDE SubscriptionProvider (it reads
  * SubscriptionContext for hearts' own premium-unlimited behavior — see
@@ -98,7 +99,9 @@ export default function RootLayout() {
               <SubscriptionProvider>
                 <ProgressProvider>
                   <GamificationProvider>
-                    <AppShell />
+                    <PlanProvider>
+                      <AppShell />
+                    </PlanProvider>
                   </GamificationProvider>
                 </ProgressProvider>
               </SubscriptionProvider>

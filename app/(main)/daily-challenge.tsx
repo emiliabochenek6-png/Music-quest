@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { BottomTabBar } from "@/components/BottomTabBar";
 import { DailyMissionsCard } from "@/components/DailyMissionsCard";
+import { PlanTodayCard } from "@/components/plan/PlanTodayCard";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { ExerciseRenderer, hasAnswerToCheck } from "@/components/exercises/ExerciseRenderer";
 import { SoltekMascot } from "@/components/SoltekMascot";
@@ -142,9 +143,13 @@ export default function DailyChallengeScreen() {
     <View style={styles.root}>
       <Header onBack={goBackToMap} />
 
-      <View style={styles.missionsWrap}>
+      {/* The study plan's own card sits with the missions; this block scrolls
+          on its own (capped height) so a long list never squeezes the
+          daily-challenge exercise below it off the screen. */}
+      <ScrollView style={{ maxHeight: 340, flexGrow: 0 }} contentContainerStyle={[styles.missionsWrap, { gap: 10 }]}>
         <DailyMissionsCard challengeXpReward={XP_DAILY_CHALLENGE_BONUS} />
-      </View>
+        <PlanTodayCard />
+      </ScrollView>
 
       {alreadyCompletedToday ? (
         <View style={styles.centerFill}>

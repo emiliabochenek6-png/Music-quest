@@ -7,6 +7,7 @@ import { LessonPath } from "@/components/map/LessonPath";
 import { getWorldContent } from "@/data/lessons";
 import { getWorldById } from "@/data/worlds";
 import { useGamification } from "@/context/GamificationContext";
+import { usePlan } from "@/context/PlanContext";
 import { useProgress } from "@/context/ProgressContext";
 import { t } from "@/lib/i18n/translate";
 import type { TranslationKey } from "@/lib/i18n/translate";
@@ -115,6 +116,7 @@ export default function WorldLevelsScreen() {
   const insets = useSafeAreaInsets();
   const { width, height } = useWindowDimensions();
   const { progress } = useProgress();
+  const { plan } = usePlan();
   const { state: gamification, setIntroModeEnabled } = useGamification();
   const world = getWorldById(worldId);
   const content = getWorldContent(worldId);
@@ -127,6 +129,9 @@ export default function WorldLevelsScreen() {
     );
   }
 
+  // Lessons the player's personal study path leaves out never block the next ones (see lib/plan).
+  const pathIds = new Set(plan.pathLessonIds);
+  const skippedLessonIds = plan.mode === "personal" && content ? new Set(content.lessons.filter((l) => !pathIds.has(l.id)).map((l) => l.id)) : undefined;
   const completedCount = content ? content.lessons.filter((l) => progress.completedLessonIds.has(l.id)).length : 0;
   const totalCount = content?.lessons.length ?? 0;
   const progressPct = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
@@ -227,6 +232,7 @@ export default function WorldLevelsScreen() {
         <LessonPath
           lessons={content.lessons}
           completedLessonIds={progress.completedLessonIds}
+          skippedLessonIds={skippedLessonIds}
           lessonStars={gamification.lessonStars}
           accentHex={world.accentColor}
           focusLessonId={focusLessonId}

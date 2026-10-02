@@ -21,6 +21,8 @@ interface LessonPathProps {
    * unlock, or revisiting an earlier lesson after finishing later ones —
    * would otherwise land somewhere else entirely). */
   focusLessonId?: string;
+  /** Lessons the player's personal study path leaves out (see lib/plan) — they never lock the lessons after them. */
+  skippedLessonIds?: ReadonlySet<string>;
   onSelectLesson: (lesson: LessonDefinition) => void;
 }
 
@@ -50,7 +52,7 @@ function nodeY(index: number): number {
  * on top as real Pressables (components/map/LessonNode), not SVG
  * hit-regions. No scattered background decoration — dropped along with
  * WorldMap's own for the light "educational" pass. */
-export function LessonPath({ lessons, completedLessonIds, lessonStars, accentHex, focusLessonId, onSelectLesson }: LessonPathProps) {
+export function LessonPath({ lessons, completedLessonIds, lessonStars, accentHex, focusLessonId, skippedLessonIds, onSelectLesson }: LessonPathProps) {
   const insets = useSafeAreaInsets();
   const totalHeight = TOP_PADDING + (lessons.length - 1) * NODE_SPACING_Y + 80;
 
@@ -71,7 +73,7 @@ export function LessonPath({ lessons, completedLessonIds, lessonStars, accentHex
   const scrollRef = useRef<ScrollView>(null);
   const focusIndex = focusLessonId ? lessons.findIndex((lesson) => lesson.id === focusLessonId) : -1;
   const nextLessonIndex = lessons.findIndex(
-    (lesson) => resolveLessonNodeState(lesson, lessons, completedLessonIds) !== "completed"
+    (lesson) => resolveLessonNodeState(lesson, lessons, completedLessonIds, skippedLessonIds) !== "completed"
   );
   const targetIndex = focusIndex !== -1 ? focusIndex : nextLessonIndex === -1 ? lessons.length - 1 : nextLessonIndex;
   useEffect(() => {
@@ -123,7 +125,7 @@ export function LessonPath({ lessons, completedLessonIds, lessonStars, accentHex
         </Svg>
 
         {lessons.map((lesson, index) => {
-          const state = resolveLessonNodeState(lesson, lessons, completedLessonIds);
+          const state = resolveLessonNodeState(lesson, lessons, completedLessonIds, skippedLessonIds);
           // The boss node renders noticeably bigger than every ordinary
           // node (see LessonNode's own doc) — centering it on the path
           // needs a wider offset than the fixed one every regular node

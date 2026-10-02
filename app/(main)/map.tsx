@@ -8,8 +8,10 @@ import { AppIcon } from "@/components/icons/AppIcon";
 import { WorldMap } from "@/components/map/WorldMap";
 import { SideMenu } from "@/components/SideMenu";
 import { SideMenuContent } from "@/components/SideMenuContent";
+import { PlanPromptModal } from "@/components/plan/PlanPromptModal";
 import { SoltekWelcomeModal } from "@/components/SoltekWelcomeModal";
 import { useGamification } from "@/context/GamificationContext";
+import { usePlan } from "@/context/PlanContext";
 import { useProfile } from "@/context/ProfileContext";
 import { useProgress } from "@/context/ProgressContext";
 import { useSubscription } from "@/context/SubscriptionContext";
@@ -51,11 +53,15 @@ export default function MapScreen() {
   const { status } = useSubscription();
   const { state: gamification } = useGamification();
   const { profile, isLoading: isProfileLoading, setHasSeenSoltekGreeting } = useProfile();
+  const { plan, isLoading: isPlanLoading, chooseOriginal } = usePlan();
   const [sideMenuOpen, setSideMenuOpen] = useState(false);
   // Not loading AND not-yet-seen — reading `profile` before it's finished
   // loading would show the modal for a returning player too, for the one
   // frame before the real (already-true) stored value arrives.
   const showSoltekWelcome = !isProfileLoading && !profile.hasSeenSoltekGreeting;
+  // First-run choice of study path (test-based or from the beginning) —
+  // only after the Soltek greeting, so the two never stack.
+  const showPlanPrompt = !isProfileLoading && !isPlanLoading && profile.hasSeenSoltekGreeting && plan.mode === "unset";
 
   function handleSelectWorld(world: WorldDefinition) {
     const state = resolveNodeState(world, progress, status, gamification.lessonStars);
@@ -99,6 +105,7 @@ export default function MapScreen() {
       </SideMenu>
 
       <SoltekWelcomeModal visible={showSoltekWelcome} onDismiss={() => setHasSeenSoltekGreeting(true)} />
+      <PlanPromptModal visible={showPlanPrompt} onTakeTest={() => router.push("/(main)/placement")} onStartFromBeginning={() => chooseOriginal()} />
     </View>
   );
 }

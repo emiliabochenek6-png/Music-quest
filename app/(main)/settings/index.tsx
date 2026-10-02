@@ -37,6 +37,11 @@ export default function SettingsScreen() {
         <Switch value={profile.soundEffectsEnabled} onValueChange={setSoundEffectsEnabled} />
       </View>
 
+      <Pressable onPress={() => router.push("/(main)/plan")} style={styles.row}>
+        <Text style={{ color: theme.colors.ink, fontSize: theme.fontSize.body }}>Twój plan</Text>
+        <Text style={{ color: theme.colors.muted }}>›</Text>
+      </Pressable>
+
       <Pressable onPress={() => router.push("/(main)/settings/subscription-status")} style={styles.row}>
         <Text style={{ color: theme.colors.ink, fontSize: theme.fontSize.body }}>Subskrypcja</Text>
         <Text style={{ color: theme.colors.muted }}>›</Text>
