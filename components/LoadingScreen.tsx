@@ -31,6 +31,9 @@ export function LoadingScreen() {
   const width = box?.width || windowSize.width;
   const height = box?.height || windowSize.height;
   const portrait = width < height;
+  // Before the app's code has run (the static page) the window has no size yet: show just the page's own
+  // background colour, so nothing is drawn in the wrong place and then jumps.
+  const sized = width > 0 && height > 0;
   const [trackWidth, setTrackWidth] = useState(0);
   const progress = useRef(new Animated.Value(0)).current;
   const hop = useRef(new Animated.Value(0)).current;
@@ -76,6 +79,10 @@ export function LoadingScreen() {
     setTrackWidth(event.nativeEvent.layout.width);
   }
 
+  if (!sized) {
+    return <View style={styles.blank} onLayout={(event) => setBox({ width: event.nativeEvent.layout.width, height: event.nativeEvent.layout.height })} />;
+  }
+
   return (
     <View style={styles.root} onLayout={(event) => setBox({ width: event.nativeEvent.layout.width, height: event.nativeEvent.layout.height })}>
       <Image source={portrait ? BACKGROUND_PHONE : BACKGROUND_LAPTOP} resizeMode="cover" style={[StyleSheet.absoluteFill, { width: "100%", height: "100%" }]} />
@@ -104,6 +111,7 @@ export function LoadingScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: CREAM, overflow: "hidden" },
+  blank: { flex: 1, backgroundColor: "#FFF8F0" },
   shadow: { position: "absolute", height: 14, borderRadius: 7, backgroundColor: "rgba(120,60,10,0.22)" },
   loader: { position: "absolute", paddingHorizontal: 24, gap: 10 },
   title: { fontSize: 30, fontWeight: "800", color: INK, letterSpacing: 0.4, textAlign: "center" },
