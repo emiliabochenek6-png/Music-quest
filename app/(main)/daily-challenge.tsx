@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Pressable, ScrollView, Text, View, StyleSheet } from "react-native";
+import { Modal, Pressable, ScrollView, Text, View, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { BottomTabBar } from "@/components/BottomTabBar";
@@ -144,68 +144,90 @@ export default function DailyChallengeScreen() {
     setIsCorrect(null);
   }
 
+  const [challengeOpen, setChallengeOpen] = useState(false);
+
+  function openChallenge() {
+    setAnswer(null);
+    setChecked(false);
+    setIsCorrect(null);
+    setChallengeOpen(true);
+  }
+
+  function closeChallenge() {
+    stopAllScheduledAudio();
+    setChallengeOpen(false);
+  }
+
   return (
     <View style={styles.root}>
       <Header onBack={goBackToMap} />
 
-      {/* The study plan's own card sits with the missions; this block scrolls
-          on its own (capped height) so a long list never squeezes the
-          daily-challenge exercise below it off the screen. */}
-      <ScrollView style={{ maxHeight: 340, flexGrow: 0 }} contentContainerStyle={[styles.missionsWrap, { gap: 10 }]}>
+      {/* One scrolling page, so nothing is cut off: the missions, the daily challenge
+          (its exercise opens in a big window in front) and today's plan. */}
+      <ScrollView contentContainerStyle={styles.pageContent} showsVerticalScrollIndicator={false}>
         <DailyMissionsCard challengeXpReward={XP_DAILY_CHALLENGE_BONUS} />
+
+        <View style={styles.challengeCard}>
+          {alreadyCompletedToday ? (
+            <>
+              <GlyphText style={{ fontSize: 40 }}>✅</GlyphText>
+              <Text style={styles.challengeTitle}>Dzisiejsze wyzwanie zrobione!</Text>
+              <Text style={styles.challengeText}>Wróć jutro po kolejne. Do zobaczenia!</Text>
+              {/* Dev-build only (__DEV__ is stripped/false in a real TestFlight/production build). */}
+              {__DEV__ && <DarkButton label="🧪 Resetuj wyzwanie (dev)" onPress={handleResetForTesting} variant="secondary" />}
+            </>
+          ) : noContentAvailable ? (
+            <>
+              <GlyphText style={{ fontSize: 34 }}>🎯</GlyphText>
+              <Text style={styles.challengeTitle}>Wyzwanie dnia</Text>
+              <Text style={styles.challengeText}>Brak jeszcze treści na wyzwanie — wróć po ukończeniu pierwszej lekcji.</Text>
+            </>
+          ) : (
+            <>
+              <GlyphText style={{ fontSize: 34 }}>🎯</GlyphText>
+              <Text style={styles.challengeTitle}>Wyzwanie dnia</Text>
+              <Text style={styles.challengeText}>Jedno pytanie z lekcji, które już zrobione. Za dobrą odpowiedź +{XP_DAILY_CHALLENGE_BONUS} XP i nutki.</Text>
+              <DarkButton label="Wykonaj wyzwanie dnia" onPress={openChallenge} disabled={!dailyExercise} />
+            </>
+          )}
+        </View>
+
         <PlanTodayCard />
       </ScrollView>
 
-      {alreadyCompletedToday ? (
-        <View style={styles.centerFill}>
-          <GlyphText style={{ fontSize: 48 }}>✅</GlyphText>
-          <Text style={{ fontSize: theme.fontSize.heading, fontWeight: "800", color: theme.colors.ink, textAlign: "center", marginTop: 12 }}>
-            Dzisiejsze wyzwanie zrobione
-          </Text>
-          <Text style={{ color: theme.colors.muted, textAlign: "center", marginTop: 8 }}>Wróć jutro po kolejne.</Text>
-          <View style={{ marginTop: theme.spacing(2), width: "100%", gap: theme.spacing(1) }}>
-            <DarkButton label="Wróć do mapy" onPress={goBackToMap} />
-            {/* Dev-build only (__DEV__ is stripped/false in a real TestFlight/
-                production build) — no way to clear one day's own
-                dailyChallenge from device storage without this, and
-                re-testing the flow shouldn't mean waiting for tomorrow. */}
-            {__DEV__ && <DarkButton label="🧪 Resetuj wyzwanie (dev)" onPress={handleResetForTesting} variant="secondary" />}
-          </View>
-        </View>
-      ) : noContentAvailable ? (
-        <View style={styles.centerFill}>
-          <Text style={{ color: theme.colors.muted, textAlign: "center" }}>
-            Brak jeszcze odblokowanej treści na wyzwanie dnia — wróć po ukończeniu pierwszej lekcji.
-          </Text>
-          <View style={{ marginTop: theme.spacing(2), width: "100%" }}>
-            <DarkButton label="Wróć do mapy" onPress={goBackToMap} />
-          </View>
-        </View>
-      ) : dailyExercise ? (
-        <>
-          <ScrollView contentContainerStyle={styles.exerciseArea} keyboardShouldPersistTaps="handled">
-            <ExerciseRenderer exercise={dailyExercise} answer={answer} onAnswerChange={setAnswer} checked={checked} isCorrect={isCorrect} locale="pl" />
-          </ScrollView>
-          <View style={{ paddingHorizontal: 24, paddingBottom: insets.bottom + 16 }}>
-            {checked && (
-              <View style={{ marginBottom: theme.spacing(1.5) }}>
-                <SoltekMascot
-                  size="sm"
-                  expression={isCorrect ? "radosny" : "zachecajacy"}
-                  message={isCorrect ? `${t("lesson.correct", "pl")} +${XP_DAILY_CHALLENGE_BONUS} XP` : t("lesson.incorrectTryAnother", "pl")}
+      <BottomTabBar />
+
+      {challengeOpen && dailyExercise && (
+        <Modal visible transparent animationType="none" onRequestClose={closeChallenge}>
+          <View style={[styles.modalBackdrop, { paddingTop: insets.top + 16, paddingBottom: insets.bottom + 16 }]}>
+            <View style={styles.modalCard}>
+              <View style={styles.modalHeader}>
+                <GlyphText style={styles.modalTitle}>🎯 Wyzwanie dnia</GlyphText>
+                <Pressable onPress={closeChallenge} accessibilityRole="button" accessibilityLabel="Zamknij" hitSlop={12}>
+                  <GlyphText style={{ fontSize: 18, color: theme.colors.muted }}>✕</GlyphText>
+                </Pressable>
+              </View>
+              <ScrollView contentContainerStyle={styles.modalExercise} keyboardShouldPersistTaps="handled">
+                <ExerciseRenderer exercise={dailyExercise} answer={answer} onAnswerChange={setAnswer} checked={checked} isCorrect={isCorrect} locale="pl" />
+              </ScrollView>
+              <View style={styles.modalFooter}>
+                {checked && (
+                  <SoltekMascot
+                    size="sm"
+                    expression={isCorrect ? "radosny" : "zachecajacy"}
+                    message={isCorrect ? `${t("lesson.correct", "pl")} +${XP_DAILY_CHALLENGE_BONUS} XP. Dzisiejsze wyzwanie zrobione!` : t("lesson.incorrectTryAnother", "pl")}
+                  />
+                )}
+                <DarkButton
+                  label={checked ? (isCorrect ? "Gotowe" : "Następne zadanie") : t("lesson.checkAnswer", "pl")}
+                  onPress={checked ? (isCorrect ? closeChallenge : handleNextChallenge) : handleCheck}
+                  disabled={!checked && !hasAnswerToCheck(answer)}
                 />
               </View>
-            )}
-            <DarkButton
-              label={checked ? (isCorrect ? "Wróć do mapy" : "Następne zadanie") : t("lesson.checkAnswer", "pl")}
-              onPress={checked ? (isCorrect ? goBackToMap : handleNextChallenge) : handleCheck}
-              disabled={!checked && !hasAnswerToCheck(answer)}
-            />
+            </View>
           </View>
-        </>
-      ) : null}
-
-      <BottomTabBar />
+        </Modal>
+      )}
     </View>
   );
 }
@@ -229,12 +251,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: theme.colors.cream,
   },
-  centerFill: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 24,
-  },
   header: {
     flexDirection: "row",
     alignItems: "center",
@@ -242,10 +258,41 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 10,
   },
-  missionsWrap: {
+  pageContent: {
     paddingHorizontal: 16,
-    paddingBottom: 12,
+    paddingBottom: 24,
+    gap: 12,
+    maxWidth: 560,
+    width: "100%",
+    alignSelf: "center",
   },
+  challengeCard: {
+    alignItems: "center",
+    gap: 8,
+    padding: theme.spacing(2),
+    borderRadius: theme.radius.md,
+    backgroundColor: theme.colors.surface,
+    borderWidth: theme.borderWidth,
+    borderColor: theme.colors.border,
+  },
+  challengeTitle: { fontSize: theme.fontSize.heading, fontWeight: "800", color: theme.colors.ink, textAlign: "center" },
+  challengeText: { fontSize: theme.fontSize.body * 0.9, color: theme.colors.muted, textAlign: "center" },
+  modalBackdrop: { flex: 1, backgroundColor: "rgba(20,10,0,0.6)", paddingHorizontal: 12 },
+  modalCard: {
+    flex: 1,
+    width: "100%",
+    maxWidth: 560,
+    alignSelf: "center",
+    borderRadius: theme.radius.lg,
+    backgroundColor: theme.colors.cream,
+    borderWidth: theme.borderWidth,
+    borderColor: theme.colors.border,
+    overflow: "hidden",
+  },
+  modalHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 18, paddingVertical: 14 },
+  modalTitle: { fontSize: 15, fontWeight: "800", color: theme.colors.primary },
+  modalExercise: { flexGrow: 1, justifyContent: "center", paddingHorizontal: 18, paddingVertical: 12 },
+  modalFooter: { paddingHorizontal: 18, paddingBottom: 16, paddingTop: 8, gap: theme.spacing(1.5) },
   backButton: {
     width: 40,
     height: 40,
