@@ -113,9 +113,9 @@ export interface GamificationState {
    * NUTKI_MULTIPLIER_WHEN_INTRO_DISABLED) — the trade a player opts into
    * once they no longer need the training wheels for that world. */
   introModeEnabledByWorld: Record<string, boolean>;
-  /** Sklep Solfka: ids of bought items (lib/shop/catalog.ts) and what Solfek wears now, one item per slot. */
+  /** Sklep Solfka: ids of bought items (lib/shop/catalog.ts) and what Solfek wears / stands in front of now (one outfit, one background). */
   shopOwned: string[];
-  shopEquipped: Partial<Record<"okulary" | "szyja" | "efekt" | "tlo", string>>;
+  shopEquipped: Partial<Record<"ubior" | "tlo", string>>;
 }
 
 export const INITIAL_GAMIFICATION_STATE: GamificationState = {

@@ -3,7 +3,7 @@
  * merge. How each item LOOKS lives in components/shop/. Prices are a real
  * investment on purpose: a correct answer pays 2 nutki, a perfect lesson 5. */
 
-export type ShopSlot = "okulary" | "szyja" | "efekt" | "tlo";
+export type ShopSlot = "ubior" | "tlo";
 
 export interface ShopItem {
   id: string;
@@ -14,42 +14,33 @@ export interface ShopItem {
 }
 
 export const SHOP_SLOTS: readonly { slot: ShopSlot; label: string }[] = [
-  { slot: "okulary", label: "Okulary" },
-  { slot: "szyja", label: "Na szyję" },
-  { slot: "efekt", label: "Efekty" },
+  { slot: "ubior", label: "Ubiory" },
   { slot: "tlo", label: "Tła" },
 ];
 
-/** The background Solfek stands in until the player picks another one. */
-export const DEFAULT_BACKGROUND_ID = "tlo-solfek";
+/** What Solfek wears and stands in front of until the player picks something else (both free). */
+export const DEFAULT_OUTFIT_ID = "ubior-standardowy";
+export const DEFAULT_BACKGROUND_ID = "tlo-sloneczne";
 
 export const SHOP_ITEMS: readonly ShopItem[] = [
-  { id: "okulary-okragle", slot: "okulary", name: "Okrągłe okulary", description: "Dla mądrego muzyka.", price: 60 },
-  { id: "okulary-sloneczne", slot: "okulary", name: "Okulary przeciwsłoneczne", description: "Scena świeci, Solfek też.", price: 100 },
-  { id: "okulary-gwiazdki", slot: "okulary", name: "Okulary w gwiazdki", description: "Dla prawdziwej gwiazdy.", price: 140 },
+  { id: DEFAULT_OUTFIT_ID, slot: "ubior", name: "Solfek", description: "Taki, jakim go znasz.", price: 0 },
+  { id: "ubior-czerwony", slot: "ubior", name: "Czerwony czarodziej", description: "Gorący jak finał koncertu.", price: 100 },
+  { id: "ubior-fioletowy", slot: "ubior", name: "Fioletowy czarodziej", description: "Magia w odcieniu bzu.", price: 100 },
+  { id: "ubior-mietowy", slot: "ubior", name: "Miętowy czarodziej", description: "Świeży jak poranne ćwiczenia.", price: 100 },
+  { id: "ubior-niebieski", slot: "ubior", name: "Niebieski czarodziej", description: "Spokojny jak dźwięk w ciszy.", price: 100 },
+  { id: "ubior-rozowy", slot: "ubior", name: "Różowy czarodziej", description: "Różowy i pełen energii.", price: 100 },
+  { id: "ubior-turkusowy", slot: "ubior", name: "Turkusowy czarodziej", description: "Kolor morskiej fali.", price: 100 },
+  { id: "ubior-krolewski", slot: "ubior", name: "Królewski Solfek", description: "Z koroną dla władcy nut.", price: 200 },
+  { id: "ubior-aktor", slot: "ubior", name: "Solfek na scenie", description: "Cylinder i frak na wielki występ.", price: 250 },
+  { id: "ubior-mag", slot: "ubior", name: "Mądry czarodziej", description: "Okulary i gwiaździsta peleryna.", price: 250 },
+  { id: "ubior-gwiazda", slot: "ubior", name: "Gwiazda", description: "Korona i okulary w gwiazdki.", price: 300 },
 
-  { id: "szyja-muszka", slot: "szyja", name: "Muszka", description: "Na koncert w najlepszym stylu.", price: 60 },
-  { id: "szyja-medal", slot: "szyja", name: "Złoty medal", description: "Za wytrwałe ćwiczenie.", price: 120 },
-  { id: "szyja-dzwonek", slot: "szyja", name: "Dzwoneczek", description: "Dzyń! Słychać Solfka z daleka.", price: 80 },
-
-  { id: "efekt-nutki", slot: "efekt", name: "Tańczące nutki", description: "Nutki fruwają dookoła Solfka.", price: 80 },
-  { id: "efekt-iskierki", slot: "efekt", name: "Iskierki", description: "Odrobina magii.", price: 120 },
-  { id: "efekt-platki", slot: "efekt", name: "Płatki kwiatów", description: "Wiosenny nastrój.", price: 160 },
-
-  { id: DEFAULT_BACKGROUND_ID, slot: "tlo", name: "Domek Solfka", description: "Domyślne tło.", price: 0 },
-  { id: "tlo-wioska-nut", slot: "tlo", name: "Wioska Nut", description: "Tam wszystko się zaczęło.", price: 80 },
-  { id: "tlo-miasto-rytmu", slot: "tlo", name: "Miasto Rytmu", description: "Tu zawsze coś bije.", price: 90 },
-  { id: "tlo-przystan-taktow", slot: "tlo", name: "Przystań Taktów", description: "Fale w rytmie na trzy.", price: 100 },
-  { id: "tlo-krolestwo-instrumentow", slot: "tlo", name: "Królestwo Instrumentów", description: "Cała orkiestra w tle.", price: 120 },
-  { id: "tlo-pasmo-interwalow", slot: "tlo", name: "Pasmo Interwałów", description: "Góry wysokich i niskich dźwięków.", price: 140 },
-  { id: "tlo-zatoka-trojdzwiekow", slot: "tlo", name: "Zatoka Trójdźwięków", description: "Trzy dźwięki, jeden spokój.", price: 160 },
-  { id: "tlo-jaskinia-akordow", slot: "tlo", name: "Jaskinia Akordów", description: "Echo pełnych akordów.", price: 180 },
-  { id: "tlo-cytadela-dominant", slot: "tlo", name: "Cytadela Dominant", description: "Twierdza napięcia i rozwiązania.", price: 200 },
-  { id: "tlo-labirynt-tonacji", slot: "tlo", name: "Labirynt Tonacji", description: "Znajdź drogę w kole kwintowym.", price: 220 },
-  { id: "tlo-fabryka-budowania", slot: "tlo", name: "Fabryka Budowania", description: "Tu składa się dźwięki.", price: 240 },
-  { id: "tlo-gaj-grupowania", slot: "tlo", name: "Gaj Grupowania", description: "Nuty zebrane w grupki.", price: 260 },
-  { id: "tlo-szczyt-dyktand", slot: "tlo", name: "Szczyt Dyktand", description: "Widok z samej góry.", price: 300 },
-  { id: "tlo-zaczarowany-solfez", slot: "tlo", name: "Zaczarowany Solfeż", description: "Tu śpiewają nawet drzewa.", price: 320 },
+  { id: DEFAULT_BACKGROUND_ID, slot: "tlo", name: "Słoneczne wzgórza", description: "Domyślne tło.", price: 0 },
+  { id: "tlo-scena", slot: "tlo", name: "Scena", description: "Kurtyna w górę, reflektor włączony.", price: 120 },
+  { id: "tlo-wioska", slot: "tlo", name: "Wioska", description: "Domki na liliowych wzgórzach.", price: 120 },
+  { id: "tlo-port", slot: "tlo", name: "Port", description: "Fale i żaglówka.", price: 150 },
+  { id: "tlo-gory", slot: "tlo", name: "Śnieżne góry", description: "Chłodny, górski spokój.", price: 150 },
+  { id: "tlo-miasto", slot: "tlo", name: "Nocne miasto", description: "Światła w oknach i gwiazdy nad dachami.", price: 180 },
 ];
 
 const BY_ID = new Map(SHOP_ITEMS.map((item) => [item.id, item]));

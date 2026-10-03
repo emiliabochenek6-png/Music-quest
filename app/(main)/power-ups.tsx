@@ -8,30 +8,33 @@ import { AppIcon } from "@/components/icons/AppIcon";
 import { useGamification } from "@/context/GamificationContext";
 import { SolfekAvatar } from "@/components/shop/SolfekAvatar";
 import { MAX_STREAK_FREEZES, POWER_UP_COSTS } from "@/lib/gamification/powerups";
-import { DEFAULT_BACKGROUND_ID, SHOP_SLOTS, itemsInSlot } from "@/lib/shop/catalog";
+import { DEFAULT_BACKGROUND_ID, DEFAULT_OUTFIT_ID, SHOP_ITEMS, SHOP_SLOTS, itemsInSlot } from "@/lib/shop/catalog";
 import type { ShopItem, ShopSlot } from "@/lib/shop/catalog";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import { GlyphText } from "@/components/icons/GlyphText";
 
-type ShopTab = ShopSlot | "ulepszenia";
+type ShopTab = ShopSlot | "zakupione" | "ulepszenia";
 
 const TABS: readonly { id: ShopTab; label: string }[] = [
   ...SHOP_SLOTS.map(({ slot, label }) => ({ id: slot as ShopTab, label })),
+  { id: "zakupione", label: "Zakupione" },
   { id: "ulepszenia", label: "Ulepszenia" },
 ];
+
+const DEFAULT_ID: Record<ShopSlot, string> = { ubior: DEFAULT_OUTFIT_ID, tlo: DEFAULT_BACKGROUND_ID };
 
 /**
  * Sklep Solfka: the one place nutki are spent. Reached by tapping the nutki pill in
  * GamificationHeaderBar (map.tsx's header). A preview of Solfek on top shows what he
- * wears; below, tabs for his glasses, neck things, effects and backgrounds, and
- * "Ulepszenia" (a banked streak freeze, consumed automatically later, see
- * lib/gamification/activity.ts).
+ * wears and where he stands; below, tabs for outfits ("Ubiory"), backgrounds ("Tła"),
+ * everything already bought ("Zakupione"), and "Ulepszenia" (a banked streak freeze,
+ * consumed automatically later, see lib/gamification/activity.ts). Every outfit works on every background.
  */
 export default function PowerUpShopScreen() {
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
   const { state, buyStreakFreeze, buyShopItem, equipShopItem } = useGamification();
-  const [tab, setTab] = useState<ShopTab>("okulary");
+  const [tab, setTab] = useState<ShopTab>("ubior");
   const [feedback, setFeedback] = useState<string | null>(null);
   const previewSize = Math.min(width - 48, 200);
 
@@ -43,12 +46,13 @@ export default function PowerUpShopScreen() {
     setFeedback(buyStreakFreeze() ? "Zamrożenie passy kupione! ❄️" : "Za mało nutek na zamrożenie passy.");
   }
 
+  const isOwned = (item: ShopItem) => item.price === 0 || state.shopOwned.includes(item.id);
+  const isWorn = (item: ShopItem) => (state.shopEquipped[item.slot] ?? DEFAULT_ID[item.slot]) === item.id;
+
   function handleItemPress(item: ShopItem) {
-    const owned = state.shopOwned.includes(item.id) || item.price === 0;
-    const worn = (state.shopEquipped[item.slot] ?? (item.slot === "tlo" ? DEFAULT_BACKGROUND_ID : undefined)) === item.id;
-    if (owned) {
-      // The background can't be taken off, only swapped: taking it off means going back to Solfek's own.
-      equipShopItem(item.slot, worn ? (item.slot === "tlo" ? DEFAULT_BACKGROUND_ID : null) : item.id);
+    if (isOwned(item)) {
+      // Something is always worn: taking it off means going back to the standard Solfek / the default background.
+      equipShopItem(item.slot, isWorn(item) ? null : item.id);
       setFeedback(null);
       return;
     }
@@ -56,6 +60,32 @@ export default function PowerUpShopScreen() {
     if (result === "ok") setFeedback(`${item.name}: kupione, Solfek już to ma na sobie!`);
     else if (result === "not-enough") setFeedback(`Brakuje Ci jeszcze ${item.price - state.nutki} nutek na „${item.name}”.`);
   }
+
+  function renderItem(item: ShopItem) {
+    const owned = isOwned(item);
+    const worn = isWorn(item);
+    const isDefault = item.id === DEFAULT_ID[item.slot];
+    return (
+      <ShopCard
+        key={item.id}
+        thumbnail={
+          <View style={styles.thumb}>
+            <SolfekAvatar equipped={{ [item.slot]: item.id }} size={72} backgroundOnly={item.slot === "tlo"} />
+          </View>
+        }
+        title={item.name}
+        description={item.description}
+        ownedLabel={worn ? "Założone" : owned ? "Masz to" : undefined}
+        buttonLabel={owned ? (worn ? (isDefault ? "Wybrane" : "Zdejmij") : "Załóż") : `Kup za ${item.price}`}
+        showCoin={!owned}
+        variant={owned ? "secondary" : "primary"}
+        disabled={owned && worn && isDefault}
+        onPress={() => handleItemPress(item)}
+      />
+    );
+  }
+
+  const bought = SHOP_ITEMS.filter((item) => item.price > 0 && state.shopOwned.includes(item.id));
 
   return (
     <View style={[styles.root, { paddingTop: insets.top + 16 }]}>
@@ -100,29 +130,23 @@ export default function PowerUpShopScreen() {
             disabled={state.nutki < POWER_UP_COSTS.streakFreeze || state.streakFreezes >= MAX_STREAK_FREEZES}
             onPress={handleBuyStreakFreeze}
           />
+        ) : tab === "zakupione" ? (
+          bought.length === 0 ? (
+            <Text style={styles.empty}>Nic jeszcze nie kupiłeś. Zajrzyj do zakładek „Ubiory” i „Tła”: każdy ubiór pasuje do każdego tła.</Text>
+          ) : (
+            SHOP_SLOTS.map(({ slot, label }) => {
+              const items = bought.filter((item) => item.slot === slot);
+              if (items.length === 0) return null;
+              return (
+                <View key={slot} style={styles.group}>
+                  <Text style={styles.groupTitle}>{label}</Text>
+                  {items.map(renderItem)}
+                </View>
+              );
+            })
+          )
         ) : (
-          itemsInSlot(tab).map((item) => {
-            const owned = state.shopOwned.includes(item.id) || item.price === 0;
-            const worn = (state.shopEquipped[item.slot] ?? (item.slot === "tlo" ? DEFAULT_BACKGROUND_ID : undefined)) === item.id;
-            return (
-              <ShopCard
-                key={item.id}
-                thumbnail={
-                  <View style={styles.thumb}>
-                    <SolfekAvatar equipped={{ [item.slot]: item.id }} size={72} backgroundOnly={item.slot === "tlo"} />
-                  </View>
-                }
-                title={item.name}
-                description={item.description}
-                ownedLabel={worn ? "Założone" : owned ? "Masz to" : undefined}
-                buttonLabel={owned ? (worn && item.slot !== "tlo" ? "Zdejmij" : worn ? "Wybrane" : "Załóż") : `Kup za ${item.price}`}
-                showCoin={!owned}
-                variant={owned ? "secondary" : "primary"}
-                disabled={owned && worn && item.slot === "tlo"}
-                onPress={() => handleItemPress(item)}
-              />
-            );
-          })
+          itemsInSlot(tab).map(renderItem)
         )}
       </ScrollView>
     </View>
@@ -262,6 +286,9 @@ const styles = StyleSheet.create({
   tabActive: { backgroundColor: theme.colors.primary, borderColor: theme.colors.primary },
   tabText: { fontSize: 13, fontWeight: "800", color: theme.colors.ink },
   tabTextActive: { color: "#FFFFFF" },
+  empty: { textAlign: "center", fontSize: 14, lineHeight: 20, color: theme.colors.muted, paddingVertical: 24 },
+  group: { gap: 14 },
+  groupTitle: { fontSize: 13, fontWeight: "800", color: theme.colors.muted, letterSpacing: 0.6, textTransform: "uppercase" },
   thumb: {
     width: 72,
     height: 72,
