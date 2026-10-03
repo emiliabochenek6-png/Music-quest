@@ -34,12 +34,15 @@ export function GamificationHeaderBar() {
       <Pressable onPress={() => setOpenRuleId("streak")} accessibilityRole="button" accessibilityLabel="Zasady: Passa">
         <Pill icon="hud_seria_ogien" label={String(state.streakDays)} />
       </Pressable>
-      <View style={styles.shopWrap}>
-        <Text style={styles.shopCaption}>Sklep</Text>
-        <Pressable ref={shopTargetRef} collapsable={false} onPress={() => router.push("/(main)/power-ups")} accessibilityRole="button" accessibilityLabel="Sklep Solfka">
-          <Pill icon="hud_nutki_waluta" label={String(state.nutki)} />
-        </Pressable>
-      </View>
+      <Pressable ref={shopTargetRef} collapsable={false} onPress={() => router.push("/(main)/power-ups")} accessibilityRole="button" accessibilityLabel="Sklep Solfka">
+        <View style={styles.shopPill}>
+          <Text style={styles.shopCaption}>Sklep</Text>
+          <View style={styles.shopValueRow}>
+            <AppIcon name="hud_nutki_waluta" size={16} />
+            <Text style={styles.pillLabel}>{String(state.nutki)}</Text>
+          </View>
+        </View>
+      </Pressable>
       <Pressable onPress={() => router.push("/(main)/levels")} accessibilityRole="button" accessibilityLabel="Twoje levele">
         <RankPill xp={state.xp} />
       </Pressable>
@@ -91,20 +94,25 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     gap: 8,
   },
-  // The word "Sklep" hangs just above the nutki pill (the free strip under the title), so the pill itself keeps lining up with the others.
-  shopWrap: { position: "relative" },
+  // The nutki pill doubles as the button to Sklep Solfka, so it says so inside its (white) frame: "SKLEP" over the coin and the balance.
+  shopPill: {
+    alignItems: "center",
+    gap: 2,
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    borderRadius: 14,
+    backgroundColor: "#FFFFFF",
+    borderWidth: theme.borderWidth,
+    borderColor: theme.colors.border,
+  },
   shopCaption: {
-    position: "absolute",
-    top: -14,
-    left: 0,
-    right: 0,
-    textAlign: "center",
     fontSize: 10,
     fontWeight: "800",
     letterSpacing: 0.6,
     textTransform: "uppercase",
-    color: theme.colors.ink,
+    color: theme.colors.primary,
   },
+  shopValueRow: { flexDirection: "row", alignItems: "center", gap: 4 },
   pill: {
     flexDirection: "row",
     alignItems: "center",
