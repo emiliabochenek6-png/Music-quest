@@ -34,9 +34,12 @@ export function GamificationHeaderBar() {
       <Pressable onPress={() => setOpenRuleId("streak")} accessibilityRole="button" accessibilityLabel="Zasady: Passa">
         <Pill icon="hud_seria_ogien" label={String(state.streakDays)} />
       </Pressable>
-      <Pressable ref={shopTargetRef} collapsable={false} onPress={() => router.push("/(main)/power-ups")} accessibilityRole="button" accessibilityLabel="Sklep Solfka">
-        <Pill icon="hud_nutki_waluta" label={String(state.nutki)} />
-      </Pressable>
+      <View style={styles.shopWrap}>
+        <Text style={styles.shopCaption}>Sklep</Text>
+        <Pressable ref={shopTargetRef} collapsable={false} onPress={() => router.push("/(main)/power-ups")} accessibilityRole="button" accessibilityLabel="Sklep Solfka">
+          <Pill icon="hud_nutki_waluta" label={String(state.nutki)} />
+        </Pressable>
+      </View>
       <Pressable onPress={() => router.push("/(main)/levels")} accessibilityRole="button" accessibilityLabel="Twoje levele">
         <RankPill xp={state.xp} />
       </Pressable>
@@ -87,6 +90,20 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-start",
     gap: 8,
+  },
+  // The word "Sklep" hangs just above the nutki pill (the free strip under the title), so the pill itself keeps lining up with the others.
+  shopWrap: { position: "relative" },
+  shopCaption: {
+    position: "absolute",
+    top: -14,
+    left: 0,
+    right: 0,
+    textAlign: "center",
+    fontSize: 10,
+    fontWeight: "800",
+    letterSpacing: 0.6,
+    textTransform: "uppercase",
+    color: theme.colors.ink,
   },
   pill: {
     flexDirection: "row",
