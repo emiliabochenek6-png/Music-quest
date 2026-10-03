@@ -22,7 +22,7 @@ export function GamificationHeaderBar() {
   // Which "Zasady gry" entry the last-tapped HUD pill (serca/passa/
   // ranga) should open — null closes RuleInfoModal. The nutki pill
   // deliberately doesn't set this: it already has its own destination
-  // (Sklep Soltka), so tapping it navigates instead of explaining.
+  // (Sklep Solfka), so tapping it navigates instead of explaining.
   const [openRuleId, setOpenRuleId] = useState<string | null>(null);
 
   if (isLoading) return null;
@@ -32,7 +32,7 @@ export function GamificationHeaderBar() {
       <Pressable onPress={() => setOpenRuleId("streak")} accessibilityRole="button" accessibilityLabel="Zasady: Passa">
         <Pill icon="hud_seria_ogien" label={String(state.streakDays)} />
       </Pressable>
-      <Pressable onPress={() => router.push("/(main)/power-ups")} accessibilityRole="button" accessibilityLabel="Sklep Soltka">
+      <Pressable onPress={() => router.push("/(main)/power-ups")} accessibilityRole="button" accessibilityLabel="Sklep Solfka">
         <Pill icon="hud_nutki_waluta" label={String(state.nutki)} />
       </Pressable>
       <Pressable onPress={() => router.push("/(main)/levels")} accessibilityRole="button" accessibilityLabel="Twoje levele">

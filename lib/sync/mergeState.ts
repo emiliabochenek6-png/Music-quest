@@ -1,5 +1,6 @@
 import { addDayStats } from "@/lib/gamification/activity";
 import { deriveHearts } from "@/lib/gamification/hearts";
+import { sanitizeShop, totalSpent } from "@/lib/shop/catalog";
 import { sanitizeGamificationState } from "@/types/gamification";
 import type { ProgressState } from "@/types/content";
 import type { DailyChallengeState, DayActivity, GamificationState } from "@/types/gamification";
@@ -131,6 +132,14 @@ export function mergeGamificationState(localIn: GamificationState, remoteIn: Gam
   const remoteHeartsInfo = deriveHearts(remote, nowMs, false);
   const heartsFromRemote = remoteHeartsInfo.hearts > localHeartsInfo.hearts;
 
+  // Shop: owned items are a union. Nutki spent in the shop are NOT refunded by an older copy: compare each
+  // side's "earned" total (nutki + what its items cost), take the larger, then subtract the merged items' cost.
+  const shopOwned = [...new Set([...local.shopOwned, ...remote.shopOwned])];
+  const earned = Math.max(local.nutki + totalSpent(local.shopOwned), remote.nutki + totalSpent(remote.shopOwned));
+  const mergedNutki = Math.max(0, earned - totalSpent(shopOwned));
+  const shopFromRemote = local.shopOwned.length === 0 && Object.keys(local.shopEquipped).length === 0;
+  const { equipped: shopEquipped } = sanitizeShop(shopOwned, shopFromRemote ? remote.shopEquipped : local.shopEquipped);
+
   return {
     xp: Math.max(local.xp, remote.xp),
     hearts: heartsFromRemote ? remote.hearts : local.hearts,
@@ -140,8 +149,10 @@ export function mergeGamificationState(localIn: GamificationState, remoteIn: Gam
     lessonStars,
     activityLog: mergeActivityLogs(local.activityLog, remote.activityLog),
     dailyChallenge: pickNewerDailyChallenge(local.dailyChallenge, remote.dailyChallenge),
-    nutki: Math.max(local.nutki, remote.nutki),
+    nutki: mergedNutki,
     streakFreezes: Math.max(local.streakFreezes, remote.streakFreezes),
     introModeEnabledByWorld: mergeIntroModeEnabledByWorld(local.introModeEnabledByWorld, remote.introModeEnabledByWorld),
+    shopOwned,
+    shopEquipped,
   };
 }

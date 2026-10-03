@@ -1,3 +1,4 @@
+import { sanitizeShop } from "@/lib/shop/catalog";
 import type { GeneratedExercise } from "@/types/exercises";
 
 /** How many hearts a non-premium player can hold at once — see
@@ -112,6 +113,9 @@ export interface GamificationState {
    * NUTKI_MULTIPLIER_WHEN_INTRO_DISABLED) — the trade a player opts into
    * once they no longer need the training wheels for that world. */
   introModeEnabledByWorld: Record<string, boolean>;
+  /** Sklep Solfka: ids of bought items (lib/shop/catalog.ts) and what Solfek wears now, one item per slot. */
+  shopOwned: string[];
+  shopEquipped: Partial<Record<"okulary" | "szyja" | "efekt" | "tlo", string>>;
 }
 
 export const INITIAL_GAMIFICATION_STATE: GamificationState = {
@@ -126,6 +130,8 @@ export const INITIAL_GAMIFICATION_STATE: GamificationState = {
   nutki: 0,
   streakFreezes: 0,
   introModeEnabledByWorld: {},
+  shopOwned: [],
+  shopEquipped: {},
 };
 
 function finiteOr(value: unknown, fallback: number): number {
@@ -144,6 +150,11 @@ function finiteOr(value: unknown, fallback: number): number {
  * every stored/remote snapshot passes through before becoming real
  * state, rather than patched at each call site. `null`/`undefined`
  * input (nothing stored yet) returns the defaults outright. */
+function shopFields(stored: Partial<GamificationState>): Pick<GamificationState, "shopOwned" | "shopEquipped"> {
+  const { owned, equipped } = sanitizeShop(stored.shopOwned, stored.shopEquipped);
+  return { shopOwned: owned, shopEquipped: equipped };
+}
+
 export function sanitizeGamificationState(stored: Partial<GamificationState> | null | undefined): GamificationState {
   if (!stored) return INITIAL_GAMIFICATION_STATE;
   return {
@@ -154,5 +165,6 @@ export function sanitizeGamificationState(stored: Partial<GamificationState> | n
     streakDays: finiteOr(stored.streakDays, 0),
     nutki: finiteOr(stored.nutki, 0),
     streakFreezes: finiteOr(stored.streakFreezes, 0),
+    ...shopFields(stored),
   };
 }

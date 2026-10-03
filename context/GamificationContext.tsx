@@ -8,6 +8,8 @@ import { MAX_STREAK_FREEZES, NUTKI_REWARDS, POWER_UP_COSTS } from "@/lib/gamific
 import { onLocalDataReset } from "@/lib/sync/localDataReset";
 import { getTitleUnlockedAt, getRankForXp, getRankName, isLevelUpWorthCelebrating } from "@/lib/gamification/rank";
 import { nutkiForLevelRange } from "@/lib/gamification/levelRewards";
+import { getShopItem } from "@/lib/shop/catalog";
+import type { BuyResult, ShopSlot } from "@/lib/shop/catalog";
 import { mergeGamificationState } from "@/lib/sync/mergeState";
 import { useCloudSync } from "@/lib/sync/useCloudSync";
 import { readJson, STORAGE_KEYS, writeJson } from "@/lib/storage";
@@ -68,6 +70,10 @@ interface GamificationContextValue {
   /** Per-world "Zapoznaj się" toggle — see types/gamification.ts's own
    * introModeEnabledByWorld doc. */
   setIntroModeEnabled: (worldId: string, enabled: boolean) => void;
+  /** Sklep Solfka: buys an item with nutki (and puts it on straight away). */
+  buyShopItem: (itemId: string) => BuyResult;
+  /** Puts an owned item on, or takes the slot's item off (`null`; the background falls back to the default). */
+  equipShopItem: (slot: ShopSlot, itemId: string | null) => void;
 }
 
 const GamificationContext = createContext<GamificationContextValue | null>(null);
@@ -226,6 +232,38 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
     return true;
   }
 
+  function buyShopItem(itemId: string): BuyResult {
+    const item = getShopItem(itemId);
+    if (!item) return "unknown";
+    if (state.shopOwned.includes(itemId)) return "owned";
+    if (state.nutki < item.price) return "not-enough";
+    setState((prev) => {
+      if (prev.shopOwned.includes(itemId) || prev.nutki < item.price) return prev;
+      const next: GamificationState = {
+        ...prev,
+        nutki: prev.nutki - item.price,
+        shopOwned: [...prev.shopOwned, itemId],
+        shopEquipped: { ...prev.shopEquipped, [item.slot]: itemId },
+      };
+      void writeJson(STORAGE_KEYS.gamification, next);
+      return next;
+    });
+    return "ok";
+  }
+
+  function equipShopItem(slot: ShopSlot, itemId: string | null) {
+    setState((prev) => {
+      const item = itemId ? getShopItem(itemId) : undefined;
+      if (itemId && (!item || item.slot !== slot || (item.price > 0 && !prev.shopOwned.includes(itemId)))) return prev;
+      const shopEquipped = { ...prev.shopEquipped };
+      if (itemId) shopEquipped[slot] = itemId;
+      else delete shopEquipped[slot];
+      const next: GamificationState = { ...prev, shopEquipped };
+      void writeJson(STORAGE_KEYS.gamification, next);
+      return next;
+    });
+  }
+
   function setIntroModeEnabled(worldId: string, enabled: boolean) {
     setState((prev) => {
       const next: GamificationState = { ...prev, introModeEnabledByWorld: { ...prev.introModeEnabledByWorld, [worldId]: enabled } };
@@ -258,6 +296,8 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
         addNutki,
         buyStreakFreeze,
         setIntroModeEnabled,
+        buyShopItem,
+        equipShopItem,
       }}
     >
       {children}
