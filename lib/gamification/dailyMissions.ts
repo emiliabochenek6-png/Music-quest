@@ -281,7 +281,7 @@ function toProgress(def: MissionDef, target: number, day: DayActivity, challenge
 
 /** Today's three missions with their progress — one plan, one game, one time.
  *
- * Without a plan the plan slot asks the player to set one up with Soltek;
+ * Without a plan the plan slot asks the player to set one up with Solfek;
  * on a day when the plan has nothing to do (a rest day, the path finished)
  * it falls back to the daily challenge, which is always available.
  * `challengeXpReward` is the caller's own XP_DAILY_CHALLENGE_BONUS (see
@@ -298,7 +298,7 @@ export function computeDailyMissions(
 
   let planMission: DailyMissionProgress;
   if (!offer.hasPlan) {
-    planMission = { id: "pl-ustaw-plan", category: "plan", icon: "🧭", label: "Plan: ułóż swój plan z Soltkiem (test poziomujący)", current: 0, target: 1, completed: false };
+    planMission = { id: "pl-ustaw-plan", category: "plan", icon: "🧭", label: "Plan: ułóż swój plan z Solfkiem (test poziomujący)", current: 0, target: 1, completed: false };
   } else if (picks.plan) {
     planMission = toProgress(picks.plan, resolveTarget(picks.plan, offer), activity, challengeCompleted, challengeXpReward);
   } else {

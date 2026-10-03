@@ -13,7 +13,7 @@ interface InfoModalProps {
   onClose: () => void;
 }
 
-/** A small message window with Soltek and one button. Mount it only while it should show (a closing RN-web Modal can linger in the page). */
+/** A small message window with Solfek and one button. Mount it only while it should show (a closing RN-web Modal can linger in the page). */
 export function InfoModal({ title, message, buttonLabel = "OK", secondaryLabel, onSecondary, onClose }: InfoModalProps) {
   return (
     <Modal visible transparent animationType="none" onRequestClose={onClose}>

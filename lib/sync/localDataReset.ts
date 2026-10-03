@@ -10,7 +10,7 @@ const listeners = new Set<Listener>();
 
 /** Registers a callback that runs when the device's local progress is wiped
  * (see resetLocalData). Every context that keeps player progress — progress,
- * XP/nutki, the study plan, Soltek's welcome — subscribes and puts itself
+ * XP/nutki, the study plan, Solfek's welcome — subscribes and puts itself
  * back to its starting state. Returns the unsubscribe function. */
 export function onLocalDataReset(listener: Listener): () => void {
   listeners.add(listener);
@@ -19,7 +19,7 @@ export function onLocalDataReset(listener: Listener): () => void {
   };
 }
 
-/** Wipes the player's progress on this device: every subscribed context goes back to a brand-new start (0 XP, level 1, no finished lessons, no plan, Soltek's welcome shown again). */
+/** Wipes the player's progress on this device: every subscribed context goes back to a brand-new start (0 XP, level 1, no finished lessons, no plan, Solfek's welcome shown again). */
 export function resetLocalData(): void {
   listeners.forEach((listener) => listener());
 }

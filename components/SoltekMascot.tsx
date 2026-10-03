@@ -3,7 +3,7 @@ import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 
 export type SoltekExpression = "radosny" | "zaskoczony" | "myslacy" | "zachecajacy" | "glowny";
 
-/** Soltek's real character art — one square, transparent-background PNG
+/** Solfek's real character art — one square, transparent-background PNG
  * per expression, provided by the app's owner (see assets/soltek/ — the
  * emoji placeholder this component used to render is gone). "glowny" is
  * the general-purpose hero pose (no specific mood), used for the welcome
@@ -18,25 +18,25 @@ const EXPRESSION_IMAGES: Record<SoltekExpression, ReturnType<typeof require>> = 
 
 interface SoltekMascotProps {
   expression?: SoltekExpression;
-  /** What Soltek says — required, since an avatar with nothing to say
-   * isn't really "Soltek talking to you", just a decorative icon. */
+  /** What Solfek says — required, since an avatar with nothing to say
+   * isn't really "Solfek talking to you", just a decorative icon. */
   message: string;
   /** "sm" for a compact inline appearance next to exercise feedback, "md"
    * (default) for most full-attention moments, "lg" for a standalone
    * portrait (no speech bubble beside it — see SoltekWelcomeModal's own
-   * use) where Soltek himself is the focus. */
+   * use) where Solfek himself is the focus. */
   size?: "sm" | "md" | "lg";
   /** Drops the avatar's border/background frame — for a "lg" portrait
    * that's already the sole focus of a screen or card (this app's lesson
    * encouragement/streak interstitials, and SoltekWelcomeModal's own
-   * "Poznaj Soltka!" card), where a frame around him reads as redundant
+   * "Poznaj Solfka!" card), where a frame around him reads as redundant
    * chrome rather than adding anything. Default false keeps every other
    * usage framed as before. */
   frameless?: boolean;
 }
 
 /**
- * Soltek — the app's own guide character (a friendly, music-loving fox
+ * Solfek — the app's own guide character (a friendly, music-loving fox
  * in a wizard hat). Renders his real artwork (see EXPRESSION_IMAGES)
  * with `resizeMode: "contain"` inside a rounded-square frame rather than
  * a tight circle — his pose isn't circular (the hat's curled tip, an

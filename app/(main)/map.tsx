@@ -24,7 +24,7 @@ import { resolveNodeState } from "@/lib/progression/resolveNodeState";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import type { WorldDefinition } from "@/types/content";
 
-// Small rounded logo icon with Soltek, next to the title.
+// Small rounded logo icon with Solfek, next to the title.
 const LOGO_ICON = require("@/assets/logo/ikona-zaokraglona-256.png");
 
 /** The map's own background art (see assets/backgrounds's own soltek-tlo
@@ -71,7 +71,7 @@ export default function MapScreen() {
   // frame before the real (already-true) stored value arrives.
   const showSoltekWelcome = !isProfileLoading && !profile.hasSeenSoltekGreeting;
   // First-run choice of study path (test-based or from the beginning) —
-  // only after the Soltek greeting, so the two never stack.
+  // only after the Solfek greeting, so the two never stack.
   // Only while the map itself is the focused screen: a Modal is drawn above
   // EVERYTHING, so without this it stayed on top of the placement screen
   // pushed from its own "Zrób test" button. Coming back to the map without
@@ -88,7 +88,7 @@ export default function MapScreen() {
       return () => setMapFocused(false);
     }, [])
   );
-  // First run: Soltek's welcome, then the short tour, then the choice of how to start.
+  // First run: Solfek's welcome, then the short tour, then the choice of how to start.
   const showGuide = guideReplay || (!isProfileLoading && profile.hasSeenSoltekGreeting && !profile.hasSeenGuide);
   const showPlanPrompt = mapFocused && !planPromptHidden && !isProfileLoading && !isPlanLoading && profile.hasSeenSoltekGreeting && profile.hasSeenGuide && !guideReplay && plan.mode === "unset" && !plan.promptSeen;
 
@@ -123,8 +123,8 @@ export default function MapScreen() {
       >
         <AppIcon name="hud_menu" size={20} />
       </Pressable>
-      <Image source={LOGO_ICON} style={[styles.logoIcon, { top: insets.top + 8 }]} accessibilityLabel="Music Quest" />
-      <Text style={[styles.title, { top: insets.top + 16 }]}>Music Quest</Text>
+      <Image source={LOGO_ICON} style={[styles.logoIcon, { top: insets.top + 8 }]} accessibilityLabel="Solfek" />
+      <Text style={[styles.title, { top: insets.top + 16 }]}>Solfek</Text>
       <View style={[styles.headerBarWrap, { top: insets.top + 56 }]}>
         <TourTarget id="headerBar" style={{ alignSelf: "flex-start" }}>
           <GamificationHeaderBar />

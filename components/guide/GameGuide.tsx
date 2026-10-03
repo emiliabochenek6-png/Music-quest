@@ -21,7 +21,7 @@ const GAP = 14;
 const ARROW = 14;
 
 /** The tour of the whole game: the screen is dimmed, the real element the
- * step is about is lit up with a gold frame, and Soltek's card points at it
+ * step is about is lit up with a gold frame, and Solfek's card points at it
  * ("Kliknij tutaj…"). Pressing the lit-up spot (or "Dalej") moves on. A step
  * with no target, or whose spot isn't on screen, shows a card in the middle.
  * Mount it only while it should show (a closing RN-web Modal can linger). */

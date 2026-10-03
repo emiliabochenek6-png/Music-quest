@@ -270,7 +270,7 @@ describe("end-to-end placement scenarios", () => {
   });
 });
 
-describe("Soltek's placement lines", () => {
+describe("Solfek's placement lines", () => {
   it("opens, marks the halfway point and the end, and never says whether an answer was right", () => {
     expect(placementQuestionLine(0, 24, "Wioska Nut").message).toContain("Wioska Nut");
     expect(placementQuestionLine(12, 24, "Pasmo Interwałów").message).toContain("Połowa");

@@ -25,7 +25,7 @@ export const RULES: Rule[] = [
     id: "rank",
     icon: { name: "hud_ranga_gwiazda" },
     title: "XP i levele",
-    body: `Błąd nic nie kosztuje — w aplikacji nie ma serc ani blokad. Za każdą poprawną odpowiedź dostajesz punkty doświadczenia (XP) i 2 nutki. Za ukończenie lekcji bez ani jednego błędu — dodatkowy bonus. XP zamieniają się w levele: jest ich ${MAX_LEVEL}, a każdy kolejny trudniej zdobyć niż poprzedni — pierwsze wpadają po kilku dobrych odpowiedziach, ostatnie wymagają prawdziwej wytrwałości. Za każdy 5. level Soltek urządza świętowanie, a co kilkanaście levelów dostajesz nowy tytuł.`,
+    body: `Błąd nic nie kosztuje — w aplikacji nie ma serc ani blokad. Za każdą poprawną odpowiedź dostajesz punkty doświadczenia (XP) i 2 nutki. Za ukończenie lekcji bez ani jednego błędu — dodatkowy bonus. XP zamieniają się w levele: jest ich ${MAX_LEVEL}, a każdy kolejny trudniej zdobyć niż poprzedni — pierwsze wpadają po kilku dobrych odpowiedziach, ostatnie wymagają prawdziwej wytrwałości. Za każdy 5. level Solfek urządza świętowanie, a co kilkanaście levelów dostajesz nowy tytuł.`,
   },
   {
     id: "streak",
@@ -42,8 +42,8 @@ export const RULES: Rule[] = [
   {
     id: "nutki",
     icon: { name: "hud_nutki_waluta" },
-    title: "Nutki i Sklep Soltka",
-    body: `Nutki to Twoja własna waluta — zdobywasz je za każdą dobrą odpowiedź (2 nutki), nowe levele, wyzwanie dnia, perfekcyjną lekcję, ukończenie krainy i co tydzień passy. Nigdy nie da się ich kupić za prawdziwe pieniądze. W Sklepie Soltka (ikonka przy mapie) wymieniasz je na zamrożenie passy (${POWER_UP_COSTS.streakFreeze} nutek, możesz mieć naraz najwyżej ${MAX_STREAK_FREEZES}).`,
+    title: "Nutki i Sklep Solfka",
+    body: `Nutki to Twoja własna waluta — zdobywasz je za każdą dobrą odpowiedź (2 nutki), nowe levele, wyzwanie dnia, perfekcyjną lekcję, ukończenie krainy i co tydzień passy. Nigdy nie da się ich kupić za prawdziwe pieniądze. W Sklepie Solfka (ikonka przy mapie) wymieniasz je na zamrożenie passy (${POWER_UP_COSTS.streakFreeze} nutek, możesz mieć naraz najwyżej ${MAX_STREAK_FREEZES}).`,
   },
   {
     id: "daily-challenge",

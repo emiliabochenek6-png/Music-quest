@@ -45,7 +45,7 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  // A new account (or a different one) meets Soltek again — see lib/sync/localDataReset.ts.
+  // A new account (or a different one) meets Solfek again — see lib/sync/localDataReset.ts.
   // (Name and sound settings are about this device, so they stay.)
   useEffect(
     () =>

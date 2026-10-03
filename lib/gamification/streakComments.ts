@@ -1,4 +1,4 @@
-/** Soltek's comments on the player's streak ("passa"): 100 different lines,
+/** Solfek's comments on the player's streak ("passa"): 100 different lines,
  * one shown at a time and swapped for the next one every 3 days.
  *
  * Every line is written to be true for ANY running streak (1 day or 200),
@@ -20,7 +20,7 @@ export const STREAK_COMMENTS: readonly string[] = [
   "Masz już {dni} ćwiczeń z rzędu, to naprawdę dużo! Brawo!",
   "Passa to Twój cichy superbohater — pilnuje, żebyś nie zapomniał o muzyce.",
   "Małymi krokami też da się dojść na sam szczyt.",
-  "Soltek kibicuje: jeszcze jedno ćwiczenie i dzień zaliczony!",
+  "Solfek kibicuje: jeszcze jedno ćwiczenie i dzień zaliczony!",
   "Najtrudniejszy jest początek dnia. Potem już samo leci.",
   "Dobra passa to dobry nawyk. A dobry nawyk to połowa sukcesu.",
   "Czy wiesz, że słuch muzyczny też się trenuje jak mięśnie? Ćwicz regularnie!",
@@ -173,7 +173,7 @@ function strideFor(length: number): number {
   return [37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97].find((candidate) => gcd(candidate, length) === 1) ?? 1;
 }
 
-/** Soltek's streak comment for a given date: the same one for 3 days in a
+/** Solfek's streak comment for a given date: the same one for 3 days in a
  * row, then the next. `streakDays` fills in the `{dni}` placeholder and
  * leaves out lines that praise a longer streak than the player has; with no
  * streak (0) the comment is one of the "starting from the beginning" ones. */

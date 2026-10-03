@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { useSubscription } from "@/context/SubscriptionContext";
 import { useTheme } from "@/theme/ThemeProvider";
 
-/** The "Subskrypcja" tab: the banner with Soltek on top, and below it either
+/** The "Subskrypcja" tab: the banner with Solfek on top, and below it either
  * the plans, ready to buy at once (no subscription yet), or the status of the
  * active subscription with a link into the store's own management screen —
  * see ARCHITECTURE.md section 4.4: cancelling always goes through the store,

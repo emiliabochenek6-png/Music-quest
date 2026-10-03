@@ -12,7 +12,7 @@ const NEUTRAL_LINES = [
   "Nie wiesz? Naciśnij „Nie wiem”. Zgadywanie niczego nie poprawia!",
 ];
 
-/** What Soltek says above a placement question. Deliberately never says
+/** What Solfek says above a placement question. Deliberately never says
  * whether the PREVIOUS answer was right — the test measures, it doesn't
  * grade — only where we are in it, plus a rotating friendly nudge. `answered`
  * is how many questions are already done, `total` the estimated total. */
@@ -23,7 +23,7 @@ export function placementQuestionLine(answered: number, total: number, worldName
   return { message: `${worldName}. ${NEUTRAL_LINES[answered % NEUTRAL_LINES.length]}`, expression: "myslacy" };
 }
 
-/** Soltek's verdict on the finished test: how many worlds the player already
+/** Solfek's verdict on the finished test: how many worlds the player already
  * knows well and how long the personal path is. */
 export function placementResultLine(masteredWorlds: number, testedWorlds: number, pathLessons: number, allLessons: number): SoltekLine {
   if (pathLessons >= allLessons) {

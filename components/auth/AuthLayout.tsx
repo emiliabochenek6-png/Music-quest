@@ -7,7 +7,7 @@ import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 const BACKGROUND_PHONE = require("@/assets/backgrounds/logowanie-tlo-telefon.jpg");
 const BACKGROUND_LAPTOP = require("@/assets/backgrounds/logowanie-tlo-laptop.jpg");
 
-/** Soltek's own orange for the sign-in buttons (a touch deeper than the mascot's fill so white text stays readable). */
+/** Solfek's own orange for the sign-in buttons (a touch deeper than the mascot's fill so white text stays readable). */
 const SOLTEK_ORANGE = "#D9690A";
 const CARD_MAX_WIDTH = 420;
 
@@ -17,10 +17,10 @@ interface AuthLayoutProps {
   onBack?: () => void;
 }
 
-/** The look shared by the login and sign-up screens: Soltek's warm,
+/** The look shared by the login and sign-up screens: Solfek's warm,
  * rays-and-hills background with the form on a cream card sitting in the
- * calm part of the picture. Two pictures: a tall one for a phone (Soltek
- * on top, the card below him) and a wide one for a laptop (Soltek on the
+ * calm part of the picture. Two pictures: a tall one for a phone (Solfek
+ * on top, the card below him) and a wide one for a laptop (Solfek on the
  * left, the card on the right); which one shows follows the window's own
  * shape, so a narrow browser window on a laptop gets the phone layout too. */
 export function AuthLayout({ children, onBack }: AuthLayoutProps) {
@@ -43,7 +43,7 @@ export function AuthLayout({ children, onBack }: AuthLayoutProps) {
           flexGrow: 1,
           justifyContent: portrait ? "flex-start" : "center",
           alignItems: portrait ? "center" : "flex-end",
-          // Phone: the card starts below Soltek (he fills the top ~40%). Laptop: the card sits in the calm right-hand part.
+          // Phone: the card starts below Solfek (he fills the top ~40%). Laptop: the card sits in the calm right-hand part.
           paddingTop: portrait ? Math.max(insets.top + 24, height * 0.385) : insets.top + 24,
           paddingBottom: insets.bottom + 24,
           paddingHorizontal: portrait ? 16 : width * 0.08,

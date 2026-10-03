@@ -10,7 +10,7 @@ interface SoltekWelcomeModalProps {
 }
 
 /**
- * Soltek's own one-time welcome — shown the first time a player reaches
+ * Solfek's own one-time welcome — shown the first time a player reaches
  * the map (see app/(main)/map.tsx's own use of ProfileContext's
  * hasSeenSoltekGreeting), introducing him as the guide who'll show up
  * again on select exercises (see SoltekMascot's own inline use in
@@ -23,13 +23,13 @@ export function SoltekWelcomeModal({ visible, onDismiss }: SoltekWelcomeModalPro
     <Modal visible={visible} transparent animationType="none" onRequestClose={onDismiss}>
       <View style={styles.backdrop}>
         <View style={styles.card}>
-          <GlyphText style={styles.title}>🎵 Poznaj Soltka!</GlyphText>
+          <GlyphText style={styles.title}>🎵 Poznaj Solfka!</GlyphText>
           <SoltekMascot
             size="lg"
             expression="glowny"
             frameless
             message={
-              "Cześć! Jestem Soltek, Twój przewodnik po świecie muzyki. Będę Ci towarzyszyć, podpowiadać i kibicować w każdym zadaniu. Gotowy na przygodę?"
+              "Cześć! Jestem Solfek, Twój przewodnik po świecie muzyki. Będę Ci towarzyszyć, podpowiadać i kibicować w każdym zadaniu. Gotowy na przygodę?"
             }
           />
           <View style={{ marginTop: theme.spacing(2), width: "100%" }}>

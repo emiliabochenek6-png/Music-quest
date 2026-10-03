@@ -106,16 +106,16 @@ export default function PlacementScreen() {
             size="lg"
             expression="glowny"
             frameless
-            message={`Cześć, tu Soltek! Zadam Ci po 1–2 pytania z każdej krainy (razem ok. ${totalEstimate - 2}–${totalEstimate}, ok. 8–10 minut). Jeśli pójdzie dobrze, następne będzie trudniejsze; jeśli nie — łatwiejsze.`}
+            message={`Cześć, tu Solfek! Zadam Ci po 1–2 pytania z każdej krainy (razem ok. ${totalEstimate - 2}–${totalEstimate}, ok. 8–10 minut). Jeśli pójdzie dobrze, następne będzie trudniejsze; jeśli nie — łatwiejsze.`}
           />
-          <Text style={styles.heading}>Test poziomujący z Soltkiem</Text>
+          <Text style={styles.heading}>Test poziomujący z Solfkiem</Text>
           <View style={styles.bullets}>
             <Bullet text="Nic nie tracisz: bez punktów i ocen." />
             <Bullet text="Nie wiesz? Naciśnij „Nie wiem” — zamiast zgadywać." />
             <Bullet text="Z wyniku ułożymy ścieżkę: pominiesz to, co umiesz, i zaplanujemy resztę na ok. 3 miesiące." />
           </View>
           <View style={{ gap: theme.spacing(1.25), width: "100%" }}>
-            <DarkButton label="Zaczynamy test z Soltkiem" onPress={begin} />
+            <DarkButton label="Zaczynamy test z Solfkiem" onPress={begin} />
             <DarkButton label="Zacznij od gry (tryb zabawy)" onPress={startFromBeginning} variant="secondary" />
           </View>
         </ScrollView>

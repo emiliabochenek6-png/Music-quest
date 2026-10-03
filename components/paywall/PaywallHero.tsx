@@ -7,7 +7,7 @@ const HERO_LAPTOP = require("@/assets/backgrounds/subskrypcja-hero-laptop.jpg");
 export const PAYWALL_BACKGROUND_PHONE = "#FEF4E4";
 export const PAYWALL_BACKGROUND_LAPTOP = "#FEF1E1";
 
-/** The subscription banner: Soltek jumping out of a treasure chest, with the bosses of all worlds around him. Two pictures: a taller one on a phone, a wide one on a laptop. */
+/** The subscription banner: Solfek jumping out of a treasure chest, with the bosses of all worlds around him. Two pictures: a taller one on a phone, a wide one on a laptop. */
 export function PaywallHero() {
   const { width, height } = useWindowDimensions();
   const portrait = width < height;
@@ -17,7 +17,7 @@ export function PaywallHero() {
       <Image
         source={portrait ? HERO_PHONE : HERO_LAPTOP}
         resizeMode="cover"
-        accessibilityLabel="Soltek ze skrzynią skarbów i bossami wszystkich krain"
+        accessibilityLabel="Solfek ze skrzynią skarbów i bossami wszystkich krain"
         style={[StyleSheet.absoluteFill, { width: "100%", height: "100%" }]}
       />
     </View>

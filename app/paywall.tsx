@@ -8,7 +8,7 @@ import { useTheme } from "@/theme/ThemeProvider";
 
 /**
  * Paywall (opens from a locked world) — see ARCHITECTURE.md section 4: the
- * banner with Soltek on top, then the plans straight away. See
+ * banner with Solfek on top, then the plans straight away. See
  * components/paywall/PaywallPlans.tsx for the prices and the purchase itself.
  */
 export default function PaywallScreen() {

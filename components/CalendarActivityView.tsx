@@ -14,7 +14,7 @@ import type { DayActivity } from "@/types/gamification";
 
 const WEEKDAY_LABELS = ["pon", "wt", "śr", "czw", "pt", "sob", "nd"];
 
-// Soltek's orange, from a light wash to a deep tone: the more you practised, the deeper the day.
+// Solfek's orange, from a light wash to a deep tone: the more you practised, the deeper the day.
 const LEVEL_COLORS: Record<ActivityLevel, string> = { 0: "transparent", 1: "#FCDFAE", 2: "#F7B25A", 3: "#E8741A" };
 const LEVEL_TEXT: Record<ActivityLevel, string> = { 0: theme.colors.muted, 1: "#7A4A12", 2: "#4A2C1D", 3: "#FFFFFF" };
 const STREAK_BAR = "#FDEBCB";

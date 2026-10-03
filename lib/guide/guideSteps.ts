@@ -5,22 +5,22 @@ export interface GuideStep {
   id: string;
   icon: IconName;
   title: string;
-  /** What Soltek says: short, in plain words, written for a child. */
+  /** What Solfek says: short, in plain words, written for a child. */
   message: string;
   expression: SoltekExpression;
   /** The spot on screen to highlight (see lib/guide/tourTargets.ts); no target = a card in the middle of the screen. */
   target?: "modeSwitch" | "firstWorld" | "headerBar" | "tabMisje" | "tabKalendarz" | "menu";
 }
 
-/** The tour of the whole game for a new player: Soltek points at the real
- * places on screen ("Kliknij tutaj…"). Shown once after Soltek's welcome
+/** The tour of the whole game for a new player: Solfek points at the real
+ * places on screen ("Kliknij tutaj…"). Shown once after Solfek's welcome
  * and again from the side menu's "Przewodnik po grze". A step whose spot
  * isn't on screen (e.g. the world map while "Tryb nauki" is showing) falls back to a card in the middle. */
 export const GUIDE_STEPS: readonly GuideStep[] = [
   {
     id: "witaj",
     icon: "kraina_wioska_nut",
-    title: "Witaj w Music Quest!",
+    title: "Witaj w Solfku!",
     message: "Pokażę Ci na ekranie, gdzie co jest. Klikaj w podświetlone miejsca albo naciskaj „Dalej”. To zajmie tylko minutę!",
     expression: "glowny",
   },

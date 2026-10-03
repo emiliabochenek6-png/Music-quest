@@ -69,7 +69,7 @@ function iconFor(mapIconId: string | undefined) {
 }
 
 /** "Tryb nauki" / "Twój plan" — the personal path as a game-like winding
- * trail: a hero card with Soltek and a progress ring, today's reviews, then
+ * trail: a hero card with Solfek and a progress ring, today's reviews, then
  * the days ahead as banners with their lessons as big round nodes in each
  * world's colour (a boss lesson gets its boss's portrait). The next lesson
  * pulses; finished ones turn green with a tick. Tapping a node opens the
@@ -191,7 +191,7 @@ export function PlanPath() {
 
   return (
     <ScrollView ref={scrollRef} style={styles.scroll} contentContainerStyle={contentStyle} showsVerticalScrollIndicator={false}>
-      {/* Hero: Soltek + progress ring + stats */}
+      {/* Hero: Solfek + progress ring + stats */}
       <View style={[styles.hero, { width: TRAIL_WIDTH + 24 }]}>
         <View style={styles.heroTop}>
           <ProgressRing percent={percent} />

@@ -47,12 +47,12 @@ const XP_PER_CORRECT_ANSWER = 10;
 /** Nutki ("nuty") a correct answer pays in "Tryb nauki". */
 const NUTKI_PER_CORRECT_ANSWER = 2;
 const XP_PERFECT_LESSON_BONUS = 20;
-/** Roughly 1 in 3 checks — see showSoltek's own doc for why this isn't
+/** Roughly 1 in 3 checks — see showSolfek's own doc for why this isn't
  * every check. */
 const SOLTEK_APPEARANCE_CHANCE = 0.35;
 /** Every Nth wrong answer TOTAL this attempt (not necessarily in a row —
  * correct answers in between don't reset the count, see mistakeCount's
- * own doc) gets an encouraging Soltek checkpoint. */
+ * own doc) gets an encouraging Solfek checkpoint. */
 const ENCOURAGEMENT_INTERVAL = 3;
 /** How many distinct encouragement lines exist (lesson.encouragement1..N
  * in pl.json) — handleCheck picks one at random each time the
@@ -93,7 +93,7 @@ const NUTKI_MULTIPLIER_WHEN_INTRO_DISABLED = 2;
  * finishing the lesson. Every third wrong
  * answer TOTAL this attempt (mistakes don't need to be back to back —
  * correct answers in between still count toward the next checkpoint)
- * also inserts a one-off full-screen encouragement moment (big Soltek,
+ * also inserts a one-off full-screen encouragement moment (big Solfek,
  * one of several "Dasz radę!"-style lines) between that exercise and the
  * next — see showEncouragementInterstitial's own doc. A genuine streak
  * (STREAK_CELEBRATION_INTERVAL correct answers IN A ROW) gets the same
@@ -178,19 +178,19 @@ function LessonScreenBody() {
   const [answer, setAnswer] = useState<AnswerInput | null>(null);
   const [checked, setChecked] = useState(false);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
-  // Soltek shows up on a random minority of checks (see SOLTEK_APPEARANCE_CHANCE)
+  // Solfek shows up on a random minority of checks (see SOLTEK_APPEARANCE_CHANCE)
   // rather than every single one — a lesson can have many exercises in a
   // row, and a companion commenting on every single answer would read as
   // clutter rather than the occasional encouraging cameo he's meant to be.
   // Re-rolled fresh each time handleCheck runs, reset on handleContinue so
   // the next question gets its own independent roll.
-  const [showSoltek, setShowSoltek] = useState(false);
+  const [showSolfek, setShowSolfek] = useState(false);
   // "Owed, not shown yet" — set true by handleCheck the moment
   // mistakeCount crosses an ENCOURAGEMENT_INTERVAL multiple (see that
   // constant's own doc — total wrong answers this attempt, correct ones
   // in between don't reset it), consumed by handleContinue the moment
   // the player presses on past THAT exercise. Shows a full interstitial
-  // screen (big Soltek, see showEncouragementInterstitial) BETWEEN that
+  // screen (big Solfek, see showEncouragementInterstitial) BETWEEN that
   // exercise and the next one, instead of just going straight on.
   const [showEncouragement, setShowEncouragement] = useState(false);
   // Which of the ENCOURAGEMENT_MESSAGE_COUNT lines to show — rolled once
@@ -363,7 +363,7 @@ function LessonScreenBody() {
     }
     setChecked(true);
     setIsCorrect(correct);
-    setShowSoltek(Math.random() < SOLTEK_APPEARANCE_CHANCE);
+    setShowSolfek(Math.random() < SOLTEK_APPEARANCE_CHANCE);
     if (!correct) {
       const nextMistakeCount = mistakeCount + 1;
       setMistakeCount(nextMistakeCount);
@@ -435,7 +435,7 @@ function LessonScreenBody() {
       setAnswer(null);
       setChecked(false);
       setIsCorrect(null);
-      setShowSoltek(false);
+      setShowSolfek(false);
       setShowEncouragement(false);
     } else {
       onLessonCompleted(currentLesson.id);
@@ -620,7 +620,7 @@ function LessonScreenBody() {
 
   // A one-off full screen BETWEEN two exercises (see
   // showEncouragementInterstitial's own doc) — every ENCOURAGEMENT_INTERVAL
-  // checkpoint gets Soltek's full "lg" portrait-and-bubble treatment (the
+  // checkpoint gets Solfek's full "lg" portrait-and-bubble treatment (the
   // same size SoltekWelcomeModal gives him), not squeezed into the small
   // inline feedback row every check/miss uses, since this moment is meant
   // to actually land, not blend into the usual flow. The message itself
@@ -755,7 +755,7 @@ function LessonScreenBody() {
         )}
         {checked && (
           <View style={{ marginBottom: theme.spacing(1.5) }}>
-            {showSoltek ? (
+            {showSolfek ? (
               <SoltekMascot
                 size="sm"
                 expression={isCorrect ? "radosny" : "zachecajacy"}

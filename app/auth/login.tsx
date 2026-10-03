@@ -7,7 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 import { translateAuthError } from "@/lib/supabase/authErrors";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 
-// Rounded Music Quest icon with Soltek above the name.
+// Rounded Solfek icon with Solfek above the name.
 const LOGO_ICON = require("@/assets/logo/ikona-zaokraglona-256.png");
 
 type Status = { kind: "idle" } | { kind: "submitting" } | { kind: "error"; message: string } | { kind: "reset-sent" };
@@ -18,7 +18,7 @@ type Status = { kind: "idle" } | { kind: "submitting" } | { kind: "error"; messa
  * app/(main)/map.tsx's own doc for the glowBlob/background treatment
  * this mirrors exactly). Login is mandatory (see app/index.tsx's own
  * doc): this is the very first thing an unauthenticated player sees,
- * carrying the "Music Quest" branding a separate welcome screen used to
+ * carrying the "Solfek" branding a separate welcome screen used to
  * own, since that screen no longer exists — there's nothing to skip
  * past, so this has no back button either (a signed-out player only
  * ever reaches this screen with nothing behind it to go back to,
@@ -63,8 +63,8 @@ export default function LoginScreen() {
   return (
     <AuthLayout>
       <View style={styles.container}>
-        <Image source={LOGO_ICON} style={styles.logoIcon} accessibilityLabel="Music Quest" />
-        <Text style={styles.brand}>Music Quest</Text>
+        <Image source={LOGO_ICON} style={styles.logoIcon} accessibilityLabel="Solfek" />
+        <Text style={styles.brand}>Solfek</Text>
         <Text style={styles.tagline}>Naucz się czytać nuty, rytm i słuch muzyczny — krok po kroku.</Text>
 
         <Text style={styles.title}>Zaloguj się</Text>
