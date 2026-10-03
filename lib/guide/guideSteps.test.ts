@@ -24,6 +24,12 @@ describe("new-player guide", () => {
     expect(pointing.filter((step) => /Kliknij|Tutaj/.test(step.message)).length).toBe(pointing.length);
   });
 
+  it("tells about Sklep Solfka and points at the nutki pill", () => {
+    const shop = GUIDE_STEPS.find((step) => step.id === "sklep");
+    expect(shop?.target).toBe("shop");
+    expect(shop?.message).toMatch(/ubiory/);
+  });
+
   it("explains that a level opens with 2 stars, and starts and ends with a centred card", () => {
     expect(GUIDE_STEPS.some((step) => /minimum 2 gwiazdki/.test(step.message))).toBe(true);
     expect(GUIDE_STEPS[0].target).toBeUndefined();

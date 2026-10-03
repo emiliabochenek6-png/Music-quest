@@ -43,7 +43,7 @@ export const RULES: Rule[] = [
     id: "nutki",
     icon: { name: "hud_nutki_waluta" },
     title: "Nutki i Sklep Solfka",
-    body: `Nutki to Twoja własna waluta — zdobywasz je za każdą dobrą odpowiedź (2 nutki), nowe levele, wyzwanie dnia, perfekcyjną lekcję, ukończenie krainy i co tydzień passy. Nigdy nie da się ich kupić za prawdziwe pieniądze. W Sklepie Solfka (ikonka przy mapie) wymieniasz je na zamrożenie passy (${POWER_UP_COSTS.streakFreeze} nutek, możesz mieć naraz najwyżej ${MAX_STREAK_FREEZES}).`,
+    body: `Nutki to Twoja własna waluta — zdobywasz je za każdą dobrą odpowiedź (2 nutki), nowe levele, wyzwanie dnia, perfekcyjną lekcję, ukończenie krainy i co tydzień passy. Nigdy nie da się ich kupić za prawdziwe pieniądze. W Sklepie Solfka (kliknij nutki przy mapie) kupujesz ubiory dla Solfka (różne kolory i stroje) oraz tła, a wszystko, co masz, znajdziesz w zakładce „Zakupione”. Każdy ubiór pasuje do każdego tła. Możesz tam też kupić zamrożenie passy (${POWER_UP_COSTS.streakFreeze} nutek, naraz najwyżej ${MAX_STREAK_FREEZES}). Nutki wydane w sklepie znikają z konta, więc oszczędzaj na to, na czym Ci zależy.`,
   },
   {
     id: "daily-challenge",

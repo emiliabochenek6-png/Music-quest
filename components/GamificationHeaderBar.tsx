@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Pressable, Text, View, StyleSheet } from "react-native";
 import { router } from "expo-router";
 import { AppIcon } from "@/components/icons/AppIcon";
+import { useTourTarget } from "@/lib/guide/tourTargets";
 import type { IconName } from "@/components/icons/icons";
 import { RuleInfoModal } from "@/components/RuleInfoModal";
 import { useGamification } from "@/context/GamificationContext";
@@ -24,6 +25,7 @@ export function GamificationHeaderBar() {
   // deliberately doesn't set this: it already has its own destination
   // (Sklep Solfka), so tapping it navigates instead of explaining.
   const [openRuleId, setOpenRuleId] = useState<string | null>(null);
+  const shopTargetRef = useTourTarget("shop");
 
   if (isLoading) return null;
 
@@ -32,7 +34,7 @@ export function GamificationHeaderBar() {
       <Pressable onPress={() => setOpenRuleId("streak")} accessibilityRole="button" accessibilityLabel="Zasady: Passa">
         <Pill icon="hud_seria_ogien" label={String(state.streakDays)} />
       </Pressable>
-      <Pressable onPress={() => router.push("/(main)/power-ups")} accessibilityRole="button" accessibilityLabel="Sklep Solfka">
+      <Pressable ref={shopTargetRef} collapsable={false} onPress={() => router.push("/(main)/power-ups")} accessibilityRole="button" accessibilityLabel="Sklep Solfka">
         <Pill icon="hud_nutki_waluta" label={String(state.nutki)} />
       </Pressable>
       <Pressable onPress={() => router.push("/(main)/levels")} accessibilityRole="button" accessibilityLabel="Twoje levele">

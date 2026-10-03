@@ -9,7 +9,7 @@ export interface GuideStep {
   message: string;
   expression: SoltekExpression;
   /** The spot on screen to highlight (see lib/guide/tourTargets.ts); no target = a card in the middle of the screen. */
-  target?: "modeSwitch" | "firstWorld" | "headerBar" | "tabMisje" | "tabKalendarz" | "menu";
+  target?: "modeSwitch" | "firstWorld" | "headerBar" | "shop" | "tabMisje" | "tabKalendarz" | "menu";
 }
 
 /** The tour of the whole game for a new player: Solfek points at the real
@@ -47,6 +47,14 @@ export const GUIDE_STEPS: readonly GuideStep[] = [
     message: "Tutaj widzisz passę (dni ćwiczeń z rzędu), nutki i swój level. Za dobre odpowiedzi dostajesz XP i nutki. Kliknij level, żeby zobaczyć nagrody!",
     expression: "radosny",
     target: "headerBar",
+  },
+  {
+    id: "sklep",
+    icon: "hud_nutki_waluta",
+    title: "Sklep Solfka",
+    message: "Kliknij nutki, żeby wejść do sklepu. Za nutki kupisz ubiory dla Solfka (różne kolory i stroje) oraz tła. Co masz, znajdziesz w zakładce „Zakupione”.",
+    expression: "radosny",
+    target: "shop",
   },
   {
     id: "misje",
