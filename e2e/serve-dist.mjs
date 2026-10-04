@@ -29,7 +29,14 @@ async function resolvePath(urlPath) {
 }
 
 createServer(async (request, response) => {
-  const path = await resolvePath(new URL(request.url ?? "/", "http://localhost").pathname);
+  const pathname = new URL(request.url ?? "/", "http://localhost").pathname;
+  // /__reset wipes everything the app saved in this browser (a brand-new player) and opens the start page: for looking at the game from level 0.
+  if (pathname === "/__reset") {
+    response.writeHead(200, { "content-type": "text/html; charset=utf-8" });
+    response.end("<!doctype html><meta charset=utf-8><title>Nowa gra</title><script>try{localStorage.clear();sessionStorage.clear();}catch(e){}location.replace('/');</script>");
+    return;
+  }
+  const path = await resolvePath(pathname);
   try {
     const body = await readFile(path);
     response.writeHead(path.endsWith("+not-found.html") ? 404 : 200, { "content-type": types[extname(path)] ?? "application/octet-stream" });
