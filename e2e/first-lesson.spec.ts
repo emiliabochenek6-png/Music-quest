@@ -1,10 +1,12 @@
 import { expect, test } from "@playwright/test";
-import { closeIntroWindows, email, logIn, password, readXp } from "./helpers";
+import { closeIntroWindows, email, logIn, password, readXp, watchPageErrors } from "./helpers";
 
 test.describe("pierwsza lekcja", () => {
   test.skip(!email || !password, "Brak TEST_EMAIL / TEST_PASSWORD (plik .env.test)");
 
   test("logowanie kontem testowym, poprawna odpowiedź i wzrost XP o 10", async ({ page }) => {
+    const pageErrors = watchPageErrors(page);
+
     // 1. Logowanie
     await logIn(page);
 
@@ -23,5 +25,7 @@ test.describe("pierwsza lekcja", () => {
     // 4. Dobra odpowiedź: komunikat o +10 XP i XP wyższe o 10
     await expect(page.getByText("+10 XP", { exact: false }).first()).toBeVisible();
     await expect.poll(() => readXp(page)).toBe(xpBefore + 10);
+
+    pageErrors.report();
   });
 });

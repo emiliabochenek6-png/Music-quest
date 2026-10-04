@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { closeIntroWindows, email, logIn, password, resetTestAccountShop } from "./helpers";
+import { closeIntroWindows, email, logIn, password, resetTestAccountShop, watchPageErrors } from "./helpers";
 
 const STARTING_NUTKI = 500;
 const ITEM = { id: "ubior-czerwony", name: "Czerwony czarodziej", price: 100 };
@@ -8,6 +8,8 @@ test.describe("Sklep Solfka", () => {
   test.skip(!email || !password, "Brak TEST_EMAIL / TEST_PASSWORD (plik .env.test)");
 
   test("kupno ubioru za nutki: nutki spadają, ubiór ląduje w „Zakupione”", async ({ page }) => {
+    const pageErrors = watchPageErrors(page);
+
     // Known starting point: nothing bought, 500 nutki (set on the test account's own saved row, before the browser logs in).
     await resetTestAccountShop(STARTING_NUTKI);
 
@@ -35,5 +37,7 @@ test.describe("Sklep Solfka", () => {
     await bought.getByText("Zdejmij").click();
     await expect(bought.getByText("Załóż")).toBeVisible();
     await expect(page.getByTestId("shop-balance")).toHaveText(String(STARTING_NUTKI - ITEM.price));
+
+    pageErrors.report();
   });
 });
