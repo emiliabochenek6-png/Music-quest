@@ -3,8 +3,6 @@ import { Animated, Easing, Image, StyleSheet, Text, View, useWindowDimensions, t
 
 const BACKGROUND_PHONE = require("@/assets/backgrounds/ladowanie-tlo-telefon.jpg");
 const BACKGROUND_LAPTOP = require("@/assets/backgrounds/ladowanie-tlo-laptop.jpg");
-import { useEquippedOutfit } from "@/components/shop/useEquippedOutfit";
-
 const SOLTEK = require("@/assets/soltek/soltek-ladowanie.png");
 const SOLTEK_ASPECT = 379 / 512;
 
@@ -28,8 +26,6 @@ const HOP_DURATION_MS = 700;
  * a filling bar would claim one. */
 export function LoadingScreen() {
   const windowSize = useWindowDimensions();
-  // Solfek hops in the outfit he wears (waits for the saved game, so he does not change clothes mid-hop).
-  const { image: outfitImage, loaded: outfitLoaded } = useEquippedOutfit();
   // The size the screen actually got (a window that was still 0×0 when the app started would hide Solfek).
   const [box, setBox] = useState<{ width: number; height: number } | null>(null);
   const width = box?.width || windowSize.width;
@@ -75,7 +71,7 @@ export function LoadingScreen() {
 
   // Solfek: big at the top on a phone; on the left on a laptop (the calm right side holds the loader).
   const soltekHeight = Math.min(portrait ? height * 0.36 : height * 0.62, 460);
-  const soltekWidth = soltekHeight * (outfitImage ? 1 : SOLTEK_ASPECT);
+  const soltekWidth = soltekHeight * SOLTEK_ASPECT;
   const soltekLeft = portrait ? (width - soltekWidth) / 2 : width * 0.3 - soltekWidth / 2;
   const soltekTop = portrait ? height * 0.14 : height * 0.24;
   const loaderStyle = portrait
@@ -96,10 +92,10 @@ export function LoadingScreen() {
 
       <Animated.View style={[styles.shadow, { left: soltekLeft + soltekWidth * 0.15, top: soltekTop + soltekHeight * 0.93, width: soltekWidth * 0.7, transform: [{ scaleX: shadowScale }] }]} />
       <Animated.Image
-        source={outfitImage ?? SOLTEK}
+        source={SOLTEK}
         resizeMode="contain"
         accessibilityLabel="Solfek"
-        style={{ position: "absolute", left: soltekLeft, top: soltekTop, width: soltekWidth, height: soltekHeight, opacity: outfitLoaded ? 1 : 0, transform: [{ translateY: hopY }, { rotate: tilt }] }}
+        style={{ position: "absolute", left: soltekLeft, top: soltekTop, width: soltekWidth, height: soltekHeight, transform: [{ translateY: hopY }, { rotate: tilt }] }}
       />
 
       <View style={[styles.loader, loaderStyle]}>
