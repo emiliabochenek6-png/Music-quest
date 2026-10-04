@@ -13,7 +13,7 @@ export interface GuideStep {
 }
 
 /** The tour of the whole game for a new player: Solfek points at the real
- * places on screen ("Kliknij tutaj…"). Shown once after Solfek's welcome
+ * places on screen ("Kliknij tutaj…"). Shown once after the first finished lesson
  * and again from the side menu's "Przewodnik po grze". A step whose spot
  * isn't on screen (e.g. the world map while "Tryb nauki" is showing) falls back to a card in the middle. */
 export const GUIDE_STEPS: readonly GuideStep[] = [
@@ -83,8 +83,8 @@ export const GUIDE_STEPS: readonly GuideStep[] = [
   {
     id: "start",
     icon: "tryb_nauki",
-    title: "Zaczynamy!",
-    message: "Na początek mogę zrobić z Tobą krótki test i ułożyć Twój plan nauki. Możesz też od razu zacząć grać. Gotowy?",
+    title: "Do dzieła!",
+    message: "To już wszystko! Graj, zbieraj nutki i wracaj codziennie, a passa i levele same będą rosnąć. Przewodnik obejrzysz jeszcze raz w menu. Powodzenia!",
     expression: "glowny",
   },
 ];

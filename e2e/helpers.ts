@@ -26,7 +26,7 @@ export async function logIn(page: Page) {
   await page.getByRole("button", { name: "Zaloguj się" }).click();
 }
 
-/** The windows a new player sees before the map (Solfek's welcome, "Jak chcesz zacząć?", the guide):
+/** The windows a new player can see on the map (Solfek's hello with the mode question; the guide, which appears after a first lesson):
  * close whichever ones show up, one after another, until none is left (they can appear a moment after the previous one closes). */
 export async function closeIntroWindows(page: Page) {
   const wioska = page.getByRole("button", { name: "Wioska Nut" });
@@ -34,7 +34,7 @@ export async function closeIntroWindows(page: Page) {
   let quietRounds = 0;
   for (let attempt = 0; attempt < 15 && quietRounds < 3; attempt++) {
     let clicked = false;
-    for (const name of ["Zaczynajmy!", "Zacznij od gry (tryb zabawy)", "Pomiń"]) {
+    for (const name of ["Zacznij od gry (tryb zabawy)", "Pomiń"]) {
       const button = page.getByText(name, { exact: true }).first();
       if (await button.isVisible()) {
         await button.click();
@@ -93,13 +93,14 @@ export async function setTestAccountXp(xp: number) {
   await updateTestAccountGame({ xp });
 }
 
-/** Closes the full-screen "Nowy level!" celebration if it is showing (the small level-up banner closes itself). */
+/** Closes the full-screen "Awans!" celebration if it is showing (the small level-up banner closes itself).
+ * The celebration plays for about 5 seconds before its button works, so the click waits for that. */
 export async function closeLevelUpWindows(page: Page) {
-  const celebration = page.getByText("Super!", { exact: true });
+  const celebration = page.getByTestId("rank-up-celebration");
   for (let attempt = 0; attempt < 3; attempt++) {
     await page.waitForTimeout(400);
     if (await celebration.isVisible()) {
-      await celebration.click();
+      await page.getByRole("button", { name: "Lecimy dalej!" }).click({ timeout: 20_000 });
       await expect(celebration).toBeHidden();
     }
   }

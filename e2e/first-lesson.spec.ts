@@ -46,14 +46,15 @@ test.describe("pierwsza lekcja", () => {
     pageErrors.report();
   });
 
-  test("awans na level 5 (pełny ekran „Nowy level!”): da się go zamknąć i grać dalej", async ({ page }) => {
+  test("awans na level 5 (pełny ekran „Awans!”): da się go zamknąć i grać dalej", async ({ page }) => {
     const pageErrors = watchPageErrors(page);
     await setTestAccountXp(xpToReachLevel(5) - 5);
 
     const xpBefore = await answerFirstQuestion(page);
-    await expect(page.getByText("Nowy level!")).toBeVisible();
-    await page.getByText("Super!", { exact: true }).click();
-    await expect(page.getByText("Nowy level!")).toBeHidden();
+    await expect(page.getByTestId("rank-up-celebration")).toBeVisible();
+    await expect(page.getByText("Awans!")).toBeVisible({ timeout: 10_000 });
+    await page.getByRole("button", { name: "Lecimy dalej!" }).click({ timeout: 20_000 });
+    await expect(page.getByTestId("rank-up-celebration")).toBeHidden();
     await expect.poll(() => readXp(page)).toBe(xpBefore + 10);
     await expect(page.getByTestId("level-bar")).toHaveAttribute("aria-label", /^Level 5,/);
 

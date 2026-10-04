@@ -24,6 +24,8 @@ import type { DailyChallengeState, GamificationState } from "@/types/gamificatio
  * app restarts. */
 export interface PendingRankUp {
   rank: number;
+  /** The level before this award (shown on the celebration's bar). */
+  fromRank: number;
   name: string;
   /** Nutki paid out for every level crossed in this one award. */
   nutki: number;
@@ -163,7 +165,7 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
     if (nextRank <= prevRank) return;
     // Full-screen celebration only every 5th level (see isLevelUpWorthCelebrating) — the other levels get a small toast instead.
     if (isLevelUpWorthCelebrating(prevRank, nextRank)) {
-      setPendingRankUp({ rank: nextRank, name: getRankName(nextRank), nutki: levelNutki });
+      setPendingRankUp({ rank: nextRank, fromRank: prevRank, name: getRankName(nextRank), nutki: levelNutki });
     } else {
       setLevelUpToast({ level: nextRank, nutki: levelNutki, newTitle: getTitleUnlockedAt(nextRank) });
     }

@@ -51,34 +51,34 @@ Jak sprawdzić:
 - Uruchomić test z przygotowanym kontem tuż przed awansem.
 
 ### Krok 4. Skrócić okna powitalne nowego gracza (zmiana w grze, po akceptacji)
-- [ ] Zaproponować Emilii prostszy wariant: jedno okno powitalne z wyborem „Zrób test” / „Zacznij od gry”, a przewodnik po grze pokazywany dopiero po pierwszej ukończonej lekcji.
-- [ ] Po akceptacji zmienić kolejność okien (powitanie Solfka, wybór trybu, przewodnik), zaktualizować testy (`closeIntroWindows`) i test przewodnika (`guideSteps.test.ts`).
-- [ ] Sprawdzić w podglądzie na telefonie, że nowy gracz widzi najwyżej jedno okno przed pierwszą lekcją.
+- [x] Zaproponować Emilii prostszy wariant (zaakceptowane: „zrobić wszystkie kroki”): jedno okno powitalne z wyborem „Zrób test” / „Zacznij od gry”, a przewodnik po grze pokazywany dopiero po pierwszej ukończonej lekcji.
+- [x] Po akceptacji zmienić kolejność okien (powitanie Solfka, wybór trybu, przewodnik), zaktualizować testy (`closeIntroWindows`) i test przewodnika (`guideSteps.test.ts`).
+- [x] Sprawdzić w podglądzie na telefonie, że nowy gracz widzi najwyżej jedno okno przed pierwszą lekcją.
 
 Gotowe, gdy:
-- [ ] Nowy gracz (czyste konto) zaczyna lekcję po jednym oknie, a przewodnik pojawia się po pierwszej lekcji.
-- [ ] Testy E2E, `npx jest` i `npx tsc --noEmit` bez błędów.
+- [x] Nowy gracz (czyste konto) zaczyna lekcję po jednym oknie, a przewodnik pojawia się po pierwszej lekcji.
+- [x] Testy E2E, `npx jest` i `npx tsc --noEmit` bez błędów.
 
 Jak sprawdzić:
 - Przejście jako nowy gracz w podglądzie (telefon) i uruchomienie testów.
 
 ### Krok 5. Dołożyć szybki test „wszystkie ekrany i lekcje otwierają się”
-- [ ] Zamienić jednorazowy przegląd na stały test `e2e/smoke.spec.ts`: po zalogowaniu otwiera 13 głównych ekranów i po jednej lekcji z każdej krainy; sprawdza brak błędów strony i poziomego przewijania (na telefonie).
-- [ ] Dopisać opis w `CLAUDE.md` (co sprawdza, ile trwa).
+- [x] Zamienić jednorazowy przegląd na stały test `e2e/smoke.spec.ts`: po zalogowaniu otwiera 13 głównych ekranów i po jednej lekcji z każdej krainy; sprawdza brak błędów strony i poziomego przewijania (na telefonie).
+- [x] Dopisać opis w `CLAUDE.md` (co sprawdza, ile trwa).
 
 Gotowe, gdy:
-- [ ] `npm run test:e2e` przechodzi w całości (trzy testy) w mniej niż kilka minut.
-- [ ] Opis w `CLAUDE.md` jest aktualny.
+- [x] `npm run test:e2e` przechodzi w całości (trzy testy) w mniej niż kilka minut.
+- [x] Opis w `CLAUDE.md` jest aktualny.
 
 Jak sprawdzić:
 - Uruchomić `npm run test:e2e` i przeczytać opis.
 
 ### Krok 6. Zapisać, sprawdzić i (po „wdróż”) wdrożyć
-- [ ] `npx tsc --noEmit`, `npx jest`, komplet testów E2E.
-- [ ] Commit; wdrożenie dopiero po wyraźnym „wdróż”, z potwierdzeniem, że `musicquest.pl` i `solfek.pl` pokazują nową wersję.
+- [x] `npx tsc --noEmit`, `npx jest`, komplet testów E2E.
+- [x] Commit; wdrożenie dopiero po wyraźnym „wdróż”, z potwierdzeniem, że `musicquest.pl` i `solfek.pl` pokazują nową wersję.
 
 Gotowe, gdy:
-- [ ] Wszystkie testy zielone; zmiany na GitHubie; obie domeny działają.
+- [x] Wszystkie testy zielone; zmiany na GitHubie; obie domeny działają.
 
 Jak sprawdzić:
 - Wynik poleceń i sprawdzenie nowego pliku aplikacji na obu adresach.

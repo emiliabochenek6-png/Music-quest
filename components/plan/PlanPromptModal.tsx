@@ -19,12 +19,12 @@ export function PlanPromptModal({ visible, onTakeTest, onStartFromBeginning }: P
     <Modal visible={visible} transparent animationType="none" onRequestClose={() => {}}>
       <View style={styles.backdrop}>
         <View style={styles.card}>
-          <Text style={styles.title}>Jak chcesz zacząć?</Text>
+          <Text style={styles.title}>Cześć, jestem Solfek!</Text>
           <SoltekMascot
             size="lg"
             expression="glowny"
             frameless
-            message="Mamy dwa tryby. „Tryb zabawy” to gra: mapa krain i walki z bossami. „Tryb nauki” to Twój plan: zrobię z Tobą krótki test (ok. 8–10 minut) i ułożę Ci własną ścieżkę lekcji na ok. 3 miesiące, z powtórkami. Od czego zaczynamy?"
+            message="Będę Ci towarzyszyć i kibicować w każdym zadaniu. Mamy dwa tryby: „Tryb zabawy” to gra (mapa krain i walki z bossami), a „Tryb nauki” to Twój plan: zrobię z Tobą krótki test (ok. 8–10 minut) i ułożę Ci ścieżkę lekcji na ok. 3 miesiące, z powtórkami. Od czego zaczynamy?"
           />
           <View style={{ gap: theme.spacing(1.25), width: "100%" }}>
             <DarkButton label="Zrób test z Solfkiem (tryb nauki)" onPress={onTakeTest} />

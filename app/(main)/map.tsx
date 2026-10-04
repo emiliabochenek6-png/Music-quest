@@ -14,7 +14,6 @@ import { PlanPromptModal } from "@/components/plan/PlanPromptModal";
 import { GameGuide } from "@/components/guide/GameGuide";
 import { TourTarget } from "@/components/guide/TourTarget";
 import { useTourTarget } from "@/lib/guide/tourTargets";
-import { SoltekWelcomeModal } from "@/components/SoltekWelcomeModal";
 import { useGamification } from "@/context/GamificationContext";
 import { usePlan } from "@/context/PlanContext";
 import { useProfile } from "@/context/ProfileContext";
@@ -64,12 +63,8 @@ export default function MapScreen() {
   // The tour can also be replayed from the side menu.
   const [guideReplay, setGuideReplay] = useState(false);
   const menuTargetRef = useTourTarget("menu");
-  const { plan, isLoading: isPlanLoading, startWithGame, setView } = usePlan();
+  const { plan, isLoading: isPlanLoading, startWithGame, setView, planCompletedIds } = usePlan();
   const [sideMenuOpen, setSideMenuOpen] = useState(false);
-  // Not loading AND not-yet-seen — reading `profile` before it's finished
-  // loading would show the modal for a returning player too, for the one
-  // frame before the real (already-true) stored value arrives.
-  const showSoltekWelcome = !isProfileLoading && !profile.hasSeenSoltekGreeting;
   // First-run choice of study path (test-based or from the beginning) —
   // only after the Solfek greeting, so the two never stack.
   // Only while the map itself is the focused screen: a Modal is drawn above
@@ -88,9 +83,12 @@ export default function MapScreen() {
       return () => setMapFocused(false);
     }, [])
   );
-  // First run: Solfek's welcome, then the short tour, then the choice of how to start.
-  const showGuide = guideReplay || (!isProfileLoading && profile.hasSeenSoltekGreeting && !profile.hasSeenGuide);
-  const showPlanPrompt = mapFocused && !planPromptHidden && !isProfileLoading && !isPlanLoading && profile.hasSeenSoltekGreeting && profile.hasSeenGuide && !guideReplay && plan.mode === "unset" && !plan.promptSeen;
+  // First run: ONE window (Solfek says hello and asks how to start); the short tour waits until the player has
+  // finished a first lesson, so a new player gets to play before reading anything.
+  // (Reading `profile`/`plan` before they have loaded would show these to a returning player for one frame.)
+  const finishedALesson = progress.completedLessonIds.size > 0 || planCompletedIds.size > 0;
+  const showPlanPrompt = mapFocused && !planPromptHidden && !isProfileLoading && !isPlanLoading && !guideReplay && plan.mode === "unset" && !plan.promptSeen;
+  const showGuide = guideReplay || (!isProfileLoading && !isPlanLoading && !showPlanPrompt && !profile.hasSeenGuide && finishedALesson);
 
   function handleSelectWorld(world: WorldDefinition) {
     const state = resolveNodeState(world, progress, status, gamification.lessonStars);
@@ -153,7 +151,6 @@ export default function MapScreen() {
       </SideMenu>
 
       {/* Mounted only while showing — a closing RN-web Modal lingers (faded) behind whatever opens next. */}
-      {showSoltekWelcome && <SoltekWelcomeModal visible onDismiss={() => setHasSeenSoltekGreeting(true)} />}
       {showGuide && (
         <GameGuide
           onClose={() => {
@@ -167,10 +164,14 @@ export default function MapScreen() {
         <PlanPromptModal
           visible
           onTakeTest={() => {
+            setHasSeenSoltekGreeting(true);
             setPlanPromptHidden(true);
             router.push("/(main)/placement");
           }}
-          onStartFromBeginning={startWithGame}
+          onStartFromBeginning={() => {
+            setHasSeenSoltekGreeting(true);
+            startWithGame();
+          }}
         />
       )}
     </View>

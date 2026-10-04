@@ -48,6 +48,7 @@ function AppShell() {
       <RankUpCelebration
         visible={pendingRankUp !== null}
         rank={pendingRankUp?.rank ?? null}
+        fromRank={pendingRankUp?.fromRank ?? null}
         rankName={pendingRankUp?.name ?? null}
         nutki={pendingRankUp?.nutki ?? 0}
         onClose={clearPendingRankUp}
