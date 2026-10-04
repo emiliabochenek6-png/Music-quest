@@ -68,6 +68,7 @@ export default function PowerUpShopScreen() {
     return (
       <ShopCard
         key={item.id}
+        testID={`shop-item-${item.id}`}
         thumbnail={
           <View style={styles.thumb}>
             <SolfekAvatar equipped={{ [item.slot]: item.id }} size={72} backgroundOnly={item.slot === "tlo"} />
@@ -94,7 +95,7 @@ export default function PowerUpShopScreen() {
       <View style={styles.top}>
         <View style={styles.balanceRow}>
           <AppIcon name="hud_nutki_waluta" size={22} />
-          <Text style={styles.balanceValue}>{state.nutki}</Text>
+          <Text style={styles.balanceValue} testID="shop-balance">{state.nutki}</Text>
           <Text style={styles.balanceLabel}>nutek</Text>
         </View>
         <View style={[styles.preview, { width: previewSize, height: previewSize }]}>
@@ -154,6 +155,7 @@ export default function PowerUpShopScreen() {
 }
 
 function ShopCard({
+  testID,
   thumbnail,
   title,
   description,
@@ -164,6 +166,7 @@ function ShopCard({
   disabled,
   onPress,
 }: {
+  testID?: string;
   thumbnail: ReactNode;
   title: string;
   description: string;
@@ -175,7 +178,7 @@ function ShopCard({
   onPress: () => void;
 }) {
   return (
-    <View style={styles.card}>
+    <View style={styles.card} testID={testID}>
       <View style={styles.cardHeaderRow}>
         {thumbnail}
         <View style={{ flex: 1 }}>

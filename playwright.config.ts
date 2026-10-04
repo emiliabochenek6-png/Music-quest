@@ -16,6 +16,7 @@ export default defineConfig({
   timeout: 90_000,
   expect: { timeout: 15_000 },
   retries: 0,
+  workers: 1, // one test account: tests must not run at the same time, and run in file order (first-lesson before shop-purchase)
   reporter: [["list"]],
   use: {
     baseURL: `http://127.0.0.1:${PORT}`,
