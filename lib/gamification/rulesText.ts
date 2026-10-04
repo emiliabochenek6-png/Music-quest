@@ -49,7 +49,7 @@ export const RULES: Rule[] = [
     id: "tryb-wlasny",
     icon: { name: "tryb_wlasny" },
     title: "Tryb własny",
-    body: "Trening bez końca. Sam wybierasz tematy (np. interwały, akordy, rytm), trudność i sposób gry: spokojny trening, „Serię” (poprawne z rzędu, koniec po 3 błędach) albo „Na czas” (60 sekund). Zadania losują się same. W „Twoim słuchu” widzisz, w czym jesteś dobry, a przycisk „Ćwicz najsłabsze” bierze się za to, co idzie Ci najgorzej. Tryb własny nie zmienia postępu w grze ani w planie. Za pierwsze 30 poprawnych odpowiedzi dziennie dostajesz niewielką nagrodę (5 XP i 1 nutkę za każdą).",
+    body: "Trening bez końca. Sam wybierasz kategorie: rozpoznawanie interwałów, trójdźwięków i dominant (zaznaczasz, które chcesz rozpoznawać; słuchasz i wybierasz w okienku), budowanie interwałów, trójdźwięków i dominant, dyktanda (rytmiczne lub melodyczno-rytmiczne), solfeż z piosenkami, rytm i metrum, tonacje i teorię oraz nuty i pięciolinię. Do tego trudność i sposób gry: spokojny trening, „Serię” (poprawne z rzędu, koniec po 3 błędach) albo „Na czas” (60 sekund). Zadania losują się same. W „Twoim słuchu” widzisz, w czym jesteś dobry, a przycisk „Ćwicz najsłabsze” bierze się za to, co idzie Ci najgorzej. Tryb własny nie zmienia postępu w grze ani w planie. Za pierwsze 30 poprawnych odpowiedzi dziennie dostajesz niewielką nagrodę (5 XP i 1 nutkę za każdą).",
   },
   {
     id: "daily-challenge",

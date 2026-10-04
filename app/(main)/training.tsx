@@ -14,7 +14,7 @@ import { isAnswerCorrect } from "@/lib/questions/validate";
 import { buildPool, pickNext } from "@/lib/training/pool";
 import type { PoolItem } from "@/lib/training/pool";
 import { SERIES_LIVES, TIMED_SECONDS, TRAINING_NUTKI_PER_CORRECT, TRAINING_XP_PER_CORRECT } from "@/lib/training/rewards";
-import { getTopic } from "@/lib/training/topics";
+import { decodeSelection, getTopic } from "@/lib/training/topics";
 import type { TrainingDifficulty } from "@/lib/training/topics";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import type { AnswerInput, GeneratedExercise } from "@/types/exercises";
@@ -42,15 +42,16 @@ interface Summary {
 
 function TrainingBody() {
   const insets = useSafeAreaInsets();
-  const params = useLocalSearchParams<{ topics?: string; difficulty?: string; mode?: string; length?: string }>();
-  const topicIds = useMemo(() => (params.topics ?? "").split(",").filter(Boolean), [params.topics]);
+  const params = useLocalSearchParams<{ topics?: string; options?: string; difficulty?: string; mode?: string; length?: string }>();
+  const selection = useMemo(() => decodeSelection(params.topics ?? "", params.options ?? ""), [params.topics, params.options]);
+  const topicIds = selection.topicIds;
   const difficulty = (params.difficulty ?? "mieszane") as TrainingDifficulty;
   const mode = (["trening", "seria", "czas"].includes(params.mode ?? "") ? params.mode : "trening") as GameMode;
   const limit = params.length === "10" ? 10 : params.length === "20" ? 20 : null; // only "Spokojny trening" has a length
   const { state, recordTrainingAnswer, recordTrainingBest } = useGamification();
   const { setView } = usePlan();
   const { status } = useSubscription();
-  const pool = useMemo(() => buildPool(topicIds, difficulty, status.isActive), [topicIds, difficulty, status.isActive]);
+  const pool = useMemo(() => buildPool(selection, difficulty, status.isActive), [selection, difficulty, status.isActive]);
 
   const [item, setItem] = useState<PoolItem | null>(null);
   const [exercise, setExercise] = useState<GeneratedExercise | null>(null);

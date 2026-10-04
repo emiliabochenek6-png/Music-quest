@@ -8,8 +8,8 @@ import { useSubscription } from "@/context/SubscriptionContext";
 import { buildPool, topicAvailable } from "@/lib/training/pool";
 import { TIMED_SECONDS, SERIES_LIVES, MIN_ANSWERS_FOR_STATS } from "@/lib/training/rewards";
 import { percent, weakestTopics } from "@/lib/training/stats";
-import { DIFFICULTY_OPTIONS, TRAINING_TOPICS, getTopic } from "@/lib/training/topics";
-import type { TrainingDifficulty } from "@/lib/training/topics";
+import { DIFFICULTY_OPTIONS, TRAINING_TOPICS, encodeOptions, getTopic, optionsOf, selectionIsValid } from "@/lib/training/topics";
+import type { TrainingDifficulty, TrainingSelection } from "@/lib/training/topics";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 
 type GameMode = "trening" | "seria" | "czas";
@@ -22,20 +22,34 @@ export function TrainingHome() {
   const { state } = useGamification();
   const { status } = useSubscription();
   const training = state.training;
-  const [topics, setTopics] = useState<string[]>(["nuty"]);
+  const [topics, setTopics] = useState<string[]>(["rozp-interwaly"]);
+  const [ticked, setTicked] = useState<Record<string, string[]>>({});
   const [difficulty, setDifficulty] = useState<TrainingDifficulty>("mieszane");
   const [mode, setMode] = useState<GameMode>("trening");
   const [length, setLength] = useState<Length>("inf");
 
   const weakest = weakestTopics(training, 3);
-  const poolSize = topics.length ? buildPool(topics, difficulty, status.isActive).length : 0;
+  const selection: TrainingSelection = { topicIds: topics, options: ticked };
+  const valid = selectionIsValid(selection);
+  const poolSize = valid ? buildPool(selection, difficulty, status.isActive).length : 0;
+  const hasEndless = topics.some((id) => getTopic(id)?.kind === "generated");
 
   function toggleTopic(id: string) {
     setTopics((current) => (current.includes(id) ? current.filter((topic) => topic !== id) : [...current, id]));
   }
 
-  function start(chosen: string[]) {
-    router.push({ pathname: "/(main)/training", params: { topics: chosen.join(","), difficulty, mode, length } });
+  function toggleOption(topicId: string, optionId: string) {
+    const current = optionsOf(selection, topicId);
+    setTicked((state) => ({ ...state, [topicId]: current.includes(optionId) ? current.filter((id) => id !== optionId) : [...current, optionId] }));
+  }
+
+  function setAllOptions(topicId: string, all: boolean) {
+    const topic = getTopic(topicId);
+    setTicked((state) => ({ ...state, [topicId]: all ? (topic?.options ?? []).map((option) => option.id) : [] }));
+  }
+
+  function start(chosen: TrainingSelection) {
+    router.push({ pathname: "/(main)/training", params: { topics: chosen.topicIds.join(","), options: encodeOptions(chosen), difficulty, mode, length } });
   }
 
   return (
@@ -56,7 +70,7 @@ export function TrainingHome() {
             <Text style={styles.body}>
               Najsłabiej idzie Ci: {weakest.map((id) => `${getTopic(id)?.label} (${percent(training.totals[id])}%)`).join(", ")}.
             </Text>
-            <DarkButton label="Ćwicz najsłabsze" onPress={() => start(weakest.slice(0, 2))} />
+            <DarkButton label="Ćwicz najsłabsze" onPress={() => start({ topicIds: weakest.slice(0, 2), options: {} })} />
           </>
         ) : (
           <Text style={styles.body}>Zrób kilka zadań (min. {MIN_ANSWERS_FOR_STATS} w jednym temacie), a pokażę Ci, w czym jesteś dobry i co poćwiczyć.</Text>
@@ -72,9 +86,10 @@ export function TrainingHome() {
           const available = topicAvailable(topic.id, status.isActive);
           const on = topics.includes(topic.id);
           const tally = percent(training.totals[topic.id]);
+          const ticks = optionsOf(selection, topic.id);
           return (
+            <View key={topic.id} style={{ gap: 8 }}>
             <Pressable
-              key={topic.id}
               testID={`training-topic-${topic.id}`}
               onPress={() => available && toggleTopic(topic.id)}
               accessibilityRole="checkbox"
@@ -88,12 +103,33 @@ export function TrainingHome() {
               </View>
               {tally !== null && <Text style={styles.topicPercent}>{tally}%</Text>}
             </Pressable>
+            {on && topic.options && (
+              <View style={styles.options} testID={`training-options-${topic.id}`}>
+                <Text style={styles.optionsTitle}>{topic.optionsTitle}</Text>
+                <View style={styles.chips}>
+                  {topic.options.map((option) => (
+                    <Chip key={option.id} label={option.label} active={ticks.includes(option.id)} onPress={() => toggleOption(topic.id, option.id)} testID={`training-option-${topic.id}-${option.id}`} />
+                  ))}
+                </View>
+                <View style={styles.chips}>
+                  <Pressable onPress={() => setAllOptions(topic.id, true)} accessibilityRole="button"><Text style={styles.link}>Zaznacz wszystkie</Text></Pressable>
+                  <Pressable onPress={() => setAllOptions(topic.id, false)} accessibilityRole="button"><Text style={styles.link}>Odznacz</Text></Pressable>
+                </View>
+                {ticks.length < (topic.minOptions ?? 1) && (
+                  <Text style={styles.warn}>
+                    Zaznacz co najmniej {topic.minOptions}{(topic.minOptions ?? 1) > 1 ? " pozycje" : " pozycję"}, żeby było z czego wybierać.
+                  </Text>
+                )}
+              </View>
+            )}
+            </View>
           );
         })}
       </View>
 
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Jak trudno?</Text>
+        <Text style={styles.body}>Dotyczy kategorii z gotowych zadań (nuty, rytm, tonacje, dyktanda, solfeż). W rozpoznawaniu i budowaniu poziom ustalasz tym, co zaznaczysz.</Text>
         <View style={styles.chips}>
           {DIFFICULTY_OPTIONS.map((option) => (
             <Chip key={option.id} label={option.label} active={difficulty === option.id} onPress={() => setDifficulty(option.id)} />
@@ -136,20 +172,22 @@ export function TrainingHome() {
       <View style={styles.card}>
         {topics.length === 0 ? (
           <Text style={styles.body}>Zaznacz przynajmniej jeden temat.</Text>
+        ) : !valid ? (
+          <Text style={styles.body}>Zaznacz w wybranych tematach wystarczająco dużo pozycji (patrz ostrzeżenia wyżej).</Text>
         ) : (
           <Text style={styles.body}>
-            Wybrane tematy: {topics.map((id) => getTopic(id)?.label).join(", ")}. W puli jest {poolSize} zadań, losowanych bez końca.
+            Wybrane tematy: {topics.map((id) => getTopic(id)?.label).join(", ")}. {hasEndless ? "Zadania w rozpoznawaniu i budowaniu losują się na bieżąco, nigdy się nie kończą." : `W puli jest ${poolSize} zadań, losowanych bez końca.`}
           </Text>
         )}
-        <DarkButton label="Start" onPress={() => start(topics)} disabled={topics.length === 0} testID="training-start" />
+        <DarkButton label="Start" onPress={() => start(selection)} disabled={!valid} testID="training-start" />
       </View>
     </ScrollView>
   );
 }
 
-function Chip({ label, active, onPress }: { label: string; active: boolean; onPress: () => void }) {
+function Chip({ label, active, onPress, testID }: { label: string; active: boolean; onPress: () => void; testID?: string }) {
   return (
-    <Pressable onPress={onPress} accessibilityRole="button" accessibilityState={{ selected: active }} style={[styles.chip, active && styles.chipOn]}>
+    <Pressable testID={testID} onPress={onPress} accessibilityRole="button" accessibilityState={{ selected: active }} style={[styles.chip, active && styles.chipOn]}>
       <Text style={[styles.chipText, active && styles.chipTextOn]}>{label}</Text>
     </Pressable>
   );
@@ -202,6 +240,9 @@ const styles = StyleSheet.create({
   radio: { width: 24, height: 24, borderRadius: 12, borderWidth: 2, borderColor: theme.colors.border, alignItems: "center", justifyContent: "center", backgroundColor: theme.colors.surface },
   radioOn: { borderColor: theme.colors.primary },
   radioDot: { width: 12, height: 12, borderRadius: 6, backgroundColor: theme.colors.primary },
+  options: { marginLeft: 12, padding: 12, gap: 8, borderRadius: theme.radius.md, borderWidth: theme.borderWidth, borderColor: theme.colors.border, backgroundColor: theme.colors.surface },
+  optionsTitle: { fontSize: 13, fontWeight: "800", color: theme.colors.ink },
+  warn: { fontSize: 12, fontWeight: "700", color: theme.colors.warning },
   chips: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   chip: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 18, backgroundColor: theme.colors.cream, borderWidth: theme.borderWidth, borderColor: theme.colors.border },
   chipOn: { backgroundColor: theme.colors.primary, borderColor: theme.colors.primary },

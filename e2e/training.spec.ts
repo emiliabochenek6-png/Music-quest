@@ -12,7 +12,10 @@ test.describe("Tryb własny", () => {
     // The third mode on the map
     await page.getByText("Tryb własny", { exact: true }).first().click();
     await expect(page.getByText("Ćwiczysz to, co chcesz", { exact: false })).toBeVisible();
-    await page.getByTestId("training-topic-interwaly").click();
+    // "Rozpoznawanie interwałów" is ticked from the start; tick which intervals to recognise
+    await expect(page.getByTestId("training-options-rozp-interwaly")).toBeVisible();
+    await page.getByTestId("training-option-rozp-interwaly-3").click(); // untick the major... then tick it back: at least two stay ticked
+    await page.getByTestId("training-option-rozp-interwaly-3").click();
     await page.getByTestId("training-mode-seria").click();
     await page.getByTestId("training-start").click();
 
@@ -26,7 +29,7 @@ test.describe("Tryb własny", () => {
     await expect(page.getByText("Wynik treningu")).toBeVisible();
     await page.getByText("Twój słuch (statystyki)").click();
     await expect(page.getByTestId("training-stats")).toBeVisible();
-    await expect(page.getByTestId("training-stats").getByText("Interwały", { exact: true })).toBeVisible();
+    await expect(page.getByTestId("training-stats").getByText("Rozpoznawanie interwałów", { exact: true })).toBeVisible();
 
     pageErrors.report();
   });

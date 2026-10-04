@@ -67,7 +67,7 @@ export default function TrainingStatsScreen() {
         {weakest.length > 0 && (
           <DarkButton
             label="Ćwicz najsłabsze"
-            onPress={() => router.push({ pathname: "/(main)/training", params: { topics: weakest.join(","), difficulty: "mieszane", mode: "trening", length: "inf" } })}
+            onPress={() => router.push({ pathname: "/(main)/training", params: { topics: weakest.join(","), options: "", difficulty: "mieszane", mode: "trening", length: "inf" } })}
           />
         )}
         <DarkButton label="Wróć do Trybu własnego" onPress={back} variant="secondary" />
