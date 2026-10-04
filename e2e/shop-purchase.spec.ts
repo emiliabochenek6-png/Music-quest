@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 import { closeIntroWindows, email, logIn, password, resetTestAccountShop, watchPageErrors } from "./helpers";
 
 const STARTING_NUTKI = 500;
-const ITEM = { id: "ubior-czerwony", name: "Czerwony czarodziej", price: 100 };
+const ITEM = { id: "ubior-czerwony", name: "Czerwony czarodziej", price: 150 };
 
 test.describe("Sklep Solfka", () => {
   test.skip(!email || !password, "Brak TEST_EMAIL / TEST_PASSWORD (plik .env.test)");
@@ -20,11 +20,19 @@ test.describe("Sklep Solfka", () => {
     await page.getByRole("button", { name: "Sklep Solfka" }).click();
     await expect(page.getByTestId("shop-balance")).toHaveText(String(STARTING_NUTKI));
 
+    // The daily gift from Solfek: free nutki (10 to 30), once a day.
+    await page.getByTestId("shop-gift").click();
+    await expect(page.getByTestId("shop-balance")).not.toHaveText(String(STARTING_NUTKI));
+    const afterGift = Number(await page.getByTestId("shop-balance").textContent());
+    expect(afterGift - STARTING_NUTKI).toBeGreaterThanOrEqual(10);
+    expect(afterGift - STARTING_NUTKI).toBeLessThanOrEqual(30);
+    await expect(page.getByTestId("shop-gift")).toBeDisabled();
+
     // Buy the red wizard.
     const card = page.getByTestId(`shop-item-${ITEM.id}`);
     await card.getByText(`Kup za ${ITEM.price}`).click();
     await expect(page.getByText(`${ITEM.name}: kupione`)).toBeVisible();
-    await expect(page.getByTestId("shop-balance")).toHaveText(String(STARTING_NUTKI - ITEM.price));
+    await expect(page.getByTestId("shop-balance")).toHaveText(String(afterGift - ITEM.price));
 
     // It is now worn, and listed under "Zakupione".
     await expect(card.getByText("Założone")).toBeVisible();
@@ -36,7 +44,7 @@ test.describe("Sklep Solfka", () => {
     // Take it off: back to the standard Solfek, the item stays owned.
     await bought.getByText("Zdejmij").click();
     await expect(bought.getByText("Załóż")).toBeVisible();
-    await expect(page.getByTestId("shop-balance")).toHaveText(String(STARTING_NUTKI - ITEM.price));
+    await expect(page.getByTestId("shop-balance")).toHaveText(String(afterGift - ITEM.price));
 
     pageErrors.report();
   });

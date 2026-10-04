@@ -116,6 +116,8 @@ export interface GamificationState {
   /** Sklep Solfka: ids of bought items (lib/shop/catalog.ts) and what Solfek wears / stands in front of now (one outfit, one background). */
   shopOwned: string[];
   shopEquipped: Partial<Record<"ubior" | "tlo", string>>;
+  /** The date ("YYYY-MM-DD") the daily gift from Solfek was last collected (lib/shop/gift.ts). */
+  shopGiftDateISO: string | null;
 }
 
 export const INITIAL_GAMIFICATION_STATE: GamificationState = {
@@ -132,6 +134,7 @@ export const INITIAL_GAMIFICATION_STATE: GamificationState = {
   introModeEnabledByWorld: {},
   shopOwned: [],
   shopEquipped: {},
+  shopGiftDateISO: null,
 };
 
 function finiteOr(value: unknown, fallback: number): number {
@@ -166,5 +169,6 @@ export function sanitizeGamificationState(stored: Partial<GamificationState> | n
     nutki: finiteOr(stored.nutki, 0),
     streakFreezes: finiteOr(stored.streakFreezes, 0),
     ...shopFields(stored),
+    shopGiftDateISO: typeof stored.shopGiftDateISO === "string" ? stored.shopGiftDateISO : null,
   };
 }

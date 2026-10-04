@@ -9,6 +9,8 @@ import { onLocalDataReset } from "@/lib/sync/localDataReset";
 import { getTitleUnlockedAt, getRankForXp, getRankName, isLevelUpWorthCelebrating } from "@/lib/gamification/rank";
 import { nutkiForLevelRange } from "@/lib/gamification/levelRewards";
 import { getShopItem } from "@/lib/shop/catalog";
+import { canClaimGift, giftAmount } from "@/lib/shop/gift";
+import { todayISODate } from "@/lib/gamification/activity";
 import type { BuyResult, ShopSlot } from "@/lib/shop/catalog";
 import { mergeGamificationState } from "@/lib/sync/mergeState";
 import { useCloudSync } from "@/lib/sync/useCloudSync";
@@ -74,6 +76,8 @@ interface GamificationContextValue {
   setIntroModeEnabled: (worldId: string, enabled: boolean) => void;
   /** Sklep Solfka: buys an item with nutki (and puts it on straight away). */
   buyShopItem: (itemId: string) => BuyResult;
+  /** Collects today's free gift from Solfek; returns how many nutki it paid (0 when it was already collected today). */
+  claimShopGift: () => number;
   /** Puts an owned item on, or takes the slot's item off (`null`; the background falls back to the default). */
   equipShopItem: (slot: ShopSlot, itemId: string | null) => void;
 }
@@ -253,6 +257,19 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
     return "ok";
   }
 
+  function claimShopGift(): number {
+    const today = todayISODate();
+    if (!canClaimGift(state.shopGiftDateISO, today)) return 0;
+    const amount = giftAmount(state.streakDays);
+    setState((prev) => {
+      if (!canClaimGift(prev.shopGiftDateISO, today)) return prev;
+      const next: GamificationState = { ...prev, nutki: prev.nutki + amount, shopGiftDateISO: today };
+      void writeJson(STORAGE_KEYS.gamification, next);
+      return next;
+    });
+    return amount;
+  }
+
   function equipShopItem(slot: ShopSlot, itemId: string | null) {
     setState((prev) => {
       const item = itemId ? getShopItem(itemId) : undefined;
@@ -299,12 +316,18 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
         buyStreakFreeze,
         setIntroModeEnabled,
         buyShopItem,
+        claimShopGift,
         equipShopItem,
       }}
     >
       {children}
     </GamificationContext.Provider>
   );
+}
+
+/** Like useGamification, but null outside the provider (for small shared pieces such as the mascot, which also render in tests). */
+export function useGamificationOptional(): GamificationContextValue | null {
+  return useContext(GamificationContext);
 }
 
 export function useGamification(): GamificationContextValue {

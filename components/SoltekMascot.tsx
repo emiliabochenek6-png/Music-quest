@@ -1,4 +1,5 @@
 import { Image, Text, View, StyleSheet } from "react-native";
+import { useEquippedOutfit } from "@/components/shop/useEquippedOutfit";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 
 export type SoltekExpression = "radosny" | "zaskoczony" | "myslacy" | "zachecajacy" | "glowny";
@@ -44,6 +45,8 @@ interface SoltekMascotProps {
  * expressions but not others; a square frame never does.
  */
 export function SoltekMascot({ expression = "radosny", message, size = "md", frameless = false }: SoltekMascotProps) {
+  // Solfek wears what the player bought in Sklep Solfka (one pose for all moods, so a worn outfit keeps the same face).
+  const outfit = useEquippedOutfit().image;
   const isSmall = size === "sm";
   const isLarge = size === "lg";
 
@@ -56,7 +59,7 @@ export function SoltekMascot({ expression = "radosny", message, size = "md", fra
         frameless && styles.avatarWrapFrameless,
       ]}
     >
-      <Image source={EXPRESSION_IMAGES[expression]} style={styles.avatarImage} resizeMode="contain" />
+      <Image source={outfit ?? EXPRESSION_IMAGES[expression]} style={styles.avatarImage} resizeMode="contain" />
     </View>
   );
 

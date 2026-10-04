@@ -154,5 +154,6 @@ export function mergeGamificationState(localIn: GamificationState, remoteIn: Gam
     introModeEnabledByWorld: mergeIntroModeEnabledByWorld(local.introModeEnabledByWorld, remote.introModeEnabledByWorld),
     shopOwned,
     shopEquipped,
+    shopGiftDateISO: compareDates(remote.shopGiftDateISO, local.shopGiftDateISO) > 0 ? remote.shopGiftDateISO : local.shopGiftDateISO,
   };
 }

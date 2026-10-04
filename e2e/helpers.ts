@@ -85,7 +85,7 @@ async function updateTestAccountGame(changes: Record<string, unknown>) {
 
 /** Shop back to a known state: nothing bought, `nutki` nutki in the purse. */
 export async function resetTestAccountShop(nutki: number) {
-  await updateTestAccountGame({ nutki, shopOwned: [], shopEquipped: {} });
+  await updateTestAccountGame({ nutki, shopOwned: [], shopEquipped: {}, shopGiftDateISO: null });
 }
 
 /** Sets the test account's total XP (e.g. just below a level threshold, to test the level-up windows). */

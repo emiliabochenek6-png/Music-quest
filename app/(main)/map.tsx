@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router, useFocusEffect } from "expo-router";
 import { BottomTabBar } from "@/components/BottomTabBar";
 import { GamificationHeaderBar } from "@/components/GamificationHeaderBar";
+import { SolfekAvatar } from "@/components/shop/SolfekAvatar";
 import { AppIcon } from "@/components/icons/AppIcon";
 import { WorldMap } from "@/components/map/WorldMap";
 import { SideMenu } from "@/components/SideMenu";
@@ -24,7 +25,6 @@ import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import type { WorldDefinition } from "@/types/content";
 
 // Small rounded logo icon with Solfek, next to the title.
-const LOGO_ICON = require("@/assets/logo/ikona-zaokraglona-256.png");
 
 /** The map's own background art (see assets/backgrounds's own soltek-tlo
  * source folder for the commissioned SVG/README) — a phone-portrait and a
@@ -121,7 +121,10 @@ export default function MapScreen() {
       >
         <AppIcon name="hud_menu" size={20} />
       </Pressable>
-      <Image source={LOGO_ICON} style={[styles.logoIcon, { top: insets.top + 8 }]} accessibilityLabel="Solfek" />
+      {/* Solfek in what he wears now, standing in front of the chosen background; tap to open the shop. */}
+      <Pressable onPress={() => router.push("/(main)/power-ups")} accessibilityRole="button" accessibilityLabel="Sklep Solfka" style={[styles.logoIcon, { top: insets.top + 6 }]}>
+        <SolfekAvatar equipped={gamification.shopEquipped} size={36} withBackground />
+      </Pressable>
       <Text style={[styles.title, { top: insets.top + 16 }]}>Solfek</Text>
       <View style={[styles.headerBarWrap, { top: insets.top + 56 }]}>
         <TourTarget id="headerBar" style={{ alignSelf: "flex-start" }}>
@@ -198,13 +201,17 @@ const styles = StyleSheet.create({
   logoIcon: {
     position: "absolute",
     left: 64,
-    width: 32,
-    height: 32,
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    overflow: "hidden",
+    borderWidth: 1.5,
+    borderColor: theme.colors.border,
     zIndex: 10,
   },
   title: {
     position: "absolute",
-    left: 104,
+    left: 108,
     fontSize: 15,
     fontWeight: "800",
     color: theme.colors.ink,

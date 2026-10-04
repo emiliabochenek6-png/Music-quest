@@ -9,6 +9,8 @@ import { useGamification } from "@/context/GamificationContext";
 import { SolfekAvatar } from "@/components/shop/SolfekAvatar";
 import { MAX_STREAK_FREEZES, POWER_UP_COSTS } from "@/lib/gamification/powerups";
 import { DEFAULT_BACKGROUND_ID, DEFAULT_OUTFIT_ID, SHOP_ITEMS, SHOP_SLOTS, itemsInSlot } from "@/lib/shop/catalog";
+import { canClaimGift, giftAmount } from "@/lib/shop/gift";
+import { todayISODate } from "@/lib/gamification/activity";
 import type { ShopItem, ShopSlot } from "@/lib/shop/catalog";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 import { GlyphText } from "@/components/icons/GlyphText";
@@ -33,7 +35,7 @@ const DEFAULT_ID: Record<ShopSlot, string> = { ubior: DEFAULT_OUTFIT_ID, tlo: DE
 export default function PowerUpShopScreen() {
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
-  const { state, buyStreakFreeze, buyShopItem, equipShopItem } = useGamification();
+  const { state, buyStreakFreeze, buyShopItem, equipShopItem, claimShopGift } = useGamification();
   const [tab, setTab] = useState<ShopTab>("ubior");
   const [feedback, setFeedback] = useState<string | null>(null);
   const previewSize = Math.min(width - 48, 200);
@@ -48,6 +50,12 @@ export default function PowerUpShopScreen() {
 
   const isOwned = (item: ShopItem) => item.price === 0 || state.shopOwned.includes(item.id);
   const isWorn = (item: ShopItem) => (state.shopEquipped[item.slot] ?? DEFAULT_ID[item.slot]) === item.id;
+
+  const giftReady = canClaimGift(state.shopGiftDateISO, todayISODate());
+  function handleClaimGift() {
+    const amount = claimShopGift();
+    setFeedback(amount > 0 ? `Prezent od Solfka: +${amount} nutek!` : "Dzisiejszy prezent już odebrany. Wróć jutro!");
+  }
 
   function handleItemPress(item: ShopItem) {
     if (isOwned(item)) {
@@ -98,6 +106,18 @@ export default function PowerUpShopScreen() {
           <Text style={styles.balanceValue} testID="shop-balance">{state.nutki}</Text>
           <Text style={styles.balanceLabel}>nutek</Text>
         </View>
+        <Pressable
+          onPress={handleClaimGift}
+          disabled={!giftReady}
+          testID="shop-gift"
+          accessibilityRole="button"
+          accessibilityLabel={giftReady ? `Odbierz prezent od Solfka: ${giftAmount(state.streakDays)} nutek` : "Prezent od Solfka odebrany"}
+          style={[styles.gift, !giftReady && styles.giftDone]}
+        >
+          <GlyphText style={[styles.giftText, !giftReady && { color: theme.colors.muted }]}>
+            {giftReady ? `🎁 Prezent od Solfka: odbierz +${giftAmount(state.streakDays)} nutek` : "🎁 Prezent odebrany, wróć jutro!"}
+          </GlyphText>
+        </Pressable>
         <View style={[styles.preview, { width: previewSize, height: previewSize }]}>
           <SolfekAvatar equipped={state.shopEquipped} size={previewSize} withBackground />
         </View>
@@ -277,6 +297,15 @@ const styles = StyleSheet.create({
     borderWidth: theme.borderWidth,
     borderColor: theme.colors.border,
   },
+  gift: {
+    alignSelf: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 999,
+    backgroundColor: theme.colors.primary,
+  },
+  giftDone: { backgroundColor: theme.colors.surfaceMuted },
+  giftText: { fontSize: 13, fontWeight: "800", color: "#FFFFFF" },
   tabs: { gap: 8, paddingVertical: 2 },
   tab: {
     paddingHorizontal: 14,
