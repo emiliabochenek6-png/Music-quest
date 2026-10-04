@@ -33,7 +33,10 @@ export function LoadingScreen() {
   const portrait = width < height;
   // Before the app's code has run (the static page) the window has no size yet: show just the page's own
   // background colour, so nothing is drawn in the wrong place and then jumps.
-  const sized = width > 0 && height > 0;
+  // The very first render must match the one built on the server (which has no window size and so draws the blank page): otherwise React reports a mismatch (error #418) when the page loads.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const sized = mounted && width > 0 && height > 0;
   const [trackWidth, setTrackWidth] = useState(0);
   const progress = useRef(new Animated.Value(0)).current;
   const hop = useRef(new Animated.Value(0)).current;

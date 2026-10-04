@@ -6,14 +6,14 @@ export const email = process.env.TEST_EMAIL;
 export const password = process.env.TEST_PASSWORD;
 
 /** Collects the errors the page throws while a test runs (e.g. React's "#418": the page built on the server differs from the one the browser builds).
- * Call `report()` at the end of the test: it prints them; with STRICT_PAGE_ERRORS=1 any error fails the test. */
+ * Call `report()` at the end of the test: it prints them, and any error fails the test (set STRICT_PAGE_ERRORS=0 to only print). */
 export function watchPageErrors(page: Page) {
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(String(error).slice(0, 300)));
   return {
     report() {
       if (errors.length) console.log(`⚠ błędy strony (${errors.length}): ${[...new Set(errors)].join(" | ")}`);
-      if (process.env.STRICT_PAGE_ERRORS) expect(errors).toEqual([]);
+      if (process.env.STRICT_PAGE_ERRORS !== "0") expect(errors).toEqual([]);
     },
   };
 }
