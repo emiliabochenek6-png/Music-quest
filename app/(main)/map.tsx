@@ -92,7 +92,8 @@ export default function MapScreen() {
   // scrolled to the top: switch to it, and put the player's own mode back when the guide closes.
   const [guideTick, setGuideTick] = useState(0);
   const viewBeforeGuide = useRef<"fun" | "plan" | null>(null);
-  const showGuide = guideReplay || (!isProfileLoading && !isPlanLoading && !showPlanPrompt && !profile.hasSeenGuide && finishedALesson);
+  // Only while the map itself is the screen in front: finishing the first lesson must not pop the guide up over the lesson; it waits for the player to be back on the start screen.
+  const showGuide = guideReplay || (mapFocused && !isProfileLoading && !isPlanLoading && !showPlanPrompt && !profile.hasSeenGuide && finishedALesson);
 
   useEffect(() => {
     if (!showGuide) return;
