@@ -76,6 +76,16 @@ musicquest.pl automatically, usually within ~4-5 minutes. To confirm a
 deploy landed: `curl -s -A "Mozilla/5.0" https://musicquest.pl | grep -o '_expo/static/js/web/entry-[a-f0-9]*\.js'` and compare the hash before/after
 push.
 
+## Test E2E (Playwright)
+
+Jeden test „jak prawdziwy gracz” w przeglądarce (`e2e/first-lesson.spec.ts`): logowanie kontem testowym → Wioska Nut → poziom 1 → „Wysoki” → „Sprawdź” → XP rośnie o 10.
+
+- **Konto testowe:** użytkownik założony w panelu Supabase (Authentication → Users → Add user, z „Auto Confirm User”). Jego e-mail i hasło trzymamy w lokalnym pliku `.env.test` (poza gitem): `TEST_EMAIL=…` i `TEST_PASSWORD=…`. Bez tego pliku test się pomija.
+- **Uruchomienie:** `npm run test:e2e` (najpierw buduje stronę, potem uruchamia test; ~3-4 min). `npm run test:e2e:fast` pomija budowanie i używa istniejącego `dist/`: tylko jeśli `dist/` jest zwykłym buildem, nie podglądem z obejściem logowania.
+- **Co test sprawdza:** XP czyta z etykiety paska poziomu (`components/LevelBar.tsx`, `testID="level-bar"`) i porównuje „po” z „przed” + 10, bo konto testowe zbiera XP przy każdym biegu. Okna powitalne nowego gracza zamyka po kolei (bez ustawiania flag), bo pierwsze logowanie świeżego konta zeruje dane lokalne.
+- **Czego nie pokrywa:** tylko ta jedna ścieżka. Test loguje się do tej samej bazy Supabase co produkcja (z `.env`), więc konto testowe rośnie w XP; po wielu biegach pojawią się okna awansu na kolejny level.
+- `e2e/serve-dist.mjs` to mały serwer plików dla `dist/` (odtwarza adresy bez `.html` i przekierowania z `vercel.json`); zwykłe testy (`npx jest`) pomijają folder `e2e/`.
+
 ## Architecture
 
 ### Provider stack (`app/_layout.tsx`)

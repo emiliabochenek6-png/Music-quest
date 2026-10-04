@@ -50,7 +50,8 @@ export function LevelBar({ xp }: { xp: number }) {
   const labelScale = pop.interpolate({ inputRange: [0, 1], outputRange: [1, 1.35] });
 
   return (
-    <View style={styles.row} accessibilityLabel={`Level ${info.rank}`}>
+    // The label carries the total XP too, so an automatic test (e2e/) can read it.
+    <View style={styles.row} testID="level-bar" accessibilityLabel={`Level ${info.rank}, ${xp} XP`}>
       <Animated.Text style={[styles.label, { transform: [{ scale: labelScale }] }]}>Lv {info.rank}</Animated.Text>
       <View style={styles.track}>
         <Animated.View style={[styles.fill, { width: fillWidth }]} />
