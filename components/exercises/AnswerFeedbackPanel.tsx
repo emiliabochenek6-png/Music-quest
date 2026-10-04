@@ -47,12 +47,17 @@ export function AnswerFeedbackPanel({ visible, correct, title, note, detail, chi
   const [height, setHeight] = useState(260);
   const [shown, setShown] = useState(visible);
   const [line, setLine] = useState(() => feedbackLine(true));
-  const colors = correct ? GREEN : RED;
+  // The game clears the result (null) the moment "Dalej" is pressed, while the sheet is still sliding away: keep the last real
+  // result so a green "Brawo!" never turns red on its way out.
+  const lastResult = useRef(true);
+  if (correct !== null) lastResult.current = correct;
+  const isRight = lastResult.current;
+  const colors = isRight ? GREEN : RED;
 
   useEffect(() => {
     if (visible) {
       setShown(true);
-      setLine(feedbackLine(!!correct));
+      setLine(feedbackLine(isRight));
       bounce.setValue(0);
       Animated.sequence([
         Animated.delay(140),
@@ -67,7 +72,7 @@ export function AnswerFeedbackPanel({ visible, correct, title, note, detail, chi
     }).start(({ finished }) => {
       if (finished && !visible) setShown(false);
     });
-    // `correct` is read only at the moment the panel opens (the line must not change while it is shown)
+    // the result is read only at the moment the panel opens (the line must not change while it is shown)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible, progress, bounce]);
 
@@ -79,8 +84,8 @@ export function AnswerFeedbackPanel({ visible, correct, title, note, detail, chi
 
   const translateY = progress.interpolate({ inputRange: [0, 1], outputRange: [height + 24, 0] });
   const solfekY = bounce.interpolate({ inputRange: [0, 1], outputRange: [28, 0] });
-  const solfekRotate = bounce.interpolate({ inputRange: [0, 1], outputRange: [correct ? "-10deg" : "8deg", "0deg"] });
-  const solfekImage = outfit ?? (correct ? HAPPY_SOLFEK : SURPRISED_SOLFEK);
+  const solfekRotate = bounce.interpolate({ inputRange: [0, 1], outputRange: [isRight ? "-10deg" : "8deg", "0deg"] });
+  const solfekImage = outfit ?? (isRight ? HAPPY_SOLFEK : SURPRISED_SOLFEK);
 
   return (
     <Animated.View
@@ -92,7 +97,7 @@ export function AnswerFeedbackPanel({ visible, correct, title, note, detail, chi
     >
       {/* Solfek leans over the edge of the sheet */}
       <Animated.View style={[styles.solfek, { transform: [{ translateY: solfekY }, { rotate: solfekRotate }] }]} pointerEvents="none">
-        <Image source={solfekImage} style={styles.solfekImage} resizeMode="contain" accessibilityLabel={correct ? "Solfek się cieszy" : "Solfek jest zaskoczony"} />
+        <Image source={solfekImage} style={styles.solfekImage} resizeMode="contain" accessibilityLabel={isRight ? "Solfek się cieszy" : "Solfek jest zaskoczony"} />
       </Animated.View>
 
       <View style={styles.texts}>
