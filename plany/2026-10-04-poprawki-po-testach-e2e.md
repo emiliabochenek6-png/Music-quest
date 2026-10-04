@@ -40,12 +40,12 @@ Jak sprawdzić:
 - Wynik testów E2E (sekcja błędów strony) i lokalny podgląd mapy w konsoli przeglądarki.
 
 ### Krok 3. Uodpornić test na okno awansu
-- [ ] Sprawdzić, jak wygląda okno awansu na wyższy level (pełnoekranowe co 5. level i mały baner w pozostałych) i jak je zamknąć.
-- [ ] Dołożyć do testów zamykanie tego okna (jeśli się pojawi), żeby test nie wywracał się, gdy konto testowe przejdzie na kolejny level.
-- [ ] Zasymulować: ustawić na koncie testowym XP tuż przed progiem awansu (tak jak resetuje sklep) i uruchomić test.
+- [x] Sprawdzić, jak wygląda okno awansu na wyższy level (pełnoekranowe co 5. level i mały baner w pozostałych) i jak je zamknąć.
+- [x] Dołożyć do testów zamykanie tego okna (jeśli się pojawi), żeby test nie wywracał się, gdy konto testowe przejdzie na kolejny level.
+- [x] Zasymulować: ustawić na koncie testowym XP tuż przed progiem awansu (tak jak resetuje sklep) i uruchomić test.
 
 Gotowe, gdy:
-- [ ] Test pierwszej lekcji przechodzi także wtedy, gdy +10 XP wywołuje awans na level.
+- [x] Test pierwszej lekcji przechodzi także wtedy, gdy +10 XP wywołuje awans na level.
 
 Jak sprawdzić:
 - Uruchomić test z przygotowanym kontem tuż przed awansem.

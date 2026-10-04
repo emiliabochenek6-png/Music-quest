@@ -65,11 +65,9 @@ function supabaseConfig() {
   return { url: env.EXPO_PUBLIC_SUPABASE_URL, key: env.EXPO_PUBLIC_SUPABASE_ANON_KEY };
 }
 
-/** Puts the TEST account's shop back to a known state before a test: nothing bought, `nutki` nutki in the purse.
- * It signs in as the test account and edits only that account's own saved row (the same row the app itself syncs),
- * so the purchase test can be repeated as many times as you like. Run it BEFORE the browser logs in:
- * after a login the app keeps a copy on the device and would merge the old purchases back in. */
-export async function resetTestAccountShop(nutki: number) {
+/** Signs in as the TEST account over the web API and changes fields of its own saved game row (the same row the app syncs).
+ * Run it BEFORE the browser logs in: after a login the app keeps a copy on the device and merges (keeps the higher XP / the union of purchases). */
+async function updateTestAccountGame(changes: Record<string, unknown>) {
   const { url, key } = supabaseConfig();
   const headers = { apikey: key!, "content-type": "application/json" };
   const login = await fetch(`${url}/auth/v1/token?grant_type=password`, { method: "POST", headers, body: JSON.stringify({ email, password }) });
@@ -80,7 +78,29 @@ export async function resetTestAccountShop(nutki: number) {
   const current = await fetch(`${rowUrl}&select=gamification`, { headers: auth });
   const rows = (await current.json()) as { gamification: Record<string, unknown> }[];
   if (!rows.length) throw new Error("Konto testowe nie ma jeszcze zapisanego postępu. Uruchom najpierw test pierwszej lekcji (npm run test:e2e).");
-  const gamification = { ...rows[0].gamification, nutki, shopOwned: [], shopEquipped: {} };
+  const gamification = { ...rows[0].gamification, ...changes };
   const update = await fetch(rowUrl, { method: "PATCH", headers: { ...auth, prefer: "return=minimal" }, body: JSON.stringify({ gamification, updated_at: new Date().toISOString() }) });
   if (!update.ok) throw new Error(`Nie udało się przygotować konta testowego (${update.status}).`);
+}
+
+/** Shop back to a known state: nothing bought, `nutki` nutki in the purse. */
+export async function resetTestAccountShop(nutki: number) {
+  await updateTestAccountGame({ nutki, shopOwned: [], shopEquipped: {} });
+}
+
+/** Sets the test account's total XP (e.g. just below a level threshold, to test the level-up windows). */
+export async function setTestAccountXp(xp: number) {
+  await updateTestAccountGame({ xp });
+}
+
+/** Closes the full-screen "Nowy level!" celebration if it is showing (the small level-up banner closes itself). */
+export async function closeLevelUpWindows(page: Page) {
+  const celebration = page.getByText("Super!", { exact: true });
+  for (let attempt = 0; attempt < 3; attempt++) {
+    await page.waitForTimeout(400);
+    if (await celebration.isVisible()) {
+      await celebration.click();
+      await expect(celebration).toBeHidden();
+    }
+  }
 }
