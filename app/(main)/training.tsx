@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Pressable, ScrollView, Text, View, StyleSheet } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { AnswerFeedbackPanel, ExerciseTransition } from "@/components/exercises/AnswerFeedbackPanel";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { ExerciseRenderer, hasAnswerToCheck } from "@/components/exercises/ExerciseRenderer";
 import { ExerciseAccentProvider } from "@/context/ExerciseAccentContext";
@@ -188,26 +189,25 @@ function TrainingBody() {
   return (
     <View style={[styles.root, { paddingTop: insets.top + 16 }]}>
       <Header onBack={() => finish("wyjscie")} title={getTopic(item?.topicId ?? "")?.label ?? "Tryb własny"} right={status2} />
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.exerciseScroll}>
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={[styles.exerciseScroll, checked && { paddingBottom: 230 }]}>
         {exercise && (
-          <ExerciseRenderer key={exercise.id + counts.asked} exercise={exercise} answer={answer} onAnswerChange={setAnswer} checked={checked} isCorrect={isCorrect} locale="pl" />
+          <ExerciseTransition key={exercise.id + counts.asked}>
+            <ExerciseRenderer exercise={exercise} answer={answer} onAnswerChange={setAnswer} checked={checked} isCorrect={isCorrect} locale="pl" />
+          </ExerciseTransition>
         )}
       </ScrollView>
-      <View style={{ paddingHorizontal: 24, paddingBottom: insets.bottom + 16, gap: 8 }}>
-        {checked && (
-          <Text style={[styles.feedback, { color: isCorrect ? theme.colors.success : theme.colors.warning }]}>
-            {isCorrect ? "Świetnie!" : "Niestety, to nie ta odpowiedź."}
-            {reward ? `  +${TRAINING_XP_PER_CORRECT} XP · +${TRAINING_NUTKI_PER_CORRECT} nutka` : isCorrect ? "  (dzienny limit nagród wykorzystany)" : ""}
-          </Text>
-        )}
-        {mode !== "czas" &&
-          (checked ? (
-            <DarkButton label={lastOne ? "Zobacz wynik" : "Dalej"} onPress={handleContinue} testID="training-next" />
-          ) : (
-            <DarkButton label="Sprawdź" onPress={handleCheck} disabled={!hasAnswerToCheck(answer)} testID="training-check" />
-          ))}
-        {mode === "czas" && !checked && <DarkButton label="Sprawdź" onPress={handleCheck} disabled={!hasAnswerToCheck(answer)} testID="training-check" />}
+      <View style={{ paddingHorizontal: 24, paddingBottom: insets.bottom + 16, opacity: checked ? 0 : 1 }} pointerEvents={checked ? "none" : "auto"}>
+        <DarkButton label="Sprawdź" onPress={handleCheck} disabled={!hasAnswerToCheck(answer)} testID="training-check" />
       </View>
+      <AnswerFeedbackPanel
+        visible={checked}
+        correct={isCorrect}
+        title={isCorrect ? "Świetnie!" : "Niestety, to nie ta odpowiedź."}
+        detail={isCorrect ? (reward ? `+${TRAINING_XP_PER_CORRECT} XP · +${TRAINING_NUTKI_PER_CORRECT} nutka` : "dzienny limit nagród wykorzystany") : undefined}
+        buttonLabel={mode === "czas" ? undefined : lastOne ? "Zobacz wynik" : "Dalej"}
+        onContinue={handleContinue}
+        testID="answer-panel"
+      />
     </View>
   );
 }
@@ -216,7 +216,7 @@ function Header({ onBack, title, right }: { onBack: () => void; title: string; r
   return (
     <View style={styles.header}>
       <Pressable onPress={onBack} accessibilityRole="button" accessibilityLabel="Zakończ trening" hitSlop={12} style={styles.backButton}>
-        <Text style={styles.backIcon}>‹</Text>
+        <Text style={styles.backIcon}>✕</Text>
       </Pressable>
       <Text style={styles.headerTitle} numberOfLines={1}>{title}</Text>
       {right && <Text style={styles.headerRight} testID="training-status">{right}</Text>}

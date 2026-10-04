@@ -3,8 +3,10 @@ import { Animated, Pressable, View, Text, ScrollView, StyleSheet } from "react-n
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
 import { DarkButton } from "@/components/exercises/DarkButton";
+import { AnswerFeedbackPanel, ExerciseTransition } from "@/components/exercises/AnswerFeedbackPanel";
 import { ExerciseIntroRecap } from "@/components/exercises/ExerciseIntroRecap";
 import { ExerciseRenderer, hasAnswerToCheck } from "@/components/exercises/ExerciseRenderer";
+import { LeaveLessonModal } from "@/components/exercises/LeaveLessonModal";
 import { LessonIntro } from "@/components/exercises/LessonIntro";
 import { LessonIntroRecap } from "@/components/exercises/LessonIntroRecap";
 import { LessonTheoryIntro } from "@/components/exercises/LessonTheoryIntro";
@@ -175,6 +177,8 @@ function LessonScreenBody() {
   const screenBackgroundColor = (world && WORLD_LESSON_THEME[world.mapIconId]?.background) || theme.colors.cream;
 
   const [index, setIndex] = useState(0);
+  // The X in the corner asks "are you sure?" first (a sad Solfek), but only while exercises are running.
+  const [confirmLeave, setConfirmLeave] = useState(false);
   const [answer, setAnswer] = useState<AnswerInput | null>(null);
   const [checked, setChecked] = useState(false);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
@@ -687,7 +691,7 @@ function LessonScreenBody() {
 
   return (
     <View style={[styles.root, { backgroundColor: screenBackgroundColor }]}>
-      <LessonHeader title={`${t(world.nameKey as TranslationKey)} · ${lesson.order}`} accentHex={world.accentColor} onBack={goBackToLevels} />
+      <LessonHeader title={`${t(world.nameKey as TranslationKey)} · ${lesson.order}`} accentHex={world.accentColor} onBack={() => setConfirmLeave(true)} />
 
       <View style={styles.progressWrap}>
         <View style={styles.progressTrack}>
@@ -712,7 +716,7 @@ function LessonScreenBody() {
         </View>
       )}
 
-      <ScrollView contentContainerStyle={styles.exerciseArea} keyboardShouldPersistTaps="handled" scrollEnabled={scrollEnabled}>
+      <ScrollView contentContainerStyle={[styles.exerciseArea, checked && !isSelfCheckExercise && { paddingBottom: 230 }]} keyboardShouldPersistTaps="handled" scrollEnabled={scrollEnabled}>
         {/* Consecutive exercises of the SAME type (e.g. two
             rhythm-dictation exercises back to back) would otherwise sit
             at the same JSX position and reuse the same component
@@ -735,52 +739,53 @@ function LessonScreenBody() {
             clef={currentLesson.introClef}
           />
         )}
-        <ExerciseRenderer
-          key={definition.id}
-          exercise={exercise}
-          answer={answer}
-          onAnswerChange={setAnswer}
-          checked={checked}
-          isCorrect={isCorrect}
-          locale="pl"
-          onDrawingActiveChange={(active) => setScrollEnabled(!active)}
-        />
+        <ExerciseTransition key={`${definition.id}-${index}`}>
+          <ExerciseRenderer
+            key={definition.id}
+            exercise={exercise}
+            answer={answer}
+            onAnswerChange={setAnswer}
+            checked={checked}
+            isCorrect={isCorrect}
+            locale="pl"
+            onDrawingActiveChange={(active) => setScrollEnabled(!active)}
+          />
+        </ExerciseTransition>
       </ScrollView>
 
-      <View style={{ paddingHorizontal: 24, paddingBottom: insets.bottom + 16 }}>
-        {checked && isCorrect && (
-          <Text style={{ textAlign: "center", color: theme.colors.success, fontWeight: "800", marginBottom: theme.spacing(0.75) }}>
-            +{XP_PER_CORRECT_ANSWER} XP · +{NUTKI_PER_CORRECT_ANSWER} nutki
-          </Text>
-        )}
-        {checked && (
-          <View style={{ marginBottom: theme.spacing(1.5) }}>
-            {showSolfek ? (
-              <SoltekMascot
-                size="sm"
-                expression={isCorrect ? "radosny" : "zachecajacy"}
-                message={isCorrect ? t("lesson.correct", "pl") : t("lesson.incorrect", "pl")}
-              />
-            ) : (
-              <Text
-                style={{
-                  textAlign: "center",
-                  fontWeight: "700",
-                  fontSize: theme.fontSize.body,
-                  color: isCorrect ? theme.colors.success : theme.colors.warning,
-                }}
-              >
-                {isCorrect ? t("lesson.correct", "pl") : t("lesson.incorrect", "pl")}
-              </Text>
-            )}
-          </View>
-        )}
+      <View style={{ paddingHorizontal: 24, paddingBottom: insets.bottom + 16, opacity: checked && !isSelfCheckExercise ? 0 : 1 }} pointerEvents={checked && !isSelfCheckExercise ? "none" : "auto"}>
         <DarkButton
           label={checked || isSelfCheckExercise ? t("lesson.continue", "pl") : t("lesson.checkAnswer", "pl")}
           onPress={isSelfCheckExercise ? handleSelfCheckContinue : checked ? handleContinue : handleCheck}
           disabled={!checked && !hasAnswerToCheck(answer)}
         />
       </View>
+
+      {/* After "Sprawdź": the big green (or red) sheet with the result and a wide "Dalej". */}
+      <AnswerFeedbackPanel
+        visible={checked && !isSelfCheckExercise}
+        correct={isCorrect}
+        title={isCorrect ? t("lesson.correct", "pl") : t("lesson.incorrect", "pl")}
+        detail={isCorrect ? `+${XP_PER_CORRECT_ANSWER} XP · +${NUTKI_PER_CORRECT_ANSWER} nutki` : undefined}
+        buttonLabel={t("lesson.continue", "pl")}
+        onContinue={handleContinue}
+        testID="answer-panel"
+      >
+        {checked && showSolfek ? (
+          <SoltekMascot size="sm" expression={isCorrect ? "radosny" : "zachecajacy"} frameless message={isCorrect ? t("lesson.correct", "pl") : t("lesson.incorrect", "pl")} />
+        ) : undefined}
+      </AnswerFeedbackPanel>
+
+      {confirmLeave && (
+        <LeaveLessonModal
+          remaining={Math.max(1, exercises.length - index)}
+          onStay={() => setConfirmLeave(false)}
+          onLeave={() => {
+            setConfirmLeave(false);
+            goBackToLevels();
+          }}
+        />
+      )}
     </View>
   );
 }
@@ -790,7 +795,7 @@ function LessonHeader({ title, accentHex, onBack }: { title: string; accentHex: 
   return (
     <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
       <Pressable onPress={onBack} accessibilityRole="button" accessibilityLabel="Wstecz" hitSlop={12} style={styles.backButton}>
-        <Text style={styles.backIcon}>‹</Text>
+        <Text style={styles.backIcon}>✕</Text>
       </Pressable>
       <Text style={[styles.headerTitle, { color: accentHex }]} numberOfLines={1}>
         {title}
