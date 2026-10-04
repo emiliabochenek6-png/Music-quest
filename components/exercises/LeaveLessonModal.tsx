@@ -20,7 +20,7 @@ export function LeaveLessonModal({ remaining, onStay, onLeave }: LeaveLessonModa
       <View style={styles.backdrop}>
         <View style={styles.card} accessibilityRole="alert">
           <Text style={styles.title}>Czy na pewno chcesz wyjść?</Text>
-          <SoltekMascot size="lg" expression="myslacy" frameless message={comment} />
+          <SoltekMascot size="lg" expression="smutny" frameless message={comment} />
           <View style={styles.buttons}>
             <DarkButton label="Zostaję i gram dalej" onPress={onStay} testID="leave-stay" />
             <DarkButton label="Wyjdź" onPress={onLeave} variant="secondary" testID="leave-confirm" />

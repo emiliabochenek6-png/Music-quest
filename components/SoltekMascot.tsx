@@ -2,7 +2,7 @@ import { Image, Text, View, StyleSheet } from "react-native";
 import { useEquippedOutfit } from "@/components/shop/useEquippedOutfit";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 
-export type SoltekExpression = "radosny" | "zaskoczony" | "myslacy" | "zachecajacy" | "glowny";
+export type SoltekExpression = "radosny" | "zaskoczony" | "myslacy" | "zachecajacy" | "glowny" | "smutny";
 
 /** Solfek's real character art — one square, transparent-background PNG
  * per expression, provided by the app's owner (see assets/soltek/ — the
@@ -15,6 +15,8 @@ const EXPRESSION_IMAGES: Record<SoltekExpression, ReturnType<typeof require>> = 
   myslacy: require("@/assets/soltek/myslacy.png"),
   zachecajacy: require("@/assets/soltek/zachecajacy.png"),
   glowny: require("@/assets/soltek/glowny.png"),
+  // The sad Solfek (with tears): the "are you sure you want to leave?" window of a lesson. Only exists in his standard outfit.
+  smutny: require("@/assets/soltek/smutny.png"),
 };
 
 interface SoltekMascotProps {
@@ -59,7 +61,7 @@ export function SoltekMascot({ expression = "radosny", message, size = "md", fra
         frameless && styles.avatarWrapFrameless,
       ]}
     >
-      <Image source={outfit ?? EXPRESSION_IMAGES[expression]} style={styles.avatarImage} resizeMode="contain" />
+      <Image source={expression === "smutny" ? EXPRESSION_IMAGES.smutny : (outfit ?? EXPRESSION_IMAGES[expression])} style={styles.avatarImage} resizeMode="contain" />
     </View>
   );
 
