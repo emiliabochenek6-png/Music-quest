@@ -118,6 +118,26 @@ export interface GamificationState {
   shopEquipped: Partial<Record<"ubior" | "tlo", string>>;
   /** The date ("YYYY-MM-DD") the daily gift from Solfek was last collected (lib/shop/gift.ts). */
   shopGiftDateISO: string | null;
+  /** What the player practised in Tryb własny (lib/training/): answers per topic, records and today's reward counter. */
+  training: TrainingState;
+}
+
+export interface TopicTally {
+  correct: number;
+  total: number;
+}
+
+export interface TrainingState {
+  /** All answers ever given in Tryb własny, per topic. */
+  totals: Record<string, TopicTally>;
+  /** The last two weeks, per day ("YYYY-MM-DD") and topic (for "this week" in Twój słuch). */
+  days: Record<string, Record<string, TopicTally>>;
+  /** Records: most correct answers in a row in "Seria", most correct answers in 60 seconds in "Na czas". */
+  bestStreak: number;
+  bestTimed: number;
+  /** How many correct answers were rewarded on `rewardDateISO` (the daily cap, lib/training/rewards.ts). */
+  rewardDateISO: string | null;
+  rewardedToday: number;
 }
 
 export const INITIAL_GAMIFICATION_STATE: GamificationState = {
@@ -135,6 +155,7 @@ export const INITIAL_GAMIFICATION_STATE: GamificationState = {
   shopOwned: [],
   shopEquipped: {},
   shopGiftDateISO: null,
+  training: { totals: {}, days: {}, bestStreak: 0, bestTimed: 0, rewardDateISO: null, rewardedToday: 0 },
 };
 
 function finiteOr(value: unknown, fallback: number): number {
@@ -170,5 +191,6 @@ export function sanitizeGamificationState(stored: Partial<GamificationState> | n
     streakFreezes: finiteOr(stored.streakFreezes, 0),
     ...shopFields(stored),
     shopGiftDateISO: typeof stored.shopGiftDateISO === "string" ? stored.shopGiftDateISO : null,
+    training: { ...INITIAL_GAMIFICATION_STATE.training, ...(stored.training ?? {}) },
   };
 }
