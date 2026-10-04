@@ -4,6 +4,8 @@ import Svg, { Circle, Defs, Path, Polygon, RadialGradient, Rect, Stop, LinearGra
 import { OUTFIT_IMAGES } from "@/components/shop/shopImages";
 import { useGamification } from "@/context/GamificationContext";
 import { getTitleUnlockedAt } from "@/lib/gamification/rank";
+import { EASE_IN, EASE_IN_OUT, EASE_OUT, makeRamp, track } from "@/lib/animation/timeline";
+import type { Ease, Key } from "@/lib/animation/timeline";
 import { DEFAULT_OUTFIT_ID } from "@/lib/shop/catalog";
 
 const SOLFEK_HI_RES = require("@/assets/celebration/solfek.png");
@@ -34,49 +36,7 @@ const STAR_PATH = "M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2
 const NOTE_PATH = "M10 3v11.3A3.5 3.5 0 1 0 12 17.5V8l6 1.5V5.2z";
 const CLOUD_PATH = "M28 52a18 18 0 0 1 2-36 24 24 0 0 1 44-4 18 18 0 0 1 26 18 13 13 0 0 1 2 22z";
 
-// CSS easing curves used by the design
-const EASE_IN_OUT = Easing.bezier(0.42, 0, 0.58, 1);
-const EASE_OUT = Easing.bezier(0, 0, 0.58, 1);
-const EASE_IN = Easing.bezier(0.42, 0, 1, 1);
-type Ease = (t: number) => number;
-
-/** One value over time, as keyframes: `at` in ms on the stage clock; `ease` shapes the stretch that STARTS at that key.
- * The stretches are sampled into a piecewise-linear range, so one native clock can drive every animation. */
-interface Key {
-  at: number;
-  v: number;
-  ease?: Ease;
-}
-function track(keys: Key[], steps = 8): { inputRange: number[]; outputRange: number[] } {
-  const inputRange: number[] = [];
-  const outputRange: number[] = [];
-  const push = (at: number, v: number) => {
-    const last = inputRange[inputRange.length - 1];
-    inputRange.push(last !== undefined && at <= last ? last + 0.01 : at);
-    outputRange.push(v);
-  };
-  for (let i = 0; i < keys.length - 1; i++) {
-    const a = keys[i];
-    const b = keys[i + 1];
-    for (let s = 0; s < steps; s++) {
-      const x = s / steps;
-      push(a.at + (b.at - a.at) * x, a.v + (b.v - a.v) * (a.ease ? a.ease(x) : x));
-    }
-  }
-  const lastKey = keys[keys.length - 1];
-  push(lastKey.at, lastKey.v);
-  return { inputRange, outputRange };
-}
-
-/** A value that sits at `from` until `delay`, runs to `to` over `duration`, and stays there. */
-function ramp(delay: number, duration: number, from: number, to: number, ease: Ease = EASE_OUT): Key[] {
-  return [
-    { at: 0, v: from },
-    { at: delay, v: from, ease },
-    { at: delay + duration, v: to },
-    { at: TOTAL_MS, v: to },
-  ];
-}
+const ramp = makeRamp(TOTAL_MS);
 
 // ---- the two designs: "telefon" (a 390×844 stage, scaled) and "laptop" (a 1440×900 stage, the card beside Solfek) ----------
 type Kind = "note" | "star";

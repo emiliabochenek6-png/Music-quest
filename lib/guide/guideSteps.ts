@@ -52,7 +52,7 @@ export const GUIDE_STEPS: readonly GuideStep[] = [
     id: "sklep",
     icon: "hud_nutki_waluta",
     title: "Sklep Solfka",
-    message: "Kliknij nutki, żeby wejść do sklepu. Co dzień czeka tam prezent od Solfka, a za nutki kupisz ubiory i tła. Co masz, znajdziesz w zakładce „Zakupione”.",
+    message: "Kliknij nutki, żeby wejść do sklepu. Co dzień czeka tam prezent od Solfka (losujesz nutki!), a za nutki kupisz ubiory i tła. Co masz, znajdziesz w zakładce „Zakupione”.",
     expression: "radosny",
     target: "shop",
   },

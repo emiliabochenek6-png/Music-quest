@@ -6,10 +6,11 @@ import { router } from "expo-router";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { AppIcon } from "@/components/icons/AppIcon";
 import { useGamification } from "@/context/GamificationContext";
+import { GiftScene } from "@/components/shop/GiftScene";
 import { SolfekAvatar } from "@/components/shop/SolfekAvatar";
 import { MAX_STREAK_FREEZES, POWER_UP_COSTS } from "@/lib/gamification/powerups";
 import { DEFAULT_BACKGROUND_ID, DEFAULT_OUTFIT_ID, SHOP_ITEMS, SHOP_SLOTS, itemsInSlot } from "@/lib/shop/catalog";
-import { canClaimGift, giftAmount } from "@/lib/shop/gift";
+import { canClaimGift } from "@/lib/shop/gift";
 import { todayISODate } from "@/lib/gamification/activity";
 import type { ShopItem, ShopSlot } from "@/lib/shop/catalog";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
@@ -51,11 +52,9 @@ export default function PowerUpShopScreen() {
   const isOwned = (item: ShopItem) => item.price === 0 || state.shopOwned.includes(item.id);
   const isWorn = (item: ShopItem) => (state.shopEquipped[item.slot] ?? DEFAULT_ID[item.slot]) === item.id;
 
+  // The daily gift: tapping the button opens the gift scene (a box with 1-10 nutki inside); the nutki are paid out when it opens.
   const giftReady = canClaimGift(state.shopGiftDateISO, todayISODate());
-  function handleClaimGift() {
-    const amount = claimShopGift();
-    setFeedback(amount > 0 ? `Prezent od Solfka: +${amount} nutek!` : "Dzisiejszy prezent już odebrany. Wróć jutro!");
-  }
+  const [giftOpen, setGiftOpen] = useState(false);
 
   function handleItemPress(item: ShopItem) {
     if (isOwned(item)) {
@@ -107,15 +106,15 @@ export default function PowerUpShopScreen() {
           <Text style={styles.balanceLabel}>nutek</Text>
         </View>
         <Pressable
-          onPress={handleClaimGift}
+          onPress={() => setGiftOpen(true)}
           disabled={!giftReady}
           testID="shop-gift"
           accessibilityRole="button"
-          accessibilityLabel={giftReady ? `Odbierz prezent od Solfka: ${giftAmount(state.streakDays)} nutek` : "Prezent od Solfka odebrany"}
+          accessibilityLabel={giftReady ? "Otwórz prezent od Solfka: wylosuj od 1 do 10 nutek" : "Prezent od Solfka odebrany"}
           style={[styles.gift, !giftReady && styles.giftDone]}
         >
           <GlyphText style={[styles.giftText, !giftReady && { color: theme.colors.muted }]}>
-            {giftReady ? `🎁 Prezent od Solfka: odbierz +${giftAmount(state.streakDays)} nutek` : "🎁 Prezent odebrany, wróć jutro!"}
+            {giftReady ? "🎁 Prezent od Solfka: otwórz i wylosuj nutki" : "🎁 Prezent odebrany, wróć jutro!"}
           </GlyphText>
         </Pressable>
         <View style={[styles.preview, { width: previewSize, height: previewSize }]}>
@@ -170,6 +169,7 @@ export default function PowerUpShopScreen() {
           itemsInSlot(tab).map(renderItem)
         )}
       </ScrollView>
+      {giftOpen && <GiftScene balance={state.nutki} onClaim={claimShopGift} onClose={() => setGiftOpen(false)} />}
     </View>
   );
 }

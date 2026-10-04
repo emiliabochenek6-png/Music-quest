@@ -1,7 +1,7 @@
 import { describe, expect, it } from "@jest/globals";
 import { BACKGROUND_IMAGES, OUTFIT_IMAGES } from "@/components/shop/shopImages";
 import { DEFAULT_BACKGROUND_ID, DEFAULT_OUTFIT_ID, SHOP_ITEMS, SHOP_SLOTS, getShopItem, itemsInSlot, sanitizeShop, totalSpent } from "@/lib/shop/catalog";
-import { canClaimGift, giftAmount } from "@/lib/shop/gift";
+import { canClaimGift, clampGift, formatCountdown, nutkiWord, rollGift, secondsToNextGift } from "@/lib/shop/gift";
 import { mergeGamificationState } from "@/lib/sync/mergeState";
 import { INITIAL_GAMIFICATION_STATE, sanitizeGamificationState } from "@/types/gamification";
 
@@ -77,10 +77,26 @@ describe("shop economy", () => {
     expect(Math.max(...paid.map((item) => item.price))).toBeGreaterThanOrEqual(1500);
   });
 
-  it("the daily gift grows with the streak and is capped", () => {
-    expect(giftAmount(0)).toBe(10);
-    expect(giftAmount(5)).toBe(20);
-    expect(giftAmount(100)).toBe(30);
+  it("the daily gift is a random whole number of nutki from 1 to 10, every number possible", () => {
+    const seen = new Set<number>();
+    for (let step = 0; step < 100; step++) seen.add(rollGift(step / 100));
+    expect([...seen].sort((a, b) => a - b)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+    expect(rollGift(0)).toBe(1);
+    expect(rollGift(0.999999)).toBe(10);
+    expect(clampGift(0)).toBe(1);
+    expect(clampGift(500)).toBe(10);
+    expect(clampGift(Number.NaN)).toBe(1);
+    expect(clampGift(4.7)).toBe(4);
+  });
+
+  it("counts down to midnight and uses the right Polish word", () => {
+    expect(secondsToNextGift(new Date(2026, 9, 4, 23, 59, 0))).toBe(60);
+    expect(secondsToNextGift(new Date(2026, 9, 4, 0, 0, 0))).toBe(24 * 3600);
+    expect(formatCountdown(5 * 3600 + 9 * 60 + 3)).toBe("05:09:03");
+    expect([1, 2, 4, 5, 10, 12].map(nutkiWord)).toEqual(["nutka", "nutki", "nutki", "nutek", "nutek", "nutek"]);
+  });
+
+  it("a gift can be collected once a day", () => {
     expect(canClaimGift(null, "2026-10-04")).toBe(true);
     expect(canClaimGift("2026-10-03", "2026-10-04")).toBe(true);
     expect(canClaimGift("2026-10-04", "2026-10-04")).toBe(false);

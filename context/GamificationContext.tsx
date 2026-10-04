@@ -9,7 +9,7 @@ import { onLocalDataReset } from "@/lib/sync/localDataReset";
 import { getTitleUnlockedAt, getRankForXp, getRankName, isLevelUpWorthCelebrating } from "@/lib/gamification/rank";
 import { nutkiForLevelRange } from "@/lib/gamification/levelRewards";
 import { getShopItem } from "@/lib/shop/catalog";
-import { canClaimGift, giftAmount } from "@/lib/shop/gift";
+import { canClaimGift, clampGift } from "@/lib/shop/gift";
 import { recordAnswer, rewardsLeftToday } from "@/lib/training/stats";
 import { TRAINING_NUTKI_PER_CORRECT, TRAINING_REWARDED_ANSWERS_PER_DAY, TRAINING_XP_PER_CORRECT } from "@/lib/training/rewards";
 import { todayISODate } from "@/lib/gamification/activity";
@@ -79,7 +79,8 @@ interface GamificationContextValue {
   /** Sklep Solfka: buys an item with nutki (and puts it on straight away). */
   buyShopItem: (itemId: string) => BuyResult;
   /** Collects today's free gift from Solfek; returns how many nutki it paid (0 when it was already collected today). */
-  claimShopGift: () => number;
+  /** Collects today's gift box with the number of nutki it held (1-10); returns what was paid out, 0 when today's was already collected. */
+  claimShopGift: (amount: number) => number;
   /** Tryb własny: records one answer in `topicId`; a correct one also pays a little XP and a nutka, up to the daily cap.
    * Returns what it paid (both 0 once today's cap is used up, or for a wrong answer). */
   recordTrainingAnswer: (topicId: string, correct: boolean) => { xp: number; nutki: number };
@@ -296,10 +297,10 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
     });
   }
 
-  function claimShopGift(): number {
+  function claimShopGift(requested: number): number {
     const today = todayISODate();
     if (!canClaimGift(state.shopGiftDateISO, today)) return 0;
-    const amount = giftAmount(state.streakDays);
+    const amount = clampGift(requested);
     setState((prev) => {
       if (!canClaimGift(prev.shopGiftDateISO, today)) return prev;
       const next: GamificationState = { ...prev, nutki: prev.nutki + amount, shopGiftDateISO: today };
