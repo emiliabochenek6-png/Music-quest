@@ -141,7 +141,7 @@ world at once).
 Hearts (lose on wrong answer, regen over time or from correct answers),
 XP/rank (`rank.ts`), streak + daily missions (`dailyMissions.ts`,
 `activity.ts`), lesson stars (`stars.ts`), badges, and a "nutki" currency
-spent in `power-ups.tsx`. `RankUpCelebration` lives at the root shell
+spent in `power-ups.tsx`. The daily gift in Sklep Solfka (`components/shop/GiftScene.tsx`, layouts in `giftLayouts.ts`, rules in `lib/shop/gift.ts`) is a full-screen scene where the player opens a gift box and draws 1-10 nutki once a day; the nutki are paid out the moment the box opens (`claimShopGift(amount)`), so closing early loses nothing. `RankUpCelebration` lives at the root shell
 (`app/_layout.tsx`) so a rank-up can surface from any screen.
 
 ### Auth + cross-device sync (`context/AuthContext.tsx`, `lib/supabase/`, `lib/sync/`)
