@@ -1,19 +1,27 @@
 import { useEffect, useRef, useState } from "react";
-import { Animated, Easing, Pressable, StyleSheet, Text, View } from "react-native";
+import { Animated, Easing, Image, Pressable, StyleSheet, Text, View } from "react-native";
 import type { LayoutChangeEvent } from "react-native";
-import Svg, { Circle, Path } from "react-native-svg";
+import Svg, { Path } from "react-native-svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { ReactNode } from "react";
+import { useEquippedOutfit } from "@/components/shop/useEquippedOutfit";
+import { feedbackLine } from "@/lib/answerFeedback";
+
+const HAPPY_SOLFEK = require("@/assets/soltek/radosny.png");
+const SURPRISED_SOLFEK = require("@/assets/soltek/zaskoczony.png");
 
 interface AnswerFeedbackPanelProps {
   /** The panel slides up when this turns true and back down when it turns false. */
   visible: boolean;
-  /** true = green ("Świetnie!"), false = red; null is treated as red but should not be shown. */
+  /** true = green (it was right), false = red (it was wrong); null is treated as red but should not be shown. */
   correct: boolean | null;
-  title: string;
-  /** A second line, e.g. "+10 XP · +2 nutki". */
+  /** Leave it out to get one of Solfek's own lines ("Brawo!", "Prawie!"…), drawn fresh every time the panel opens. */
+  title?: string;
+  /** A second line under the title; leave it out to get Solfek's own. */
+  note?: string;
+  /** A reward line, e.g. "+10 XP · +2 nutki". */
   detail?: string;
-  /** Something to show instead of the plain title, e.g. Solfek's comment. */
+  /** Something to show instead of the title and the note. */
   children?: ReactNode;
   /** Text of the big button ("Dalej"); omit it to show no button (the game goes on by itself). */
   buttonLabel?: string;
@@ -21,24 +29,36 @@ interface AnswerFeedbackPanelProps {
   testID?: string;
 }
 
-const GREEN = { background: "#D7FFB8", title: "#58A700", button: "#58CC02", shadow: "#58A700" };
-const RED = { background: "#FFDFE0", title: "#EA2B2B", button: "#FF4B4B", shadow: "#EA2B2B" };
+// Green = well done, red = a mistake — but warm, to sit in Solfek's orange world, instead of the cold tints of other apps.
+const GREEN = { background: "#E3F6C9", title: "#3E8A0C", note: "#4F7A2A", button: "#58B80D", shadow: "#3E8A0C", chip: "#CDEBA4" };
+const RED = { background: "#FFE3DA", title: "#C8321E", note: "#9A4A3C", button: "#EF4C3A", shadow: "#C8321E", chip: "#FFCDBF" };
 
 /**
- * The feedback panel after "Sprawdź", in the style of Duolingo: a big green (or red) sheet slides up from the bottom of the
- * screen with a tick (or a cross), "Świetnie!" and a wide matching "Dalej" button. It covers the area where "Sprawdź" was, so the
- * player's thumb stays in the same place, and slides away again when the next exercise comes in.
+ * The feedback panel after "Sprawdź": a green sheet when the answer was right and a red one when it was wrong. Solfek peeks over
+ * its top edge (happy for a hit, surprised for a miss), says something in his own words, and a round "Dalej" button sits where
+ * "Sprawdź" was, so the player's thumb stays in the same place. It slides away again when the next exercise comes in.
  * Place it as the last child of a screen's root view (it positions itself at the bottom).
  */
-export function AnswerFeedbackPanel({ visible, correct, title, detail, children, buttonLabel, onContinue, testID }: AnswerFeedbackPanelProps) {
+export function AnswerFeedbackPanel({ visible, correct, title, note, detail, children, buttonLabel, onContinue, testID }: AnswerFeedbackPanelProps) {
   const insets = useSafeAreaInsets();
+  const outfit = useEquippedOutfit().image;
   const progress = useRef(new Animated.Value(0)).current;
+  const bounce = useRef(new Animated.Value(0)).current;
   const [height, setHeight] = useState(260);
   const [shown, setShown] = useState(visible);
+  const [line, setLine] = useState(() => feedbackLine(true));
   const colors = correct ? GREEN : RED;
 
   useEffect(() => {
-    if (visible) setShown(true);
+    if (visible) {
+      setShown(true);
+      setLine(feedbackLine(!!correct));
+      bounce.setValue(0);
+      Animated.sequence([
+        Animated.delay(140),
+        Animated.spring(bounce, { toValue: 1, friction: 4, tension: 140, useNativeDriver: true }),
+      ]).start();
+    }
     Animated.timing(progress, {
       toValue: visible ? 1 : 0,
       duration: visible ? 260 : 180,
@@ -47,7 +67,9 @@ export function AnswerFeedbackPanel({ visible, correct, title, detail, children,
     }).start(({ finished }) => {
       if (finished && !visible) setShown(false);
     });
-  }, [visible, progress]);
+    // `correct` is read only at the moment the panel opens (the line must not change while it is shown)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visible, progress, bounce]);
 
   function handleLayout(event: LayoutChangeEvent) {
     setHeight(event.nativeEvent.layout.height);
@@ -56,6 +78,9 @@ export function AnswerFeedbackPanel({ visible, correct, title, detail, children,
   if (!shown && !visible) return null;
 
   const translateY = progress.interpolate({ inputRange: [0, 1], outputRange: [height + 24, 0] });
+  const solfekY = bounce.interpolate({ inputRange: [0, 1], outputRange: [28, 0] });
+  const solfekRotate = bounce.interpolate({ inputRange: [0, 1], outputRange: [correct ? "-10deg" : "8deg", "0deg"] });
+  const solfekImage = outfit ?? (correct ? HAPPY_SOLFEK : SURPRISED_SOLFEK);
 
   return (
     <Animated.View
@@ -65,24 +90,28 @@ export function AnswerFeedbackPanel({ visible, correct, title, detail, children,
       accessibilityLiveRegion="polite"
       style={[styles.panel, { backgroundColor: colors.background, paddingBottom: insets.bottom + 18, opacity: progress, transform: [{ translateY }] }]}
     >
-      <View style={styles.row}>
-        <View style={[styles.badge, { backgroundColor: colors.button }]}>
-          <Svg width={26} height={26} viewBox="0 0 24 24">
-            {correct ? (
-              <Path d="M5 12.5l4.5 4.5L19 7" fill="none" stroke="#FFFFFF" strokeWidth={3.4} strokeLinecap="round" strokeLinejoin="round" />
-            ) : (
-              <>
-                <Circle cx={12} cy={12} r={0} fill="none" />
-                <Path d="M6.5 6.5l11 11M17.5 6.5l-11 11" fill="none" stroke="#FFFFFF" strokeWidth={3.4} strokeLinecap="round" />
-              </>
-            )}
-          </Svg>
-        </View>
-        <View style={styles.texts}>
-          {children ?? <Text style={[styles.title, { color: colors.title }]}>{title}</Text>}
-          {detail ? <Text style={[styles.detail, { color: colors.title }]}>{detail}</Text> : null}
-        </View>
+      {/* Solfek leans over the edge of the sheet */}
+      <Animated.View style={[styles.solfek, { transform: [{ translateY: solfekY }, { rotate: solfekRotate }] }]} pointerEvents="none">
+        <Image source={solfekImage} style={styles.solfekImage} resizeMode="contain" accessibilityLabel={correct ? "Solfek się cieszy" : "Solfek jest zaskoczony"} />
+      </Animated.View>
+
+      <View style={styles.texts}>
+        {children ?? (
+          <>
+            <Text style={[styles.title, { color: colors.title }]}>{title ?? line.title}</Text>
+            <Text style={[styles.note, { color: colors.note }]}>{note ?? line.note}</Text>
+          </>
+        )}
+        {detail ? (
+          <View style={[styles.chip, { backgroundColor: colors.chip }]}>
+            <Svg width={14} height={14} viewBox="0 0 24 24">
+              <Path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6z" fill="#FFC83D" stroke="#D9571A" strokeWidth={1.6} strokeLinejoin="round" />
+            </Svg>
+            <Text style={[styles.chipText, { color: colors.title }]}>{detail}</Text>
+          </View>
+        ) : null}
       </View>
+
       {buttonLabel && onContinue ? (
         <Pressable
           onPress={onContinue}
@@ -92,6 +121,9 @@ export function AnswerFeedbackPanel({ visible, correct, title, detail, children,
           style={({ pressed }) => [styles.button, { backgroundColor: colors.button, shadowColor: colors.shadow, transform: [{ translateY: pressed ? 3 : 0 }], shadowOffset: { width: 0, height: pressed ? 1 : 4 } }]}
         >
           <Text style={styles.buttonText}>{buttonLabel}</Text>
+          <Svg width={20} height={20} viewBox="0 0 24 24">
+            <Path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="#FFFFFF" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" />
+          </Svg>
         </Pressable>
       ) : null}
     </Animated.View>
@@ -114,25 +146,29 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    paddingTop: 20,
+    paddingTop: 22,
     paddingHorizontal: 20,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
     gap: 16,
   },
-  row: { flexDirection: "row", alignItems: "center", gap: 14 },
-  badge: { width: 48, height: 48, borderRadius: 24, alignItems: "center", justifyContent: "center" },
-  texts: { flex: 1, gap: 2 },
-  title: { fontSize: 22, fontWeight: "800" },
-  detail: { fontSize: 14, fontWeight: "700" },
+  solfek: { position: "absolute", right: 14, top: -62, width: 96, height: 96 },
+  solfekImage: { width: 96, height: 96 },
+  texts: { gap: 4, paddingRight: 96, minHeight: 56, justifyContent: "center" },
+  title: { fontSize: 24, lineHeight: 28, fontWeight: "800" },
+  note: { fontSize: 14, lineHeight: 19, fontWeight: "600" },
+  chip: { alignSelf: "flex-start", flexDirection: "row", alignItems: "center", gap: 6, marginTop: 6, paddingVertical: 4, paddingHorizontal: 10, borderRadius: 999 },
+  chipText: { fontSize: 13, fontWeight: "800" },
   button: {
-    height: 56,
-    borderRadius: 16,
+    height: 58,
+    borderRadius: 29,
+    flexDirection: "row",
+    gap: 8,
     alignItems: "center",
     justifyContent: "center",
     shadowOpacity: 1,
     shadowRadius: 0,
     elevation: 3,
   },
-  buttonText: { fontSize: 17, fontWeight: "800", color: "#FFFFFF", letterSpacing: 0.4 },
+  buttonText: { fontSize: 18, fontWeight: "800", color: "#FFFFFF", letterSpacing: 0.3 },
 });

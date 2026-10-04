@@ -202,7 +202,6 @@ function TrainingBody() {
       <AnswerFeedbackPanel
         visible={checked}
         correct={isCorrect}
-        title={isCorrect ? "Świetnie!" : "Niestety, to nie ta odpowiedź."}
         detail={isCorrect ? (reward ? `+${TRAINING_XP_PER_CORRECT} XP · +${TRAINING_NUTKI_PER_CORRECT} nutka` : "dzienny limit nagród wykorzystany") : undefined}
         buttonLabel={mode === "czas" ? undefined : lastOne ? "Zobacz wynik" : "Dalej"}
         onContinue={handleContinue}

@@ -10,6 +10,8 @@ interface ScreenHeaderProps {
    * come from (e.g. the exercise screen always wants its own world's
    * levels screen, not just "back one"). */
   onBack?: () => void;
+  /** An X instead of the "<" — for a screen that is left rather than gone back from (the placement test). */
+  close?: boolean;
 }
 
 /** The one back-navigation affordance every screen past the map uses — see
@@ -18,7 +20,7 @@ interface ScreenHeaderProps {
  * an explicit way back, since a phone has no browser back button to fall
  * back on. Respects the top safe-area inset itself so callers never have
  * to remember to. */
-export function ScreenHeader({ title, onBack }: ScreenHeaderProps) {
+export function ScreenHeader({ title, onBack, close = false }: ScreenHeaderProps) {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
 
@@ -36,7 +38,7 @@ export function ScreenHeader({ title, onBack }: ScreenHeaderProps) {
       <Pressable
         onPress={onBack ?? (() => router.back())}
         accessibilityRole="button"
-        accessibilityLabel="Wstecz"
+        accessibilityLabel={close ? "Zamknij" : "Wstecz"}
         hitSlop={12}
         style={{
           width: 40,
@@ -47,7 +49,7 @@ export function ScreenHeader({ title, onBack }: ScreenHeaderProps) {
           backgroundColor: theme.colors.surface,
         }}
       >
-        <Text style={{ fontSize: 20, color: theme.colors.ink }}>‹</Text>
+        <Text style={{ fontSize: 20, color: theme.colors.ink }}>{close ? "✕" : "‹"}</Text>
       </Pressable>
       <Text
         style={{ fontSize: theme.fontSize.body, fontWeight: "700", color: theme.colors.ink, flexShrink: 1 }}

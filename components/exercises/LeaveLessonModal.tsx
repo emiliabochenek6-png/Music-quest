@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { Modal, StyleSheet, Text, View } from "react-native";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { SoltekMascot } from "@/components/SoltekMascot";
-import { leaveComment } from "@/lib/lessonLeave";
+import { leaveComment, leaveTestComment } from "@/lib/lessonLeave";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 
 interface LeaveLessonModalProps {
@@ -10,20 +10,23 @@ interface LeaveLessonModalProps {
   remaining: number;
   onStay: () => void;
   onLeave: () => void;
+  /** "lesson" (default) or the placement "test": changes the question, Solfek's comment and the buttons. */
+  kind?: "lesson" | "test";
 }
 
-/** The "are you sure you want to leave?" window of a lesson. Mount it only while it should show (a closing RN-web Modal can linger). */
-export function LeaveLessonModal({ remaining, onStay, onLeave }: LeaveLessonModalProps) {
-  const comment = useRef(leaveComment(remaining)).current;
+/** The "are you sure you want to leave?" window of a lesson (or of the placement test). Mount it only while it should show (a closing RN-web Modal can linger). */
+export function LeaveLessonModal({ remaining, onStay, onLeave, kind = "lesson" }: LeaveLessonModalProps) {
+  const isTest = kind === "test";
+  const comment = useRef(isTest ? leaveTestComment(remaining) : leaveComment(remaining)).current;
   return (
     <Modal visible transparent animationType="none" onRequestClose={onStay}>
       <View style={styles.backdrop}>
         <View style={styles.card} accessibilityRole="alert">
-          <Text style={styles.title}>Czy na pewno chcesz wyjść?</Text>
+          <Text style={styles.title}>{isTest ? "Czy na pewno chcesz skończyć test?" : "Czy na pewno chcesz wyjść?"}</Text>
           <SoltekMascot size="lg" expression="smutny" frameless message={comment} />
           <View style={styles.buttons}>
-            <DarkButton label="Zostaję i gram dalej" onPress={onStay} testID="leave-stay" />
-            <DarkButton label="Wyjdź" onPress={onLeave} variant="secondary" testID="leave-confirm" />
+            <DarkButton label={isTest ? "Zostaję i robię test dalej" : "Zostaję i gram dalej"} onPress={onStay} testID="leave-stay" />
+            <DarkButton label={isTest ? "Kończę test" : "Wyjdź"} onPress={onLeave} variant="secondary" testID="leave-confirm" />
           </View>
         </View>
       </View>

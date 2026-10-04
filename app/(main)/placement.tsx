@@ -3,6 +3,7 @@ import { ScrollView, Text, View, StyleSheet } from "react-native";
 import { router } from "expo-router";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { ExerciseRenderer, hasAnswerToCheck } from "@/components/exercises/ExerciseRenderer";
+import { LeaveLessonModal } from "@/components/exercises/LeaveLessonModal";
 import { SoltekMascot } from "@/components/SoltekMascot";
 import { ScreenHeader } from "@/components/ui/ScreenHeader";
 import { usePlan } from "@/context/PlanContext";
@@ -47,6 +48,8 @@ export default function PlacementScreen() {
   const [state, setState] = useState<PlacementState>(() => startPlacement(worldIds));
   const [exercise, setExercise] = useState<GeneratedExercise | null>(null);
   const [answer, setAnswer] = useState<AnswerInput | null>(null);
+  // The X in the corner of a question asks "are you sure?" first (a sad Solfek).
+  const [confirmLeave, setConfirmLeave] = useState(false);
   const [minutesPerDay, setMinutesPerDay] = useState<number>(plan.minutesPerDay);
   const usedIds = useRef(new Set<string>());
   const totalEstimate = worldIds.length * 2;
@@ -130,10 +133,8 @@ export default function PlacementScreen() {
       <View style={styles.root}>
         <ScreenHeader
           title={`Pytanie ${state.answered + 1}`}
-          onBack={() => {
-            stopAllScheduledAudio();
-            setStage("intro");
-          }}
+          close
+          onBack={() => setConfirmLeave(true)}
         />
         <View style={styles.barWrap}>
           <View style={styles.barTrack}>
@@ -152,6 +153,18 @@ export default function PlacementScreen() {
           <DarkButton label="Dalej" onPress={() => submit(true)} disabled={!hasAnswerToCheck(answer)} />
           <DarkButton label="Nie wiem" onPress={() => submit(false)} variant="secondary" />
         </View>
+        {confirmLeave && (
+          <LeaveLessonModal
+            kind="test"
+            remaining={Math.max(1, totalEstimate - state.answered)}
+            onStay={() => setConfirmLeave(false)}
+            onLeave={() => {
+              setConfirmLeave(false);
+              stopAllScheduledAudio();
+              setStage("intro");
+            }}
+          />
+        )}
       </View>
     );
   }

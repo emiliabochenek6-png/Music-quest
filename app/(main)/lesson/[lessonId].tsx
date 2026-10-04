@@ -49,9 +49,6 @@ const XP_PER_CORRECT_ANSWER = 10;
 /** Nutki ("nuty") a correct answer pays in "Tryb nauki". */
 const NUTKI_PER_CORRECT_ANSWER = 2;
 const XP_PERFECT_LESSON_BONUS = 20;
-/** Roughly 1 in 3 checks — see showSolfek's own doc for why this isn't
- * every check. */
-const SOLTEK_APPEARANCE_CHANCE = 0.35;
 /** Every Nth wrong answer TOTAL this attempt (not necessarily in a row —
  * correct answers in between don't reset the count, see mistakeCount's
  * own doc) gets an encouraging Solfek checkpoint. */
@@ -182,13 +179,6 @@ function LessonScreenBody() {
   const [answer, setAnswer] = useState<AnswerInput | null>(null);
   const [checked, setChecked] = useState(false);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
-  // Solfek shows up on a random minority of checks (see SOLTEK_APPEARANCE_CHANCE)
-  // rather than every single one — a lesson can have many exercises in a
-  // row, and a companion commenting on every single answer would read as
-  // clutter rather than the occasional encouraging cameo he's meant to be.
-  // Re-rolled fresh each time handleCheck runs, reset on handleContinue so
-  // the next question gets its own independent roll.
-  const [showSolfek, setShowSolfek] = useState(false);
   // "Owed, not shown yet" — set true by handleCheck the moment
   // mistakeCount crosses an ENCOURAGEMENT_INTERVAL multiple (see that
   // constant's own doc — total wrong answers this attempt, correct ones
@@ -367,7 +357,6 @@ function LessonScreenBody() {
     }
     setChecked(true);
     setIsCorrect(correct);
-    setShowSolfek(Math.random() < SOLTEK_APPEARANCE_CHANCE);
     if (!correct) {
       const nextMistakeCount = mistakeCount + 1;
       setMistakeCount(nextMistakeCount);
@@ -439,7 +428,6 @@ function LessonScreenBody() {
       setAnswer(null);
       setChecked(false);
       setIsCorrect(null);
-      setShowSolfek(false);
       setShowEncouragement(false);
     } else {
       onLessonCompleted(currentLesson.id);
@@ -765,16 +753,11 @@ function LessonScreenBody() {
       <AnswerFeedbackPanel
         visible={checked && !isSelfCheckExercise}
         correct={isCorrect}
-        title={isCorrect ? t("lesson.correct", "pl") : t("lesson.incorrect", "pl")}
         detail={isCorrect ? `+${XP_PER_CORRECT_ANSWER} XP · +${NUTKI_PER_CORRECT_ANSWER} nutki` : undefined}
         buttonLabel={t("lesson.continue", "pl")}
         onContinue={handleContinue}
         testID="answer-panel"
-      >
-        {checked && showSolfek ? (
-          <SoltekMascot size="sm" expression={isCorrect ? "radosny" : "zachecajacy"} frameless message={isCorrect ? t("lesson.correct", "pl") : t("lesson.incorrect", "pl")} />
-        ) : undefined}
-      </AnswerFeedbackPanel>
+      />
 
       {confirmLeave && (
         <LeaveLessonModal
