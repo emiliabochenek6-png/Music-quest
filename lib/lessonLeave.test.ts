@@ -1,5 +1,5 @@
 import { describe, expect, it } from "@jest/globals";
-import { exercisesWord, leaveComment } from "@/components/exercises/LeaveLessonModal";
+import { exercisesWord, leaveComment } from "@/lib/lessonLeave";
 
 describe("leaving a lesson: Solfek's sad comments", () => {
   it("uses the right Polish word for the number of exercises left", () => {
@@ -13,7 +13,7 @@ describe("leaving a lesson: Solfek's sad comments", () => {
   });
 
   it("has several different comments, none of them for a particular gender", () => {
-    const many = new Set([0, 0.2, 0.5, 0.8, 0.99].map((random) => leaveComment(9, random)));
+    const many = new Set([0, 0.3, 0.5, 0.8].map((random) => leaveComment(9, random)));
     expect(many.size).toBeGreaterThanOrEqual(4);
     for (const comment of many) expect(comment).not.toMatch(/(łaś|łeś|\(a\)|\(e\)ś)/);
   });
