@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Image, Pressable, Text, View, StyleSheet, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router, useFocusEffect } from "expo-router";
@@ -88,7 +88,26 @@ export default function MapScreen() {
   // (Reading `profile`/`plan` before they have loaded would show these to a returning player for one frame.)
   const finishedALesson = progress.completedLessonIds.size > 0 || planCompletedIds.size > 0;
   const showPlanPrompt = mapFocused && !planPromptHidden && !isProfileLoading && !isPlanLoading && !guideReplay && plan.mode === "unset" && !plan.promptSeen;
+  // The guide points at real things on the map, so while it runs the map must be the full game map ("Tryb zabawy"),
+  // scrolled to the top: switch to it, and put the player's own mode back when the guide closes.
+  const [guideTick, setGuideTick] = useState(0);
+  const viewBeforeGuide = useRef<"fun" | "plan" | null>(null);
   const showGuide = guideReplay || (!isProfileLoading && !isPlanLoading && !showPlanPrompt && !profile.hasSeenGuide && finishedALesson);
+
+  useEffect(() => {
+    if (!showGuide) return;
+    if (viewBeforeGuide.current === null) viewBeforeGuide.current = plan.view;
+    if (plan.view !== "fun") setView("fun");
+    setGuideTick((tick) => tick + 1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showGuide]);
+
+  function closeGuide() {
+    setGuideReplay(false);
+    setHasSeenGuide(true);
+    if (viewBeforeGuide.current && viewBeforeGuide.current !== "fun") setView(viewBeforeGuide.current);
+    viewBeforeGuide.current = null;
+  }
 
   function handleSelectWorld(world: WorldDefinition) {
     const state = resolveNodeState(world, progress, status, gamification.lessonStars);
@@ -134,7 +153,7 @@ export default function MapScreen() {
       {plan.view === "plan" ? (
         <PlanPath />
       ) : (
-        <WorldMap progress={progress} subscription={status} lessonStars={gamification.lessonStars} onSelectWorld={handleSelectWorld} />
+        <WorldMap progress={progress} subscription={status} lessonStars={gamification.lessonStars} onSelectWorld={handleSelectWorld} scrollToTopTick={guideTick} />
       )}
       {/* Above both views: "Tryb zabawy" (world map: the game, bosses) / "Tryb nauki" (Twój plan: personal path). */}
       <View style={[styles.switchWrap, { top: insets.top + 118 }]}>
@@ -155,12 +174,7 @@ export default function MapScreen() {
 
       {/* Mounted only while showing — a closing RN-web Modal lingers (faded) behind whatever opens next. */}
       {showGuide && (
-        <GameGuide
-          onClose={() => {
-            setGuideReplay(false);
-            setHasSeenGuide(true);
-          }}
-        />
+        <GameGuide onClose={closeGuide} />
       )}
 {/* Mounted only while it should be showing — a closing RN-web Modal can linger in the DOM until its fade animation ends (and never ends if the page is hidden), which kept it on top of the placement screen. */}
       {showPlanPrompt && (

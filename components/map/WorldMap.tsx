@@ -1,4 +1,5 @@
 import { Fragment } from "react";
+import { useEffect, useRef } from "react";
 import { ScrollView, View, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Defs, LinearGradient, Path, Stop } from "react-native-svg";
@@ -16,6 +17,8 @@ interface WorldMapProps {
    * lessons to meet MIN_STARS_TO_ADVANCE_WORLD. */
   lessonStars: Readonly<Record<string, 1 | 2 | 3>>;
   onSelectWorld: (world: WorldDefinition) => void;
+  /** Changes whenever the map should jump back to the top (the guide does this, so the first world is on screen to point at). */
+  scrollToTopTick?: number;
 }
 
 const NODE_SPACING_Y = 176;
@@ -40,12 +43,17 @@ function nodeY(index: number): number {
  * glow/lock/name rendering. Deliberately a plain canvas with no scattered
  * decoration — the light "educational" pass dropped the note-glyph
  * background the earlier dark theme had. */
-export function WorldMap({ progress, subscription, lessonStars, onSelectWorld }: WorldMapProps) {
+export function WorldMap({ progress, subscription, lessonStars, onSelectWorld, scrollToTopTick = 0 }: WorldMapProps) {
   const insets = useSafeAreaInsets();
+  const scrollRef = useRef<ScrollView>(null);
+  useEffect(() => {
+    if (scrollToTopTick > 0) scrollRef.current?.scrollTo({ y: 0, animated: false });
+  }, [scrollToTopTick]);
   const totalHeight = TOP_PADDING + (WORLDS.length - 1) * NODE_SPACING_Y + 100;
 
   return (
     <ScrollView
+      ref={scrollRef}
       style={styles.scroll}
       // insets.top + 64 used to be just past GamificationHeaderBar's own
       // top (insets.top + 56 in map.tsx) but not past its own height —

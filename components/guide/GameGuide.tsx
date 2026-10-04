@@ -42,13 +42,24 @@ export function GameGuide({ onClose }: GameGuideProps) {
     setMeasured(!step.target);
     if (!step.target) return;
     const target = step.target;
-    const timer = setTimeout(() => {
+    // The spot may appear a moment late (the map is switching to the game view and scrolling to the top): look a few times
+    // before giving up, and only accept a spot that is really on screen.
+    let timer: ReturnType<typeof setTimeout>;
+    let attempts = 0;
+    const look = () => {
       void measureTourTarget(target).then((found) => {
         if (cancelled) return;
-        setRect(found);
-        setMeasured(true);
+        const onScreen = found && found.y + found.height > 0 && found.y < height && found.x + found.width > 0 && found.x < width;
+        attempts += 1;
+        if (onScreen || attempts >= 8) {
+          setRect(onScreen ? found : null);
+          setMeasured(true);
+        } else {
+          timer = setTimeout(look, 150);
+        }
       });
-    }, 60);
+    };
+    timer = setTimeout(look, 60);
     return () => {
       cancelled = true;
       clearTimeout(timer);
