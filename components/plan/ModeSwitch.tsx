@@ -5,8 +5,8 @@ import { useTourTarget } from "@/lib/guide/tourTargets";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
 
 interface ModeSwitchProps {
-  view: "fun" | "plan";
-  onChange: (view: "fun" | "plan") => void;
+  view: "fun" | "plan" | "own";
+  onChange: (view: "fun" | "plan" | "own") => void;
 }
 
 /** The map screen's two-way switch: "Tryb zabawy" (the original world map —
@@ -18,6 +18,7 @@ export function ModeSwitch({ view, onChange }: ModeSwitchProps) {
     <View ref={targetRef} collapsable={false} style={styles.track} accessibilityRole="tablist">
       <Segment icon="tryb_zabawy" label="Tryb zabawy" active={view === "fun"} onPress={() => onChange("fun")} />
       <Segment icon="tryb_nauki" label="Tryb nauki" active={view === "plan"} onPress={() => onChange("plan")} />
+      <Segment icon="tryb_wlasny" label="Tryb własny" active={view === "own"} onPress={() => onChange("own")} />
     </View>
   );
 }
@@ -30,7 +31,7 @@ function Segment({ icon, label, active, onPress }: { icon: IconName; label: stri
       accessibilityState={{ selected: active }}
       style={[styles.segment, active && styles.segmentActive]}
     >
-      <AppIcon name={icon} size={20} />
+      <AppIcon name={icon} size={18} />
       <Text numberOfLines={1} style={[styles.segmentText, active && styles.segmentTextActive]}>
         {label}
       </Text>
@@ -65,7 +66,7 @@ const styles = StyleSheet.create({
   },
   segmentText: {
     flexShrink: 1,
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: "800",
     color: theme.colors.muted,
   },

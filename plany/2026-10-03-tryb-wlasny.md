@@ -20,69 +20,69 @@ Dziś cała zawartość to ok. 20 godzin i po ok. 3 miesiącach nie ma po co wra
 Każdy krok i każdy warunek „Gotowe, gdy” ma pole do odhaczenia (`- [ ]`).
 
 ### Krok 1. Dodać trzeci tryb: przełącznik i pusty ekran
-- [ ] Rozszerzyć stan widoku w `context/PlanContext.tsx` z `"fun" | "plan"` o `"own"` (zapis i wczytanie starych zapisów nadal działają).
-- [ ] Dodać trzeci segment „Tryb własny” w `components/plan/ModeSwitch.tsx` (z ikoną, zmieści się na telefonie przy 3 segmentach).
-- [ ] Dodać w `app/(main)/map.tsx` ekran Trybu własnego z krótkim opisem i przyciskiem „Wybierz trening” (na razie nic nie robi).
-- [ ] Dodać klucz w `lib/storage.ts` i nowy kontekst `context/TrainingContext.tsx` z własnym, pustym stanem (statystyki, rekordy), wpiętym w zerowanie danych przy nowym koncie (`lib/sync/localDataReset.ts`).
+- [x] Rozszerzyć stan widoku w `context/PlanContext.tsx` z `"fun" | "plan"` o `"own"` (zapis i wczytanie starych zapisów nadal działają).
+- [x] Dodać trzeci segment „Tryb własny” w `components/plan/ModeSwitch.tsx` (z ikoną, zmieści się na telefonie przy 3 segmentach).
+- [x] Dodać w `app/(main)/map.tsx` ekran Trybu własnego z krótkim opisem i przyciskiem „Wybierz trening” (na razie nic nie robi).
+- [x] Dodać klucz w `lib/storage.ts` i nowy kontekst `context/TrainingContext.tsx` z własnym, pustym stanem (statystyki, rekordy), wpiętym w zerowanie danych przy nowym koncie (`lib/sync/localDataReset.ts`).
 
 Gotowe, gdy:
-- [ ] Na mapie są trzy przełączane tryby, wszystkie etykiety mieszczą się na telefonie (375 px).
-- [ ] Stary zapis gracza (z `view: "fun"` lub `"plan"`) wczytuje się bez błędu.
-- [ ] `npx tsc --noEmit` i `npx jest` bez błędów.
+- [x] Na mapie są trzy przełączane tryby, wszystkie etykiety mieszczą się na telefonie (375 px).
+- [x] Stary zapis gracza (z `view: "fun"` lub `"plan"`) wczytuje się bez błędu.
+- [x] `npx tsc --noEmit` i `npx jest` bez błędów.
 
 Jak sprawdzić:
 - Uruchomić podgląd w przeglądarce (widok telefonu), przełączyć na wszystkie trzy tryby, odświeżyć stronę i zobaczyć, że wybrany tryb zostaje.
 
 ### Krok 2. Zrobić katalog tematów treningu i menu wyboru
-- [ ] Nowy plik `lib/training/topics.ts`: lista tematów (np. „Wysokość i kierunek”, „Rytm i metrum”, „Interwały”, „Akordy”, „Tonacje”, „Dyktanda”, „Solfeż”) z zestawem ćwiczeń z istniejących lekcji, pogrupowanych po typie i `difficulty`.
-- [ ] Test sprawdzający, że każdy temat ma ćwiczenia na co najmniej 3 poziomach trudności i że żaden temat nie jest pusty.
-- [ ] Menu wyboru: temat (można zaznaczyć kilka), trudność (łatwo / średnio / trudno / mieszane), długość sesji (10 zadań / 20 zadań / bez końca).
+- [x] Nowy plik `lib/training/topics.ts`: lista tematów (np. „Wysokość i kierunek”, „Rytm i metrum”, „Interwały”, „Akordy”, „Tonacje”, „Dyktanda”, „Solfeż”) z zestawem ćwiczeń z istniejących lekcji, pogrupowanych po typie i `difficulty`.
+- [x] Test sprawdzający, że każdy temat ma ćwiczenia na co najmniej 3 poziomach trudności i że żaden temat nie jest pusty.
+- [x] Menu wyboru: temat (można zaznaczyć kilka), trudność (łatwo / średnio / trudno / mieszane), długość sesji (10 zadań / 20 zadań / bez końca).
 - [ ] Oznaczyć tematy z krain 4–13 jako płatne (nieaktywne bez subskrypcji, z kłódką i odesłaniem do cennika).
 
 Gotowe, gdy:
-- [ ] Wybranie tematu, trudności i długości pokazuje podsumowanie „co będziesz ćwiczyć”.
-- [ ] Test katalogu przechodzi, a nowy temat nie da się dodać bez ćwiczeń.
+- [x] Wybranie tematu, trudności i długości pokazuje podsumowanie „co będziesz ćwiczyć”.
+- [x] Test katalogu przechodzi, a nowy temat nie da się dodać bez ćwiczeń.
 
 Jak sprawdzić:
 - Test jednostkowy katalogu oraz kliknięcie przez menu w przeglądarce, także na koncie bez subskrypcji (płatne tematy mają kłódkę).
 
 ### Krok 3. Zrobić sesję treningową (zadania bez końca)
-- [ ] Nowy ekran `app/(main)/training/[...]` (lub podobny), który losuje ćwiczenie z wybranych tematów i pokazuje je tym samym ekranem co lekcja (wydzielić wspólną część z `app/(main)/lesson/[lessonId].tsx`, bez zmiany zachowania lekcji).
-- [ ] Unikać powtarzania tego samego zadania pod rząd (użyć istniejącego mechanizmu `exclude` z `generateExercise`).
-- [ ] Przyciski: „Sprawdź”, „Dalej”, „Zakończ trening”. Po zakończeniu pokazać krótkie podsumowanie (ile poprawnych, które tematy najlepiej i najsłabiej).
-- [ ] Wynik nie zapisuje niczego w postępie map ani planu.
+- [x] Nowy ekran `app/(main)/training/[...]` (lub podobny), który losuje ćwiczenie z wybranych tematów i pokazuje je tym samym ekranem co lekcja (wydzielić wspólną część z `app/(main)/lesson/[lessonId].tsx`, bez zmiany zachowania lekcji).
+- [x] Unikać powtarzania tego samego zadania pod rząd (użyć istniejącego mechanizmu `exclude` z `generateExercise`).
+- [x] Przyciski: „Sprawdź”, „Dalej”, „Zakończ trening”. Po zakończeniu pokazać krótkie podsumowanie (ile poprawnych, które tematy najlepiej i najsłabiej).
+- [x] Wynik nie zapisuje niczego w postępie map ani planu.
 
 Gotowe, gdy:
-- [ ] Można grać „bez końca” i przejść ponad 30 zadań z rzędu bez błędu aplikacji i bez dwóch identycznych zadań pod rząd.
-- [ ] Po treningu lista ukończonych lekcji w Trybie zabawy i w Trybie nauki jest taka sama jak przed (sprawdzić w pamięci przeglądarki).
-- [ ] Testy lekcji (`lesson`) nadal przechodzą bez zmian.
+- [x] Można grać „bez końca” i przejść ponad 30 zadań z rzędu bez błędu aplikacji i bez dwóch identycznych zadań pod rząd.
+- [x] Po treningu lista ukończonych lekcji w Trybie zabawy i w Trybie nauki jest taka sama jak przed (sprawdzić w pamięci przeglądarki).
+- [x] Testy lekcji (`lesson`) nadal przechodzą bez zmian.
 
 Jak sprawdzić:
 - Przejść w podglądzie ok. 30 zadań z różnych tematów, potem porównać zapis postępu przed i po (`localStorage`).
 
 ### Krok 4. Ekran „Twój słuch”
-- [ ] Po każdej odpowiedzi w treningu zapisać w `TrainingContext` wynik per temat i typ ćwiczenia (poprawne/wszystkie, ostatnie 7 dni oddzielnie).
-- [ ] Nowy ekran „Twój słuch”: pasek skuteczności per temat (np. „Interwały 78%”), najsłabszy temat wyróżniony, krótki tekst „co poćwiczyć”.
-- [ ] Przycisk „Ćwicz najsłabsze”, który uruchamia trening z 2–3 najsłabszymi tematami (minimum 10 odpowiedzi w temacie, żeby statystyka coś znaczyła).
-- [ ] Dopisać scalanie statystyk do synchronizacji z kontem (suma poprawnych i wszystkich, najlepsze rekordy), z testem w `lib/sync/mergeState.test.ts`.
+- [x] Po każdej odpowiedzi w treningu zapisać w `TrainingContext` wynik per temat i typ ćwiczenia (poprawne/wszystkie, ostatnie 7 dni oddzielnie).
+- [x] Nowy ekran „Twój słuch”: pasek skuteczności per temat (np. „Interwały 78%”), najsłabszy temat wyróżniony, krótki tekst „co poćwiczyć”.
+- [x] Przycisk „Ćwicz najsłabsze”, który uruchamia trening z 2–3 najsłabszymi tematami (minimum 10 odpowiedzi w temacie, żeby statystyka coś znaczyła).
+- [x] Dopisać scalanie statystyk do synchronizacji z kontem (suma poprawnych i wszystkich, najlepsze rekordy), z testem w `lib/sync/mergeState.test.ts`.
 
 Gotowe, gdy:
-- [ ] Po 20 odpowiedziach ekran pokazuje poprawne procenty (test jednostkowy z przykładowymi danymi).
-- [ ] „Ćwicz najsłabsze” wybiera właściwe tematy.
-- [ ] Zalogowanie na drugim urządzeniu scala statystyki i nic się nie gubi.
+- [x] Po 20 odpowiedziach ekran pokazuje poprawne procenty (test jednostkowy z przykładowymi danymi).
+- [x] „Ćwicz najsłabsze” wybiera właściwe tematy.
+- [x] Zalogowanie na drugim urządzeniu scala statystyki i nic się nie gubi.
 
 Jak sprawdzić:
 - Testy jednostkowe dla liczenia i scalania, a w przeglądarce celowo pomylić się w jednym temacie i zobaczyć go jako najsłabszy.
 
 ### Krok 5. Dodać punkty: seria bez błędu i tryb na czas
-- [ ] Dwa warianty sesji: „Seria” (liczy poprawne z rzędu, koniec po pierwszym błędzie lub przy 3 błędach) i „Na czas” (60 sekund, liczy poprawne).
-- [ ] Rekordy per wariant zapisane w `TrainingContext` i pokazane na ekranie Trybu własnego.
-- [ ] Nagrody za trening: XP i nutki z dziennym limitem (ustalić wartość limitu z użytkownikiem przed kodowaniem); w grze nie dać więcej niż ułamek tego, co daje lekcja z mapy.
+- [x] Dwa warianty sesji: „Seria” (liczy poprawne z rzędu, koniec po pierwszym błędzie lub przy 3 błędach) i „Na czas” (60 sekund, liczy poprawne).
+- [x] Rekordy per wariant zapisane w `TrainingContext` i pokazane na ekranie Trybu własnego.
+- [x] Nagrody za trening: XP i nutki z dziennym limitem (ustalić wartość limitu z użytkownikiem przed kodowaniem); w grze nie dać więcej niż ułamek tego, co daje lekcja z mapy.
 - [ ] Mała misja dnia „Zrób trening” (używa istniejącego `dailyMissions.ts`), tak żeby wchodziła w rotację razem z innymi.
 
 Gotowe, gdy:
-- [ ] Rekord się zapisuje, tylko gdy jest lepszy od poprzedniego, i przeżywa odświeżenie strony.
-- [ ] Dzienny limit nagród działa (po przekroczeniu XP i nutki się nie zwiększają, a komunikat to wyjaśnia).
+- [x] Rekord się zapisuje, tylko gdy jest lepszy od poprzedniego, i przeżywa odświeżenie strony.
+- [x] Dzienny limit nagród działa (po przekroczeniu XP i nutki się nie zwiększają, a komunikat to wyjaśnia).
 - [ ] Testy misji dnia przechodzą (`dailyMissions.test.ts`), a nowa misja nie psuje reguł rotacji.
 
 Jak sprawdzić:

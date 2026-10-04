@@ -376,6 +376,13 @@ export const ICONS = {
 <path d="M32 4 L34.2 9.4 L40 9.9 L35.6 13.7 L37 19.4 L32 16.3 L27 19.4 L28.4 13.7 L24 9.9 L29.8 9.4 Z" fill="#FFC94A" stroke="#4A2C1D" stroke-width="2" stroke-linejoin="round"/>
 </svg>`,
 
+  tryb_wlasny: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+<rect x="6" y="9" width="52" height="46" rx="13" fill="#FFF4E6" stroke="#4A2C1D" stroke-width="3"/>
+<path d="M15 22 H49 M15 32 H49 M15 42 H49" stroke="#4A2C1D" stroke-width="3" stroke-linecap="round"/>
+<circle cx="25" cy="22" r="5" fill="#FFC94A" stroke="#4A2C1D" stroke-width="2.6"/>
+<circle cx="40" cy="32" r="5" fill="#F0625A" stroke="#4A2C1D" stroke-width="2.6"/>
+<circle cx="29" cy="42" r="5" fill="#8B7CF6" stroke="#4A2C1D" stroke-width="2.6"/>
+</svg>`,
   tryb_nauki: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
 <path d="M4 24 V52 C15 48.5 25 49 32 54 C39 49 49 48.5 60 52 V24 Z" fill="#3E7CC9" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
 <path d="M32 22 C25 17.5 15 17.5 7 21 V47.5 C15.5 44.5 25 45 32 50 Z" fill="#FFF4E6" stroke="#4A2C1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>

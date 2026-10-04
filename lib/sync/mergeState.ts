@@ -3,7 +3,7 @@ import { deriveHearts } from "@/lib/gamification/hearts";
 import { sanitizeShop, totalSpent } from "@/lib/shop/catalog";
 import { sanitizeGamificationState } from "@/types/gamification";
 import type { ProgressState } from "@/types/content";
-import type { DailyChallengeState, DayActivity, GamificationState } from "@/types/gamification";
+import type { DailyChallengeState, DayActivity, GamificationState, TopicTally, TrainingState } from "@/types/gamification";
 
 /** Compares two "YYYY-MM-DD" dates (or null, treated as infinitely far in
  * the past — "never active" always loses to any real date). Returns >0
@@ -110,6 +110,36 @@ export function mergeProgressState(local: ProgressState, remote: ProgressState):
  *     {hearts, lastHeartChangeAtISO} PAIR derives to more hearts right
  *     now — the two fields must travel together (mixing one side's
  *     count with the other's clock would misrepresent both). */
+function maxTally(a: TopicTally | undefined, b: TopicTally | undefined): TopicTally | undefined {
+  if (!a) return b;
+  if (!b) return a;
+  return b.total > a.total ? b : a;
+}
+
+function mergeTallies(a: Record<string, TopicTally>, b: Record<string, TopicTally>): Record<string, TopicTally> {
+  const out: Record<string, TopicTally> = {};
+  for (const key of new Set([...Object.keys(a), ...Object.keys(b)])) out[key] = maxTally(a[key], b[key])!;
+  return out;
+}
+
+/** Tryb własny: per topic (and per day) the copy with more answers wins, records are the best of both, the reward counter follows the newer day. */
+export function mergeTraining(local: TrainingState, remote: TrainingState): TrainingState {
+  const days: Record<string, Record<string, TopicTally>> = {};
+  for (const day of new Set([...Object.keys(local.days), ...Object.keys(remote.days)])) {
+    days[day] = mergeTallies(local.days[day] ?? {}, remote.days[day] ?? {});
+  }
+  const remoteNewer = compareDates(remote.rewardDateISO, local.rewardDateISO) > 0;
+  const sameDay = remote.rewardDateISO === local.rewardDateISO;
+  return {
+    totals: mergeTallies(local.totals, remote.totals),
+    days,
+    bestStreak: Math.max(local.bestStreak, remote.bestStreak),
+    bestTimed: Math.max(local.bestTimed, remote.bestTimed),
+    rewardDateISO: remoteNewer ? remote.rewardDateISO : local.rewardDateISO,
+    rewardedToday: sameDay ? Math.max(local.rewardedToday, remote.rewardedToday) : remoteNewer ? remote.rewardedToday : local.rewardedToday,
+  };
+}
+
 export function mergeGamificationState(localIn: GamificationState, remoteIn: GamificationState, nowMs: number = Date.now()): GamificationState {
   // Either side could be an account's own OLDER snapshot, saved before a
   // field like `nutki` existed — sanitizeGamificationState fills those
@@ -155,5 +185,6 @@ export function mergeGamificationState(localIn: GamificationState, remoteIn: Gam
     shopOwned,
     shopEquipped,
     shopGiftDateISO: compareDates(remote.shopGiftDateISO, local.shopGiftDateISO) > 0 ? remote.shopGiftDateISO : local.shopGiftDateISO,
+    training: mergeTraining(local.training, remote.training),
   };
 }

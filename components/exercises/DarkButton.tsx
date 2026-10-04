@@ -20,6 +20,8 @@ interface DarkButtonProps {
   size?: number;
   /** A small icon shown AFTER the label (e.g. a price in nutki). */
   trailingIcon?: IconName;
+  /** Becomes `data-testid` on the web, for the automatic tests (e2e/). */
+  testID?: string;
 }
 
 /** components/ui/Button's own twin for exercise/map/lesson screens — same
@@ -29,7 +31,7 @@ interface DarkButtonProps {
  * fill with no border or glow, secondary is the outlined "ghost" twin. No
  * shadow/glow on either — Duolingo's own surfaces are flat sticker fills,
  * never gradients or glass effects. */
-export function DarkButton({ label, onPress, variant = "primary", disabled = false, fontSize, size, trailingIcon }: DarkButtonProps) {
+export function DarkButton({ label, onPress, variant = "primary", disabled = false, fontSize, size, trailingIcon, testID }: DarkButtonProps) {
   const isPrimary = variant === "primary";
   const textColor = isPrimary ? "#FFFFFF" : theme.colors.accent;
   const accentOverride = useExerciseAccentColor();
@@ -39,6 +41,7 @@ export function DarkButton({ label, onPress, variant = "primary", disabled = fal
 
   return (
     <Pressable
+      testID={testID}
       onPress={onPress}
       disabled={disabled}
       accessibilityRole="button"

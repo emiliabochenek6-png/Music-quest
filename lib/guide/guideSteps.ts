@@ -27,8 +27,8 @@ export const GUIDE_STEPS: readonly GuideStep[] = [
   {
     id: "tryby",
     icon: "tryb_zabawy",
-    title: "Dwa tryby",
-    message: "Kliknij tutaj, żeby przełączać tryby. „Tryb zabawy” to gra: mapa krain i bossowie. „Tryb nauki” to Twój plan: lekcje dzień po dniu, z powtórkami.",
+    title: "Trzy tryby",
+    message: "Kliknij tutaj, żeby przełączać tryby. „Zabawa” to gra: mapa krain i bossowie. „Nauka” to Twój plan z powtórkami. „Własny” to trening bez końca: sam wybierasz, co ćwiczysz.",
     expression: "radosny",
     target: "modeSwitch",
   },

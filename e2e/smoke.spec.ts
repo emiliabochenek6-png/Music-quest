@@ -19,7 +19,7 @@ const FIRST_LESSONS: [string, string][] = [
   ["zaczarowany-solfez", "zs-sluch-1-dom-do"],
 ];
 
-const SCREENS = ["/map", "/plan", "/levels", "/calendar", "/daily-challenge", "/power-ups", "/settings", "/paywall", "/placement", "/review", "/world/wioska-nut"];
+const SCREENS = ["/map", "/training-stats", "/plan", "/levels", "/calendar", "/daily-challenge", "/power-ups", "/settings", "/paywall", "/placement", "/review", "/world/wioska-nut"];
 
 test.describe("szybki przegląd gry", () => {
   test.skip(!email || !password, "Brak TEST_EMAIL / TEST_PASSWORD (plik .env.test)");

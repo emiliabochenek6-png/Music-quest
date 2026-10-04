@@ -33,9 +33,10 @@ export interface PlanState {
   reviewLog: Record<string, ReviewEntry>;
   today: TodayPlan | null;
   /** Which of the two ways through the app the map screen shows: "fun" =
-   * "Tryb zabawy" (the game: the original world map and its bosses) or
-   * "plan" = "Tryb nauki" / "Twój plan" (the personal path, lesson by lesson). */
-  view: "fun" | "plan";
+   * "Tryb zabawy" (the game: the original world map and its bosses),
+   * "plan" = "Tryb nauki" / "Twój plan" (the personal path, lesson by lesson) or
+   * "own" = "Tryb własny" (free practice, endless: lib/training/). */
+  view: "fun" | "plan" | "own";
   /** True once the player has answered the first-run question ("Zrób test" / "Zacznij od gry"):
    * choosing the game must not create a plan, so "Tryb nauki" keeps offering the placement test. */
   promptSeen: boolean;
@@ -68,7 +69,7 @@ interface PlanContextValue {
   applyPlacement: (levels: Record<string, PlacementLevel>, minutesPerDay?: number) => void;
   setMinutesPerDay: (minutes: number) => void;
   /** Switches the map screen between "Tryb zabawy" and "Tryb nauki" ("Twój plan"). */
-  setView: (view: "fun" | "plan") => void;
+  setView: (view: "fun" | "plan" | "own") => void;
   /** Lessons that count as done for the PLAN: finished in "Tryb nauki" or already finished on the game map. */
   planCompletedIds: ReadonlySet<string>;
   /** Records a lesson finished in "Tryb nauki" (the game map's own progress is not touched). */

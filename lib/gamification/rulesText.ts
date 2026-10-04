@@ -43,7 +43,13 @@ export const RULES: Rule[] = [
     id: "nutki",
     icon: { name: "hud_nutki_waluta" },
     title: "Nutki i Sklep Solfka",
-    body: `Nutki to Twoja własna waluta — zdobywasz je za każdą dobrą odpowiedź (2 nutki), nowe levele, wyzwanie dnia, perfekcyjną lekcję, ukończenie krainy i co tydzień passy. Nigdy nie da się ich kupić za prawdziwe pieniądze. W Sklepie Solfka (kliknij nutki przy mapie) kupujesz ubiory dla Solfka (różne kolory i stroje) oraz tła, a wszystko, co masz, znajdziesz w zakładce „Zakupione”. Każdy ubiór pasuje do każdego tła, a Solfek nosi wybrany ubiór także na mapie, i w komentarzach. Co dzień czeka tam też prezent od Solfka: od 10 do 30 nutek, tym więcej, im dłuższa passa. Cały sklep jest duży (ponad 20 000 nutek), więc jest do czego zbierać. Możesz tam też kupić zamrożenie passy (${POWER_UP_COSTS.streakFreeze} nutek, naraz najwyżej ${MAX_STREAK_FREEZES}). Nutki wydane w sklepie znikają z konta, więc oszczędzaj na to, na czym Ci zależy.`,
+    body: `Nutki to Twoja własna waluta — zdobywasz je za każdą dobrą odpowiedź (2 nutki), nowe levele, wyzwanie dnia, perfekcyjną lekcję, ukończenie krainy i co tydzień passy. Nigdy nie da się ich kupić za prawdziwe pieniądze. W Sklepie Solfka (kliknij nutki przy mapie) kupujesz ubiory dla Solfka (różne kolory i stroje) oraz tła, a wszystko, co masz, znajdziesz w zakładce „Zakupione”. Każdy ubiór pasuje do każdego tła, a Solfek nosi wybrany ubiór także na mapie i w komentarzach. Co dzień czeka tam też prezent od Solfka: od 10 do 30 nutek, tym więcej, im dłuższa passa. Cały sklep jest duży (ponad 20 000 nutek), więc jest do czego zbierać. Możesz tam też kupić zamrożenie passy (${POWER_UP_COSTS.streakFreeze} nutek, naraz najwyżej ${MAX_STREAK_FREEZES}). Nutki wydane w sklepie znikają z konta, więc oszczędzaj na to, na czym Ci zależy.`,
+  },
+  {
+    id: "tryb-wlasny",
+    icon: { name: "tryb_wlasny" },
+    title: "Tryb własny",
+    body: "Trening bez końca. Sam wybierasz tematy (np. interwały, akordy, rytm), trudność i sposób gry: spokojny trening, „Serię” (poprawne z rzędu, koniec po 3 błędach) albo „Na czas” (60 sekund). Zadania losują się same. W „Twoim słuchu” widzisz, w czym jesteś dobry, a przycisk „Ćwicz najsłabsze” bierze się za to, co idzie Ci najgorzej. Tryb własny nie zmienia postępu w grze ani w planie. Za pierwsze 30 poprawnych odpowiedzi dziennie dostajesz niewielką nagrodę (5 XP i 1 nutkę za każdą).",
   },
   {
     id: "daily-challenge",

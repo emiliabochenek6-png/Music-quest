@@ -89,6 +89,10 @@ Jeden test „jak prawdziwy gracz” w przeglądarce (`e2e/first-lesson.spec.ts`
 - **Czego nie pokrywa:** tylko ta jedna ścieżka. Test loguje się do tej samej bazy Supabase co produkcja (z `.env`), więc konto testowe rośnie w XP; po wielu biegach pojawią się okna awansu na kolejny level.
 - `e2e/serve-dist.mjs` to mały serwer plików dla `dist/` (odtwarza adresy bez `.html` i przekierowania z `vercel.json`); zwykłe testy (`npx jest`) pomijają folder `e2e/`.
 
+## Tryb własny (trzeci tryb na mapie)
+
+Trening bez końca: gracz wybiera tematy, trudność i sposób gry (spokojny trening 10/20/bez końca, „Seria” do 3 błędów, „Na czas” 60 s). Zadania biorą się z istniejących lekcji (`lib/training/topics.ts` przypisuje typy ćwiczeń do tematów, `pool.ts` buduje pulę), ekrany to `components/training/TrainingHome.tsx`, `app/(main)/training.tsx` i `app/(main)/training-stats.tsx` („Twój słuch”). Statystyki i rekordy leżą w `GamificationState.training` (ta sama kolumna `gamification` w Supabase, scalane w `mergeTraining`). Tryb własny nie zmienia postępu w grze ani w planie; nagroda to 5 XP + 1 nutka za poprawną odpowiedź, tylko za pierwsze 30 dziennie (`lib/training/rewards.ts`). Tematy płatnych krain zamykałyby się bez subskrypcji tylko wtedy, gdy włączone jest `TRAINING_REQUIRES_SUBSCRIPTION` (lustro `ENFORCE_SUBSCRIPTION_GATE`, dziś wyłączone).
+
 ## Architecture
 
 ### Provider stack (`app/_layout.tsx`)

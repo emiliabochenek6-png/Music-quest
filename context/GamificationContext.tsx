@@ -10,6 +10,8 @@ import { getTitleUnlockedAt, getRankForXp, getRankName, isLevelUpWorthCelebratin
 import { nutkiForLevelRange } from "@/lib/gamification/levelRewards";
 import { getShopItem } from "@/lib/shop/catalog";
 import { canClaimGift, giftAmount } from "@/lib/shop/gift";
+import { recordAnswer, rewardsLeftToday } from "@/lib/training/stats";
+import { TRAINING_NUTKI_PER_CORRECT, TRAINING_REWARDED_ANSWERS_PER_DAY, TRAINING_XP_PER_CORRECT } from "@/lib/training/rewards";
 import { todayISODate } from "@/lib/gamification/activity";
 import type { BuyResult, ShopSlot } from "@/lib/shop/catalog";
 import { mergeGamificationState } from "@/lib/sync/mergeState";
@@ -78,6 +80,11 @@ interface GamificationContextValue {
   buyShopItem: (itemId: string) => BuyResult;
   /** Collects today's free gift from Solfek; returns how many nutki it paid (0 when it was already collected today). */
   claimShopGift: () => number;
+  /** Tryb własny: records one answer in `topicId`; a correct one also pays a little XP and a nutka, up to the daily cap.
+   * Returns what it paid (both 0 once today's cap is used up, or for a wrong answer). */
+  recordTrainingAnswer: (topicId: string, correct: boolean) => { xp: number; nutki: number };
+  /** Tryb własny records: "streak" (correct in a row in "Seria") and "timed" (correct in 60 s in "Na czas"); only a better value is kept. */
+  recordTrainingBest: (kind: "streak" | "timed", value: number) => void;
   /** Puts an owned item on, or takes the slot's item off (`null`; the background falls back to the default). */
   equipShopItem: (slot: ShopSlot, itemId: string | null) => void;
 }
@@ -257,6 +264,38 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
     return "ok";
   }
 
+  function recordTrainingAnswerImpl(topicId: string, correct: boolean): { xp: number; nutki: number } {
+    const today = todayISODate();
+    const left = rewardsLeftToday(state.training, today, TRAINING_REWARDED_ANSWERS_PER_DAY);
+    const paid = correct && left > 0;
+    const xp = paid ? TRAINING_XP_PER_CORRECT : 0;
+    const nutki = paid ? TRAINING_NUTKI_PER_CORRECT : 0;
+    if (xp > 0) awardXp(xp);
+    setState((prev) => {
+      let training = recordAnswer(prev.training, topicId, correct, today);
+      let nextNutki = prev.nutki;
+      if (paid) {
+        const sameDay = training.rewardDateISO === today;
+        training = { ...training, rewardDateISO: today, rewardedToday: (sameDay ? training.rewardedToday : 0) + 1 };
+        nextNutki += nutki;
+      }
+      const next: GamificationState = { ...prev, training, nutki: nextNutki };
+      void writeJson(STORAGE_KEYS.gamification, next);
+      return next;
+    });
+    return { xp, nutki };
+  }
+
+  function recordTrainingBestImpl(kind: "streak" | "timed", value: number) {
+    setState((prev) => {
+      const key = kind === "streak" ? "bestStreak" : "bestTimed";
+      if (value <= prev.training[key]) return prev;
+      const next: GamificationState = { ...prev, training: { ...prev.training, [key]: value } };
+      void writeJson(STORAGE_KEYS.gamification, next);
+      return next;
+    });
+  }
+
   function claimShopGift(): number {
     const today = todayISODate();
     if (!canClaimGift(state.shopGiftDateISO, today)) return 0;
@@ -317,6 +356,8 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
         setIntroModeEnabled,
         buyShopItem,
         claimShopGift,
+        recordTrainingAnswer: recordTrainingAnswerImpl,
+        recordTrainingBest: recordTrainingBestImpl,
         equipShopItem,
       }}
     >

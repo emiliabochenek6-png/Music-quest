@@ -11,6 +11,7 @@ import { SideMenu } from "@/components/SideMenu";
 import { SideMenuContent } from "@/components/SideMenuContent";
 import { ModeSwitch } from "@/components/plan/ModeSwitch";
 import { PlanPath } from "@/components/plan/PlanPath";
+import { TrainingHome } from "@/components/training/TrainingHome";
 import { PlanPromptModal } from "@/components/plan/PlanPromptModal";
 import { GameGuide } from "@/components/guide/GameGuide";
 import { TourTarget } from "@/components/guide/TourTarget";
@@ -91,7 +92,7 @@ export default function MapScreen() {
   // The guide points at real things on the map, so while it runs the map must be the full game map ("Tryb zabawy"),
   // scrolled to the top: switch to it, and put the player's own mode back when the guide closes.
   const [guideTick, setGuideTick] = useState(0);
-  const viewBeforeGuide = useRef<"fun" | "plan" | null>(null);
+  const viewBeforeGuide = useRef<"fun" | "plan" | "own" | null>(null);
   // Only while the map itself is the screen in front: finishing the first lesson must not pop the guide up over the lesson; it waits for the player to be back on the start screen.
   const showGuide = guideReplay || (mapFocused && !isProfileLoading && !isPlanLoading && !showPlanPrompt && !profile.hasSeenGuide && finishedALesson);
 
@@ -153,6 +154,8 @@ export default function MapScreen() {
       </View>
       {plan.view === "plan" ? (
         <PlanPath />
+      ) : plan.view === "own" ? (
+        <TrainingHome />
       ) : (
         <WorldMap progress={progress} subscription={status} lessonStars={gamification.lessonStars} onSelectWorld={handleSelectWorld} scrollToTopTick={guideTick} />
       )}
