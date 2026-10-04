@@ -231,7 +231,7 @@ function Wallet({ L, phase, from, amount }: { L: GiftLayout; phase: Phase; from:
   return (
     <Animated.View
       accessibilityLabel={`Twoje nutki: ${shown}`}
-      style={[abs(0, w.top), styles.wallet, { right: w.right, left: undefined, height: w.h, paddingRight: w.padR, gap: w.gap, transform: [{ scale: bump }] }]}
+      style={[styles.wallet, { position: "absolute", top: w.top, right: w.right, height: w.h, paddingRight: w.padR, gap: w.gap, transform: [{ scale: bump }] }]}
       pointerEvents="none"
     >
       <View style={[styles.walletCoin, { width: w.coin, height: w.coin, borderRadius: w.coin / 2 }]}>
@@ -748,7 +748,7 @@ function FlyingCoin({ clock, x, y, size, dx, dy, delay, duration, reduced }: { c
     const end = delay + duration;
     const early = delay + duration * 0.12;
     return {
-      o: clock.interpolate(track([{ at: 0, v: 0 }, { at: delay, v: 0 }, { at: early, v: 1, ease }, { at: end, v: 0.9 }, { at: TOTAL, v: 0.9 }], 6)),
+      o: clock.interpolate(track([{ at: 0, v: 0 }, { at: delay, v: 0 }, { at: early, v: 1, ease }, { at: end, v: 0.9 }, { at: end + 150, v: 0 }, { at: TOTAL, v: 0 }], 6)),
       x: clock.interpolate(track([{ at: 0, v: 0 }, { at: delay, v: 0, ease }, { at: early, v: dx * -0.15, ease }, { at: end, v: dx }, { at: TOTAL, v: dx }], 6)),
       y: clock.interpolate(track([{ at: 0, v: 0 }, { at: delay, v: 0, ease }, { at: early, v: 30, ease }, { at: end, v: dy }, { at: TOTAL, v: dy }], 6)),
       s: clock.interpolate(track([{ at: 0, v: 0.6 }, { at: delay, v: 0.6, ease }, { at: early, v: 1.15, ease }, { at: end, v: 0.45 }, { at: TOTAL, v: 0.45 }], 6)),
