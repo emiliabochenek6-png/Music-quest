@@ -9,7 +9,7 @@ interface PlanPromptModalProps {
   onStartFromBeginning: () => void;
 }
 
-/** First-run choice on the map (shown once, until the player has picked a
+/** First-run choice on the map (shown once, after Solfek's hello and the tour, until the player has picked a
  * path): a placement test that builds a personal path, or the original
  * full path from lesson one. Not dismissible without choosing — either
  * answer sets the plan, which is what the daily missions and reviews run
@@ -19,12 +19,12 @@ export function PlanPromptModal({ visible, onTakeTest, onStartFromBeginning }: P
     <Modal visible={visible} transparent animationType="none" onRequestClose={() => {}}>
       <View style={styles.backdrop}>
         <View style={styles.card}>
-          <Text style={styles.title}>Cześć, jestem Solfek!</Text>
+          <Text style={styles.title}>Od czego zaczynamy?</Text>
           <SoltekMascot
             size="lg"
             expression="glowny"
             frameless
-            message="Będę Ci towarzyszyć i kibicować w każdym zadaniu. Mamy dwa tryby: „Tryb zabawy” to gra (mapa krain i walki z bossami), a „Tryb nauki” to Twój plan: zrobię z Tobą krótki test (ok. 8–10 minut) i ułożę Ci ścieżkę lekcji na ok. 3 miesiące, z powtórkami. Od czego zaczynamy?"
+            message="Mamy dwa tryby: „Tryb zabawy” to gra (mapa krain i walki z bossami), a „Tryb nauki” to Twój plan: zrobię z Tobą krótki test (ok. 8–10 minut) i ułożę Ci ścieżkę lekcji na ok. 3 miesiące, z powtórkami. Od czego zaczynamy?"
           />
           <View style={{ gap: theme.spacing(1.25), width: "100%" }}>
             <DarkButton label="Zrób test z Solfkiem (tryb nauki)" onPress={onTakeTest} />

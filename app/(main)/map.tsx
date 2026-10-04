@@ -13,6 +13,7 @@ import { ModeSwitch } from "@/components/plan/ModeSwitch";
 import { PlanPath } from "@/components/plan/PlanPath";
 import { TrainingHome } from "@/components/training/TrainingHome";
 import { PlanPromptModal } from "@/components/plan/PlanPromptModal";
+import { SoltekGreetingModal } from "@/components/SoltekGreetingModal";
 import { GameGuide } from "@/components/guide/GameGuide";
 import { TourTarget } from "@/components/guide/TourTarget";
 import { useTourTarget } from "@/lib/guide/tourTargets";
@@ -67,7 +68,7 @@ export default function MapScreen() {
   const { plan, isLoading: isPlanLoading, startWithGame, setView, planCompletedIds } = usePlan();
   const [sideMenuOpen, setSideMenuOpen] = useState(false);
   // First-run choice of study path (test-based or from the beginning) —
-  // only after the Solfek greeting, so the two never stack.
+  // only after Solfek's hello and the tour, so the windows never stack.
   // Only while the map itself is the focused screen: a Modal is drawn above
   // EVERYTHING, so without this it stayed on top of the placement screen
   // pushed from its own "Zrób test" button. Coming back to the map without
@@ -84,17 +85,21 @@ export default function MapScreen() {
       return () => setMapFocused(false);
     }, [])
   );
-  // First run: ONE window (Solfek says hello and asks how to start); the short tour waits until the player has
-  // finished a first lesson, so a new player gets to play before reading anything.
+  // First run, in this order: Solfek says hello, the short tour of the game, and only then the question "test or start from the
+  // game?". Someone who already chose a path (or has been playing) never sees the hello again.
   // (Reading `profile`/`plan` before they have loaded would show these to a returning player for one frame.)
   const finishedALesson = progress.completedLessonIds.size > 0 || planCompletedIds.size > 0;
-  const showPlanPrompt = mapFocused && !planPromptHidden && !isProfileLoading && !isPlanLoading && !guideReplay && plan.mode === "unset" && !plan.promptSeen;
+  const loaded = mapFocused && !isProfileLoading && !isPlanLoading && !guideReplay;
+  const newPlayer = plan.mode === "unset" && !plan.promptSeen;
+  const showGreeting = loaded && newPlayer && !profile.hasSeenSoltekGreeting;
   // The guide points at real things on the map, so while it runs the map must be the full game map ("Tryb zabawy"),
   // scrolled to the top: switch to it, and put the player's own mode back when the guide closes.
   const [guideTick, setGuideTick] = useState(0);
   const viewBeforeGuide = useRef<"fun" | "plan" | "own" | null>(null);
-  // Only while the map itself is the screen in front: finishing the first lesson must not pop the guide up over the lesson; it waits for the player to be back on the start screen.
-  const showGuide = guideReplay || (mapFocused && !isProfileLoading && !isPlanLoading && !showPlanPrompt && !profile.hasSeenGuide && finishedALesson);
+  // Only while the map itself is the screen in front. A new player gets it right after the hello; someone who has been playing without
+  // ever seeing it gets it when back on the start screen.
+  const showGuide = guideReplay || (loaded && !showGreeting && !profile.hasSeenGuide && (profile.hasSeenSoltekGreeting || finishedALesson));
+  const showPlanPrompt = loaded && !planPromptHidden && newPlayer && profile.hasSeenSoltekGreeting && profile.hasSeenGuide;
 
   useEffect(() => {
     if (!showGuide) return;
@@ -177,6 +182,7 @@ export default function MapScreen() {
       </SideMenu>
 
       {/* Mounted only while showing — a closing RN-web Modal lingers (faded) behind whatever opens next. */}
+      {showGreeting && <SoltekGreetingModal onContinue={() => setHasSeenSoltekGreeting(true)} />}
       {showGuide && (
         <GameGuide onClose={closeGuide} />
       )}

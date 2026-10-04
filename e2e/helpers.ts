@@ -26,7 +26,7 @@ export async function logIn(page: Page) {
   await page.getByRole("button", { name: "Zaloguj się" }).click();
 }
 
-/** The windows a new player can see on the map (Solfek's hello with the mode question; the guide, which appears after a first lesson):
+/** The windows a new player can see on the map (Solfek's hello, the guide, then the mode question):
  * close whichever ones show up, one after another, until none is left (they can appear a moment after the previous one closes). */
 export async function closeIntroWindows(page: Page) {
   const wioska = page.getByRole("button", { name: "Wioska Nut" });
@@ -34,7 +34,7 @@ export async function closeIntroWindows(page: Page) {
   let quietRounds = 0;
   for (let attempt = 0; attempt < 15 && quietRounds < 3; attempt++) {
     let clicked = false;
-    for (const name of ["Zacznij od gry (tryb zabawy)", "Pomiń"]) {
+    for (const name of ["Pokaż mi grę", "Pomiń", "Zacznij od gry (tryb zabawy)"]) {
       const button = page.getByText(name, { exact: true }).first();
       if (await button.isVisible()) {
         await button.click();
