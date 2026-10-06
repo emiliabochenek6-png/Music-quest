@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ScrollView, Text, View, StyleSheet } from "react-native";
+import { Pressable, ScrollView, Text, View, StyleSheet } from "react-native";
 import { router } from "expo-router";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { ExerciseRenderer, hasAnswerToCheck } from "@/components/exercises/ExerciseRenderer";
@@ -50,6 +50,8 @@ export default function PlacementScreen() {
   const [answer, setAnswer] = useState<AnswerInput | null>(null);
   // The X in the corner of a question asks "are you sure?" first (a sad Solfek).
   const [confirmLeave, setConfirmLeave] = useState(false);
+  // The per-world list of the result screen is folded away until asked for (the screen stays short).
+  const [showDetails, setShowDetails] = useState(false);
   const [minutesPerDay, setMinutesPerDay] = useState<number>(plan.minutesPerDay);
   const usedIds = useRef(new Set<string>());
   const totalEstimate = worldIds.length * 2;
@@ -106,9 +108,7 @@ export default function PlacementScreen() {
         <ScreenHeader title="Test poziomujący" onBack={() => (router.canGoBack() ? router.back() : router.replace("/(main)/map"))} />
         <ScrollView contentContainerStyle={styles.content}>
           <SoltekMascot
-            size="lg"
             expression="glowny"
-            frameless
             message={`Cześć, tu Solfek! Zadam Ci po 1–2 pytania z każdej krainy (razem ok. ${totalEstimate - 2}–${totalEstimate}, ok. 8–10 minut). Jeśli pójdzie dobrze, następne będzie trudniejsze; jeśli nie — łatwiejsze.`}
           />
           <Text style={styles.heading}>Test poziomujący z Solfkiem</Text>
@@ -117,11 +117,11 @@ export default function PlacementScreen() {
             <Bullet text="Nie wiesz? Naciśnij „Nie wiem” — zamiast zgadywać." />
             <Bullet text="Z wyniku ułożymy ścieżkę: pominiesz to, co umiesz, i zaplanujemy resztę na ok. 3 miesiące." />
           </View>
-          <View style={{ gap: theme.spacing(1.25), width: "100%" }}>
-            <DarkButton label="Zaczynamy test z Solfkiem" onPress={begin} />
-            <DarkButton label="Zacznij od gry (tryb zabawy)" onPress={startFromBeginning} variant="secondary" />
-          </View>
         </ScrollView>
+        <View style={styles.footer}>
+          <DarkButton label="Zaczynamy test z Solfkiem" onPress={begin} />
+          <DarkButton label="Zacznij od gry (tryb zabawy)" onPress={startFromBeginning} variant="secondary" />
+        </View>
       </View>
     );
   }
@@ -129,29 +129,27 @@ export default function PlacementScreen() {
   if (stage === "question" && exercise) {
     const worldId = currentPlacementWorld(state);
     const world = worldId ? getWorldById(worldId) : undefined;
+    const worldName = world ? t(world.nameKey as TranslationKey) : "";
+    const line = world ? placementQuestionLine(state.answered, totalEstimate, worldName) : null;
     return (
       <View style={styles.root}>
-        <ScreenHeader
-          title={`Pytanie ${state.answered + 1}`}
-          close
-          onBack={() => setConfirmLeave(true)}
-        />
+        <ScreenHeader title={worldName ? `Pytanie ${state.answered + 1} · ${worldName}` : `Pytanie ${state.answered + 1}`} close onBack={() => setConfirmLeave(true)} />
         <View style={styles.barWrap}>
           <View style={styles.barTrack}>
             <View style={[styles.barFill, { width: `${Math.min(100, (state.answered / totalEstimate) * 100)}%` }]} />
           </View>
-          {world && <Text style={styles.worldTag}>{t(world.nameKey as TranslationKey)}</Text>}
-          {world && (() => {
-            const line = placementQuestionLine(state.answered, totalEstimate, t(world.nameKey as TranslationKey));
-            return <SoltekMascot size="sm" expression={line.expression} message={line.message} />;
-          })()}
+          {line && <SoltekMascot size="sm" expression={line.expression} message={line.message} />}
         </View>
         <ScrollView contentContainerStyle={styles.questionArea} keyboardShouldPersistTaps="handled">
           <ExerciseRenderer key={exercise.id} exercise={exercise} answer={answer} onAnswerChange={setAnswer} checked={false} isCorrect={null} locale="pl" />
         </ScrollView>
-        <View style={styles.footer}>
-          <DarkButton label="Dalej" onPress={() => submit(true)} disabled={!hasAnswerToCheck(answer)} />
-          <DarkButton label="Nie wiem" onPress={() => submit(false)} variant="secondary" />
+        <View style={[styles.footer, styles.footerRow]}>
+          <View style={{ flex: 1 }}>
+            <DarkButton label="Nie wiem" onPress={() => submit(false)} variant="secondary" />
+          </View>
+          <View style={{ flex: 2 }}>
+            <DarkButton label="Dalej" onPress={() => submit(true)} disabled={!hasAnswerToCheck(answer)} />
+          </View>
         </View>
         {confirmLeave && (
           <LeaveLessonModal
@@ -169,7 +167,7 @@ export default function PlacementScreen() {
     );
   }
 
-  // --- result
+  // --- result: compact, so that nothing has to be scrolled to start the plan (the button sits in a fixed footer)
   const levels = completeLevels(state.levels, WORLDS.map((world) => world.id));
   const personal = buildPath(WORLDS, getWorldContent, levels);
   const original = buildPath(WORLDS, getWorldContent, null);
@@ -182,53 +180,77 @@ export default function PlacementScreen() {
   const originalHours = Math.round(minutesOf(original) / 60);
   const masteredWorlds = worldIds.filter((id) => levels[id] === 2).length;
   const resultLine = placementResultLine(masteredWorlds, worldIds.length, personal.length, original.length);
+  const countAt = (level: PlacementLevel) => WORLDS.filter((world) => (levels[world.id] ?? 0) === level).length;
   return (
     <View style={styles.root}>
       <ScreenHeader title="Twój wynik" onBack={() => setStage("intro")} />
-      <ScrollView contentContainerStyle={styles.content}>
-        <SoltekMascot
-          size="lg"
-          expression={resultLine.expression}
-          frameless
-          message={resultLine.message}
-        />
-        <Text style={styles.heading}>Twoja ścieżka jest gotowa</Text>
+      <ScrollView contentContainerStyle={styles.resultContent}>
+        <SoltekMascot size="sm" expression={resultLine.expression} message={resultLine.message} />
+
         <View style={styles.card}>
-          {WORLDS.map((world) => {
-            const level = levels[world.id] ?? 0;
-            const tested = state.levels[world.id] !== undefined;
-            return (
-              <View key={world.id} style={styles.levelRow}>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.levelName}>{t(world.nameKey as TranslationKey)}</Text>
-                  <Text style={styles.muted}>
-                    {LEVEL_HINT[level]}
-                    {tested ? "" : " (wyliczone z innych krain)"}
-                  </Text>
-                </View>
-                <View style={[styles.chip, { borderColor: LEVEL_COLOR[level] }]}>
-                  <Text style={[styles.chipText, { color: LEVEL_COLOR[level] }]}>{LEVEL_LABEL[level]}</Text>
-                </View>
+          <Text style={styles.sectionTitle}>Twoje krainy</Text>
+          <View style={styles.dots}>
+            {WORLDS.map((world) => (
+              <View key={world.id} accessibilityLabel={`${t(world.nameKey as TranslationKey)}: ${LEVEL_LABEL[(levels[world.id] ?? 0) as PlacementLevel]}`} style={[styles.dot, { backgroundColor: LEVEL_COLOR[(levels[world.id] ?? 0) as PlacementLevel] }]} />
+            ))}
+          </View>
+          <View style={styles.legend}>
+            {([2, 1, 0] as PlacementLevel[]).map((level) => (
+              <View key={level} style={styles.legendItem}>
+                <View style={[styles.legendDot, { backgroundColor: LEVEL_COLOR[level] }]} />
+                <Text style={styles.legendText}>
+                  {LEVEL_LABEL[level]}: {countAt(level)}
+                </Text>
               </View>
-            );
-          })}
+            ))}
+          </View>
+          <Pressable onPress={() => setShowDetails((value) => !value)} accessibilityRole="button" accessibilityState={{ expanded: showDetails }} hitSlop={8}>
+            <Text style={styles.link}>{showDetails ? "Ukryj szczegóły ▴" : "Pokaż szczegóły krain ▾"}</Text>
+          </Pressable>
+          {showDetails &&
+            WORLDS.map((world) => {
+              const level = (levels[world.id] ?? 0) as PlacementLevel;
+              const tested = state.levels[world.id] !== undefined;
+              return (
+                <View key={world.id} style={styles.levelRow}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.levelName}>{t(world.nameKey as TranslationKey)}</Text>
+                    <Text style={styles.muted}>
+                      {LEVEL_HINT[level]}
+                      {tested ? "" : " (wyliczone z innych krain)"}
+                    </Text>
+                  </View>
+                  <View style={[styles.chip, { borderColor: LEVEL_COLOR[level] }]}>
+                    <Text style={[styles.chipText, { color: LEVEL_COLOR[level] }]}>{LEVEL_LABEL[level]}</Text>
+                  </View>
+                </View>
+              );
+            })}
         </View>
 
         <View style={styles.card}>
           <Text style={styles.sectionTitle}>Ile czasu dziennie masz?</Text>
           <View style={styles.paceRow}>
             {PACE_OPTIONS.map((minutes) => (
-              <DarkButton key={minutes} label={`${minutes} min`} onPress={() => setMinutesPerDay(minutes)} variant={minutes === minutesPerDay ? "primary" : "secondary"} />
+              <Pressable
+                key={minutes}
+                onPress={() => setMinutesPerDay(minutes)}
+                accessibilityRole="button"
+                accessibilityState={{ selected: minutes === minutesPerDay }}
+                style={[styles.pace, minutes === minutesPerDay && styles.paceActive]}
+              >
+                <Text style={[styles.paceText, minutes === minutesPerDay && styles.paceTextActive]}>{minutes} min</Text>
+              </Pressable>
             ))}
           </View>
           <Text style={styles.body}>
-            Do przerobienia: <Text style={styles.strong}>{personal.length} z {original.length} lekcji</Text> (ok. {personalHours} godz.
-            {personalHours < originalHours ? ` zamiast ${originalHours} godz.` : ""}). Przy {minutesPerDay} min dziennie, {STUDY_DAYS_PER_WEEK} dni w tygodniu: nowa nauka{" "}
-            <Text style={styles.strong}>ok. {weeks} tyg.</Text>, do ok. {formatShortPolishDate(endISO)}.
-            {totalWeeks > weeks ? ` Potem plan trwa dalej powtórkami i wyzwaniami — łącznie ok. ${totalWeeks} tygodni (ok. ${Math.round(totalWeeks / 4.3)} miesięcy).` : ""}
+            <Text style={styles.strong}>{personal.length} z {original.length} lekcji</Text> (ok. {personalHours} godz.
+            {personalHours < originalHours ? ` zamiast ${originalHours}` : ""}). Nowa nauka <Text style={styles.strong}>ok. {weeks} tyg.</Text>, do {formatShortPolishDate(endISO)}.
+            {totalWeeks > weeks ? ` Potem powtórki i wyzwania: łącznie ok. ${Math.round(totalWeeks / 4.3)} mies.` : ""}
           </Text>
         </View>
-
+      </ScrollView>
+      <View style={styles.footer}>
         <DarkButton
           label="Zacznij mój plan"
           onPress={() => {
@@ -236,8 +258,7 @@ export default function PlacementScreen() {
             router.replace("/(main)/map");
           }}
         />
-        <DarkButton label="Zacznij od gry (tryb zabawy)" onPress={startFromBeginning} variant="secondary" />
-      </ScrollView>
+      </View>
     </View>
   );
 }
@@ -253,32 +274,44 @@ function Bullet({ text }: { text: string }) {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: theme.colors.cream },
-  content: { padding: 20, gap: theme.spacing(2), alignItems: "center", paddingBottom: 40 },
+  content: { padding: 20, gap: theme.spacing(1.75), alignItems: "stretch", paddingBottom: 16 },
+  resultContent: { paddingHorizontal: 16, paddingTop: 4, paddingBottom: 16, gap: theme.spacing(1.25) },
   emoji: { fontSize: 44 },
   heading: { fontSize: theme.fontSize.heading, fontWeight: "800", color: theme.colors.ink, textAlign: "center" },
   body: { fontSize: theme.fontSize.body * 0.95, color: theme.colors.muted, textAlign: "center", lineHeight: 22 },
   strong: { color: theme.colors.ink, fontWeight: "800" },
   muted: { fontSize: 12, color: theme.colors.muted },
   bullets: { width: "100%", gap: 8 },
-  barWrap: { paddingHorizontal: 20, gap: 6 },
+  barWrap: { paddingHorizontal: 20, gap: 8 },
   barTrack: { height: 8, borderRadius: 4, backgroundColor: theme.colors.surfaceMuted, overflow: "hidden" },
   barFill: { height: "100%", backgroundColor: theme.colors.primary, borderRadius: 4 },
-  worldTag: { fontSize: 12, fontWeight: "700", color: theme.colors.muted },
-  questionArea: { flexGrow: 1, justifyContent: "center", paddingHorizontal: 24, paddingVertical: 16 },
-  footer: { paddingHorizontal: 24, paddingBottom: 24, gap: theme.spacing(1.25) },
+  questionArea: { flexGrow: 1, justifyContent: "center", paddingHorizontal: 24, paddingVertical: 12 },
+  footer: { paddingHorizontal: 24, paddingTop: 8, paddingBottom: 20, gap: theme.spacing(1) },
+  footerRow: { flexDirection: "row", alignItems: "stretch", gap: theme.spacing(1) },
   card: {
     width: "100%",
     backgroundColor: theme.colors.surface,
     borderWidth: theme.borderWidth,
     borderColor: theme.colors.border,
     borderRadius: theme.radius.md,
-    padding: theme.spacing(2),
-    gap: theme.spacing(1.25),
+    padding: theme.spacing(1.75),
+    gap: theme.spacing(1),
   },
   levelRow: { flexDirection: "row", alignItems: "center", gap: 10 },
   levelName: { fontSize: 13.5, fontWeight: "700", color: theme.colors.ink },
   chip: { borderWidth: 2, borderRadius: 12, paddingHorizontal: 10, paddingVertical: 4 },
   chipText: { fontSize: 12, fontWeight: "800" },
-  sectionTitle: { fontSize: 13, fontWeight: "800", color: theme.colors.ink },
-  paceRow: { flexDirection: "row", flexWrap: "wrap", gap: theme.spacing(1) },
+  sectionTitle: { fontSize: 14, fontWeight: "800", color: theme.colors.ink },
+  dots: { flexDirection: "row", flexWrap: "wrap", gap: 6 },
+  dot: { width: 20, height: 20, borderRadius: 10 },
+  legend: { flexDirection: "row", flexWrap: "wrap", columnGap: 14, rowGap: 4 },
+  legendItem: { flexDirection: "row", alignItems: "center", gap: 6 },
+  legendDot: { width: 10, height: 10, borderRadius: 5 },
+  legendText: { fontSize: 12.5, fontWeight: "700", color: theme.colors.ink },
+  link: { fontSize: 13, fontWeight: "800", color: theme.colors.primary },
+  paceRow: { flexDirection: "row", gap: theme.spacing(1) },
+  pace: { flex: 1, minHeight: 44, borderRadius: theme.radius.md, borderWidth: theme.borderWidth, borderColor: theme.colors.border, alignItems: "center", justifyContent: "center", backgroundColor: "transparent" },
+  paceActive: { backgroundColor: theme.colors.primary, borderColor: theme.colors.primary },
+  paceText: { fontSize: 14, fontWeight: "800", color: theme.colors.ink },
+  paceTextActive: { color: "#FFFFFF" },
 });

@@ -13,6 +13,11 @@ interface AuthContextValue {
   isLoading: boolean;
   /** The account id progress may sync with: null until the sign-in preparation is done. */
   syncUserId: string | null;
+  /** True when this ACCOUNT has already met Solfek (his "Cześć, jestem Solfek!" window was shown once): kept in the account itself,
+   * so signing in again, or on another phone, does not bring the greeting back. */
+  introSeen: boolean;
+  /** Remembers in the account that the greeting was shown. Never throws (offline is fine: it is tried again next time). */
+  markIntroSeen: () => Promise<void>;
   /** Resolves to whether signup ALSO established a live session right
    * away — true when the Supabase project has email confirmation
    * disabled, false when Supabase's own default (confirm-before-signed-
@@ -112,13 +117,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (error) throw error;
   }
 
+  async function markIntroSeen() {
+    try {
+      await supabase.auth.updateUser({ data: { solfekIntroSeen: true } });
+    } catch {
+      // Offline or a hiccup: the next start tries again.
+    }
+  }
+
   async function resetPassword(email: string) {
     const { error } = await supabase.auth.resetPasswordForEmail(email);
     if (error) throw error;
   }
 
   return (
-    <AuthContext.Provider value={{ session, user: session?.user ?? null, isLoading: isLoading || !dataReady, syncUserId: dataReady ? userId : null, signUp, signIn, signOut, resetPassword }}>
+    <AuthContext.Provider value={{ session, user: session?.user ?? null, isLoading: isLoading || !dataReady, syncUserId: dataReady ? userId : null, introSeen: session?.user?.user_metadata?.solfekIntroSeen === true, markIntroSeen, signUp, signIn, signOut, resetPassword }}>
       {children}
     </AuthContext.Provider>
   );

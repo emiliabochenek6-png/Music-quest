@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Image, Pressable, Text, TextInput, View, StyleSheet } from "react-native";
 import { router } from "expo-router";
 import { AuthLayout } from "@/components/auth/AuthLayout";
+import { PasswordInput } from "@/components/auth/PasswordInput";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { useAuth } from "@/context/AuthContext";
 import { translateAuthError } from "@/lib/supabase/authErrors";
@@ -81,11 +82,10 @@ export default function LoginScreen() {
           placeholderTextColor={theme.colors.muted}
           accessibilityLabel="E-mail"
         />
-        <TextInput
+        <PasswordInput
           value={password}
           onChangeText={setPassword}
           placeholder="Hasło"
-          secureTextEntry
           autoComplete="password"
           editable={!isSubmitting}
           style={styles.input}

@@ -17,6 +17,7 @@ import { SoltekGreetingModal } from "@/components/SoltekGreetingModal";
 import { GameGuide } from "@/components/guide/GameGuide";
 import { TourTarget } from "@/components/guide/TourTarget";
 import { useTourTarget } from "@/lib/guide/tourTargets";
+import { useAuth } from "@/context/AuthContext";
 import { useGamification } from "@/context/GamificationContext";
 import { usePlan } from "@/context/PlanContext";
 import { useProfile } from "@/context/ProfileContext";
@@ -61,6 +62,7 @@ export default function MapScreen() {
   const { progress } = useProgress();
   const { status } = useSubscription();
   const { state: gamification } = useGamification();
+  const { user, introSeen, markIntroSeen } = useAuth();
   const { profile, isLoading: isProfileLoading, setHasSeenSoltekGreeting, setHasSeenGuide } = useProfile();
   // The tour can also be replayed from the side menu.
   const [guideReplay, setGuideReplay] = useState(false);
@@ -91,7 +93,8 @@ export default function MapScreen() {
   const finishedALesson = progress.completedLessonIds.size > 0 || planCompletedIds.size > 0;
   const loaded = mapFocused && !isProfileLoading && !isPlanLoading && !guideReplay;
   const newPlayer = plan.mode === "unset" && !plan.promptSeen;
-  const showGreeting = loaded && newPlayer && !profile.hasSeenSoltekGreeting;
+  // Solfek greets an account ONCE: the account remembers it (`introSeen`), so signing in again or on another phone skips the hello.
+  const showGreeting = loaded && newPlayer && !profile.hasSeenSoltekGreeting && !introSeen;
   // The guide points at real things on the map, so while it runs the map must be the full game map ("Tryb zabawy"),
   // scrolled to the top: switch to it, and put the player's own mode back when the guide closes.
   const [guideTick, setGuideTick] = useState(0);
@@ -100,6 +103,14 @@ export default function MapScreen() {
   // ever seeing it gets it when back on the start screen.
   const showGuide = guideReplay || (loaded && !showGreeting && !profile.hasSeenGuide && (profile.hasSeenSoltekGreeting || finishedALesson));
   const showPlanPrompt = loaded && !planPromptHidden && newPlayer && profile.hasSeenSoltekGreeting && profile.hasSeenGuide;
+
+  // Keep the device and the account in step: an account that has met Solfek marks this device, and the first greeting marks the account.
+  useEffect(() => {
+    if (isProfileLoading) return;
+    if (introSeen && !profile.hasSeenSoltekGreeting) setHasSeenSoltekGreeting(true);
+    else if (user && !introSeen && profile.hasSeenSoltekGreeting) void markIntroSeen();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isProfileLoading, introSeen, profile.hasSeenSoltekGreeting, user?.id]);
 
   useEffect(() => {
     if (!showGuide) return;

@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { PanResponder, View } from "react-native";
-import Svg, { Circle, Line, Path, Text as SvgText } from "react-native-svg";
+import Svg, { Circle, Line, Path } from "react-native-svg";
+import { ClefGlyph } from "@/components/exercises/ClefGlyph";
 import { STAFF_LINE_STEPS, VIEW_HEIGHT, VIEW_WIDTH, stepToY } from "@/lib/music/staffGeometry";
 import type { Clef } from "@/lib/music/staff";
 import { t } from "@/lib/i18n/translate";
@@ -28,18 +29,6 @@ interface ClefTraceBoardProps {
 
 const BOARD_WIDTH = 240;
 const BOARD_HEIGHT = (VIEW_HEIGHT / VIEW_WIDTH) * BOARD_WIDTH;
-
-/** Same guide glyph positions as the web app's ClefTraceBoard.tsx — see
- * that file's own doc for how the bass clef's y/fontSize were derived
- * (pixel-blob analysis of the rendered glyph, not eyeballed). Whether iOS's
- * system font actually has glyphs for U+1D11E/U+1D122 (Unicode's Musical
- * Symbols block) at all is unconfirmed on this port — verify live once
- * running; if it renders as tofu, this needs a bundled font (expo-font)
- * or a hand-drawn SVG fallback instead. */
-const CLEF_GLYPH: Record<Clef, { char: string; fontSize: number; x: number; y: number }> = {
-  treble: { char: "𝄞", fontSize: 130, x: 9, y: 108 },
-  bass: { char: "𝄢", fontSize: 92, x: 13, y: 93.5 },
-};
 
 const DOT_RADIUS = 3.5;
 
@@ -159,15 +148,7 @@ export function ClefTraceBoard({
             opacity={0.5}
           />
         ))}
-        <SvgText
-          x={CLEF_GLYPH[clef].x}
-          y={CLEF_GLYPH[clef].y}
-          fontSize={CLEF_GLYPH[clef].fontSize}
-          fill={theme.colors.ink}
-          opacity={0.3}
-        >
-          {CLEF_GLYPH[clef].char}
-        </SvgText>
+        <ClefGlyph clef={clef} color={theme.colors.ink} opacity={0.3} />
         {strokes.map((stroke, index) =>
           stroke.length === 1 ? (
             <Circle key={index} cx={stroke[0].x} cy={stroke[0].y} r={DOT_RADIUS} fill={strokeColor} />

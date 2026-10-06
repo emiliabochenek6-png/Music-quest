@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import { ScrollView, Text, View } from "react-native";
 import Svg, { Line, Ellipse, Text as SvgText } from "react-native-svg";
+import { ClefGlyph } from "@/components/exercises/ClefGlyph";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { describeStaffPosition, ledgerLineSteps, type Clef } from "@/lib/music/staff";
 import { parseScientific } from "@/lib/music/notes";
@@ -32,16 +33,6 @@ const EDGE_MARGIN = NOTE_RADIUS + 4;
  * their own headroom there; this is ADDITIONAL space so the label row
  * never overlaps the lowest notehead either. */
 const LABEL_ROW_HEIGHT = 30;
-
-// Same viewBox HEIGHT (150) as staffGeometry's other consumers — vertical
-// scale is what makes a clef glyph read as correctly sized against the
-// staff lines, so these x/y/fontSize values are lifted directly from
-// ClefTraceBoard's own CLEF_GLYPH (same rationale documented there): they
-// only need re-deriving if VIEW_HEIGHT itself changes.
-const CLEF_GLYPH: Record<Clef, { char: string; fontSize: number; x: number; y: number }> = {
-  treble: { char: "𝄞", fontSize: 130, x: 9, y: 108 },
-  bass: { char: "𝄢", fontSize: 92, x: 13, y: 93.5 },
-};
 
 interface LessonIntroStaffProps {
   notes: string[];
@@ -104,9 +95,7 @@ export function LessonIntroStaff({ notes, locale, clef = "treble", labels, highl
             />
           ))}
 
-          <SvgText x={CLEF_GLYPH[clef].x} y={CLEF_GLYPH[clef].y} fontSize={CLEF_GLYPH[clef].fontSize} fill={theme.colors.ink}>
-            {CLEF_GLYPH[clef].char}
-          </SvgText>
+          <ClefGlyph clef={clef} color={theme.colors.ink} />
 
           {notes.map((note, index) => {
             const parsed = parseScientific(note);

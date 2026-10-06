@@ -1,5 +1,6 @@
 import Svg, { G, Line, Text as SvgText } from "react-native-svg";
 import { View } from "react-native";
+import { ClefGlyph } from "@/components/exercises/ClefGlyph";
 import { getKeySignatureStaffSteps } from "@/lib/music/keys";
 import { VIEW_HEIGHT, STAFF_LINE_STEPS, stepToY } from "@/lib/music/staffGeometry";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
@@ -46,9 +47,7 @@ export function KeySignatureGlyphs({ fifths }: { fifths: number }) {
 
   return (
     <>
-      <SvgText x={9} y={108} fontSize={130} fill={theme.colors.ink}>
-        𝄞
-      </SvgText>
+      <ClefGlyph clef="treble" color={theme.colors.ink} />
       {steps.map((step, index) => (
         <SvgText
           key={index}
