@@ -799,6 +799,8 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
   // notation already shows.
   const promptText = noRecording
     ? t("lesson.solfegePhraseMetronomeOnlyPrompt", locale)
+    : canChooseMetronome
+    ? t("lesson.solfegeSongPrompt", locale)
     : exercise.isFragment
     ? t("lesson.solfegePhraseSingFragmentPrompt", locale)
     : t("lesson.solfegePhraseSingPrompt", locale, { syllables: exercise.solfegeSyllables.join(" - ") });
@@ -869,6 +871,10 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
       <DarkButton label="🔊" onPress={playExample} variant="secondary" size={72} fontSize={34} disabled={isRecording || metronomeRunning} />
 
       <SolfegeHelpBar showMic={exercise.metronomeOnly !== true} showMetronome={canChooseMetronome} disabled={isRecording || metronomeRunning} locale={locale} />
+
+      {canChooseMetronome && !isRecording && !metronomeRunning && (
+        <Text style={{ fontSize: theme.fontSize.body * 0.78, lineHeight: 18, color: theme.colors.muted, textAlign: "center" }}>{t("lesson.solfegeModesHint", locale)}</Text>
+      )}
 
       {usesMetronome && (
         <View style={{ alignItems: "center", gap: theme.spacing(0.5) }}>

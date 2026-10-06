@@ -177,6 +177,8 @@
   "lesson.solfegeRetry": "🎤 Nagraj ponownie",
   "lesson.solfegeRecordButton": "🎤 Nagraj",
   "lesson.solfegeStopButton": "⏹ Zatrzymaj",
+  "lesson.solfegeSongPrompt": "Odsłuchaj nagrania i zaśpiewaj po kolei zaznaczone nuty. Możesz śpiewać z mikrofonem albo z metronomem.",
+  "lesson.solfegeModesHint": "🎤 Z mikrofonem: gra sprawdza wysokość Twoich dźwięków. 🥁 Z metronomem: śpiewasz równo z klikami i sam oceniasz, jak Ci poszło. Bez obu: zaśpiewaj po swojemu i naciśnij „Zaśpiewane”.",
   "lesson.solfegePhraseSingPrompt": "Zaśpiewaj kolejno całą gamę: {syllables}",
   "lesson.solfegePhraseSingFragmentPrompt": "Odsłuchaj nagrania. Kliknij przycisk nagraj i zaśpiewaj po kolei zaznaczone nuty.",
   "lesson.solfegeIntervalLabel": "To interwał: {interval}",
