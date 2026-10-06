@@ -1,4 +1,5 @@
 import { Image, Pressable, Switch, Text, View, StyleSheet, useWindowDimensions } from "react-native";
+import { useWorldCardCollapsed } from "@/lib/ui/worldCardPreference";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
 import { AppIcon } from "@/components/icons/AppIcon";
@@ -119,6 +120,7 @@ export default function WorldLevelsScreen() {
   const { progress } = useProgress();
   const { plan } = usePlan();
   const { state: gamification, setIntroModeEnabled } = useGamification();
+  const { collapsed, setCollapsed } = useWorldCardCollapsed();
   const world = getWorldById(worldId);
   const content = getWorldContent(worldId);
 
@@ -188,40 +190,62 @@ export default function WorldLevelsScreen() {
         </Pressable>
       </View>
 
-      <View style={[styles.card, { borderColor: `${world.accentColor}55`, shadowColor: world.accentColor }]}>
-        <View style={[styles.cardIcon, { backgroundColor: `${world.accentColor}22`, borderColor: world.accentColor }]}>
+      <View style={[styles.card, collapsed && styles.cardCollapsed, { borderColor: `${world.accentColor}55`, shadowColor: world.accentColor }]} testID="world-card">
+        <View style={[styles.cardIcon, collapsed && styles.cardIconSmall, { backgroundColor: `${world.accentColor}22`, borderColor: world.accentColor }]}>
           <WorldCardIcon mapIconId={world.mapIconId} />
         </View>
         <View style={{ flex: 1 }}>
           <View style={styles.cardTitleRow}>
-            <Text style={[styles.cardTitle, { color: world.accentColor }]}>{t(world.nameKey as TranslationKey)}</Text>
-            {content && (
-              <Text style={styles.cardCount}>
-                {completedCount}/{totalCount}
-              </Text>
-            )}
-          </View>
-          <Text style={styles.cardDescription}>{t(world.descriptionKey as TranslationKey)}</Text>
-          <View style={styles.introModeRow}>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.introModeLabel}>{t("world.introModeToggle.label")}</Text>
-              <Text style={styles.introModeHint}>
-                {t(introModeEnabled ? "world.introModeToggle.hintOn" : "world.introModeToggle.hintOff")}
-              </Text>
+            <Text style={[styles.cardTitle, { color: world.accentColor }]} numberOfLines={1}>{t(world.nameKey as TranslationKey)}</Text>
+            <View style={styles.cardTitleRight}>
+              {content && (
+                <Text style={styles.cardCount}>
+                  {completedCount}/{totalCount}
+                </Text>
+              )}
+              {/* Folds the card away (description, "Zapoznaj się" switch, hint) so more of the path shows; remembered for every world. */}
+              <Pressable
+                onPress={() => setCollapsed(!collapsed)}
+                accessibilityRole="button"
+                accessibilityLabel={collapsed ? "Rozwiń opis krainy" : "Zwiń opis krainy"}
+                accessibilityState={{ expanded: !collapsed }}
+                testID="world-card-toggle"
+                hitSlop={8}
+                style={[styles.collapseButton, { borderColor: `${world.accentColor}66` }]}
+              >
+                <Text style={[styles.collapseIcon, { color: world.accentColor }]}>{collapsed ? "▾" : "▴"}</Text>
+              </Pressable>
             </View>
-            <Switch
-              value={introModeEnabled}
-              onValueChange={(enabled) => setIntroModeEnabled(worldId, enabled)}
-              trackColor={{ true: world.accentColor }}
-            />
           </View>
+          {!collapsed && (
+            <>
+              <Text style={styles.cardDescription}>{t(world.descriptionKey as TranslationKey)}</Text>
+              <View style={styles.introModeRow}>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.introModeLabel}>{t("world.introModeToggle.label")}</Text>
+                  <Text style={styles.introModeHint}>
+                    {t(introModeEnabled ? "world.introModeToggle.hintOn" : "world.introModeToggle.hintOff")}
+                  </Text>
+                </View>
+                <Switch
+                  value={introModeEnabled}
+                  onValueChange={(enabled) => setIntroModeEnabled(worldId, enabled)}
+                  trackColor={{ true: world.accentColor }}
+                />
+              </View>
+            </>
+          )}
           {content && (
             <>
               <View style={styles.progressTrack}>
                 <View style={[styles.progressFill, { backgroundColor: world.accentColor, width: `${progressPct}%` }]} />
               </View>
-              <Text style={styles.progressPct}>{progressPct}%</Text>
-              <Text style={styles.unlockHint}>Poziomy otwierają się po kolei: następny odblokujesz, zdobywając minimum 2 gwiazdki w poprzednim.</Text>
+              {!collapsed && (
+                <>
+                  <Text style={styles.progressPct}>{progressPct}%</Text>
+                  <Text style={styles.unlockHint}>Poziomy otwierają się po kolei: następny odblokujesz, zdobywając minimum 2 gwiazdki w poprzednim.</Text>
+                </>
+              )}
             </>
           )}
         </View>
@@ -306,6 +330,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  cardCollapsed: { padding: 10, gap: 10, alignItems: "center" },
+  cardIconSmall: { width: 36, height: 36, borderRadius: 12 },
+  cardTitleRight: { flexDirection: "row", alignItems: "center", gap: 8 },
+  collapseButton: { width: 32, height: 32, borderRadius: 16, borderWidth: 2, alignItems: "center", justifyContent: "center" },
+  collapseIcon: { fontSize: 16, fontWeight: "800", lineHeight: 18 },
   cardTitleRow: {
     flexDirection: "row",
     justifyContent: "space-between",

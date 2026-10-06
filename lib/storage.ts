@@ -9,6 +9,7 @@ export const STORAGE_KEYS = {
   solfegeHelp: "master-quest.solfege-help",
   plan: "master-quest.plan",
   animations: "master-quest.animations",
+  worldCard: "master-quest.world-card",
 } as const;
 
 export async function readJson<T>(key: string): Promise<T | null> {
