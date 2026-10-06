@@ -16,16 +16,20 @@ test.describe("Sklep Solfka", () => {
     await logIn(page);
     await closeIntroWindows(page);
 
-    // Open the shop from the "SKLEP" button next to the nutki on the map.
-    await page.getByRole("button", { name: "Sklep Solfka" }).click();
+    // Open the shop from the "SKLEP" button next to the nutki on the map (Solfek's avatar in the corner opens it too, hence .first()).
+    await page.getByRole("button", { name: "Sklep Solfka" }).first().click();
     await expect(page.getByTestId("shop-balance")).toHaveText(String(STARTING_NUTKI));
 
-    // The daily gift from Solfek: free nutki (10 to 30), once a day.
+    // The daily gift from Solfek: open the box (a scene with a random draw, 1 to 10 nutki), collect, say goodbye. Once a day.
     await page.getByTestId("shop-gift").click();
+    await page.getByTestId("gift-box").click();
+    await page.getByTestId("gift-collect").click({ timeout: 20_000 }); // appears when the draw has settled (about 4 s)
+    await page.getByTestId("gift-done").click();
+    await expect(page.getByTestId("gift-scene")).toHaveCount(0);
     await expect(page.getByTestId("shop-balance")).not.toHaveText(String(STARTING_NUTKI));
     const afterGift = Number(await page.getByTestId("shop-balance").textContent());
-    expect(afterGift - STARTING_NUTKI).toBeGreaterThanOrEqual(10);
-    expect(afterGift - STARTING_NUTKI).toBeLessThanOrEqual(30);
+    expect(afterGift - STARTING_NUTKI).toBeGreaterThanOrEqual(1);
+    expect(afterGift - STARTING_NUTKI).toBeLessThanOrEqual(10);
     await expect(page.getByTestId("shop-gift")).toBeDisabled();
 
     // Buy the red wizard.
