@@ -38,11 +38,7 @@ export default function ResetPasswordScreen() {
       await updatePassword(password);
       setStatus({ kind: "done" });
     } catch (error) {
-      const raw = error instanceof Error ? error.message.toLowerCase() : "";
-      setStatus({
-        kind: "error",
-        message: raw.includes("session") ? "Ten link do resetu hasła wygasł albo został już użyty. Wróć do logowania i wyślij nowy." : raw.includes("same") ? "Nowe hasło musi być inne niż poprzednie." : translateAuthError(error),
-      });
+      setStatus({ kind: "error", message: translateAuthError(error) });
     }
   }
 

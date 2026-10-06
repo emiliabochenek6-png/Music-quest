@@ -493,8 +493,10 @@ export function generateExercise(definition: ExerciseDefinition, locale: Locale,
       const { notes, clef } = definition.spec;
       const correctOrder = [...notes].sort((a, b) => noteToMidi(parseScientific(a)) - noteToMidi(parseScientific(b)));
       let shuffledNotes = shuffled(notes);
-      for (let attempt = 0; attempt < 10 && shuffledNotes.join() === correctOrder.join(); attempt++) {
-        shuffledNotes = shuffled(notes);
+      // Never hand the player the answer already in order: when the shuffle lands on it (1 time in 2 for a pair of notes), move the
+      // first note to the end instead of re-rolling a few times (10 re-rolls still failed about once in a thousand).
+      if (shuffledNotes.length > 1 && shuffledNotes.join() === correctOrder.join()) {
+        shuffledNotes = [...shuffledNotes.slice(1), shuffledNotes[0]];
       }
       return { id: definition.id, type: "note-sequencing", shuffledNotes, correctOrder, clef: clef ?? "treble" };
     }

@@ -35,14 +35,12 @@ describe("generateExercise", () => {
   });
 
   it("never shuffles note-sequencing into its own already-correct order", () => {
-    // A 2-note ascending pair only has one non-trivial shuffle (the swap) —
-    // run it many times to make flakiness from the reshuffle-retry loop
-    // vanishingly unlikely to slip through.
+    // A 2-note ascending pair only has one non-trivial shuffle (the swap); it must come out that way every single time.
     const definition = makeDefinition({
       type: "note-sequencing",
       spec: { type: "note-sequencing", notes: ["C4", "E4"] },
     });
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 500; i++) {
       const exercise = generateExercise(definition, "pl");
       if (exercise.type === "note-sequencing") {
         expect(exercise.shuffledNotes.join()).not.toBe(exercise.correctOrder.join());

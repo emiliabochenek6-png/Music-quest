@@ -7,6 +7,20 @@
 export function translateAuthError(error: unknown): string {
   const message = error instanceof Error ? error.message : String(error);
   const lower = message.toLowerCase();
+  const code = typeof (error as { code?: unknown } | null)?.code === "string" ? ((error as { code: string }).code).toLowerCase() : "";
+
+  // A new password equal to the old one ("New password should be different from the old password.", code "same_password").
+  if (code === "same_password" || lower.includes("different from the old password") || lower.includes("same as the old password")) {
+    return "To jest dokładnie to samo hasło co dotychczasowe. Wpisz inne, nowe hasło.";
+  }
+  // The recovery session is gone: the link in the e-mail expired or was already used.
+  if (code === "session_not_found" || lower.includes("auth session missing") || lower.includes("session missing")) {
+    return "Ten link do resetu hasła wygasł albo został już użyty. Wróć do logowania i wyślij nowy.";
+  }
+  // Too weak (the project can ask for more than 6 characters).
+  if (code === "weak_password" || lower.includes("weak password")) {
+    return "To hasło jest zbyt słabe. Użyj dłuższego, np. z literami i cyframi.";
+  }
 
   if (lower.includes("invalid login credentials")) {
     return "Zły e-mail lub hasło.";
