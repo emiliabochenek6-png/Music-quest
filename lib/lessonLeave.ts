@@ -7,6 +7,14 @@ export function exercisesWord(count: number): string {
   return "zadań";
 }
 
+/** "2 dźwięki", "5 dźwięków" for a count. */
+export function soundsPhrase(count: number): string {
+  const lastTwo = count % 100;
+  const last = count % 10;
+  const few = last >= 2 && last <= 4 && !(lastTwo >= 12 && lastTwo <= 14);
+  return `${count} ${count === 1 ? "dźwięk" : few ? "dźwięki" : "dźwięków"}`;
+}
+
 /** "pytanie / pytania / pytań" for a count. */
 export function questionsWord(count: number): string {
   if (count === 1) return "pytanie";

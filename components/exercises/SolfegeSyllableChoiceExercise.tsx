@@ -1,4 +1,5 @@
 import { Pressable, Text, View } from "react-native";
+import { soundsPhrase } from "@/lib/lessonLeave";
 import { DarkButton } from "@/components/exercises/DarkButton";
 import { OptionButton } from "@/components/exercises/OptionButton";
 import { SolfegeHelpBar } from "@/components/exercises/SolfegeHelpBar";
@@ -63,7 +64,7 @@ export function SolfegeSyllableChoiceExercise({ exercise, answer, onAnswerChange
   }
 
   const prompt =
-    length === 1 ? t("lesson.solfegeSyllablePrompt", locale) : t("lesson.solfegeSyllableSequencePrompt", locale, { count: String(length) });
+    length === 1 ? t("lesson.solfegeSyllablePrompt", locale) : t("lesson.solfegeSyllableSequencePrompt", locale, { sounds: soundsPhrase(length) });
 
   return (
     <View style={{ alignItems: "center", gap: theme.spacing(3) }}>

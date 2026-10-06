@@ -1,6 +1,6 @@
 import { describe, expect, it } from "@jest/globals";
 import { feedbackLine } from "@/lib/answerFeedback";
-import { exercisesWord, leaveComment, leaveTestComment, questionsWord } from "@/lib/lessonLeave";
+import { exercisesWord, leaveComment, leaveTestComment, questionsWord, soundsPhrase } from "@/lib/lessonLeave";
 
 describe("leaving a lesson: Solfek's sad comments", () => {
   it("uses the right Polish word for the number of exercises left", () => {
@@ -39,5 +39,11 @@ describe("Solfek's lines under the green and red panel", () => {
     expect(right.size).toBeGreaterThanOrEqual(4);
     expect(wrong.size).toBeGreaterThanOrEqual(4);
     for (const title of right) expect(wrong.has(title)).toBe(false);
+  });
+});
+
+describe("the solfège prompt counts sounds correctly", () => {
+  it("says 2 dźwięki, 5 dźwięków", () => {
+    expect([1, 2, 3, 4, 5, 12, 22].map(soundsPhrase)).toEqual(["1 dźwięk", "2 dźwięki", "3 dźwięki", "4 dźwięki", "5 dźwięków", "12 dźwięków", "22 dźwięki"]);
   });
 });
