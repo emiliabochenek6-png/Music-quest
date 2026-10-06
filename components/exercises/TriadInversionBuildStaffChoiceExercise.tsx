@@ -135,7 +135,7 @@ export function TriadInversionBuildStaffChoiceExercise({
         </View>
       )}
 
-      <View style={{ flexDirection: "row", gap: theme.spacing(3) }}>
+      <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center", width: "100%", columnGap: theme.spacing(3), rowGap: theme.spacing(1.5) }}>
         <AccidentalPickerRow columnLabel={exercise.middleLabel} selected={selectedMiddleAccidental} onSelect={onSelectMiddleAccidental} disabled={checked} />
         <AccidentalPickerRow columnLabel={exercise.topLabel} selected={selectedTopAccidental} onSelect={onSelectTopAccidental} disabled={checked} />
       </View>

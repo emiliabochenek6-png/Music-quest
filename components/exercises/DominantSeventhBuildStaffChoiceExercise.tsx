@@ -153,7 +153,8 @@ export function DominantSeventhBuildStaffChoiceExercise({
         </View>
       )}
 
-      <View style={{ flexDirection: "row", gap: theme.spacing(2) }}>
+      {/* The three columns of ♭ ♮ ♯ buttons are wider than a phone side by side: they wrap onto the next row instead of being cut off. */}
+      <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center", width: "100%", columnGap: theme.spacing(2), rowGap: theme.spacing(1.5) }}>
         <AccidentalPickerRow
           columnLabel={exercise.col1Label}
           selected={selectedCol1Accidental}
