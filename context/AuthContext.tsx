@@ -1,7 +1,8 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import type { Session, User } from "@supabase/supabase-js";
-import { supabase } from "@/lib/supabase/client";
+import { INITIAL_URL_HASH, supabase } from "@/lib/supabase/client";
+import { parseRecoveryHash, recoveryRedirectUrl } from "@/lib/supabase/recoveryLink";
 import { prepareLocalDataFor } from "@/lib/sync/localDataReset";
 
 interface AuthContextValue {
@@ -27,6 +28,12 @@ interface AuthContextValue {
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
+  /** True while the player has come from the "reset your password" e-mail and has not chosen a new password yet. */
+  isRecovering: boolean;
+  /** The reset link was bad (expired or already used): the login screen says so. */
+  recoveryLinkProblem: boolean;
+  /** Saves the new password of a player who came from the reset e-mail (throws on failure). */
+  updatePassword: (password: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -53,6 +60,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [preparedForUserId, setPreparedForUserId] = useState<string | null>(null);
+  // Coming from the link in the "reset your password" e-mail (see lib/supabase/recoveryLink.ts).
+  const initialLink = useRef(parseRecoveryHash(INITIAL_URL_HASH)).current;
+  const [isRecovering, setIsRecovering] = useState(initialLink.isRecovery);
+  const [recoveryLinkProblem, setRecoveryLinkProblem] = useState(initialLink.isProblem);
   const userId = session?.user?.id ?? null;
   // The account whose session was already stored when the app opened (not a sign-in made just now).
   const restoredUserIdRef = useRef<string | null>(null);
@@ -82,8 +93,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setIsLoading(false);
     });
 
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, newSession) => {
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, newSession) => {
       setSession(newSession);
+      if (event === "PASSWORD_RECOVERY") setIsRecovering(true);
     });
 
     return () => {
@@ -126,12 +138,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   async function resetPassword(email: string) {
-    const { error } = await supabase.auth.resetPasswordForEmail(email);
+    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: recoveryRedirectUrl() });
     if (error) throw error;
   }
 
+  async function updatePassword(password: string) {
+    const { error } = await supabase.auth.updateUser({ password });
+    if (error) throw error;
+    setIsRecovering(false);
+    setRecoveryLinkProblem(false);
+  }
+
   return (
-    <AuthContext.Provider value={{ session, user: session?.user ?? null, isLoading: isLoading || !dataReady, syncUserId: dataReady ? userId : null, introSeen: session?.user?.user_metadata?.solfekIntroSeen === true, markIntroSeen, signUp, signIn, signOut, resetPassword }}>
+    <AuthContext.Provider value={{ session, user: session?.user ?? null, isLoading: isLoading || !dataReady, syncUserId: dataReady ? userId : null, introSeen: session?.user?.user_metadata?.solfekIntroSeen === true, markIntroSeen, signUp, signIn, signOut, resetPassword, isRecovering, recoveryLinkProblem, updatePassword }}>
       {children}
     </AuthContext.Provider>
   );

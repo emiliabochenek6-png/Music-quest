@@ -9,10 +9,13 @@ import { useAuth } from "@/context/AuthContext";
  * with no session at all. Checked here, once, rather than in each child
  * screen individually. */
 export default function MainLayout() {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, isRecovering } = useAuth();
 
   if (isLoading) {
     return <LoadingScreen />;
+  }
+  if (isRecovering) {
+    return <Redirect href="/auth/reset-password" />;
   }
   if (!user) {
     return <Redirect href="/auth/login" />;

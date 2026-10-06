@@ -15,7 +15,7 @@ const MIN_LOADING_SCREEN_MS = 1800;
 
 export default function Index() {
   const { isLoading: isProfileLoading } = useProfile();
-  const { user, isLoading: isAuthLoading } = useAuth();
+  const { user, isLoading: isAuthLoading, isRecovering } = useAuth();
   const [minTimeElapsed, setMinTimeElapsed] = useState(false);
 
   useEffect(() => {
@@ -27,5 +27,7 @@ export default function Index() {
     return <LoadingScreen />;
   }
 
+  // Someone who came from the "reset your password" e-mail sets the new password first.
+  if (isRecovering) return <Redirect href="/auth/reset-password" />;
   return <Redirect href={user ? "/(main)/map" : "/auth/login"} />;
 }

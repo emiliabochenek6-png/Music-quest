@@ -46,6 +46,10 @@ const noopStorage = {
 };
 const authStorage = typeof window === "undefined" ? noopStorage : AsyncStorage;
 
+/** The part of the address after "#" as it was when the app opened — Supabase clears it while processing the link in a password-reset
+ * e-mail, so it is read here, before the client exists (see context/AuthContext.tsx). Empty outside a browser. */
+export const INITIAL_URL_HASH = typeof window !== "undefined" && typeof document !== "undefined" ? window.location.hash : "";
+
 /**
  * The Supabase client — one instance for the whole app, same "module-
  * level singleton" shape lib/subscriptions/purchases.ts uses for
@@ -70,7 +74,8 @@ export const supabase = createClient(
       storage: authStorage,
       autoRefreshToken: true,
       persistSession: true,
-      detectSessionInUrl: false,
+      // On the web the link from the password-reset e-mail comes back with the session in the address, and it has to be picked up.
+      detectSessionInUrl: typeof window !== "undefined" && typeof document !== "undefined",
     },
   }
 );

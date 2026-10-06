@@ -29,7 +29,7 @@ type Status = { kind: "idle" } | { kind: "submitting" } | { kind: "error"; messa
  * screen just needs to replace itself with the map.
  */
 export default function LoginScreen() {
-  const { signIn, resetPassword } = useAuth();
+  const { signIn, resetPassword, recoveryLinkProblem } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [status, setStatus] = useState<Status>({ kind: "idle" });
@@ -93,9 +93,12 @@ export default function LoginScreen() {
           accessibilityLabel="Hasło"
         />
 
+        {recoveryLinkProblem && status.kind === "idle" && (
+          <Text style={styles.errorText}>Ten link do resetu hasła wygasł albo został już użyty. Wpisz swój e-mail i wybierz „Nie pamiętasz hasła?”, a wyślemy nowy.</Text>
+        )}
         {status.kind === "error" && <Text style={styles.errorText}>{status.message}</Text>}
         {status.kind === "reset-sent" && (
-          <Text style={styles.infoText}>Wysłaliśmy link do resetu hasła na {email} — sprawdź skrzynkę.</Text>
+          <Text style={styles.infoText}>Wysłaliśmy link do resetu hasła na {email}. Kliknij go w e-mailu (sprawdź też spam), a otworzy się ekran ustawiania nowego hasła.</Text>
         )}
 
         <View style={{ marginTop: theme.spacing(1), width: "100%" }}>

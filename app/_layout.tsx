@@ -1,12 +1,12 @@
 import { useEffect } from "react";
-import { Stack } from "expo-router";
+import { Stack, router } from "expo-router";
 import { setAudioModeAsync } from "expo-audio";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Platform } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { LevelUpToast } from "@/components/LevelUpToast";
 import { RankUpCelebration } from "@/components/RankUpCelebration";
-import { AuthProvider } from "@/context/AuthContext";
+import { AuthProvider, useAuth } from "@/context/AuthContext";
 import { GamificationProvider, useGamification } from "@/context/GamificationContext";
 import { PlanProvider } from "@/context/PlanContext";
 import { ProfileProvider } from "@/context/ProfileContext";
@@ -37,6 +37,11 @@ import { configurePurchases } from "@/lib/subscriptions/purchases";
  * see RankUpCelebration's own doc. */
 function AppShell() {
   const { pendingRankUp, clearPendingRankUp, levelUpToast, clearLevelUpToast } = useGamification();
+  const { isRecovering } = useAuth();
+  // The recovery event can arrive after the app already opened on another screen: the new-password screen takes over.
+  useEffect(() => {
+    if (isRecovering) router.replace("/auth/reset-password");
+  }, [isRecovering]);
   return (
     <>
       <Stack screenOptions={{ headerShown: false }}>
