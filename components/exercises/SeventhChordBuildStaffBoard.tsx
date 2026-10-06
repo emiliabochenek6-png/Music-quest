@@ -1,4 +1,5 @@
 import { Pressable, View } from "react-native";
+import { SharpMark } from "@/components/exercises/SharpMark";
 import Svg, { Ellipse, G, Line, Text as SvgText } from "react-native-svg";
 import { ledgerLineSteps, describeStaffPosition } from "@/lib/music/staff";
 import { parseScientific, type Accidental } from "@/lib/music/notes";
@@ -47,6 +48,16 @@ const ACCIDENTAL_FONT_SIZE: Record<Accidental, number> = { [-2]: 22, [-1]: 22, [
 const ACCIDENTAL_LETTER_SPACING: Record<Accidental, number> = { [-2]: -15, [-1]: 0, [0]: 0, [1]: 0, [2]: 0 };
 const ACCIDENTAL_DY: Record<Accidental, number> = { [-2]: 7, [-1]: 4, [0]: 0, [1]: 11, [2]: 7 };
 const ACCIDENTAL_X_OFFSET: Record<Accidental, number> = { [-2]: -7, [-1]: 0, [0]: 0, [1]: 0, [2]: 0 };
+
+/** One accidental sign next to a note: a sharp is a drawn shape (see SharpMark), the rest are font glyphs. `noteY` is the note's own y. */
+function AccidentalGlyph({ accidental, x, noteY, fill }: { accidental: Accidental; x: number; noteY: number; fill: string }) {
+  if (accidental === 1) return <SharpMark x={x} y={noteY} fill={fill} />;
+  return (
+    <SvgText x={x} y={noteY + ACCIDENTAL_DY[accidental]} fontSize={ACCIDENTAL_FONT_SIZE[accidental]} letterSpacing={ACCIDENTAL_LETTER_SPACING[accidental]} fill={fill} textAnchor="middle">
+      {ACCIDENTAL_SYMBOL[accidental]}
+    </SvgText>
+  );
+}
 const BOARD_WIDTH = 300;
 const COLUMN_WIDTH_PERCENT = 20;
 const HORIZONTAL_MARGIN = 40;
@@ -107,16 +118,7 @@ export function SeventhChordBuildStaffBoard({
         {disabled && correct?.step != null && !isCorrect && (
           <G>
             {correct.accidental !== 0 && (
-              <SvgText
-                x={x - NOTE_RADIUS - 10 + ACCIDENTAL_X_OFFSET[correct.accidental]}
-                y={stepToY(correct.step) + ACCIDENTAL_DY[correct.accidental]}
-                fontSize={ACCIDENTAL_FONT_SIZE[correct.accidental]}
-                letterSpacing={ACCIDENTAL_LETTER_SPACING[correct.accidental]}
-                fill={theme.colors.success}
-                textAnchor="middle"
-              >
-                {ACCIDENTAL_SYMBOL[correct.accidental]}
-              </SvgText>
+              <AccidentalGlyph accidental={correct.accidental} x={x - NOTE_RADIUS - 10 + ACCIDENTAL_X_OFFSET[correct.accidental]} noteY={stepToY(correct.step)} fill={theme.colors.success} />
             )}
             <Ellipse cx={x} cy={stepToY(correct.step)} rx={NOTE_RADIUS} ry={NOTE_RADIUS - 1} fill={theme.colors.success} />
           </G>
@@ -125,16 +127,7 @@ export function SeventhChordBuildStaffBoard({
         {selected.step !== null && (
           <G>
             {selected.accidental !== 0 && (
-              <SvgText
-                x={x - NOTE_RADIUS - 10 + ACCIDENTAL_X_OFFSET[selected.accidental]}
-                y={stepToY(selected.step) + ACCIDENTAL_DY[selected.accidental]}
-                fontSize={ACCIDENTAL_FONT_SIZE[selected.accidental]}
-                letterSpacing={ACCIDENTAL_LETTER_SPACING[selected.accidental]}
-                fill={disabled ? (isCorrect ? theme.colors.success : theme.colors.warning) : theme.colors.ink}
-                textAnchor="middle"
-              >
-                {ACCIDENTAL_SYMBOL[selected.accidental]}
-              </SvgText>
+              <AccidentalGlyph accidental={selected.accidental} x={x - NOTE_RADIUS - 10 + ACCIDENTAL_X_OFFSET[selected.accidental]} noteY={stepToY(selected.step)} fill={disabled ? (isCorrect ? theme.colors.success : theme.colors.warning) : theme.colors.ink} />
             )}
             <Ellipse
               cx={x}
@@ -200,16 +193,7 @@ export function SeventhChordBuildStaffBoard({
           />
         ))}
         {bass.accidental !== 0 && (
-          <SvgText
-            x={BASS_X - NOTE_RADIUS - 10 + ACCIDENTAL_X_OFFSET[bass.accidental]}
-            y={stepToY(bassPosition.step) + ACCIDENTAL_DY[bass.accidental]}
-            fontSize={ACCIDENTAL_FONT_SIZE[bass.accidental]}
-            letterSpacing={ACCIDENTAL_LETTER_SPACING[bass.accidental]}
-            fill={theme.colors.ink}
-            textAnchor="middle"
-          >
-            {ACCIDENTAL_SYMBOL[bass.accidental]}
-          </SvgText>
+          <AccidentalGlyph accidental={bass.accidental} x={BASS_X - NOTE_RADIUS - 10 + ACCIDENTAL_X_OFFSET[bass.accidental]} noteY={stepToY(bassPosition.step)} fill={theme.colors.ink} />
         )}
         <Ellipse cx={BASS_X} cy={stepToY(bassPosition.step)} rx={NOTE_RADIUS} ry={NOTE_RADIUS - 1} fill={theme.colors.ink} />
 

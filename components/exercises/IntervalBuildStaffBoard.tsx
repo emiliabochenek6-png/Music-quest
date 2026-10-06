@@ -1,4 +1,5 @@
 import { Pressable, View } from "react-native";
+import { SharpMark } from "@/components/exercises/SharpMark";
 import Svg, { Ellipse, G, Line, Text as SvgText } from "react-native-svg";
 import { ledgerLineSteps, describeStaffPosition } from "@/lib/music/staff";
 import { parseScientific, type Accidental } from "@/lib/music/notes";
@@ -46,6 +47,16 @@ const ACCIDENTAL_LETTER_SPACING: Record<Accidental, number> = { [-2]: -15, [-1]:
 // high.
 const ACCIDENTAL_DY: Record<Accidental, number> = { [-2]: 7, [-1]: 4, [0]: 0, [1]: 11, [2]: 5 };
 const ACCIDENTAL_X_OFFSET: Record<Accidental, number> = { [-2]: -7, [-1]: 0, [0]: 0, [1]: 0, [2]: 0 };
+
+/** One accidental sign next to a note: a sharp is a drawn shape (see SharpMark), the rest are font glyphs. `noteY` is the note's own y. */
+function AccidentalGlyph({ accidental, x, noteY, fill }: { accidental: Accidental; x: number; noteY: number; fill: string }) {
+  if (accidental === 1) return <SharpMark x={x} y={noteY} fill={fill} />;
+  return (
+    <SvgText x={x} y={noteY + ACCIDENTAL_DY[accidental]} fontSize={ACCIDENTAL_FONT_SIZE[accidental]} letterSpacing={ACCIDENTAL_LETTER_SPACING[accidental]} fill={fill} textAnchor="middle">
+      {ACCIDENTAL_SYMBOL[accidental]}
+    </SvgText>
+  );
+}
 const BOARD_WIDTH = 220;
 /** Extra room on both sides of the 0-VIEW_WIDTH viewBox so every note and
  * its accidental stays fully visible — root's own accidental in particular
@@ -114,16 +125,7 @@ export function IntervalBuildStaffBoard({
           />
         ))}
         {root.accidental !== 0 && (
-          <SvgText
-            x={ROOT_X - NOTE_RADIUS - 10 + ACCIDENTAL_X_OFFSET[root.accidental]}
-            y={stepToY(rootPosition.step) + ACCIDENTAL_DY[root.accidental]}
-            fontSize={ACCIDENTAL_FONT_SIZE[root.accidental]}
-            letterSpacing={ACCIDENTAL_LETTER_SPACING[root.accidental]}
-            fill={theme.colors.ink}
-            textAnchor="middle"
-          >
-            {ACCIDENTAL_SYMBOL[root.accidental]}
-          </SvgText>
+          <AccidentalGlyph accidental={root.accidental} x={ROOT_X - NOTE_RADIUS - 10 + ACCIDENTAL_X_OFFSET[root.accidental]} noteY={stepToY(rootPosition.step)} fill={theme.colors.ink} />
         )}
         <Ellipse cx={ROOT_X} cy={stepToY(rootPosition.step)} rx={NOTE_RADIUS} ry={NOTE_RADIUS - 1} fill={theme.colors.ink} />
 
@@ -142,16 +144,7 @@ export function IntervalBuildStaffBoard({
         {disabled && correctStep !== null && !isAnswerCorrect && (
           <G>
             {correctAccidental !== 0 && correctAccidental != null && (
-              <SvgText
-                x={TARGET_X - NOTE_RADIUS - 10 + ACCIDENTAL_X_OFFSET[correctAccidental]}
-                y={stepToY(correctStep) + ACCIDENTAL_DY[correctAccidental]}
-                fontSize={ACCIDENTAL_FONT_SIZE[correctAccidental]}
-                letterSpacing={ACCIDENTAL_LETTER_SPACING[correctAccidental]}
-                fill={theme.colors.success}
-                textAnchor="middle"
-              >
-                {ACCIDENTAL_SYMBOL[correctAccidental]}
-              </SvgText>
+              <AccidentalGlyph accidental={correctAccidental} x={TARGET_X - NOTE_RADIUS - 10 + ACCIDENTAL_X_OFFSET[correctAccidental]} noteY={stepToY(correctStep)} fill={theme.colors.success} />
             )}
             <Ellipse cx={TARGET_X} cy={stepToY(correctStep)} rx={NOTE_RADIUS} ry={NOTE_RADIUS - 1} fill={theme.colors.success} />
           </G>
@@ -160,16 +153,7 @@ export function IntervalBuildStaffBoard({
         {selectedStep !== null && (
           <G>
             {selectedAccidental !== 0 && (
-              <SvgText
-                x={TARGET_X - NOTE_RADIUS - 10 + ACCIDENTAL_X_OFFSET[selectedAccidental]}
-                y={stepToY(selectedStep) + ACCIDENTAL_DY[selectedAccidental]}
-                fontSize={ACCIDENTAL_FONT_SIZE[selectedAccidental]}
-                letterSpacing={ACCIDENTAL_LETTER_SPACING[selectedAccidental]}
-                fill={disabled ? (isAnswerCorrect ? theme.colors.success : theme.colors.warning) : theme.colors.ink}
-                textAnchor="middle"
-              >
-                {ACCIDENTAL_SYMBOL[selectedAccidental]}
-              </SvgText>
+              <AccidentalGlyph accidental={selectedAccidental} x={TARGET_X - NOTE_RADIUS - 10 + ACCIDENTAL_X_OFFSET[selectedAccidental]} noteY={stepToY(selectedStep)} fill={disabled ? (isAnswerCorrect ? theme.colors.success : theme.colors.warning) : theme.colors.ink} />
             )}
             <Ellipse
               cx={TARGET_X}
