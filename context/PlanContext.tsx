@@ -65,6 +65,8 @@ interface PlanContextValue {
   chooseOriginal: (minutesPerDay?: number) => void;
   /** "Zacznij od gry": opens "Tryb zabawy" WITHOUT making a plan — "Tryb nauki" still shows the "Zrób test poziomujący" button until the test is done. */
   startWithGame: () => void;
+  /** The "Od czego zaczynamy?" window was answered ("Zrób test"): it is not shown again, even if the test is left unfinished — "Tryb nauki" keeps offering the test. */
+  markPromptSeen: () => void;
   /** Builds the personal path from a finished placement test. */
   applyPlacement: (levels: Record<string, PlacementLevel>, minutesPerDay?: number) => void;
   setMinutesPerDay: (minutes: number) => void;
@@ -173,6 +175,7 @@ export function PlanProvider({ children }: { children: ReactNode }) {
       isLoading,
       chooseOriginal: (minutesPerDay = plan.minutesPerDay) => startPlan("original", null, minutesPerDay),
       startWithGame: () => persist({ ...plan, view: "fun", promptSeen: true }),
+      markPromptSeen: () => persist({ ...plan, promptSeen: true }),
       applyPlacement: (levels, minutesPerDay = plan.minutesPerDay) => startPlan("personal", levels, minutesPerDay),
       setMinutesPerDay: (minutes) => {
         const base: PlanState = { ...plan, minutesPerDay: minutes };

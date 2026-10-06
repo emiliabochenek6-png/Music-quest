@@ -67,17 +67,16 @@ export default function MapScreen() {
   // The tour can also be replayed from the side menu.
   const [guideReplay, setGuideReplay] = useState(false);
   const menuTargetRef = useTourTarget("menu");
-  const { plan, isLoading: isPlanLoading, startWithGame, setView, planCompletedIds } = usePlan();
+  const { plan, isLoading: isPlanLoading, startWithGame, markPromptSeen, setView, planCompletedIds } = usePlan();
   const [sideMenuOpen, setSideMenuOpen] = useState(false);
   // First-run choice of study path (test-based or from the beginning) —
   // only after Solfek's hello and the tour, so the windows never stack.
   // Only while the map itself is the focused screen: a Modal is drawn above
   // EVERYTHING, so without this it stayed on top of the placement screen
-  // pushed from its own "Zrób test" button. Coming back to the map without
-  // having chosen shows it again.
-  // `planPromptHidden` is set the moment "Zrób test" is pressed (don't wait
-  // for the navigation's own blur event) and cleared whenever the map is
-  // focused again, so backing out of the test without choosing re-asks.
+  // pushed from its own "Zrób test" button. Pressing "Zrób test" answers it for good
+  // (markPromptSeen): leaving the test unfinished does not bring it back.
+  // `planPromptHidden` hides it the moment the button is pressed (don't wait
+  // for the navigation's own blur event) until the plan state has caught up.
   const [mapFocused, setMapFocused] = useState(true);
   const [planPromptHidden, setPlanPromptHidden] = useState(false);
   useFocusEffect(
@@ -203,6 +202,8 @@ export default function MapScreen() {
           visible
           onTakeTest={() => {
             setHasSeenSoltekGreeting(true);
+            // Answered: leaving the test unfinished must not bring this window (and Solfek) back on every start; Tryb nauki offers the test.
+            markPromptSeen();
             setPlanPromptHidden(true);
             router.push("/(main)/placement");
           }}
