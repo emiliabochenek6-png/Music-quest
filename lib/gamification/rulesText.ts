@@ -46,6 +46,18 @@ export const RULES: Rule[] = [
     body: `Nutki to Twoja własna waluta — zdobywasz je za każdą dobrą odpowiedź (2 nutki), nowe levele, wyzwanie dnia, perfekcyjną lekcję, ukończenie krainy i co tydzień passy. Nigdy nie da się ich kupić za prawdziwe pieniądze. W Sklepie Solfka (kliknij nutki przy mapie) kupujesz ubiory dla Solfka (różne kolory i stroje) oraz tła, a wszystko, co masz, znajdziesz w zakładce „Zakupione”. Każdy ubiór pasuje do każdego tła, a Solfek nosi wybrany ubiór także na mapie i w komentarzach. Co dzień czeka tam też prezent od Solfka: otwierasz pudełko i losujesz od 1 do 10 nutek. Cały sklep jest duży (ponad 20 000 nutek), więc jest do czego zbierać. Możesz tam też kupić zamrożenie passy (${POWER_UP_COSTS.streakFreeze} nutek, naraz najwyżej ${MAX_STREAK_FREEZES}). Nutki wydane w sklepie znikają z konta, więc oszczędzaj na to, na czym Ci zależy.`,
   },
   {
+    id: "tryb-zabawy",
+    icon: { name: "tryb_zabawy" },
+    title: "Tryb zabawy",
+    body: "To gra. Na mapie krain wchodzisz do kolejnych poziomów, zdobywasz od 1 do 3 gwiazdek (im mniej błędów, tym więcej) i pokonujesz bossów. Następny poziom otwiera się po minimum 2 gwiazdkach w poprzednim. Grasz w swoim tempie, bez planu i bez terminów: wybierasz krainę, na którą masz ochotę.",
+  },
+  {
+    id: "tryb-nauki",
+    icon: { name: "tryb_nauki" },
+    title: "Tryb nauki",
+    body: "To Twój plan nauki: ścieżka lekcji ułożona na podstawie testu poziomującego (albo od początku), rozpisana dzień po dniu na ok. 3 miesiące. Każdego dnia czekają na Ciebie lekcje i powtórki tego, co już było, żeby wszystko zostało w głowie. Wybierasz, ile minut dziennie chcesz się uczyć. Lekcje zrobione w Trybie nauki nie zaliczają się na mapie Trybu zabawy, za to to, co już zostało przerobione w grze, plan uznaje za zrobione.",
+  },
+  {
     id: "tryb-wlasny",
     icon: { name: "tryb_wlasny" },
     title: "Tryb własny",

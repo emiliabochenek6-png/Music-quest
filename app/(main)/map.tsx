@@ -10,6 +10,8 @@ import { WorldMap } from "@/components/map/WorldMap";
 import { SideMenu } from "@/components/SideMenu";
 import { SideMenuContent } from "@/components/SideMenuContent";
 import { ModeSwitch } from "@/components/plan/ModeSwitch";
+import { RuleInfoModal } from "@/components/RuleInfoModal";
+import { getRuleById } from "@/lib/gamification/rulesText";
 import { PlanPath } from "@/components/plan/PlanPath";
 import { TrainingHome } from "@/components/training/TrainingHome";
 import { PlanPromptModal } from "@/components/plan/PlanPromptModal";
@@ -69,6 +71,7 @@ export default function MapScreen() {
   const menuTargetRef = useTourTarget("menu");
   const { plan, isLoading: isPlanLoading, startWithGame, setView, planCompletedIds } = usePlan();
   const [sideMenuOpen, setSideMenuOpen] = useState(false);
+  const [modeInfoOpen, setModeInfoOpen] = useState(false);
   // First-run choice of study path (test-based or from the beginning) —
   // only after Solfek's hello and the tour, so the windows never stack.
   // Only while the map itself is the focused screen: a Modal is drawn above
@@ -177,8 +180,15 @@ export default function MapScreen() {
       )}
       {/* Above both views: "Tryb zabawy" (world map: the game, bosses) / "Tryb nauki" (Twój plan: personal path). */}
       <View style={[styles.switchWrap, { top: insets.top + 118 }]}>
-        <ModeSwitch view={plan.view} onChange={setView} />
+        <View style={styles.switchSlot}>
+          <ModeSwitch view={plan.view} onChange={setView} />
+        </View>
+        {/* "i": what the mode that is showing is for (the same text as in "Zasady gry"). */}
+        <Pressable onPress={() => setModeInfoOpen(true)} accessibilityRole="button" accessibilityLabel="Opis trybu" testID="mode-info" hitSlop={6} style={styles.modeInfo}>
+          <Text style={styles.modeInfoText}>i</Text>
+        </Pressable>
       </View>
+      <RuleInfoModal visible={modeInfoOpen} rule={getRuleById(plan.view === "fun" ? "tryb-zabawy" : plan.view === "plan" ? "tryb-nauki" : "tryb-wlasny") ?? null} onClose={() => setModeInfoOpen(false)} />
 
       <BottomTabBar />
 
@@ -258,8 +268,23 @@ const styles = StyleSheet.create({
     left: 16,
     right: 16,
     zIndex: 10,
+    flexDirection: "row",
+    justifyContent: "center",
     alignItems: "center",
+    gap: 8,
   },
+  switchSlot: { flexShrink: 1, flexGrow: 1, maxWidth: 360 },
+  modeInfo: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: theme.colors.surface,
+    borderWidth: theme.borderWidth,
+    borderColor: theme.colors.border,
+  },
+  modeInfoText: { fontSize: 16, fontWeight: "800", color: theme.colors.primary },
   headerBarWrap: {
     position: "absolute",
     left: 64,
