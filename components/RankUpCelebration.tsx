@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { AccessibilityInfo, Animated, Easing, Image, Modal, Pressable, StyleSheet, Text, View, useWindowDimensions } from "react-native";
+import { Animated, Easing, Image, Modal, Pressable, StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import Svg, { Circle, Defs, Path, Polygon, RadialGradient, Rect, Stop, LinearGradient as SvgLinearGradient } from "react-native-svg";
 import { OUTFIT_IMAGES } from "@/components/shop/shopImages";
 import { useGamification } from "@/context/GamificationContext";
 import { getTitleUnlockedAt } from "@/lib/gamification/rank";
+import { useReducedMotion } from "@/lib/animation/preferences";
 import { EASE_IN, EASE_IN_OUT, EASE_OUT, makeRamp, track } from "@/lib/animation/timeline";
 import type { Ease, Key } from "@/lib/animation/timeline";
 import { DEFAULT_OUTFIT_ID } from "@/lib/shop/catalog";
@@ -208,6 +209,8 @@ function Stage({ rank, fromRank, rankName, nutki, onClose }: { rank: number; fro
   const hover = useRef(new Animated.Value(0)).current;
   const twinkleLoop = useRef(new Animated.Value(0)).current;
   const [ready, setReady] = useState(false);
+  // The "Animacje" switch of the settings (not the phone's own setting, which some phones turn on by themselves).
+  const reducedMotion = useReducedMotion();
 
   const outfit = OUTFIT_IMAGES[state.shopEquipped.ubior ?? DEFAULT_OUTFIT_ID];
   const solfekImage = !state.shopEquipped.ubior || state.shopEquipped.ubior === DEFAULT_OUTFIT_ID || !outfit ? SOLFEK_HI_RES : outfit;
@@ -220,19 +223,12 @@ function Stage({ rank, fromRank, rankName, nutki, onClose }: { rank: number; fro
       barWidth.setValue(1);
       setReady(true);
     };
-    AccessibilityInfo.isReduceMotionEnabled()
-      .then((reduced) => {
-        if (cancelled) return;
-        if (reduced) {
-          finish();
-          return;
-        }
-        Animated.timing(clock, { toValue: TOTAL_MS, duration: TOTAL_MS, easing: Easing.linear, useNativeDriver: true }).start();
-        Animated.timing(barWidth, { toValue: 1, duration: 900, delay: 150, easing: Easing.bezier(0.3, 0, 0.2, 1), useNativeDriver: false }).start();
-      })
-      .catch(() => {
-        if (!cancelled) Animated.timing(clock, { toValue: TOTAL_MS, duration: TOTAL_MS, easing: Easing.linear, useNativeDriver: true }).start();
-      });
+    if (reducedMotion) {
+      finish();
+    } else {
+      Animated.timing(clock, { toValue: TOTAL_MS, duration: TOTAL_MS, easing: Easing.linear, useNativeDriver: true }).start();
+      Animated.timing(barWidth, { toValue: 1, duration: 900, delay: 150, easing: Easing.bezier(0.3, 0, 0.2, 1), useNativeDriver: false }).start();
+    }
     Animated.loop(Animated.timing(loop, { toValue: 1, duration: L.rays.spinMs, easing: Easing.linear, useNativeDriver: true })).start();
     Animated.loop(
       Animated.sequence([
@@ -258,7 +254,7 @@ function Stage({ rank, fromRank, rankName, nutki, onClose }: { rank: number; fro
       hover.stopAnimation();
       twinkleLoop.stopAnimation();
     };
-  }, [clock, loop, barWidth, hover, twinkleLoop, L.rays.spinMs]);
+  }, [clock, loop, barWidth, hover, twinkleLoop, L.rays.spinMs, reducedMotion]);
 
   function skip() {
     if (ready) return;

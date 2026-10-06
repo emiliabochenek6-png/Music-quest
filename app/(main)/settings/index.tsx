@@ -4,12 +4,14 @@ import { BottomTabBar } from "@/components/BottomTabBar";
 import { ScreenHeader } from "@/components/ui/ScreenHeader";
 import { useAuth } from "@/context/AuthContext";
 import { useProfile } from "@/context/ProfileContext";
+import { useAnimationPreference } from "@/lib/animation/preferences";
 import { useTheme } from "@/theme/ThemeProvider";
 
 export default function SettingsScreen() {
   const theme = useTheme();
   const { profile, setNarratorEnabled, setSoundEffectsEnabled } = useProfile();
   const { user, signOut } = useAuth();
+  const { animationsEnabled, setAnimationsEnabled } = useAnimationPreference();
 
   // Login is mandatory now (see app/index.tsx) — there's no logged-out
   // state left to reach this screen FROM, so signing out has to leave it
@@ -35,6 +37,14 @@ export default function SettingsScreen() {
       <View style={styles.row}>
         <Text style={{ color: theme.colors.ink, fontSize: theme.fontSize.body }}>Dźwięki</Text>
         <Switch value={profile.soundEffectsEnabled} onValueChange={setSoundEffectsEnabled} />
+      </View>
+
+      <View style={styles.row} testID="setting-animations">
+        <View style={{ flex: 1, paddingRight: 12 }}>
+          <Text style={{ color: theme.colors.ink, fontSize: theme.fontSize.body }}>Animacje</Text>
+          <Text style={{ color: theme.colors.muted, fontSize: 12 }}>Prezent w sklepie i awans na wyższy level. Wyłącz, jeśli wolisz od razu zobaczyć wynik.</Text>
+        </View>
+        <Switch value={animationsEnabled} onValueChange={setAnimationsEnabled} accessibilityLabel="Animacje" />
       </View>
 
       <Pressable onPress={() => router.push("/(main)/plan")} style={styles.row}>

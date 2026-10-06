@@ -31,7 +31,7 @@ export const RULES: Rule[] = [
     id: "streak",
     icon: { name: "hud_seria_ogien" },
     title: "Passa",
-    body: "Licznik dni z rzędu, w które ukończyłaś/eś choć jedną lekcję albo wyzwanie dnia. Ćwicz codziennie, żeby jej nie stracić — jeden pominięty dzień i passa zwykle wraca do 1. Jeśli masz banknięte zamrożenie passy (kupione za nutki), ono samo ochroni Cię przy jednym ominiętym dniu.",
+    body: "Licznik dni z rzędu, w które ukończyłaś/eś choć jedną lekcję albo wyzwanie dnia. Ćwicz codziennie, żeby jej nie stracić — jeden pominięty dzień i passa zwykle wraca do 1. Jeśli masz zakupione zamrożenie passy (w Sklepie Solfka, za nutki), ono samo ochroni Cię przy jednym ominiętym dniu.",
   },
   {
     id: "stars",

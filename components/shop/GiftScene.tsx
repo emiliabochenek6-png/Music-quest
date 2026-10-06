@@ -1,12 +1,13 @@
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
-import { AccessibilityInfo, Animated, Easing, Image, Modal, Pressable, StyleSheet, Text, View, useWindowDimensions } from "react-native";
+import { Animated, Easing, Image, Modal, Pressable, StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import Svg, { Circle, Defs, Path, Pattern, Polygon, Rect, Stop, LinearGradient as SvgLinearGradient } from "react-native-svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LAPTOP_LAYOUT, PHONE_LAYOUT } from "@/components/shop/giftLayouts";
 import type { GiftLayout } from "@/components/shop/giftLayouts";
 import { OUTFIT_IMAGES } from "@/components/shop/shopImages";
 import { useGamification } from "@/context/GamificationContext";
+import { useReducedMotion } from "@/lib/animation/preferences";
 import { EASE_IN, EASE_IN_OUT, EASE_OUT, makeRamp, track, trackDeg } from "@/lib/animation/timeline";
 import type { Key } from "@/lib/animation/timeline";
 import { DEFAULT_OUTFIT_ID } from "@/lib/shop/catalog";
@@ -61,22 +62,6 @@ export function GiftScene({ balance, onClaim, onClose }: GiftSceneProps) {
       <Scene balance={balance} onClaim={onClaim} onClose={onClose} />
     </Modal>
   );
-}
-
-function useReducedMotion(): boolean {
-  const [reduced, setReduced] = useState(false);
-  useEffect(() => {
-    let cancelled = false;
-    AccessibilityInfo.isReduceMotionEnabled()
-      .then((value) => {
-        if (!cancelled) setReduced(value);
-      })
-      .catch(() => {});
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-  return reduced;
 }
 
 /** A clock that runs 0 → `total` ms once (straight to the end with "reduce motion"). */

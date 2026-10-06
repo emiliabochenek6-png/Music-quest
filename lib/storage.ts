@@ -8,6 +8,7 @@ export const STORAGE_KEYS = {
   gamification: "master-quest.gamification",
   solfegeHelp: "master-quest.solfege-help",
   plan: "master-quest.plan",
+  animations: "master-quest.animations",
 } as const;
 
 export async function readJson<T>(key: string): Promise<T | null> {
