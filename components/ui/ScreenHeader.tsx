@@ -29,9 +29,10 @@ export function ScreenHeader({ title, onBack, close = false }: ScreenHeaderProps
       style={{
         flexDirection: "row",
         alignItems: "center",
-        paddingTop: insets.top + 8,
-        paddingBottom: 12,
-        paddingHorizontal: 12,
+        // A screen left with an X (the placement test) sits as high as the X of a lesson, or a bit higher.
+        paddingTop: close ? insets.top + 2 : insets.top + 8,
+        paddingBottom: close ? 8 : 12,
+        paddingHorizontal: close ? 16 : 12,
         gap: 8,
       }}
     >
