@@ -165,7 +165,7 @@ export const ZACZAROWANY_SOLFEZ_CONTENT: WorldContent = {
           ],
         },
         {
-          body: "Przed każdym dźwiękiem usłyszysz kadencję C-dur, czyli cztery krótkie akordy (do–mi–sol, do–fa–la, si–re–sol, do–mi–sol) — one pokazują, gdzie jest „dom”. Potem zagra dźwięk, a Ty wskażesz jego nazwę. Możesz słuchać bez końca: 🔊 gra wszystko od początku, a „Tylko dźwięk” — samą nutę.",
+          body: "Przed każdym dźwiękiem usłyszysz kadencję C-dur, czyli cztery krótkie akordy (do–mi–sol, fa–la–do, sol–si–re, do–mi–sol) — one pokazują, gdzie jest „dom”. Potem zagra dźwięk, a Ty wskażesz jego nazwę. Możesz słuchać bez końca: 🔊 gra wszystko od początku, a „Tylko dźwięk” — samą nutę.",
         },
       ],
       exercises: [
