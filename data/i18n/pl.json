@@ -155,6 +155,8 @@
   "lesson.solfegeHelpSlow": "🐌 Wolno",
   "lesson.solfegeHelpMicOn": "🎤 Mikrofon: włączony",
   "lesson.solfegeHelpMicOff": "🎤 Mikrofon: wyłączony",
+  "lesson.solfegeHelpMetronomeOn": "🥁 Metronom: włączony",
+  "lesson.solfegeHelpMetronomeOff": "🥁 Metronom: wyłączony",
   "lesson.solfegeNoMicButton": "✔ Zaśpiewane",
   "lesson.solfegeNoMicHint": "Mikrofon jest wyłączony. Posłuchaj, zaśpiewaj na głos i naciśnij „Zaśpiewane”.",
   "lesson.solfegeNoMicDone": "Świetnie! Naciśnij „Sprawdź”.",

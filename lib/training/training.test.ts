@@ -3,6 +3,7 @@ import { WORLDS } from "@/data/worlds";
 import { getWorldContent } from "@/data/lessons";
 import { mergeTraining } from "@/lib/sync/mergeState";
 import { EXTRA_SOLFEGE_SONGS } from "@/data/training/solfegeSongs";
+import { phraseTimeline } from "@/lib/rhythm/phraseTimeline";
 import { generateExercise } from "@/lib/questions/generate";
 import { beatsOf } from "@/lib/rhythm/valueBeats";
 import { meterQuarterNoteBeats } from "@/lib/rhythm/meter";
@@ -197,5 +198,20 @@ describe("Tryb własny: statistics and rewards", () => {
     expect(merged.bestTimed).toBe(9);
     expect(merged.rewardDateISO).toBe("2026-10-04");
     expect(merged.rewardedToday).toBe(5);
+  });
+});
+
+describe("the recording of a song keeps its rhythm", () => {
+  it("plays a half note twice as long as a quarter and a whole note four times", () => {
+    const jingle = EXTRA_SOLFEGE_SONGS.find((song) => song.id === "ps-jingle-1")!;
+    if (jingle.spec.type !== "solfege-phrase-singing") throw new Error("not a phrase");
+    const timeline = phraseTimeline(jingle.spec.notes, jingle.spec.rhythm!, 1000);
+    // "Jin-gle bells": quarter, quarter, HALF — the next phrase starts after 4 beats
+    expect(timeline.slice(0, 4).map((item) => item.onsetMs)).toEqual([0, 1000, 2000, 4000]);
+    expect(timeline[2].durationMs).toBe(2000);
+    // the dotted quarter and the eighth, then the final whole note
+    expect(timeline[8].durationMs).toBe(1500);
+    expect(timeline[10].onsetMs).toBe(12000);
+    expect(timeline[10].durationMs).toBe(4000);
   });
 });

@@ -14,12 +14,14 @@ export interface SolfegeHelp {
   /** False = no microphone: singing exercises ask the player to sing
    * along on their own and tap "Zaśpiewane" instead of being graded. */
   micEnabled: boolean;
+  /** Songs and fragments with a rhythm: pace the take (or the sing-along without the microphone) with a metronome. */
+  metronome: boolean;
 }
 
 /** Slow tempo plays at this fraction of normal speed. */
 export const SOLFEGE_SLOW_TEMPO_FACTOR = 0.6;
 
-const DEFAULT_HELP: SolfegeHelp = { slow: false, micEnabled: true };
+const DEFAULT_HELP: SolfegeHelp = { slow: false, micEnabled: true, metronome: false };
 
 let state: SolfegeHelp = DEFAULT_HELP;
 let loadStarted = false;
@@ -62,7 +64,7 @@ function update(patch: Partial<SolfegeHelp>) {
   });
 }
 
-export function useSolfegeHelp(): SolfegeHelp & { setSlow: (slow: boolean) => void; setMicEnabled: (micEnabled: boolean) => void } {
+export function useSolfegeHelp(): SolfegeHelp & { setSlow: (slow: boolean) => void; setMicEnabled: (micEnabled: boolean) => void; setMetronome: (metronome: boolean) => void } {
   const help = useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
-  return { ...help, setSlow: (slow) => update({ slow }), setMicEnabled: (micEnabled) => update({ micEnabled }) };
+  return { ...help, setSlow: (slow) => update({ slow }), setMicEnabled: (micEnabled) => update({ micEnabled }), setMetronome: (metronome) => update({ metronome }) };
 }

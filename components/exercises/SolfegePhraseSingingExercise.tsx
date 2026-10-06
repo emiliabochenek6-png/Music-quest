@@ -28,6 +28,7 @@ import { classifyPitchMatch, noteToFrequency, octaveFoldedCentsDifference, parse
 import { nearestSolfegeReading, type SolfegeTunerReading } from "@/lib/music/solfege";
 import { SOLFEGE_SLOW_TEMPO_FACTOR, useSolfegeHelp } from "@/lib/solfege/helpPreferences";
 import { NOTE_VALUE_BEATS } from "@/lib/rhythm/valueBeats";
+import { phraseTimeline } from "@/lib/rhythm/phraseTimeline";
 import { t } from "@/lib/i18n/translate";
 import type { TranslationKey } from "@/lib/i18n/translate";
 import { DARK_EXERCISE_THEME as theme } from "@/theme/darkExerciseTheme";
@@ -182,13 +183,17 @@ type Phase = "idle" | "requesting-permission" | "permission-denied" | "recording
  */
 export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange, checked, locale }: SolfegePhraseSingingExerciseProps) {
   const isRhythmGraded = exercise.gradeRhythm === true;
+  const { slow, micEnabled, metronome: metronomePreferred, setMicEnabled } = useSolfegeHelp();
+  // Songs and fragments that carry a rhythm (and have no metronome mode of their own) let the player choose the 🥁 metronome:
+  // with the microphone it paces the graded take, without it the player sings along to the clicks ("Śpiewaj z metronomem").
+  const canChooseMetronome = exercise.rhythm !== undefined && !isRhythmGraded && exercise.withMetronome !== true && exercise.metronomeOnly !== true;
+  const chosenMetronome = canChooseMetronome && metronomePreferred;
   // "Nagranie, potem metronom" (exercise.withMetronome): the pacing click
   // plays during the take even when rhythm itself isn't graded.
-  const usesMetronome = isRhythmGraded || exercise.withMetronome === true || exercise.metronomeOnly === true;
-  // "Śpiewaj z metronomem" (exercise.metronomeOnly): no recording at all —
-  // see startMetronomeOnlyTake. The mic switch does not apply here.
-  const noRecording = exercise.metronomeOnly === true;
-  const { slow, micEnabled, setMicEnabled } = useSolfegeHelp();
+  const usesMetronome = isRhythmGraded || exercise.withMetronome === true || exercise.metronomeOnly === true || chosenMetronome;
+  // "Śpiewaj z metronomem" (exercise.metronomeOnly, or the 🎤 off + 🥁 on choice): no recording at all —
+  // see startMetronomeOnlyTake. The mic switch does not apply to a metronomeOnly exercise.
+  const noRecording = exercise.metronomeOnly === true || (chosenMetronome && !micEnabled);
   // The 🐌 switch slows the reference phrase's note spacing and the pacing
   // metronome alike — safe for the metronome because grading never reads
   // it (see analyzeFreeRhythmicPhrase's own doc).
@@ -446,19 +451,16 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
       playSample(exercise.referenceAudioSource, 1);
       return;
     }
-    // "Nagranie" for withMetronome content: the phrase with its real
-    // rhythm (each note held for its written value) at the exercise's own
-    // tempo — what the take is then sung against, minus the piano.
-    if (exercise.withMetronome && exercise.rhythm) {
-      const beatMs = 60000 / effectiveBpm;
-      let cursorMs = 0;
-      const phrase = exercise.notes.map((note, index) => {
-        const durationMs = NOTE_VALUE_BEATS[exercise.rhythm![index]] * beatMs;
-        const item = { note: parseScientific(note), onsetMs: cursorMs, durationMs };
-        cursorMs += durationMs;
-        return item;
-      });
+    // "Nagranie" of any phrase that has a rhythm (a withMetronome take, a song, a fragment): the phrase with its real rhythm, each
+    // note held for its written value (a half note twice as long as a quarter) at the exercise's own tempo, slower in slow mode.
+    if (exercise.rhythm) {
+      const phrase = phraseTimeline(exercise.notes.map((note) => parseScientific(note)), exercise.rhythm, 60000 / effectiveBpm);
       playMelodicRhythm(phrase);
+      // The staff follows the recording: each note is lit while it sounds (like during a take with the metronome).
+      metronomeTimersRef.current.forEach(clearTimeout);
+      metronomeTimersRef.current = phrase.map((item, index) => setTimeout(() => isMountedRef.current && setMetronomeHighlight(index), item.onsetMs));
+      const last = phrase[phrase.length - 1];
+      metronomeTimersRef.current.push(setTimeout(() => isMountedRef.current && setMetronomeHighlight(null), last.onsetMs + last.durationMs));
       return;
     }
     playMelody(
@@ -866,7 +868,7 @@ export function SolfegePhraseSingingExercise({ exercise, answer, onAnswerChange,
 
       <DarkButton label="🔊" onPress={playExample} variant="secondary" size={72} fontSize={34} disabled={isRecording || metronomeRunning} />
 
-      <SolfegeHelpBar showMic={!noRecording} disabled={isRecording || metronomeRunning} locale={locale} />
+      <SolfegeHelpBar showMic={exercise.metronomeOnly !== true} showMetronome={canChooseMetronome} disabled={isRecording || metronomeRunning} locale={locale} />
 
       {usesMetronome && (
         <View style={{ alignItems: "center", gap: theme.spacing(0.5) }}>

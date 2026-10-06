@@ -1,7 +1,8 @@
 import type { ExerciseDefinition } from "@/types/exercises";
 
 /**
- * Extra songs for Tryb własny's "Solfeż i piosenki": more well-known tunes to sing from the notes (with the microphone), on top of the
+ * Extra songs for Tryb własny's "Solfeż i piosenki": more well-known tunes to sing from the notes (with the microphone, or without it: not everybody
+ * sings in tune, so the 🎤 and 🥁 switches choose between a graded take, a sing-along with the metronome, or just a sing-along), on top of the
  * fragments the game's own Zaczarowany Solfeż already teaches (Panie Janie, Oda do radości, Twinkle twinkle, …). All are in C major
  * between C4 and C5, short, and written as one phrase each so a child can sing them. Each phrase must fill whole measures (checked by a test).
  *

@@ -9,6 +9,8 @@ interface SolfegeHelpBarProps {
   showSlow?: boolean;
   /** Show the 🎤 microphone switch. */
   showMic?: boolean;
+  /** Show the 🥁 metronome switch. */
+  showMetronome?: boolean;
   /** Disables both switches (e.g. while a take is being recorded). */
   disabled?: boolean;
   locale: Locale;
@@ -18,8 +20,8 @@ interface SolfegeHelpBarProps {
  * 🐌 slow tempo and 🎤 microphone on/off, remembered on this device (see
  * lib/solfege/helpPreferences.ts). Each is a plain toggle chip: lit
  * border when on, so the current setting is readable at a glance. */
-export function SolfegeHelpBar({ showSlow = true, showMic = true, disabled = false, locale }: SolfegeHelpBarProps) {
-  const { slow, micEnabled, setSlow, setMicEnabled } = useSolfegeHelp();
+export function SolfegeHelpBar({ showSlow = true, showMic = true, showMetronome = false, disabled = false, locale }: SolfegeHelpBarProps) {
+  const { slow, micEnabled, metronome, setSlow, setMicEnabled, setMetronome } = useSolfegeHelp();
 
   function chip(label: string, on: boolean, onPress: () => void) {
     return (
@@ -51,6 +53,7 @@ export function SolfegeHelpBar({ showSlow = true, showMic = true, disabled = fal
     <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center", gap: theme.spacing(1.5) }}>
       {showSlow && chip(t("lesson.solfegeHelpSlow", locale), slow, () => setSlow(!slow))}
       {showMic && chip(t(micEnabled ? "lesson.solfegeHelpMicOn" : "lesson.solfegeHelpMicOff", locale), micEnabled, () => setMicEnabled(!micEnabled))}
+      {showMetronome && chip(t(metronome ? "lesson.solfegeHelpMetronomeOn" : "lesson.solfegeHelpMetronomeOff", locale), metronome, () => setMetronome(!metronome))}
     </View>
   );
 }
